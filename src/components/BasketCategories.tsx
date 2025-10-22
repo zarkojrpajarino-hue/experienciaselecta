@@ -256,7 +256,15 @@ const BasketCategories = () => {
 
                       {/* Título y Flecha */}
                       <div className="flex items-center justify-center gap-3">
-                        <h3 className="font-bebas font-bold text-3xl md:text-5xl text-white whitespace-nowrap tracking-[0.2em]">
+                        <h3 
+                          className="font-bebas font-bold text-3xl md:text-5xl whitespace-nowrap tracking-[0.2em]"
+                          style={{ 
+                            color: category.title === "Familia" ? '#ADFF2F' 
+                                 : category.title === "Pareja" ? '#FF1493'
+                                 : category.title === "Amigos" ? '#00BFFF'
+                                 : '#FFFFFF'
+                          }}
+                        >
                           {category.title}.
                         </h3>
                         <svg 

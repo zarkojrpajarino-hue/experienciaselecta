@@ -35,6 +35,21 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Text */}
         <div className="w-full flex flex-col items-center justify-center py-4">
+          {/* Indicadores de puntos */}
+          <div className="flex gap-2 mb-4">
+            {slides.map((_, i) => (
+              <div
+                key={i}
+                className="w-3 h-3 rounded-full transition-all duration-300"
+                style={{
+                  backgroundColor: index === i 
+                    ? (i % 2 === 0 ? '#000000' : '#FFD700')
+                    : '#D1D5DB'
+                }}
+              />
+            ))}
+          </div>
+
           <div className="px-6 max-w-4xl mb-4 text-center">
             <h3
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins font-bold tracking-wide text-black"
@@ -84,7 +99,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               <img
                 src={s.image}
                 alt={s.alt || s.title}
-                className="w-full h-full object-cover md:object-contain md:px-6 rounded-[2rem]"
+                className="w-full h-full object-cover md:object-contain md:px-4 rounded-[2rem]"
               />
             </motion.div>
           ))}
