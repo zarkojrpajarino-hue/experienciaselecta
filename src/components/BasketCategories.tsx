@@ -124,13 +124,13 @@ const BasketCategories = () => {
         type: "spring",
         stiffness: 50,
         damping: 15
-      }} className="text-center mb-6 sm:mb-8">
+      }} className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl mb-2 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
             Escoja su categoría.
           </h2>
         </motion.div>
 
-        <div className="max-w-6xl mx-auto flex flex-col gap-8 sm:gap-10 mt-6">
+        <div className="max-w-6xl mx-auto flex flex-col gap-16 sm:gap-20 mt-6">
           {categories.sort((a, b) => a.order - b.order).map((category, index) => {
           const isAmigos = category.title === "Amigos";
           
@@ -164,6 +164,13 @@ const BasketCategories = () => {
             }} 
             className="relative"
           >
+            {/* Línea separatoria blanca si no es el primer elemento */}
+            {index > 0 && (
+              <div className="mb-12 sm:mb-16">
+                <div className="w-full h-[1px] bg-white/30"></div>
+              </div>
+            )}
+
             {/* Title Card + Image Card Side by Side - Always side by side on all devices */}
             <div className={`grid grid-cols-2 items-center ${
               isAmigos ? 'gap-2 sm:gap-4' : 'gap-6 sm:gap-8 md:gap-12'
@@ -200,7 +207,7 @@ const BasketCategories = () => {
                   >
                     {/* Title - Horizontal letters in center with arrow */}
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <h3 className="font-poppins font-bold text-lg sm:text-3xl text-white whitespace-nowrap" style={{ textTransform: 'none' }}>
+                      <h3 className="font-bebas font-bold text-lg sm:text-3xl text-white whitespace-nowrap" style={{ textTransform: 'none' }}>
                         {category.title}.
                       </h3>
                       <svg 
