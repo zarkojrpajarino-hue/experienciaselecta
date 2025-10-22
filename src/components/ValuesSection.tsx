@@ -72,7 +72,7 @@ const ValuesSection = () => {
   };
 
   return (
-    <section className="relative overflow-hidden w-full" style={{ backgroundColor: '#0a0a0a', padding: 0, margin: 0 }}>
+    <section className="relative overflow-hidden w-full rounded-3xl" style={{ backgroundColor: '#0a0a0a', padding: 0, margin: 0 }}>
       {/* Crossfade backgrounds */}
       <div className="absolute inset-0 z-0" style={{ backgroundColor: '#0a0a0a' }}>
         {valueBackgrounds.map((bg, i) => (

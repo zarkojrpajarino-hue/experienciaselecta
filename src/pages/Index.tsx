@@ -122,42 +122,42 @@ const Index = () => {
     image: nuevaSeccion01Img,
     backgroundColor: "#000000",
     textColor: "#FFFFFF",
-    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide">
+    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide normal-case">
           Creamos <span style={{ color: "#FFD700" }}>experiencias</span> para que vosotros <span style={{ color: "#FFD700" }}>conozcáis</span> a personas.
         </p>
   }, {
     image: nuevaSeccion02Img,
     backgroundColor: "#000000",
     textColor: "#FFFFFF",
-    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide">
+    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide normal-case">
           Transformamos productos <span style={{ color: "#FFD700" }}>gourmet</span> en un plan <span style={{ color: "#FFD700" }}>alternativo,</span> <span style={{ color: "#FFD700" }}>personalizado</span> y <span style={{ color: "#FFD700" }}>asequible.</span>
         </p>
   }, {
     image: nuevaSeccion03Img,
     backgroundColor: "#000000",
     textColor: "#FFFFFF",
-    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide">
+    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide normal-case">
           Cada cesta incluye un <span style={{ color: "#FFD700" }}>QR,</span> que te guía hacia una <span style={{ color: "#FFD700" }}>experiencia única,</span> con dinámicas diseñadas para tu grupo.
         </p>
   }, {
     image: nuevaSeccion04Img,
     backgroundColor: "#000000",
     textColor: "#FFFFFF",
-    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide">
+    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide normal-case">
           Estas actividades fomentan <span style={{ color: "#FFD700" }}>conversaciones reales,</span> <span style={{ color: "#FFD700" }}>vínculos profundos,</span> y el valor de mostrarse <span style={{ color: "#FFD700" }}>vulnerable.</span>
         </p>
   }, {
     image: nuevaSeccion05Img,
     backgroundColor: "#000000",
     textColor: "#FFFFFF",
-    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide">
+    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide normal-case">
           Convertimos una comida <span style={{ color: "#FFD700" }}>excepcional</span> en una experiencia <span style={{ color: "#FFD700" }}>emocional,</span> <span style={{ color: "#FFD700" }}>memorable.</span>
         </p>
   }, {
     image: nuevaSeccion06Img,
     backgroundColor: "#000000",
     textColor: "#FFFFFF",
-    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide">
+    content: <p className="text-sm md:text-base font-cinzel font-bold max-w-2xl mx-auto tracking-wide normal-case">
           Hacemos posible un <span style={{ color: "#FFD700" }}>ocio distinto,</span> rompemos la <span style={{ color: "#FFD700" }}>monotonía,</span> y devolvemos <span style={{ color: "#FFD700" }}>sentido</span> a compartir.
         </p>
   }];
