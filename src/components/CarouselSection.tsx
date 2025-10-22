@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -69,7 +69,22 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
             </div>
           </div>
           
-          {/* Navigation Buttons below text */}
+          {/* Indicadores de puntos */}
+          <div className="flex gap-2 mb-4">
+            {slides.map((_, i) => (
+              <div
+                key={i}
+                className="w-3 h-3 rounded-full transition-all duration-300"
+                style={{
+                  backgroundColor: currentIndex === i 
+                    ? (i % 2 === 0 ? '#000000' : '#FFD700')
+                    : '#D1D5DB'
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Navigation Buttons below indicators */}
           <div className="flex flex-row gap-4 md:gap-8">
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -78,7 +93,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               className="p-0 bg-transparent transition-all duration-300 border-0"
               style={{ color: '#000000' }}
             >
-              <ChevronUp className="w-10 h-10" />
+              <ChevronLeft className="w-10 h-10" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -87,7 +102,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               className="p-0 bg-transparent transition-all duration-300 border-0"
               style={{ color: '#000000' }}
             >
-              <ChevronDown className="w-10 h-10" />
+              <ChevronRight className="w-10 h-10" />
             </motion.button>
           </div>
         </motion.div>

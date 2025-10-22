@@ -38,7 +38,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {!hideMainTitle && (
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-rubik font-bold text-black tracking-wide">
-              ¿Quieres entender como te entendemos?
+              Déjanos explicarte como te entendemos.
             </h2>
           </div>
         )}
