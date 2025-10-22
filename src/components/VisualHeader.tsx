@@ -25,7 +25,7 @@ const VisualHeader = () => {
       {/* Background Image */}
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-center"
-        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${cestaHeroImage})` }}
+        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${cestaHeroImage})` }}
       />
 
       {/* Content */}
@@ -34,7 +34,7 @@ const VisualHeader = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-black/60 backdrop-blur-sm rounded-2xl px-8 py-12 sm:px-12 sm:py-16"
+          className="bg-black/40 backdrop-blur-sm rounded-2xl px-8 py-12 sm:px-12 sm:py-16"
         >
           <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
             Experiencia Selecta
@@ -52,10 +52,10 @@ const VisualHeader = () => {
           >
             Descubre tu experiencia
           </motion.button>
-
-          {/* Separador blanco bajo el botón */}
-          <div className="mt-8 h-px bg-white/50 w-3/4 mx-auto" />
         </motion.div>
+
+        {/* Separador blanco bajo el botón - fuera del contenedor */}
+        <div className="mt-12 h-0.5 bg-white w-3/4 max-w-2xl mx-auto" />
       </div>
     </section>;
 };
