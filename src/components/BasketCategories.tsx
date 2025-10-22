@@ -193,7 +193,7 @@ const BasketCategories = () => {
         </motion.div>
 
         {/* Carrusel 3D Container */}
-        <div className="relative w-full max-w-4xl mx-auto h-[550px] md:h-[650px]" style={{ perspective: '2000px' }}>
+        <div className="relative w-full h-[550px] md:h-[650px] flex items-center justify-center" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
           <div className="relative w-full h-full flex items-center justify-center">
             {categories.map((category, index) => {
@@ -214,11 +214,14 @@ const BasketCategories = () => {
                     duration: 0.7,
                     ease: "easeInOut"
                   }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[65%] cursor-pointer"
+                  className="absolute w-[90%] sm:w-[80%] md:w-[65%] max-w-3xl cursor-pointer"
                   style={{
                     transformStyle: 'preserve-3d',
                     zIndex: position.zIndex,
-                    pointerEvents: isActive ? 'auto' : 'none'
+                    pointerEvents: isActive ? 'auto' : 'none',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)'
                   }}
                   onClick={() => isActive && handleCategoryClick(category.title)}
                 >
