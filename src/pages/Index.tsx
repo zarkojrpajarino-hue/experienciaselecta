@@ -33,7 +33,7 @@ import planDiferenteImg from "@/assets/beneficio-diferente-torre-pimientos.png";
 import cuandoDondeQuierasImg from "@/assets/nueva-seccion-03.jpg";
 import conocerEscucharImg from "@/assets/nueva-seccion-04-final.jpg";
 import momentosUnicosImg from "@/assets/nueva-seccion-05-final.jpg";
-import conversacionesProfundasImg from "@/assets/nueva-seccion-06-clean.jpg";
+import conversacionesProfundasImg from "@/assets/proposito-planes-clean.png";
 import alternativaAsequibleImg from "@/assets/beneficio-tiempo-enrollados.png";
 import valoresTablaIbericosImg from "@/assets/valores-tabla-ibericos-final.jpg";
 import valoresTostasAceiteImg from "@/assets/valores-tostas-aceite-final.jpg";
@@ -130,6 +130,7 @@ const Index = () => {
     image: planDiferenteImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#00BFFF",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             busca lo distinto,
@@ -142,6 +143,7 @@ const Index = () => {
     image: cuandoDondeQuierasImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#FFD700",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             pausa para vivir,
@@ -154,6 +156,7 @@ const Index = () => {
     image: conocerEscucharImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#ff1493",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             ver no es conocer,
@@ -166,6 +169,7 @@ const Index = () => {
     image: momentosUnicosImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#00BFFF",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             lo valioso lleva tiempo,
@@ -178,6 +182,7 @@ const Index = () => {
     image: conversacionesProfundasImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#FFD700",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             planes con propósito,
@@ -190,6 +195,7 @@ const Index = () => {
     image: alternativaAsequibleImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#ff1493",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             sobremesas reales,

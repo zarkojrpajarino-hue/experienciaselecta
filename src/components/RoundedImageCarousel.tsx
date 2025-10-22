@@ -8,6 +8,7 @@ interface SlideItem {
   title: string;
   text?: string;
   alt?: string;
+  navigationColor?: string;
 }
 
 interface RoundedImageCarouselProps {
@@ -36,21 +37,33 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
         <div className="w-full flex flex-col items-center justify-center py-4">
           <div className="px-6 max-w-4xl mb-4 text-center">
             <h3
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans font-bold tracking-wide text-white"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans font-bold tracking-wide text-black"
               style={{ textTransform: "none" }}
               dangerouslySetInnerHTML={{ __html: current.title }}
             />
             {current.text && (
-              <p className="mt-2 text-base md:text-lg font-work-sans text-white" style={{ textTransform: "none" }} dangerouslySetInnerHTML={{ __html: current.text }} />
+              <p className="mt-2 text-base md:text-lg font-work-sans text-black" style={{ textTransform: "none" }} dangerouslySetInnerHTML={{ __html: current.text }} />
             )}
           </div>
 
           {/* Nav */}
           <div className="flex gap-6">
-            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} className="p-0 bg-transparent border-0 text-white">
+            <motion.button 
+              whileHover={{ scale: 1.1 }} 
+              whileTap={{ scale: 0.9 }} 
+              onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} 
+              className="p-0 bg-transparent border-0"
+              style={{ color: current.navigationColor || '#000000' }}
+            >
               <ChevronUp className="w-6 h-6" />
             </motion.button>
-            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIndex((p) => (p + 1) % slides.length)} className="p-0 bg-transparent border-0 text-white">
+            <motion.button 
+              whileHover={{ scale: 1.1 }} 
+              whileTap={{ scale: 0.9 }} 
+              onClick={() => setIndex((p) => (p + 1) % slides.length)} 
+              className="p-0 bg-transparent border-0"
+              style={{ color: current.navigationColor || '#000000' }}
+            >
               <ChevronDown className="w-6 h-6" />
             </motion.button>
           </div>

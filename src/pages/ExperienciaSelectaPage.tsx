@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import PageNavigation from "@/components/PageNavigation";
 import CarouselSection from "@/components/CarouselSection";
-import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
+import experienciaGaleriaImg from "@/assets/experiencia-galeria-clean.png";
 import selectaJamonPizarraImg from "@/assets/selecta-jamon-pizarra-clean.png";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowUp } from "lucide-react";
@@ -12,7 +12,7 @@ const ExperienciaSelectaPage = () => {
 
   const experienciaSelectaSlides = [
     {
-      image: experienciaFamiliaCestaImg,
+      image: experienciaGaleriaImg,
       backgroundColor: "#FFFFFF",
       textColor: "#D4AF37",
       navigationColor: "#ff1493",
