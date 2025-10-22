@@ -69,7 +69,7 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#00BFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik mb-4 lowercase first-letter:uppercase">
             diferente.
           </h3>
           <p className="font-poppins lowercase first-letter:capitalize">
@@ -82,7 +82,7 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#FFD700",
     content: <>
-          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik mb-4 lowercase first-letter:uppercase">
             pausa.
           </h3>
           <p className="font-poppins lowercase first-letter:capitalize">
@@ -95,7 +95,7 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#ff1493",
     content: <>
-          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik mb-4 lowercase first-letter:uppercase">
             conocer.
           </h3>
           <p className="font-poppins lowercase first-letter:capitalize">
@@ -108,7 +108,7 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#00BFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik mb-4 lowercase first-letter:uppercase">
             valioso.
           </h3>
           <p className="font-poppins lowercase first-letter:capitalize">
@@ -121,7 +121,7 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#FFD700",
     content: <>
-          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik mb-4 lowercase first-letter:uppercase">
             propósito.
           </h3>
           <p className="font-poppins lowercase first-letter:capitalize">
@@ -134,7 +134,7 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#ff1493",
     content: <>
-          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik mb-4 lowercase first-letter:uppercase">
             sobremesas.
           </h3>
           <p className="font-poppins lowercase first-letter:capitalize">
