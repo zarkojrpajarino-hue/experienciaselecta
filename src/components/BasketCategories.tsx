@@ -169,7 +169,7 @@ const BasketCategories = () => {
     }
     return phrase;
   };
-  return <section id="recogida" className="pt-20 pb-10 relative overflow-hidden bg-black rounded-3xl">
+  return <section id="recogida" className="pt-20 pb-20 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -186,16 +186,16 @@ const BasketCategories = () => {
         type: "spring",
         stiffness: 50,
         damping: 15
-      }} className="text-center mb-8">
+      }} className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl mb-2 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
             Escoja su categoría.
           </h2>
         </motion.div>
 
         {/* Carrusel 3D Container */}
-        <div className="relative w-full max-w-7xl mx-auto h-[600px] md:h-[700px] flex items-center justify-center mt-4" style={{ perspective: '2000px' }}>
+        <div className="relative w-full max-w-4xl mx-auto h-[550px] md:h-[650px]" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full flex items-center justify-center">
             {categories.map((category, index) => {
               const position = getCardPosition(index);
               const isActive = (index - currentIndex + categories.length) % categories.length === 0;
@@ -214,7 +214,7 @@ const BasketCategories = () => {
                     duration: 0.7,
                     ease: "easeInOut"
                   }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] md:w-[70%] cursor-pointer"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[90%] sm:w-[80%] md:w-[65%] cursor-pointer"
                   style={{
                     transformStyle: 'preserve-3d',
                     zIndex: position.zIndex,
