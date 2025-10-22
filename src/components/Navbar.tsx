@@ -63,11 +63,23 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
     if (item.route) {
       navigate(item.route);
-      // Always scroll to top when navigating to a new page
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      const hash = item.route.split('#')[1];
+      if (hash) {
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) {
+            el.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+          }
+        }, 100);
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
     } else {
       // If we're not on the homepage, navigate there first
       if (location.pathname !== '/') {
@@ -99,7 +111,7 @@ const Navbar = () => {
   }, {
     label: "Sobre nosotros.",
     id: "sobre-nosotros",
-    route: "/sobre-nosotros-detalle"
+    route: "/sobre-nosotros-detalle#carousel-section"
   }, {
     label: "Nuestros clientes.",
     id: "nuestros-clientes",
@@ -121,6 +133,7 @@ const Navbar = () => {
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
   };
+  if (location.pathname !== '/') { return null; }
   return <motion.nav initial={{
     y: -100,
     opacity: 0
