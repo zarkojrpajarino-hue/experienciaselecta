@@ -130,12 +130,12 @@ const Index = () => {
     image: planDiferenteImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
-    navigationColor: "#00BFFF",
+    navigationColor: "#FFFFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-poppins font-bold mb-4 lowercase first-letter:uppercase">
             busca lo distinto.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             <span className="font-bold" style={{ color: '#00BFFF' }}>diferente</span> es <span className="font-bold" style={{ color: '#00BFFF' }}>atreverse</span>.
           </p>
         </>
@@ -143,12 +143,12 @@ const Index = () => {
     image: cuandoDondeQuierasImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
-    navigationColor: "#FFD700",
+    navigationColor: "#FFFFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-poppins font-bold mb-4 lowercase first-letter:uppercase">
             pausa para vivir.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             <span className="font-bold" style={{ color: '#FFD700' }}>pausa</span> es <span className="font-bold" style={{ color: '#FFD700' }}>vivir</span>.
           </p>
         </>
@@ -156,12 +156,12 @@ const Index = () => {
     image: conocerEscucharImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
-    navigationColor: "#ff1493",
+    navigationColor: "#FFFFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-poppins font-bold mb-4 lowercase first-letter:uppercase">
             ver no es conocer.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             <span className="font-bold" style={{ color: '#ff1493' }}>conocer es</span> <span className="font-bold" style={{ color: '#ff1493' }}>escuchar</span>.
           </p>
         </>
@@ -169,12 +169,12 @@ const Index = () => {
     image: momentosUnicosImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
-    navigationColor: "#00BFFF",
+    navigationColor: "#FFFFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-poppins font-bold mb-4 lowercase first-letter:uppercase">
             lo valioso lleva tiempo.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             lo <span className="font-bold" style={{ color: '#00BFFF' }}>bueno</span> necesita <span className="font-bold" style={{ color: '#00BFFF' }}>tiempo</span>.
           </p>
         </>
@@ -182,12 +182,12 @@ const Index = () => {
     image: conversacionesProfundasImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
-    navigationColor: "#FFD700",
+    navigationColor: "#FFFFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-poppins font-bold mb-4 lowercase first-letter:uppercase">
             planes con propósito.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             falta <span className="font-bold" style={{ color: '#FFD700' }}>propósito</span>.
           </p>
         </>
@@ -195,12 +195,12 @@ const Index = () => {
     image: alternativaAsequibleImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
-    navigationColor: "#ff1493",
+    navigationColor: "#FFFFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-poppins font-bold mb-4 lowercase first-letter:uppercase">
             sobremesas reales.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             ocupar no es <span className="font-bold" style={{ color: '#ff1493' }}>disfrutar</span>.
           </p>
         </>
@@ -399,7 +399,7 @@ const Index = () => {
             <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
               <span style={{ color: "#FFD700" }}>Experiencia</span> <span style={{ color: "#FFD700" }}>Selecta</span>.
             </h1>
-            <p className="text-sm md:text-base font-bold text-white max-w-2xl mx-auto mb-8">
+            <p className="text-sm md:text-base font-poppins font-bold text-white max-w-2xl mx-auto mb-8">
               En una sociedad en la que las <span style={{ color: "#FFD700" }}>pantallas</span> nos conectan con todos pero nos <span style={{ color: "#FFD700" }}>alejan</span> de nosotros mismos, donde vemos todo pero no <span style={{ color: "#FFD700" }}>sentimos</span> nada.
             </p>
           </motion.div>

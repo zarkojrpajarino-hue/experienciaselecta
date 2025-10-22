@@ -111,7 +111,7 @@ const Navbar = () => {
   }, {
     label: "Sobre nosotros.",
     id: "sobre-nosotros",
-    route: "/sobre-nosotros-detalle#carousel-section"
+    route: "/sobre-nosotros-detalle"
   }, {
     label: "Nuestros clientes.",
     id: "nuestros-clientes",
