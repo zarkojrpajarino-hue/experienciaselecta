@@ -185,7 +185,7 @@ const BasketCategories = () => {
                     <img
                       src={category.basketImage}
                       alt={`${category.title} cestas`}
-                      className="w-full h-auto object-cover rounded-lg"
+                      className="w-full h-auto object-contain rounded-lg"
                     />
                   </DialogContent>
                 </Dialog>
@@ -247,7 +247,7 @@ const BasketCategories = () => {
                     <img
                       src={category.basketImage}
                       alt={`${category.title} cestas`}
-                      className="w-full h-auto object-cover rounded-lg"
+                      className="w-full h-auto object-contain rounded-lg"
                     />
                   </DialogContent>
                 </Dialog>

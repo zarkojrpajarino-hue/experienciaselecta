@@ -302,7 +302,7 @@ const TestimonialsPage = () => {
               <X className="w-6 h-6" />
             </motion.div>
           </Button>
-          <img src={testimonials[currentTestimonial].image} alt={`Experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-auto max-h-[90vh] object-cover rounded-3xl" />
+          <img src={testimonials[currentTestimonial].image} alt={`Experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-auto max-h-[90vh] object-contain rounded-3xl" />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
             <h3 className="font-cinzel font-bold text-gold text-xl text-center">
               {testimonials[currentTestimonial].experience}

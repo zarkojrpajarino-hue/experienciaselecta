@@ -106,7 +106,7 @@ const BasketCTASection = ({ basketImage, basketName, position = "left", arrowCol
           <img 
             src={basketImage} 
             alt={basketName} 
-            className="w-full h-auto max-h-[90vh] object-cover rounded-3xl" 
+            className="w-full h-auto max-h-[90vh] object-contain rounded-3xl" 
           />
         </DialogContent>
       </Dialog>
