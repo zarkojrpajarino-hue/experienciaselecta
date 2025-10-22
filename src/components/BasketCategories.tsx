@@ -167,7 +167,7 @@ const BasketCategories = () => {
             {/* Línea separatoria blanca si no es el primer elemento */}
             {index > 0 && (
               <div className="mb-8 sm:mb-10 -mx-4 sm:-mx-6 lg:-mx-8">
-                <div className="w-screen h-[4px] bg-white"></div>
+                <div className="w-screen h-[6px] bg-white"></div>
               </div>
             )}
 
@@ -227,26 +227,11 @@ const BasketCategories = () => {
                     </div>
 
                     {/* Inspirational phrase - Below the card */}
-                    <div className="absolute -bottom-6 left-0 right-0 flex justify-center">
-                      <div className="relative inline-block px-8 py-3">
-                        {/* Fondo con efecto brocha - pincelada irregular */}
-                        <div className="absolute inset-0 bg-white" style={{ 
-                          transform: 'skew(-3deg, 2deg)',
-                          filter: 'blur(3px)',
-                          borderRadius: '50% 40% 60% 45%'
-                        }}></div>
-                        <div className="absolute inset-0 bg-white opacity-80" style={{ 
-                          transform: 'skew(2deg, -1deg)',
-                          filter: 'blur(2px)',
-                          borderRadius: '45% 55% 50% 60%'
-                        }}></div>
-                        <p 
-                          className="relative text-base sm:text-lg md:text-xl font-inter font-bold text-black text-center"
-                          style={{ textTransform: 'none' }}
-                          dangerouslySetInnerHTML={{ __html: renderHighlightedPhrase(category.inspirationalPhrase, '#FFD700') }}
-                        />
-                      </div>
-                    </div>
+                    <p 
+                      className="absolute -bottom-6 left-0 right-0 text-base sm:text-lg md:text-xl font-inter font-bold text-white text-center"
+                      style={{ textTransform: 'none' }}
+                      dangerouslySetInnerHTML={{ __html: renderHighlightedPhrase(category.inspirationalPhrase, '#FFD700') }}
+                    />
 
                     {/* Arrow button - Bottom right corner - REMOVED */}
                   </div>
