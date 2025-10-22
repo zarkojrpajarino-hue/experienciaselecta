@@ -116,25 +116,6 @@ const NuestrosClientesPage = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="relative">
-                {/* Navigation arrows - moved to top */}
-                <div className="flex justify-center gap-4 mb-8">
-                  <motion.button whileHover={{
-                  scale: 1.1
-                }} whileTap={{
-                  scale: 0.9
-                }} onClick={prevTestimonial} className="flex items-center justify-center w-12 h-12 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
-                    <ChevronLeft className="w-6 h-6" />
-                  </motion.button>
-                  
-                  <motion.button whileHover={{
-                  scale: 1.1
-                }} whileTap={{
-                  scale: 0.9
-                }} onClick={nextTestimonial} className="flex items-center justify-center w-12 h-12 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
-                    <ChevronRight className="w-6 h-6" />
-                  </motion.button>
-                </div>
-
                 {/* Main testimonial */}
                 <motion.div key={currentTestimonial} initial={{
                 opacity: 0,
@@ -148,7 +129,59 @@ const NuestrosClientesPage = () => {
               }} transition={{
                 duration: 0.5
               }} className="flex flex-col gap-8 items-center">
-                  {/* Testimonial content */}
+                  
+                  {/* 1. Experience image - FIRST */}
+                  <motion.div initial={{
+                  opacity: 0,
+                  scale: 0.9
+                }} animate={{
+                  opacity: 1,
+                  scale: 1
+                }} transition={{
+                  delay: 0.3,
+                  duration: 0.6
+                }} className="relative cursor-pointer group w-full max-w-3xl" onClick={() => setIsImageOpen(true)}>
+                    <div className="rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-gold/50 transition-shadow duration-300">
+                      <img src={testimonials[currentTestimonial].image} alt={`experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-64 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-300 rounded-3xl" />
+                    </div>
+                    
+                    {/* Experience label below image */}
+                    <motion.div initial={{
+                    y: 20,
+                    opacity: 0
+                  }} animate={{
+                    y: 0,
+                    opacity: 1
+                  }} transition={{
+                    delay: 0.7,
+                    duration: 0.5
+                  }} className="mt-4 text-center">
+                      <h3 className="font-work-sans font-bold text-white text-lg lowercase first-letter:uppercase">
+                        experiencia: <span className="uppercase">{testimonials[currentTestimonial].experience}</span>
+                      </h3>
+                    </motion.div>
+                  </motion.div>
+
+                  {/* 2. Navigation arrows - SECOND (IN THE MIDDLE) */}
+                  <div className="flex justify-center gap-4">
+                    <motion.button whileHover={{
+                    scale: 1.1
+                  }} whileTap={{
+                    scale: 0.9
+                  }} onClick={prevTestimonial} className="flex items-center justify-center w-12 h-12 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
+                      <ChevronLeft className="w-6 h-6" />
+                    </motion.button>
+                    
+                    <motion.button whileHover={{
+                    scale: 1.1
+                  }} whileTap={{
+                    scale: 0.9
+                  }} onClick={nextTestimonial} className="flex items-center justify-center w-12 h-12 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
+                      <ChevronRight className="w-6 h-6" />
+                    </motion.button>
+                  </div>
+
+                  {/* 3. Testimonial content - THIRD (AT THE BOTTOM) */}
                   <div className="relative w-full max-w-3xl">
                     <motion.div initial={{
                     scale: 0.8,
@@ -213,38 +246,6 @@ const NuestrosClientesPage = () => {
                       </div>
                     </motion.div>
                   </div>
-
-                  {/* Experience image */}
-                  <motion.div initial={{
-                  opacity: 0,
-                  scale: 0.9
-                }} animate={{
-                  opacity: 1,
-                  scale: 1
-                }} transition={{
-                  delay: 0.3,
-                  duration: 0.6
-                }} className="relative cursor-pointer group w-full max-w-3xl" onClick={() => setIsImageOpen(true)}>
-                    <div className="rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-gold/50 transition-shadow duration-300">
-                      <img src={testimonials[currentTestimonial].image} alt={`experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-64 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-300 rounded-3xl" />
-                    </div>
-                    
-                    {/* Experience label below image */}
-                    <motion.div initial={{
-                    y: 20,
-                    opacity: 0
-                  }} animate={{
-                    y: 0,
-                    opacity: 1
-                  }} transition={{
-                    delay: 0.7,
-                    duration: 0.5
-                  }} className="mt-4 text-center">
-                      <h3 className="font-work-sans font-bold text-white text-lg lowercase first-letter:uppercase">
-                        experiencia: <span className="uppercase">{testimonials[currentTestimonial].experience}</span>
-                      </h3>
-                    </motion.div>
-                  </motion.div>
                 </motion.div>
               </div>
             </div>
