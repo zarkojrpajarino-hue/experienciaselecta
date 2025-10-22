@@ -391,7 +391,7 @@ const Index = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
-              <span style={{ color: "#FFD700" }}>experiencia</span> selecta.
+              <span style={{ color: "#FFD700" }}>Experiencia</span> <span style={{ color: "#FFD700" }}>Selecta</span>.
             </h1>
             <p className="text-sm md:text-base font-bold text-white max-w-2xl mx-auto mb-8">
               en una sociedad en la que las <span style={{ color: "#FFD700" }}>pantallas</span> nos conectan con todos pero nos <span style={{ color: "#FFD700" }}>alejan</span> de nosotros mismos, donde vemos todo pero no <span style={{ color: "#FFD700" }}>sentimos</span> nada.
@@ -403,13 +403,15 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-16">
           <div className="flex flex-col items-center gap-6">
             <div 
-              className="w-full h-[35vh] md:h-[40vh] overflow-hidden cursor-pointer bg-black rounded-3xl"
+              className="w-full h-[35vh] md:h-[40vh] overflow-hidden cursor-pointer bg-black"
               onClick={() => setIsImageOpen(true)}
+              style={{ borderRadius: "1.5rem" }}
             >
               <img 
                 src={cestaHeroImage}
                 alt="Cesta de experiencia"
-                className="w-full h-full object-contain rounded-3xl"
+                className="w-full h-full object-cover"
+                style={{ borderRadius: "1.5rem" }}
               />
             </div>
             
@@ -420,9 +422,9 @@ const Index = () => {
                 const element = document.getElementById('categoria-cestas');
                 element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
-              className="text-white hover:text-[#FFD700] px-8 py-4 font-work-sans font-semibold text-base md:text-lg transition-all duration-300 flex items-center gap-2"
+              className="text-white hover:text-[#FFD700] px-8 py-4 font-work-sans font-semibold text-base md:text-lg transition-all duration-300 flex items-center gap-2 uppercase"
             >
-              descubre tu experiencia.
+              ¡DESCUBRE TU EXPERIENCIA!
               <ChevronDown className="w-5 h-5" />
             </motion.button>
           </div>
