@@ -46,38 +46,38 @@ const FAQSection = () => {
       image: picnicProductosIbericos
     },
     {
-      question: "⏱️ ¿Cuánto tiempo dura una experiencia típica?",
-      answer: "la duración promedio es de 2-4 horas, pero esto varía según el grupo y las dinámicas que elijan. algunas experiencias íntimas pueden durar menos, mientras que las familiares o grupales pueden extenderse toda una tarde. lo importante es que cada uno vaya a su ritmo.",
+      question: "¿Cuánto tiempo dura una experiencia típica?",
+      answer: "La duración promedio es de 2-4 horas, pero esto varía según el grupo y las dinámicas que elijan, algunas experiencias íntimas pueden durar menos, mientras que las familiares o grupales pueden extenderse toda una tarde, lo importante es que cada uno vaya a su ritmo.",
       image: momentosUnicos
     },
     {
-      question: "🤝 ¿Es apto para personas que no se conocen?",
-      answer: "¡absolutamente! de hecho, es uno de nuestros puntos fuertes. tenemos cestas específicamente diseñadas para primeros encuentros y desconocidos. nuestras dinámicas están pensadas para romper el hielo de forma natural y crear conexiones auténticas desde el primer momento.",
+      question: "¿Es apto para personas que no se conocen?",
+      answer: "Absolutamente, de hecho es uno de nuestros puntos fuertes, tenemos cestas específicamente diseñadas para primeros encuentros y desconocidos, nuestras dinámicas están pensadas para romper el hielo de forma natural y crear conexiones auténticas desde el primer momento.",
       image: primerEncuentro
     },
     {
-      question: "👥 ¿Hay algún límite de edad o perfil específico?",
-      answer: "nuestras experiencias están diseñadas para mayores de 16 años y no hay límite superior. tenemos dinámicas adaptadas para diferentes generaciones, desde jóvenes universitarios hasta abuelos. la curiosidad y las ganas de conectar son los únicos requisitos.",
+      question: "¿Hay algún límite de edad o perfil específico?",
+      answer: "Nuestras experiencias están diseñadas para mayores de 16 años y no hay límite superior, tenemos dinámicas adaptadas para diferentes generaciones, desde jóvenes universitarios hasta abuelos, la curiosidad y las ganas de conectar son los únicos requisitos.",
       image: paraCualquiera
     },
     {
-      question: "💯 ¿Qué pasa si la experiencia no nos gusta?",
-      answer: "ofrecemos garantía de satisfacción completa. si por cualquier motivo no quedas satisfecho con tu experiencia, te devolvemos el 100% de tu dinero sin preguntas. sin embargo, en más de 2 años, menos del 2% de nuestros clientes han solicitado reembolso.",
+      question: "¿Qué pasa si la experiencia no nos gusta?",
+      answer: "Ofrecemos garantía de satisfacción completa, si por cualquier motivo no quedas satisfecho con tu experiencia, te devolvemos el 100% de tu dinero sin preguntas, sin embargo en más de 2 años, menos del 2% de nuestros clientes han solicitado reembolso.",
       image: disfrutaRecuerdos
     },
     {
-      question: "✨ ¿Cómo aseguran la calidad de los productos ibéricos?",
-      answer: "trabajamos directamente con productores seleccionados de extremadura y andalucía, todos con denominación de origen. cada producto pasa por nuestro control de calidad y se envía en condiciones óptimas de conservación. incluimos certificados de autenticidad en cada cesta.",
+      question: "¿Cómo aseguran la calidad de los productos ibéricos?",
+      answer: "Trabajamos directamente con productores seleccionados de Extremadura y Andalucía, todos con denominación de origen, cada producto pasa por nuestro control de calidad y se envía en condiciones óptimas de conservación, incluimos certificados de autenticidad en cada cesta.",
       image: jamonIbericoTraditional
     },
     {
-      question: "🎉 ¿Se puede personalizar la experiencia para ocasiones especiales?",
-      answer: "¡por supuesto! ofrecemos personalizaciones para aniversarios, cumpleaños, despedidas, eventos corporativos y más. podemos adaptar las dinámicas, incluir elementos temáticos y crear experiencias completamente únicas para tu ocasión especial.",
+      question: "¿Se puede personalizar la experiencia para ocasiones especiales?",
+      answer: "Por supuesto, ofrecemos personalizaciones para aniversarios, cumpleaños, despedidas, eventos corporativos y más, podemos adaptar las dinámicas, incluir elementos temáticos y crear experiencias completamente únicas para tu ocasión especial.",
       image: celebracionIberica
     },
     {
-      question: "🌍 ¿Hacen envíos internacionales?",
-      answer: "actualmente enviamos a toda españa y portugal. para otros países europeos, estamos trabajando en expandir nuestro servicio. si estás interesado en recibir nuestras experiencias en otro país, contáctanos y te informaremos sobre disponibilidad.",
+      question: "¿Hacen envíos internacionales?",
+      answer: "Actualmente enviamos a toda España y Portugal, para otros países europeos estamos trabajando en expandir nuestro servicio, si estás interesado en recibir nuestras experiencias en otro país contáctanos y te informaremos sobre disponibilidad.",
       image: montanaMar
     }
   ];
