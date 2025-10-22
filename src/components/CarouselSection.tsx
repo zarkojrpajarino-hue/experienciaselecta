@@ -93,33 +93,31 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
         </motion.div>
 
         {/* Image Section */}
-        <div 
-          className="w-full h-[35vh] md:h-[45vh] relative overflow-hidden cursor-pointer rounded-3xl" 
-          style={{ 
-            backgroundColor: currentSlide.backgroundColor || backgroundColor, 
-            margin: 0, 
-            padding: 0
-          }}
-          onClick={() => setIsImageOpen(true)}
-        >
-          {slides.map((slide, index) => (
-            <div
-              key={`slide-${index}`}
-              className="absolute inset-0 transition-opacity duration-700 ease-in-out rounded-3xl"
-              style={{
-                backgroundImage: `url(${slide.image})`,
-                backgroundSize: 'contain',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                opacity: currentIndex === index ? 1 : 0,
-                pointerEvents: currentIndex === index ? 'auto' : 'none',
-                margin: 0,
-                padding: 0,
-                transitionProperty: 'opacity, transform',
-                transitionDuration: '700ms, 500ms'
-              }}
-            />
-          ))}
+        <div className="w-full px-4 py-2">
+          <div 
+            className="w-full h-[35vh] md:h-[45vh] relative overflow-hidden cursor-pointer rounded-3xl shadow-2xl border-4 border-white/10" 
+            style={{ 
+              backgroundColor: currentSlide.backgroundColor || backgroundColor
+            }}
+            onClick={() => setIsImageOpen(true)}
+          >
+            {slides.map((slide, index) => (
+              <div
+                key={`slide-${index}`}
+                className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+                style={{
+                  backgroundImage: `url(${slide.image})`,
+                  backgroundSize: 'contain',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  opacity: currentIndex === index ? 1 : 0,
+                  pointerEvents: currentIndex === index ? 'auto' : 'none',
+                  transitionProperty: 'opacity, transform',
+                  transitionDuration: '700ms, 500ms'
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
