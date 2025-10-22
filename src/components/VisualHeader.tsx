@@ -42,7 +42,7 @@ const VisualHeader = () => {
           </h1>
           
           <p className="font-poppins text-lg sm:text-xl md:text-2xl text-black mb-8 max-w-3xl mx-auto font-bold">
-            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>hablar</span>, <span style={{ color: '#FFD700' }}>conocer</span> y <span style={{ color: '#FFD700' }}>reír</span> con quién quieras
+            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>hablar</span>, <span style={{ color: '#FFD700' }}>conocer</span> y <span style={{ color: '#FFD700' }}>reír</span>.
           </p>
 
           <motion.button 
@@ -54,7 +54,7 @@ const VisualHeader = () => {
               element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
           >
-            Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span> <ChevronDown className="inline-block ml-2 w-5 h-5" />
+            ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>! <ChevronDown className="inline-block ml-2 w-5 h-5" />
           </motion.button>
         </motion.div>
       </div>
