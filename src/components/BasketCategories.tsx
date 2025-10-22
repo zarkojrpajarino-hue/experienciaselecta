@@ -214,7 +214,7 @@ const BasketCategories = () => {
                     duration: 0.7,
                     ease: "easeInOut"
                   }}
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[90%] sm:w-[80%] md:w-[65%] cursor-pointer"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[65%] cursor-pointer"
                   style={{
                     transformStyle: 'preserve-3d',
                     zIndex: position.zIndex,
