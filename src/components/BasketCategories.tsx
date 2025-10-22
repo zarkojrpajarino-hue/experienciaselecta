@@ -29,7 +29,8 @@ const BasketCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
-  const [sheetKey, setSheetKey] = useState(0); // Para forzar re-render del Sheet
+  const [sheetKey, setSheetKey] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Determine background based on group size
   const getBackgroundImage = () => {
@@ -107,6 +108,67 @@ const BasketCategories = () => {
     arrowColor: "#FFD700",
     cestaColor: "#FFD700"
   }];
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % categories.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + categories.length) % categories.length);
+  };
+
+  const getCardPosition = (index: number) => {
+    const diff = (index - currentIndex + categories.length) % categories.length;
+    
+    if (diff === 0) {
+      // Tarjeta central (activa)
+      return {
+        x: 0,
+        z: 0,
+        rotateY: 0,
+        scale: 1,
+        opacity: 1,
+        zIndex: 30
+      };
+    } else if (diff === 1) {
+      // Tarjeta derecha
+      return {
+        x: '60%',
+        z: -400,
+        rotateY: -45,
+        scale: 0.75,
+        opacity: 0.6,
+        zIndex: 10
+      };
+    } else {
+      // Tarjeta izquierda
+      return {
+        x: '-60%',
+        z: -400,
+        rotateY: 45,
+        scale: 0.75,
+        opacity: 0.6,
+        zIndex: 10
+      };
+    }
+  };
+
+  const renderHighlightedPhrase = (phrase: string, title: string, color: string) => {
+    if (title === "Pareja") {
+      return phrase.replace(/experiencia|íntima|juntos/g, (match) => 
+        `<span style="color: ${color}">${match}</span>`
+      );
+    } else if (title === "Amigos") {
+      return phrase.replace(/planes|crean|recuerdos/g, (match) => 
+        `<span style="color: ${color}">${match}</span>`
+      );
+    } else if (title === "Familia") {
+      return phrase.replace(/sabores|unen/g, (match) => 
+        `<span style="color: ${color}">${match}</span>`
+      );
+    }
+    return phrase;
+  };
   return <section id="recogida" className="pt-20 pb-10 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
@@ -130,88 +192,54 @@ const BasketCategories = () => {
           </h2>
         </motion.div>
 
-        <div className="max-w-6xl mx-auto flex flex-col gap-8 sm:gap-10 mt-6">
-          {categories.sort((a, b) => a.order - b.order).map((category, index) => {
-          const isAmigos = category.title === "Amigos";
-          
-          // Función para resaltar palabras importantes
-          const renderHighlightedPhrase = (phrase: string, color: string) => {
-            if (category.title === "Pareja") {
-              return phrase.replace(/experiencia|íntima|disfrutar|juntos/g, (match) => 
-                `<span style="color: ${color}">${match}</span>`
-              );
-            } else if (category.title === "Amigos") {
-              return phrase.replace(/planes|convierten|recuerdos/g, (match) => 
-                `<span style="color: ${color}">${match}</span>`
-              );
-            } else if (category.title === "Familia") {
-              return phrase.replace(/sabores|unen|generaciones/g, (match) => 
-                `<span style="color: ${color}">${match}</span>`
-              );
-            }
-            return phrase;
-          };
-          
-          return <motion.div 
-            key={category.id} 
-            initial={{ opacity: 0, y: 50 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            transition={{
-              duration: 0.6,
-              delay: index * 0.2,
-              type: "spring",
-              stiffness: 100
-            }} 
-            className="relative"
-          >
-            {/* Línea separatoria blanca si no es el primer elemento */}
-            {index > 0 && (
-              <div className="mb-8 sm:mb-10 -mx-4 sm:-mx-6 lg:-mx-8">
-                <div className="w-screen h-[6px] bg-white"></div>
-              </div>
-            )}
+        {/* Carrusel 3D Container */}
+        <div className="relative w-full h-[600px] md:h-[700px] flex items-center justify-center" style={{ perspective: '2000px' }}>
+          {/* Tarjetas en carrusel 3D */}
+          <div className="relative w-full h-full">
+            {categories.map((category, index) => {
+              const position = getCardPosition(index);
+              const isActive = (index - currentIndex + categories.length) % categories.length === 0;
 
-            {/* Title Card + Image Card Side by Side - Always side by side on all devices */}
-            <div className={`grid grid-cols-2 items-center ${
-              isAmigos ? 'gap-2 sm:gap-4' : 'gap-6 sm:gap-8 md:gap-12'
-            }`}>
-              
-              {/* Image Card - Clickable - Para Amigos va primero */}
-              {isAmigos && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className="rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-2xl transition-shadow">
+              return (
+                <motion.div
+                  key={category.id}
+                  animate={{
+                    x: position.x,
+                    z: position.z,
+                    rotateY: position.rotateY,
+                    scale: position.scale,
+                    opacity: position.opacity
+                  }}
+                  transition={{
+                    duration: 0.7,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] md:w-[70%] cursor-pointer"
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    zIndex: position.zIndex,
+                    pointerEvents: isActive ? 'auto' : 'none'
+                  }}
+                  onClick={() => isActive && handleCategoryClick(category.title)}
+                >
+                  {/* Card Container */}
+                  <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
+                    {/* Imagen */}
+                    <div className="w-full h-[250px] md:h-[350px] mb-6 rounded-3xl overflow-hidden">
                       <img
                         src={category.basketImage}
                         alt={`${category.title} cestas`}
-                        className="w-full h-32 sm:h-52 md:h-64 object-cover rounded-3xl"
+                        className="w-full h-full object-cover"
                       />
                     </div>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl w-full p-2 bg-white border-2 border-gray-200">
-                    <img
-                      src={category.basketImage}
-                      alt={`${category.title} cestas`}
-                      className="w-full h-auto object-contain rounded-3xl"
-                    />
-                  </DialogContent>
-                </Dialog>
-              )}
-              
-              {/* Content Card - Always visible */}
-              <div>
-                <div className="mt-2 mb-12">
-                  <div 
-                    className="relative cursor-pointer transition-opacity h-32"
-                    onClick={() => handleCategoryClick(category.title)}
-                  >
-                    {/* Title - Horizontal letters in center with arrow */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <h3 className="font-bebas font-bold text-lg sm:text-3xl text-white whitespace-nowrap tracking-[0.2em]" style={{ textTransform: 'none' }}>
+
+                    {/* Título y Flecha */}
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <h3 className="font-bebas font-bold text-3xl md:text-5xl text-white whitespace-nowrap tracking-[0.2em]">
                         {category.title}.
                       </h3>
                       <svg 
-                        className="w-5 h-5 sm:w-6 sm:h-6 font-bold flex-shrink-0"
+                        className="w-7 h-7 md:w-9 md:h-9 flex-shrink-0"
                         fill="none" 
                         stroke="currentColor" 
                         viewBox="0 0 24 24"
@@ -226,42 +254,37 @@ const BasketCategories = () => {
                       </svg>
                     </div>
 
-                    {/* Inspirational phrase - Below the card */}
+                    {/* Frase inspiracional */}
                     <p 
-                      className="absolute -bottom-6 left-0 right-0 text-base sm:text-lg md:text-xl font-inter font-bold text-white text-center"
-                      style={{ textTransform: 'none' }}
-                      dangerouslySetInnerHTML={{ __html: renderHighlightedPhrase(category.inspirationalPhrase, '#FFD700') }}
+                      className="text-lg md:text-2xl font-inter font-bold text-white text-center"
+                      dangerouslySetInnerHTML={{ 
+                        __html: renderHighlightedPhrase(category.inspirationalPhrase, category.title, category.highlightColor) 
+                      }}
                     />
-
-                    {/* Arrow button - Bottom right corner - REMOVED */}
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              );
+            })}
+          </div>
 
-              {/* Image Card - Clickable - Para otras categorías va después */}
-              {!isAmigos && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className="rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-2xl transition-shadow">
-                      <img
-                        src={category.basketImage}
-                        alt={`${category.title} cestas`}
-                        className="w-full h-32 sm:h-52 md:h-64 object-cover rounded-3xl"
-                      />
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl w-full p-2 bg-white border-2 border-gray-200">
-                    <img
-                      src={category.basketImage}
-                      alt={`${category.title} cestas`}
-                      className="w-full h-auto object-contain rounded-3xl"
-                    />
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
-          </motion.div>;
-        })}
+          {/* Botones de navegación */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-300"
+          >
+            <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-300"
+          >
+            <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
 
