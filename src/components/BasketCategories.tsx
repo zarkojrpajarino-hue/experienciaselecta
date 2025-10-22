@@ -186,14 +186,14 @@ const BasketCategories = () => {
         type: "spring",
         stiffness: 50,
         damping: 15
-      }} className="text-center mb-12 sm:mb-16">
+      }} className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl mb-2 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
             Escoja su categoría.
           </h2>
         </motion.div>
 
         {/* Carrusel 3D Container */}
-        <div className="relative w-full h-[600px] md:h-[700px] flex items-center justify-center" style={{ perspective: '2000px' }}>
+        <div className="relative w-full max-w-7xl mx-auto h-[600px] md:h-[700px] flex items-center justify-center mt-4" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
           <div className="relative w-full h-full">
             {categories.map((category, index) => {
