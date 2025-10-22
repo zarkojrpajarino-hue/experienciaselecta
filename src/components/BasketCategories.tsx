@@ -201,69 +201,65 @@ const BasketCategories = () => {
               const isActive = (index - currentIndex + categories.length) % categories.length === 0;
 
               return (
-                <motion.div
+                <div
                   key={category.id}
-                  animate={{
-                    x: position.x,
-                    z: position.z,
-                    rotateY: position.rotateY,
-                    scale: position.scale,
-                    opacity: position.opacity
-                  }}
-                  transition={{
-                    duration: 0.7,
-                    ease: "easeInOut"
-                  }}
-                  className="absolute left-1/2 top-1/2 w-[90%] sm:w-[80%] md:w-[65%] max-w-3xl cursor-pointer"
-                  style={{
-                    transformStyle: 'preserve-3d',
-                    zIndex: position.zIndex,
-                    pointerEvents: isActive ? 'auto' : 'none',
-                    transform: 'translate(-50%, -50%)'
-                  }}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[65%] max-w-3xl"
+                  style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
                   onClick={() => isActive && handleCategoryClick(category.title)}
                 >
-                  {/* Card Container */}
-                  <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
-                    {/* Imagen */}
-                    <div className="w-full h-[250px] md:h-[350px] mb-6 rounded-3xl overflow-hidden">
-                      <img
-                        src={category.basketImage}
-                        alt={`${category.title} cestas`}
-                        className="w-full h-full object-cover"
+                  <motion.div
+                    animate={{
+                      x: position.x,
+                      z: position.z,
+                      rotateY: position.rotateY,
+                      scale: position.scale,
+                      opacity: position.opacity
+                    }}
+                    transition={{ duration: 0.7, ease: 'easeInOut' }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    {/* Card Container */}
+                    <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
+                      {/* Imagen */}
+                      <div className="w-full h-[250px] md:h-[350px] mb-6 rounded-3xl overflow-hidden">
+                        <img
+                          src={category.basketImage}
+                          alt={`${category.title} cestas`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      {/* Título y Flecha */}
+                      <div className="flex items-center justify-center gap-3 mb-4">
+                        <h3 className="font-bebas font-bold text-3xl md:text-5xl text-white whitespace-nowrap tracking-[0.2em]">
+                          {category.title}.
+                        </h3>
+                        <svg 
+                          className="w-7 h-7 md:w-9 md:h-9 flex-shrink-0"
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                          strokeWidth={3}
+                          style={{ color: category.arrowColor }}
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            d="M13 7l5 5m0 0l-5 5m5-5H6" 
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Frase inspiracional */}
+                      <p 
+                        className="text-lg md:text-2xl font-inter font-bold text-white text-center"
+                        dangerouslySetInnerHTML={{ 
+                          __html: renderHighlightedPhrase(category.inspirationalPhrase, category.title, category.highlightColor) 
+                        }}
                       />
                     </div>
-
-                    {/* Título y Flecha */}
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                      <h3 className="font-bebas font-bold text-3xl md:text-5xl text-white whitespace-nowrap tracking-[0.2em]">
-                        {category.title}.
-                      </h3>
-                      <svg 
-                        className="w-7 h-7 md:w-9 md:h-9 flex-shrink-0"
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                        strokeWidth={3}
-                        style={{ color: category.arrowColor }}
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          d="M13 7l5 5m0 0l-5 5m5-5H6" 
-                        />
-                      </svg>
-                    </div>
-
-                    {/* Frase inspiracional */}
-                    <p 
-                      className="text-lg md:text-2xl font-inter font-bold text-white text-center"
-                      dangerouslySetInnerHTML={{ 
-                        __html: renderHighlightedPhrase(category.inspirationalPhrase, category.title, category.highlightColor) 
-                      }}
-                    />
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </div>
               );
             })}
           </div>
