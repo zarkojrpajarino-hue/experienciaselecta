@@ -85,14 +85,14 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
         </div>
 
         {/* Image */}
-        <div className="w-full max-w-3xl md:max-w-6xl mx-auto h-[35vh] md:h-[50vh] relative flex items-center justify-center rounded-[2rem]">
+        <div className="w-full max-w-3xl md:max-w-6xl mx-auto h-[35vh] md:h-[50vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden">
           {slides.map((s, i) => (
             <motion.div
               key={i}
               initial={false}
               animate={{ opacity: index === i ? 1 : 0 }}
               transition={{ duration: 0.6 }}
-              className="absolute inset-0 cursor-zoom-in"
+              className="absolute inset-0 cursor-zoom-in rounded-[2rem] overflow-hidden"
               style={{ pointerEvents: index === i ? "auto" : "none" }}
               onClick={() => setOpen(true)}
             >
