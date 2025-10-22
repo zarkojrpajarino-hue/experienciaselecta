@@ -107,7 +107,7 @@ const BasketCategories = () => {
     arrowColor: "#FFD700",
     cestaColor: "#FFD700"
   }];
-  return <section id="recogida" className="pt-20 pb-10 relative overflow-hidden bg-black">
+  return <section id="recogida" className="pt-20 pb-10 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

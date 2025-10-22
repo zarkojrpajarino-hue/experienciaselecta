@@ -25,7 +25,7 @@ const VisualHeader = () => {
   return <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
-        className="absolute inset-0 w-full h-full bg-cover bg-center"
+        className="absolute inset-0 w-full h-full bg-cover bg-center rounded-3xl"
         style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${heroBgImage})` }}
       />
 
@@ -38,7 +38,7 @@ const VisualHeader = () => {
           className="px-8 py-12 sm:px-12 sm:py-16"
         >
           <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 whitespace-nowrap">
-            <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta
+            <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
           <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
@@ -48,7 +48,7 @@ const VisualHeader = () => {
           <motion.button 
             whileHover={{ color: '#FFD700' }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 text-white font-bebas font-semibold text-base sm:text-lg transition-all duration-300 uppercase"
+            className="px-8 py-4 text-white font-bebas font-semibold text-base sm:text-lg transition-all duration-300 uppercase tracking-widest"
             onClick={() => {
               const element = document.getElementById('categoria-cestas');
               element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
