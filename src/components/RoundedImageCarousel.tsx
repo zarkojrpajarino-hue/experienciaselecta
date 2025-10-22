@@ -15,9 +15,10 @@ interface RoundedImageCarouselProps {
   slides: SlideItem[];
   autoPlay?: boolean;
   autoPlayDelay?: number;
+  hideMainTitle?: boolean;
 }
 
-const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }: RoundedImageCarouselProps) => {
+const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, hideMainTitle = false }: RoundedImageCarouselProps) => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState(false);
@@ -34,11 +35,13 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
     <section className="w-full" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título principal */}
-        <div className="text-center mb-6">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-rubik font-bold text-black tracking-wide">
-            ¿Quieres entender como te entendemos?
-          </h2>
-        </div>
+        {!hideMainTitle && (
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-rubik font-bold text-black tracking-wide">
+              ¿Quieres entender como te entendemos?
+            </h2>
+          </div>
+        )}
 
         {/* Text */}
         <div className="w-full flex flex-col items-center justify-center py-4">

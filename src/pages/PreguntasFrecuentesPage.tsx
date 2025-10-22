@@ -113,7 +113,7 @@ const PreguntasFrecuentesPage = () => {
       <div className="pt-16 md:pt-24"></div>
 
       {/* Sección única fusionada de FAQ y Valores */}
-      <RoundedImageCarousel slides={faqSlides} autoPlay />
+      <RoundedImageCarousel slides={faqSlides} autoPlay hideMainTitle />
       
       {/* Botón Contáctanos */}
       <div className="py-16 md:py-32 flex justify-center bg-white">
