@@ -36,13 +36,12 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
         <div className="w-full flex flex-col items-center justify-center py-4">
           <div className="px-6 max-w-4xl mb-4 text-center">
             <h3
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-cinzel font-bold tracking-wide normal-case"
-              style={{ textTransform: "none" }}
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-cinzel font-bold tracking-wide lowercase first-letter:uppercase"
             >
               {current.title}
             </h3>
             {current.text && (
-              <p className="mt-2 text-base md:text-lg font-work-sans normal-case" style={{ textTransform: "none" }}>
+              <p className="mt-2 text-base md:text-lg font-work-sans lowercase first-letter:capitalize">
                 {current.text}
               </p>
             )}
@@ -62,17 +61,21 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
         {/* Image */}
         <div className="w-full h-[35vh] md:h-[45vh] relative flex items-center justify-center">
           {slides.map((s, i) => (
-            <motion.img
+            <motion.div
               key={i}
-              src={s.image}
-              alt={s.alt || s.title}
               initial={false}
               animate={{ opacity: index === i ? 1 : 0 }}
               transition={{ duration: 0.6 }}
-              className="absolute inset-0 w-full h-full object-contain rounded-3xl shadow-xl cursor-zoom-in"
-              style={{ pointerEvents: index === i ? "auto" : "none", borderRadius: "1.5rem" }}
+              className="absolute inset-0 rounded-3xl overflow-hidden shadow-xl ring-1 ring-black/5 cursor-zoom-in"
+              style={{ pointerEvents: index === i ? "auto" : "none" }}
               onClick={() => setOpen(true)}
-            />
+            >
+              <img
+                src={s.image}
+                alt={s.alt || s.title}
+                className="w-full h-full object-cover md:object-contain"
+              />
+            </motion.div>
           ))}
         </div>
       </div>
