@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import CarouselSection from "@/components/CarouselSection";
+import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ContactModal from "@/components/ContactModal";
 import faqParejaRooftop from "@/assets/faq-pareja-rooftop-clean.png";
 import faqAmigosMesa from "@/assets/faq-amigos-mesa-clean.png";
@@ -30,127 +30,15 @@ const PreguntasFrecuentesPage = () => {
     });
   }, []);
 
-  const allSlides = [
-    {
-      image: faqParejaRooftop,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Qué incluye cada cesta?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            <span className="font-bold" style={{ color: '#FFD700' }}>Contenido</span> <span className="font-bold" style={{ color: '#FFD700' }}>exclusivo</span> <span className="font-bold" style={{ color: '#FFD700' }}>personalizado</span>.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqAmigosMesa,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Cuánto dura la experiencia?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            A tu <span className="font-bold" style={{ color: '#ff1493' }}>ritmo</span>.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqParejaCostaNueva,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Para desconocidos?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            Cestas para <span className="font-bold" style={{ color: '#00BFFF' }}>primeros encuentros</span>.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqJamonPinzas,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Calidad de productos?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            <span className="font-bold" style={{ color: '#FFD700' }}>Certificada</span>.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqProductoresLocales,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿De dónde vienen los productos?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            De productores <span className="font-bold" style={{ color: '#00BFFF' }}>locales</span>.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqAmigosProyector,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Qué combináis en las experiencias?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            <span className="font-bold" style={{ color: '#FFD700' }}>Tradición</span> <span className="font-bold" style={{ color: '#FFD700' }}>española</span> con <span className="font-bold" style={{ color: '#FFD700' }}>dinámicas modernas</span>.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqParejaVinedo,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Cuál es vuestra filosofía?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            Los mejores <span className="font-bold" style={{ color: '#ff1493' }}>recuerdos</span> <span className="font-bold" style={{ color: '#ff1493' }}>se viven</span>, no se graban.
-          </p>
-        </>
-      )
-    },
-    {
-      image: faqFamiliaPorche,
-      backgroundColor: "#FFFFFF",
-      textColor: "#000000",
-      content: (
-        <>
-          <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-4 tracking-wide">
-            ¿Por qué son importantes las conexiones?
-          </h3>
-          <p className="font-montserrat font-bold text-base md:text-lg">
-            Hablamos más pero <span className="font-bold" style={{ color: '#00BFFF' }}>escuchamos menos</span>.
-          </p>
-        </>
-      )
-    }
+  const faqSlides = [
+    { image: faqParejaRooftop, title: "¿Qué incluye cada cesta?", text: "Contenido exclusivo personalizado." },
+    { image: faqAmigosMesa, title: "¿Cuánto dura la experiencia?", text: "A tu ritmo." },
+    { image: faqParejaCostaNueva, title: "¿Para desconocidos?", text: "Cestas para primeros encuentros." },
+    { image: faqJamonPinzas, title: "¿Calidad de productos?", text: "Certificada." },
+    { image: faqProductoresLocales, title: "¿De dónde vienen los productos?", text: "De productores locales." },
+    { image: faqAmigosProyector, title: "¿Qué combináis en las experiencias?", text: "Tradición española con dinámicas modernas." },
+    { image: faqParejaVinedo, title: "¿Cuál es vuestra filosofía?", text: "Los mejores recuerdos se viven, no se graban." },
+    { image: faqFamiliaPorche, title: "¿Por qué son importantes las conexiones?", text: "Hablamos más pero escuchamos menos." }
   ];
 
 
@@ -182,7 +70,7 @@ const PreguntasFrecuentesPage = () => {
       <div className="pt-16 md:pt-24"></div>
 
       {/* Sección única fusionada de FAQ y Valores */}
-      <CarouselSection slides={allSlides} position="right" />
+      <RoundedImageCarousel slides={faqSlides} autoPlay />
       
       {/* Botón Contáctanos */}
       <div className="py-16 md:py-32 flex justify-center bg-white">
