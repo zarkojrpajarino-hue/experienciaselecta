@@ -53,7 +53,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} 
               className="p-0 bg-transparent border-0"
-              style={{ color: current.navigationColor || '#000000' }}
+              style={{ color: current.navigationColor || '#ffffff' }}
             >
               <ChevronUp className="w-6 h-6" />
             </motion.button>
@@ -62,7 +62,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p + 1) % slides.length)} 
               className="p-0 bg-transparent border-0"
-              style={{ color: current.navigationColor || '#000000' }}
+              style={{ color: current.navigationColor || '#ffffff' }}
             >
               <ChevronDown className="w-6 h-6" />
             </motion.button>
