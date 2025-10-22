@@ -64,7 +64,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           style={{ backgroundColor: currentSlide.backgroundColor || backgroundColor, margin: 0 }}
         >
           <div className="px-6 max-w-4xl mb-4 text-center">
-            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans font-bold leading-tight tracking-wide text-white" style={{ textTransform: 'none' }}>
+            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans font-bold leading-tight tracking-wide text-black" style={{ textTransform: 'none' }}>
               {currentSlide.content}
             </div>
           </div>
@@ -75,7 +75,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={goPrev}
-              className="p-0 bg-transparent transition-all duration-300 border-0 text-white"
+              className="p-0 bg-transparent transition-all duration-300 border-0 text-black"
             >
               <ChevronUp className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
@@ -83,7 +83,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={goNext}
-              className="p-0 bg-transparent transition-all duration-300 border-0 text-white"
+              className="p-0 bg-transparent transition-all duration-300 border-0 text-black"
             >
               <ChevronDown className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
