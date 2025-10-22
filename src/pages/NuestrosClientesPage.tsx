@@ -30,47 +30,47 @@ const NuestrosClientesPage = () => {
   }, []);
   const testimonials = [{
     id: 1,
-    name: "carmen rodríguez",
-    location: "barcelona",
+    name: "Carmen Rodríguez",
+    location: "Barcelona",
     rating: 5,
     text: "Mi marido y yo llevábamos años sin tener conversaciones profundas. esta experiencia cambió todo. redescubrimos aspectos de nosotros que habíamos olvidado. ahora organizamos estas cenas cada mes.",
-    experience: "pareja gourmet",
+    experience: "PAREJA GOURMET",
     image: parejaGourmetImg,
     profileImage: parejaGourmetImg
   }, {
     id: 2,
-    name: "miguel ángel santos",
-    location: "madrid",
+    name: "Miguel Ángel Santos",
+    location: "Madrid",
     rating: 5,
     text: "Organicé una cena con compañeros de trabajo que apenas conocía. terminamos compartiendo historias increíbles y creando amistades reales. el ambiente que se genera es único.",
-    experience: "conversación natural",
+    experience: "CONVERSACIÓN NATURAL",
     image: conversacionNaturalImg,
     profileImage: amigosExperience
   }, {
     id: 3,
-    name: "ana lópez",
-    location: "sevilla",
+    name: "Ana López",
+    location: "Sevilla",
     rating: 5,
     text: "Perfecta para romper el hielo en una primera cita. las preguntas están tan bien pensadas que fluye todo natural. mi novio y yo seguimos usando algunas dinámicas en nuestras cenas.",
-    experience: "mesa abierta",
+    experience: "MESA ABIERTA",
     image: mesaAbiertaNuevoImg,
     profileImage: parejaExperience
   }, {
     id: 4,
-    name: "familia gonzález",
-    location: "valencia",
+    name: "Familia González",
+    location: "Valencia",
     rating: 5,
     text: "Con tres adolescentes en casa, las cenas familiares se habían vuelto silenciosas. esta experiencia nos ayudó a reconectarnos como familia. ahora todos esperan nuestras 'cenas especiales'.",
-    experience: "festín selecto",
+    experience: "FESTÍN SELECTO",
     image: festinSelectoNuevoImg,
     profileImage: familiaExperience
   }, {
     id: 5,
-    name: "javier martín",
-    location: "bilbao",
+    name: "Javier Martín",
+    location: "Bilbao",
     rating: 5,
     text: "Era escéptico al principio, pero la calidad de los productos y las dinámicas me sorprendieron. he repetido ya tres veces con diferentes grupos de amigos. cada experiencia es única.",
-    experience: "gran tertulia",
+    experience: "GRAN TERTULIA",
     image: granTertuliaNuevoImg,
     profileImage: grupoMedianoExperience
   }];
@@ -112,7 +112,7 @@ const NuestrosClientesPage = () => {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-0 pb-20">
+        <section className="py-0 pb-20 -mt-8">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="relative">
@@ -128,7 +128,7 @@ const NuestrosClientesPage = () => {
                 x: -50
               }} transition={{
                 duration: 0.5
-              }} className="flex flex-col gap-8 items-center">
+              }} className="flex flex-col gap-6 items-center">
                   
                   {/* 1. Experience image - FIRST */}
                   <motion.div initial={{
@@ -231,10 +231,10 @@ const NuestrosClientesPage = () => {
                       {/* Author info */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <cite className="text-lg font-work-sans font-semibold text-white not-italic capitalize">
+                          <cite className="text-lg font-work-sans font-semibold text-white not-italic">
                             {testimonials[currentTestimonial].name}
                           </cite>
-                          <p className="text-sm text-white/70 capitalize">
+                          <p className="text-sm text-white/70">
                             {testimonials[currentTestimonial].location}
                           </p>
                         </div>
@@ -254,6 +254,23 @@ const NuestrosClientesPage = () => {
       </div>
 
       {/* Image Modal */}
+      <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
+        <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
+          <button
+            onClick={() => setIsImageOpen(false)}
+            className="absolute top-3 right-3 z-10 h-10 w-10 inline-flex items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80"
+            aria-label="Cerrar"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <img 
+            src={testimonials[currentTestimonial].image} 
+            alt={`experiencia ${testimonials[currentTestimonial].experience}`}
+            className="w-full h-[70vh] object-contain rounded-3xl"
+            style={{ borderRadius: "1.5rem" }}
+          />
+        </DialogContent>
+      </Dialog>
       
     </div>;
 };
