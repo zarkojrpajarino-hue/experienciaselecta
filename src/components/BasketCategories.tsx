@@ -227,11 +227,20 @@ const BasketCategories = () => {
                     </div>
 
                     {/* Inspirational phrase - Below the card */}
-                    <p 
-                      className="absolute -bottom-6 left-0 right-0 text-base sm:text-lg md:text-xl font-inter font-bold text-white text-center"
-                      style={{ textTransform: 'none' }}
-                      dangerouslySetInnerHTML={{ __html: renderHighlightedPhrase(category.inspirationalPhrase, '#FFD700') }}
-                    />
+                    <div className="absolute -bottom-6 left-0 right-0 flex justify-center">
+                      <div className="relative inline-block px-6 py-2">
+                        {/* Fondo con efecto brocha */}
+                        <div className="absolute inset-0 bg-white rounded-full opacity-90" style={{ 
+                          transform: 'skew(-2deg, 1deg)',
+                          filter: 'blur(1px)'
+                        }}></div>
+                        <p 
+                          className="relative text-base sm:text-lg md:text-xl font-inter font-bold text-black text-center"
+                          style={{ textTransform: 'none' }}
+                          dangerouslySetInnerHTML={{ __html: renderHighlightedPhrase(category.inspirationalPhrase, '#FFD700') }}
+                        />
+                      </div>
+                    </div>
 
                     {/* Arrow button - Bottom right corner - REMOVED */}
                   </div>
