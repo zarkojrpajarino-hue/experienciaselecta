@@ -41,20 +41,20 @@ const VisualHeader = () => {
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta
           </h1>
           
-          <p className="font-poppins text-lg sm:text-xl md:text-2xl text-black mb-8 max-w-3xl mx-auto font-bold">
+          <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
             Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>hablar</span>, <span style={{ color: '#FFD700' }}>conocer</span> y <span style={{ color: '#FFD700' }}>reír</span>.
           </p>
 
           <motion.button 
             whileHover={{ color: '#FFD700' }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 text-white font-poppins font-semibold text-base sm:text-lg transition-all duration-300 uppercase"
+            className="px-8 py-4 text-white font-bebas font-semibold text-base sm:text-lg transition-all duration-300 uppercase"
             onClick={() => {
               const element = document.getElementById('categoria-cestas');
               element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
           >
-            ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>! <ChevronDown className="inline-block ml-2 w-5 h-5" />
+            ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!. <ChevronDown className="inline-block ml-2 w-5 h-5" />
           </motion.button>
         </motion.div>
       </div>
