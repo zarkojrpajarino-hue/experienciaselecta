@@ -22,8 +22,8 @@ const KeyBenefitsSection = () => {
   const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(null);
   const benefits = [{
     icon: Heart,
-    title: "TODOS BUSCAMOS ALGO DISTINTO",
-    description: <>Lo <span className="text-gold">diferente</span> solo cuesta <span className="text-gold">atreverse</span>.</>,
+    title: "Todos buscamos algo distinto.",
+    description: <>Lo <span className="text-gold">diferente</span> solo cuesta <span className="text-gold">atreverse.</span></>,
     color: "text-accent",
     bgColor: "bg-accent/10",
     image: planDiferenteImg

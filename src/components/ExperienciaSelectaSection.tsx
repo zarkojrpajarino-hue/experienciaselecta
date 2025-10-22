@@ -19,15 +19,15 @@ const ExperienciaSelectaSection = () => {
           >
             <div className="bg-black/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-gold/20">
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-cormorant font-bold text-white mb-4">
-                <span className="text-black">experiencia</span> <span className="inline-block ml-32">selecta</span>
+                <span className="text-black">Experiencia</span> <span className="inline-block ml-32">selecta.</span>
               </h2>
               <p className="text-white text-base md:text-lg leading-relaxed font-work-sans mb-3">
-                Productos <span className="text-gold font-semibold">ibéricos premium</span> con{" "}
+                Productos <span className="text-gold font-semibold">ibéricos premium</span>, con{" "}
                 <span className="text-gold font-semibold">experiencias</span> de{" "}
                 <span className="text-gold font-semibold">conexión</span> incluidas.
               </p>
               <p className="text-white/90 text-sm md:text-base leading-relaxed font-work-sans">
-                Comprometidos con la <span className="text-gold font-semibold">sostenibilidad</span> y el respeto por el medio ambiente en cada paso de nuestra cadena de producción, <span className="text-[#ff1493] font-semibold">calidad sin igual</span>.
+                Comprometidos con la <span className="text-gold font-semibold">sostenibilidad</span> y el respeto por el medio ambiente, en cada paso de nuestra cadena de producción, <span className="text-[#ff1493] font-semibold">calidad sin igual.</span>
               </p>
             </div>
           </motion.div>

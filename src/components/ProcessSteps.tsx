@@ -14,41 +14,41 @@ const ProcessSteps = () => {
   const [glowIndex, setGlowIndex] = useState(0);
   const steps = [{
     id: 1,
-    title: <>elige</>,
-    description: "familia, amigos, pareja o desconocidos",
+    title: <>Elige.</>,
+    description: "Familia, amigos, pareja o desconocidos.",
     icon: Heart,
     details: <span>
-        Cestas, <span style={{ color: '#D4AF37' }} className="font-semibold">para cada conexión</span>.
+        Cestas, <span style={{ color: '#D4AF37' }} className="font-semibold">para cada conexión.</span>
       </span>,
     color: "text-secondary",
     image: eligeConQuienImg
   }, {
     id: 2,
-    title: <>compra</>,
-    description: "productos ibéricos premium con experiencia incluida",
+    title: <>Compra.</>,
+    description: "Productos ibéricos premium, con experiencia incluida.",
     icon: Package,
     details: <span>
-        <span style={{ color: '#D4AF37' }} className="font-semibold">Calidad, conversación</span>.
+        <span style={{ color: '#D4AF37' }} className="font-semibold">Calidad, conversación.</span>
       </span>,
     color: "text-accent",
     image: compraCestaImg
   }, {
     id: 3,
-    title: <>escoge</>,
-    description: "en casa, al aire libre o donde quieras",
+    title: <>Escoge.</>,
+    description: "En casa, al aire libre o donde quieras.",
     icon: Sparkles,
     details: <span>
-        <span style={{ color: '#D4AF37' }} className="font-semibold">Cualquier lugar</span>.
+        <span style={{ color: '#D4AF37' }} className="font-semibold">Cualquier lugar.</span>
       </span>,
     color: "text-primary",
     image: escenarioPerfectoImg
   }, {
     id: 4,
-    title: <>disfruta</>,
-    description: "conversaciones profundas y momentos inolvidables",
+    title: <>Disfruta.</>,
+    description: "Conversaciones profundas y momentos inolvidables.",
     icon: DollarSign,
     details: <span>
-        <span style={{ color: '#D4AF37' }} className="font-semibold">Conversación profunda, recuerdos</span>.
+        <span style={{ color: '#D4AF37' }} className="font-semibold">Conversación profunda, recuerdos.</span>
       </span>,
     color: "text-destructive",
     image: disfrutaRecuerdosImg

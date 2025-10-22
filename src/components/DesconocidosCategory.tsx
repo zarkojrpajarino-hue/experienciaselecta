@@ -104,8 +104,8 @@ const DesconocidosCategory = () => {
 
         <div className="p-6 text-center">
           <p className="text-sm text-white/90 font-bold">
-            <span className="font-bold text-gold">💡 Consejo:</span> Comenzar con <span className="text-gold font-bold">grupos pequeños</span> facilita las <span className="text-gold font-bold">primeras conversaciones</span>. 
-            Puedes aumentar el tamaño del grupo según tu <span className="text-gold font-bold">comodidad</span>.
+            <span className="font-bold text-gold">Consejo:</span> Comenzar con <span className="text-gold font-bold">grupos pequeños</span> facilita las <span className="text-gold font-bold">primeras conversaciones,</span> 
+            puedes aumentar el tamaño del grupo según tu <span className="text-gold font-bold">comodidad.</span>
           </p>
         </div>
       </div>

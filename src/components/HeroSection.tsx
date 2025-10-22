@@ -66,7 +66,7 @@ const HeroSection = () => {
               duration: 0.8,
               delay: 0.2
             }} className="text-4xl md:text-5xl font-poppins font-bold text-primary mb-6 leading-tight">
-                Cestas <span className="bg-gradient-to-r from-gold via-yellow-400 to-gold bg-clip-text text-transparent">ibéricas</span> que conectan corazones
+                Cestas <span className="bg-gradient-to-r from-gold via-yellow-400 to-gold bg-clip-text text-transparent">ibéricas</span> que conectan corazones.
               </motion.h2>
               
               <motion.p initial={{
@@ -79,8 +79,8 @@ const HeroSection = () => {
               duration: 0.8,
               delay: 0.4
             }} className="text-xl font-work-sans font-bold text-muted-foreground mb-8 leading-relaxed">
-                Más que una <span className="text-gold">cesta de productos ibéricos</span>: una <span className="text-gold">experiencia que transforma</span> 
-                encuentros cotidianos en <span className="text-gold">conversaciones profundas</span> y <span className="text-gold">conexiones auténticas</span>.
+                Más que una <span className="text-gold">cesta de productos ibéricos,</span> una <span className="text-gold">experiencia que transforma</span> 
+                encuentros cotidianos, en <span className="text-gold">conversaciones profundas</span> y <span className="text-gold">conexiones auténticas.</span>
               </motion.p>
 
               <motion.div initial={{
@@ -130,7 +130,7 @@ const HeroSection = () => {
         }} className="space-y-6">
             {/* Jamón ibérico image */}
             <div className="relative rounded-3xl overflow-hidden shadow-xl mb-6 mt-8 lg:mt-0">
-              <img src={couplePicnic} alt="Pareja disfrutando cesta ibérica en picnic" className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-3xl" />
+              <img src={couplePicnic} alt="Pareja disfrutando cesta ibérica en picnic." className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-3xl" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent rounded-3xl"></div>
             </div>
 

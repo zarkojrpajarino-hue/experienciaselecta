@@ -7,23 +7,23 @@ const ExperienceExplainer = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [glowIndex, setGlowIndex] = useState<number | null>(null);
   const cards = [{
-    title: <>Productores locales con <span className="text-gold">máxima excelencia</span>.</>,
+    title: <>Productores locales, con <span className="text-gold">máxima excelencia.</span></>,
     content: <></>,
     align: "left"
   }, {
-    title: <>Tradición española con <span className="text-gold">dinámicas modernas</span>.</>,
+    title: <>Tradición española, con <span className="text-gold">dinámicas modernas.</span></>,
     content: <></>,
     align: "right"
   }, {
-    title: <>Los mejores <span className="text-gold">recuerdos se viven</span>, no se graban. lo <span className="text-gold">auténtico nunca sale en cámara</span>.</>,
+    title: <>Los mejores <span className="text-gold">recuerdos se viven,</span> no se graban, lo <span className="text-gold">auténtico nunca sale en cámara.</span></>,
     content: <></>,
     align: "left"
   }, {
-    title: <>Hablamos más pero <span className="text-gold">escuchamos menos</span>. creamos espacios donde <span className="text-gold">la conversación y el silencio importan</span>.</>,
+    title: <>Hablamos más, pero <span className="text-gold">escuchamos menos,</span> creamos espacios, donde <span className="text-gold">la conversación y el silencio importan.</span></>,
     content: <></>,
     align: "right"
   }, {
-    title: <>El tiempo libre no es para <span className="text-gold">desconectar</span>, es para <span className="text-gold">reconectar</span>. conocer es <span className="text-gold">escuchar</span>, compartir es <span className="text-gold">estar</span>.</>,
+    title: <>El tiempo libre no es para <span className="text-gold">desconectar,</span> es para <span className="text-gold">reconectar,</span> conocer es <span className="text-gold">escuchar,</span> compartir es <span className="text-gold">estar.</span></>,
     content: <></>,
     align: "left"
   }];

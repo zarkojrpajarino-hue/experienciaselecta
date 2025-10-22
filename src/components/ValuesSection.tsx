@@ -9,10 +9,10 @@ import valoresJamonTablaImg from "@/assets/valores-proposito-nuevo-limpio.png";
 import valoresConversacionImg from "@/assets/valores-conversacion-nueva.png";
 
 const values = [
-  { text: "productores locales, ", highlight: "máxima excelencia", end: "." },
-  { text: "tradición española con ", highlight: "dinámicas modernas", end: "." },
-  { text: "los mejores recuerdos ", highlight: "se viven", mid: ", no se graban. lo ", highlight2: "auténtico", end: " nunca sale en cámara." },
-  { text: "hablamos más pero ", highlight: "escuchamos menos", mid: ". ", highlight2: "conversación, silencio", end: " importan." },
+  { text: "Productores locales, ", highlight: "máxima excelencia", end: "." },
+  { text: "Tradición española, con ", highlight: "dinámicas modernas", end: "." },
+  { text: "Los mejores recuerdos ", highlight: "se viven", mid: ", no se graban, lo ", highlight2: "auténtico", end: " nunca sale en cámara." },
+  { text: "Hablamos más, pero ", highlight: "escuchamos menos", mid: ", ", highlight2: "conversación, silencio", end: " importan." },
 ];
 
 const valueBackgrounds = [

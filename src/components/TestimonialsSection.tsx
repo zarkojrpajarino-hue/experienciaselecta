@@ -12,7 +12,7 @@ const TestimonialsSection = () => {
       name: "Carmen Rodríguez",
       location: "Barcelona",
       rating: 5,
-      text: "mi marido y yo llevábamos años sin tener conversaciones profundas. esta experiencia cambió todo. redescubrimos aspectos de nosotros que habíamos olvidado. ahora organizamos estas cenas cada mes.",
+      text: "Mi marido y yo llevábamos años sin tener conversaciones profundas, esta experiencia cambió todo, redescubrimos aspectos de nosotros que habíamos olvidado, ahora organizamos estas cenas cada mes.",
       experience: "Pareja Premium",
       image: "/src/assets/pareja-premium.jpg"
     },
@@ -21,7 +21,7 @@ const TestimonialsSection = () => {
       name: "Miguel Ángel Santos",
       location: "Madrid",
       rating: 5,
-      text: "organicé una cena con compañeros de trabajo que apenas conocía. terminamos compartiendo historias increíbles y creando amistades reales. el ambiente que se genera es único.",
+      text: "Organicé una cena con compañeros de trabajo que apenas conocía, terminamos compartiendo historias increíbles y creando amistades reales, el ambiente que se genera es único.",
       experience: "Cuarteto Social",
       image: "/src/assets/cuarteto-social.png"
     },
@@ -30,7 +30,7 @@ const TestimonialsSection = () => {
       name: "Ana López",
       location: "Sevilla",
       rating: 5,
-      text: "perfecta para romper el hielo en una primera cita. las preguntas están tan bien pensadas que fluye todo natural. mi novio y yo seguimos usando algunas dinámicas en nuestras cenas.",
+      text: "Perfecta para romper el hielo en una primera cita, las preguntas están tan bien pensadas que fluye todo natural, mi novio y yo seguimos usando algunas dinámicas en nuestras cenas.",
       experience: "Primer Encuentro",
       image: "/src/assets/primer-encuentro.png"
     },
@@ -39,7 +39,7 @@ const TestimonialsSection = () => {
       name: "Familia González",
       location: "Valencia",
       rating: 5,
-      text: "con tres adolescentes en casa, las cenas familiares se habían vuelto silenciosas. esta experiencia nos ayudó a reconectarnos como familia. ahora todos esperan nuestras 'cenas especiales'.",
+      text: "Con tres adolescentes en casa, las cenas familiares se habían vuelto silenciosas, esta experiencia nos ayudó a reconectarnos como familia, ahora todos esperan nuestras cenas especiales.",
       experience: "Dehesa Familiar",
       image: "/src/assets/dehesa-familiar.jpg"
     },
@@ -48,7 +48,7 @@ const TestimonialsSection = () => {
       name: "Javier Martín",
       location: "Bilbao",
       rating: 5,
-      text: "era escéptico al principio, pero la calidad de los productos y las dinámicas me sorprendieron. he repetido ya tres veces con diferentes grupos de amigos. cada experiencia es única.",
+      text: "Era escéptico al principio, pero la calidad de los productos y las dinámicas me sorprendieron, he repetido ya tres veces con diferentes grupos de amigos, cada experiencia es única.",
       experience: "Gran Tertulia",
       image: "/src/assets/gran-tertulia.jpg"
     }
@@ -192,7 +192,7 @@ const TestimonialsSection = () => {
                 <div className="rounded-3xl overflow-hidden shadow-2xl">
                   <img 
                     src={testimonials[currentTestimonial].image}
-                    alt={`Experiencia ${testimonials[currentTestimonial].experience}`}
+                    alt={`Experiencia ${testimonials[currentTestimonial].experience}.`}
                     className="w-full h-80 object-cover rounded-3xl"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />

@@ -41,8 +41,8 @@ const FAQSection = () => {
 
   const faqs = [
     {
-      question: "🎁 ¿Qué incluye exactamente cada cesta?",
-      answer: "cada cesta incluye una selección premium de productos ibéricos (jamón, chorizo, queso, etc.), una guía de conversación personalizada para el tipo de experiencia elegida, instrucciones detalladas y acceso a nuestro contenido digital exclusivo. todo viene perfectamente presentado y listo para disfrutar.",
+      question: "¿Qué incluye exactamente cada cesta?",
+      answer: "Cada cesta incluye una selección premium de productos ibéricos (jamón, chorizo, queso, etc.), una guía de conversación personalizada para el tipo de experiencia elegida, instrucciones detalladas y acceso a nuestro contenido digital exclusivo, todo viene perfectamente presentado y listo para disfrutar.",
       image: picnicProductosIbericos
     },
     {
