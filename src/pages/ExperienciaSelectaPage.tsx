@@ -24,7 +24,7 @@ const ExperienciaSelectaPage = () => {
           >
             Experiencia
           </h3>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg font-work-sans lowercase first-letter:capitalize" style={{ color: '#00BFFF' }}>
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-work-sans lowercase first-letter:capitalize" style={{ color: '#00BFFF' }}>
             Momentos que conectan.
           </p>
         </div>
