@@ -101,7 +101,7 @@ const FAQHorizontalSection = () => {
   };
 
   return (
-    <section className="relative overflow-hidden" id="faq" style={{ padding: 0, margin: 0 }}>
+    <section className="relative overflow-hidden" id="faq" style={{ padding: 0, margin: 0, borderRadius: '1.5rem' }}>
       {/* Background Images with Crossfade - scoped to section */}
       {faqs.map((faq, index) => (
         <div
@@ -114,11 +114,12 @@ const FAQHorizontalSection = () => {
             opacity: currentCardIndex === index ? 1 : 0,
             pointerEvents: 'none',
             zIndex: 0,
+            borderRadius: '1.5rem',
           }}
         />
       ))}
       {/* Dark overlay scoped to section - más oscuro */}
-      <div className="absolute inset-0 bg-black/5" style={{ zIndex: 1 }} />
+      <div className="absolute inset-0 bg-black/5" style={{ zIndex: 1, borderRadius: '1.5rem' }} />
 
       <div className="relative z-10">
         {/* FAQ Section */}
