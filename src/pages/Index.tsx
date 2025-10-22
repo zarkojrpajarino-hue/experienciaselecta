@@ -119,12 +119,12 @@ const Index = () => {
         </div>
   }];
   const processSlides = [
-    { image: nuevaSeccion01Img, title: "<span style='color: white; font-family: Playfair Display, serif;'>Creamos <span style='color: #FFD700; font-weight: bold;'>experiencias</span> para que vosotros conozcáis a <span style='color: #FFD700; font-weight: bold;'>personas</span>.</span>" },
-    { image: nuevaSeccion02Img, title: "<span style='color: white; font-family: Playfair Display, serif;'>Transformamos <span style='color: #FFD700; font-weight: bold;'>productos gourmet</span> en un plan <span style='color: #FFD700; font-weight: bold;'>alternativo</span>, <span style='color: #FFD700; font-weight: bold;'>personalizado</span> y <span style='color: #FFD700; font-weight: bold;'>asequible</span>.</span>" },
-    { image: nuevaSeccion03Img, title: "<span style='color: white; font-family: Playfair Display, serif;'>Cada cesta incluye un <span style='color: #FFD700; font-weight: bold;'>QR</span>, que te guía hacia una <span style='color: #FFD700; font-weight: bold;'>experiencia única</span>, con <span style='color: #FFD700; font-weight: bold;'>dinámicas diseñadas</span> para tu grupo.</span>" },
-    { image: nuevaSeccion04Img, title: "<span style='color: white; font-family: Playfair Display, serif;'>Estas actividades fomentan <span style='color: #FFD700; font-weight: bold;'>conversaciones reales</span>, <span style='color: #FFD700; font-weight: bold;'>vínculos profundos</span>, y el valor de mostrarse <span style='color: #FFD700; font-weight: bold;'>vulnerable</span>.</span>" },
-    { image: nuevaSeccion05Img, title: "<span style='color: white; font-family: Playfair Display, serif;'>Convertimos una comida excepcional en una <span style='color: #FFD700; font-weight: bold;'>experiencia emocional</span>, <span style='color: #FFD700; font-weight: bold;'>memorable</span>.</span>" },
-    { image: nuevaSeccion06Img, title: "<span style='color: white; font-family: Playfair Display, serif;'>Hacemos posible un <span style='color: #FFD700; font-weight: bold;'>ocio distinto</span>, rompemos la <span style='color: #FFD700; font-weight: bold;'>monotonía</span>, y devolvemos <span style='color: #FFD700; font-weight: bold;'>sentido</span> a compartir.</span>" }
+    { image: nuevaSeccion01Img, title: "<span style='color: white;'>Creamos <span style='color: #FFD700; font-weight: bold;'>experiencias</span> para que vosotros conozcáis a <span style='color: #FFD700; font-weight: bold;'>personas</span>.</span>" },
+    { image: nuevaSeccion02Img, title: "<span style='color: white;'>Transformamos <span style='color: #FFD700; font-weight: bold;'>productos gourmet</span> en un plan <span style='color: #FFD700; font-weight: bold;'>alternativo</span>, <span style='color: #FFD700; font-weight: bold;'>personalizado</span> y <span style='color: #FFD700; font-weight: bold;'>asequible</span>.</span>" },
+    { image: nuevaSeccion03Img, title: "<span style='color: white;'>Cada cesta incluye un <span style='color: #FFD700; font-weight: bold;'>QR</span>, que te guía hacia una <span style='color: #FFD700; font-weight: bold;'>experiencia única</span>, con <span style='color: #FFD700; font-weight: bold;'>dinámicas diseñadas</span> para tu grupo.</span>" },
+    { image: nuevaSeccion04Img, title: "<span style='color: white;'>Estas actividades fomentan <span style='color: #FFD700; font-weight: bold;'>conversaciones reales</span>, <span style='color: #FFD700; font-weight: bold;'>vínculos profundos</span>, y el valor de mostrarse <span style='color: #FFD700; font-weight: bold;'>vulnerable</span>.</span>" },
+    { image: nuevaSeccion05Img, title: "<span style='color: white;'>Convertimos una comida excepcional en una <span style='color: #FFD700; font-weight: bold;'>experiencia emocional</span>, <span style='color: #FFD700; font-weight: bold;'>memorable</span>.</span>" },
+    { image: nuevaSeccion06Img, title: "<span style='color: white;'>Hacemos posible un <span style='color: #FFD700; font-weight: bold;'>ocio distinto</span>, rompemos la <span style='color: #FFD700; font-weight: bold;'>monotonía</span>, y devolvemos <span style='color: #FFD700; font-weight: bold;'>sentido</span> a compartir.</span>" }
   ];
   const benefitsSlides = [{
     image: planDiferenteImg,
@@ -399,7 +399,7 @@ const Index = () => {
             <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
               <span style={{ color: "#FFD700" }}>Experiencia</span> <span style={{ color: "#FFD700" }}>Selecta</span>.
             </h1>
-            <p className="text-sm md:text-base font-bold text-white max-w-2xl mx-auto mb-8 font-playfair">
+            <p className="text-sm md:text-base font-bold text-white max-w-2xl mx-auto mb-8">
               En una sociedad en la que las <span style={{ color: "#FFD700" }}>pantallas</span> nos conectan con todos pero nos <span style={{ color: "#FFD700" }}>alejan</span> de nosotros mismos, donde vemos todo pero no <span style={{ color: "#FFD700" }}>sentimos</span> nada.
             </p>
           </motion.div>

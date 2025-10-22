@@ -87,8 +87,6 @@ const PreguntasFrecuentesPage = () => {
 
   return (
     <div className="min-h-screen bg-white font-work-sans">
-      <Navbar />
-      <PageNavigation />
       
       {/* Back Button */}
       <section className="relative pt-8 pb-2 bg-white">
@@ -100,7 +98,7 @@ const PreguntasFrecuentesPage = () => {
             className="mb-4"
           >
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/#categoria-cestas")}
               variant="ghost"
               className="text-gold hover:text-gold/80 hover:bg-gold/10"
             >

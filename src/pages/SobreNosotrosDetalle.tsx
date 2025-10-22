@@ -146,8 +146,6 @@ const SobreNosotrosDetalle = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      <Navbar />
-      <PageNavigation />
       
       {/* Back Button - Above Hero Section */}
       <div className="pt-24 px-4 sm:px-6 lg:px-8">
@@ -158,7 +156,7 @@ const SobreNosotrosDetalle = () => {
         >
           <Button
             onClick={() => {
-              navigate('/', { state: { preventScroll: true } });
+              navigate('/#categoria-cestas');
             }}
             variant="ghost"
             className="text-black hover:text-gold hover:bg-transparent transition-all duration-300 font-work-sans"

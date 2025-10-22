@@ -90,9 +90,6 @@ const NuestrosClientesPage = () => {
       
       {/* Scrollable content */}
       <div className="relative z-10 min-h-screen">
-        <Navbar />
-        <PageNavigation />
-        
         
         {/* Hero Section with Back Button */}
         <section className="relative pt-8 pb-2">
@@ -106,11 +103,7 @@ const NuestrosClientesPage = () => {
           }} transition={{
             duration: 0.5
           }} className="mb-4">
-              <Button onClick={() => navigate("/#testimonios", {
-              state: {
-                preventScroll: true
-              }
-            })} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent">
+              <Button onClick={() => navigate("/#categoria-cestas")} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent">
                 <ArrowLeft className="w-5 h-5 mr-2" />
                 Volver
               </Button>

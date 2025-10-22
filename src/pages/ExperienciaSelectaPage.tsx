@@ -15,7 +15,7 @@ const ExperienciaSelectaPage = () => {
       image: experienciaGaleriaImg,
       backgroundColor: "#FFFFFF",
       textColor: "#D4AF37",
-      navigationColor: "#ff1493",
+      navigationColor: "#00BFFF",
       content: (
         <div className="flex flex-col items-center justify-center gap-1 md:gap-3">
           <h3 
@@ -34,6 +34,7 @@ const ExperienciaSelectaPage = () => {
       image: selectaJamonPizarraImg,
       backgroundColor: "#FFFFFF",
       textColor: "#000000",
+      navigationColor: "#ff1493",
       content: (
         <div className="flex flex-col items-center justify-center gap-1 md:gap-3">
           <h3 
@@ -52,7 +53,6 @@ const ExperienciaSelectaPage = () => {
 
   return (
     <div className="min-h-screen font-work-sans bg-white">
-      <PageNavigation />
       
       {/* Experiencia Section */}
       <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
@@ -65,7 +65,7 @@ const ExperienciaSelectaPage = () => {
             className="mb-8"
           >
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/#categoria-cestas")}
               variant="ghost"
               className="text-gold hover:text-gold/80 hover:bg-gold/10"
             >
