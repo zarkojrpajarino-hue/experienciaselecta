@@ -33,7 +33,7 @@ import planDiferenteImg from "@/assets/beneficio-diferente-torre-pimientos.png";
 import cuandoDondeQuierasImg from "@/assets/nueva-seccion-03.jpg";
 import conocerEscucharImg from "@/assets/nueva-seccion-04-final.jpg";
 import momentosUnicosImg from "@/assets/nueva-seccion-05-final.jpg";
-import conversacionesProfundasImg from "@/assets/proposito-planes-clean.png";
+import conversacionesProfundasImg from "@/assets/proposito-planes-final.png";
 import alternativaAsequibleImg from "@/assets/beneficio-tiempo-enrollados.png";
 import valoresTablaIbericosImg from "@/assets/valores-tabla-ibericos-final.jpg";
 import valoresTostasAceiteImg from "@/assets/valores-tostas-aceite-final.jpg";
@@ -133,9 +133,9 @@ const Index = () => {
     navigationColor: "#00BFFF",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            busca lo distinto,
+            busca lo distinto.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             <span className="font-bold" style={{ color: '#00BFFF' }}>diferente</span> es <span className="font-bold" style={{ color: '#00BFFF' }}>atreverse</span>.
           </p>
         </>
@@ -146,9 +146,9 @@ const Index = () => {
     navigationColor: "#FFD700",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            pausa para vivir,
+            pausa para vivir.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             <span className="font-bold" style={{ color: '#FFD700' }}>pausa</span> es <span className="font-bold" style={{ color: '#FFD700' }}>vivir</span>.
           </p>
         </>
@@ -159,9 +159,9 @@ const Index = () => {
     navigationColor: "#ff1493",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            ver no es conocer,
+            ver no es conocer.
           </h3>
-          <p className="font-bold lowercase first-letter:capitalize">
+          <p className="lowercase first-letter:capitalize">
             <span className="font-bold" style={{ color: '#ff1493' }}>conocer es</span> <span className="font-bold" style={{ color: '#ff1493' }}>escuchar</span>.
           </p>
         </>
@@ -172,9 +172,9 @@ const Index = () => {
     navigationColor: "#00BFFF",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            lo valioso lleva tiempo,
+            lo valioso lleva tiempo.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             lo <span className="font-bold" style={{ color: '#00BFFF' }}>bueno</span> necesita <span className="font-bold" style={{ color: '#00BFFF' }}>tiempo</span>.
           </p>
         </>
@@ -185,9 +185,9 @@ const Index = () => {
     navigationColor: "#FFD700",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            planes con propósito,
+            planes con propósito.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             falta <span className="font-bold" style={{ color: '#FFD700' }}>propósito</span>.
           </p>
         </>
@@ -198,9 +198,9 @@ const Index = () => {
     navigationColor: "#ff1493",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            sobremesas reales,
+            sobremesas reales.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             ocupar no es <span className="font-bold" style={{ color: '#ff1493' }}>disfrutar</span>.
           </p>
         </>

@@ -4,6 +4,8 @@ import { Star, ChevronLeft, ChevronRight, Quote, X, ArrowLeft } from "lucide-rea
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/Navbar";
+import PageNavigation from "@/components/PageNavigation";
 import nuestrosClientesBg from "@/assets/nuestros-clientes-bg.png";
 import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-2.jpg";
 import conversacionNaturalImg from "@/assets/conversacion-natural-original.jpg";
@@ -88,6 +90,8 @@ const NuestrosClientesPage = () => {
       
       {/* Scrollable content */}
       <div className="relative z-10 min-h-screen">
+        <Navbar />
+        <PageNavigation />
         
         
         {/* Hero Section with Back Button */}

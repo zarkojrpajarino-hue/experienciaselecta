@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/Navbar";
+import PageNavigation from "@/components/PageNavigation";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ContactModal from "@/components/ContactModal";
 import faqParejaRooftop from "@/assets/faq-pareja-rooftop-clean.png";
@@ -85,6 +87,9 @@ const PreguntasFrecuentesPage = () => {
 
   return (
     <div className="min-h-screen bg-white font-work-sans">
+      <Navbar />
+      <PageNavigation />
+      
       {/* Back Button */}
       <section className="relative pt-8 pb-2 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
