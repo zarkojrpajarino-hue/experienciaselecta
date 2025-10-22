@@ -128,7 +128,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           <img 
             src={currentSlide.image} 
             alt="Ampliado" 
-            className="w-full h-[70vh] object-contain"
+            className="w-full h-[70vh] object-cover"
             style={{ borderRadius: "1.5rem" }}
           />
         </DialogContent>

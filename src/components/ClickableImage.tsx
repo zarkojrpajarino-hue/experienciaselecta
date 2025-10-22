@@ -56,7 +56,7 @@ const ClickableImage = ({
           <img 
             src={src} 
             alt={alt} 
-            className="w-full h-auto max-h-[90vh] object-contain rounded-3xl" 
+            className="w-full h-auto max-h-[90vh] object-cover rounded-3xl" 
           />
         </DialogContent>
       </Dialog>

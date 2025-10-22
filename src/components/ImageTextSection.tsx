@@ -72,7 +72,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
           <img 
             src={image} 
             alt={imageAlt} 
-            className="w-full h-auto max-h-[90vh] object-contain rounded-3xl" 
+            className="w-full h-auto max-h-[90vh] object-cover rounded-3xl" 
           />
         </DialogContent>
       </Dialog>

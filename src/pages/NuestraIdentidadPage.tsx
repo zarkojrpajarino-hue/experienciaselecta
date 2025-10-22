@@ -113,7 +113,7 @@ const NuestraIdentidadPage = () => {
           <img 
             src={trioIbericoImg} 
             alt="Nuestra Identidad" 
-            className="w-full h-auto max-h-[90vh] object-contain" 
+            className="w-full h-auto max-h-[90vh] object-cover" 
           />
         </DialogContent>
       </Dialog>

@@ -626,7 +626,7 @@ const ProfilePage = () => {
               <img 
                 src={zoomedImage} 
                 alt="Cesta ampliada"
-                className="max-w-full max-h-full object-contain rounded-lg"
+                className="max-w-full max-h-full object-cover rounded-lg"
               />
             </div>
           )}

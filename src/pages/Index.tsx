@@ -422,7 +422,7 @@ const Index = () => {
                 const element = document.getElementById('categoria-cestas');
                 element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
-              className="text-white hover:text-[#FFD700] px-8 py-4 font-work-sans font-semibold text-base md:text-lg transition-all duration-300 flex items-center gap-2 uppercase"
+              className="text-white hover:text-[#FFD700] px-8 py-4 font-work-sans font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 flex items-center gap-2 uppercase whitespace-nowrap"
             >
               ¡DESCUBRE TU <span style={{ color: "#FFD700" }}>EXPERIENCIA</span>!
               <ChevronDown className="w-5 h-5" />
@@ -444,7 +444,7 @@ const Index = () => {
           <img 
             src={cestaHeroImage} 
             alt="Cesta de experiencia ampliada" 
-            className="w-full h-auto object-contain rounded-3xl" 
+            className="w-full h-auto object-cover rounded-3xl" 
           />
         </DialogContent>
       </Dialog>
