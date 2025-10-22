@@ -73,7 +73,7 @@ const SobreNosotrosDetalle = () => {
             diferente.
           </h3>
           <p className="lowercase first-letter:capitalize">
-            es <span className="font-bold" style={{ color: '#00BFFF' }}>atreverse</span>.
+            es <span style={{ color: '#00BFFF' }}>atreverse</span>.
           </p>
         </>
   }, {
@@ -86,7 +86,7 @@ const SobreNosotrosDetalle = () => {
             pausa.
           </h3>
           <p className="lowercase first-letter:capitalize">
-            es <span className="font-bold" style={{ color: '#FFD700' }}>vivir</span>.
+            es <span style={{ color: '#FFD700' }}>vivir</span>.
           </p>
         </>
   }, {
@@ -99,7 +99,7 @@ const SobreNosotrosDetalle = () => {
             conocer.
           </h3>
           <p className="lowercase first-letter:capitalize">
-            es <span className="font-bold" style={{ color: '#ff1493' }}>escuchar</span>.
+            es <span style={{ color: '#ff1493' }}>escuchar</span>.
           </p>
         </>
   }, {
@@ -112,7 +112,7 @@ const SobreNosotrosDetalle = () => {
             valioso.
           </h3>
           <p className="lowercase first-letter:capitalize">
-            necesita <span className="font-bold" style={{ color: '#00BFFF' }}>tiempo</span>.
+            necesita <span style={{ color: '#00BFFF' }}>tiempo</span>.
           </p>
         </>
   }, {
@@ -125,7 +125,7 @@ const SobreNosotrosDetalle = () => {
             propósito.
           </h3>
           <p className="lowercase first-letter:capitalize">
-            falta en <span className="font-bold" style={{ color: '#FFD700' }}>planes</span>.
+            falta en <span style={{ color: '#FFD700' }}>planes</span>.
           </p>
         </>
   }, {
@@ -138,7 +138,7 @@ const SobreNosotrosDetalle = () => {
             sobremesas.
           </h3>
           <p className="lowercase first-letter:capitalize">
-            son <span className="font-bold" style={{ color: '#ff1493' }}>disfrutar</span>.
+            son <span style={{ color: '#ff1493' }}>disfrutar</span>.
           </p>
         </>
   }];
