@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import cestaHeroImage from "@/assets/productos-cayendo-cesta-clean.jpg";
+import heroBgImage from "@/assets/hero-pareja-brindis-clean.png";
 const VisualHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +25,7 @@ const VisualHeader = () => {
       {/* Background Image */}
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-center"
-        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${cestaHeroImage})` }}
+        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroBgImage})` }}
       />
 
       {/* Content */}
@@ -34,7 +34,7 @@ const VisualHeader = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-black/40 backdrop-blur-sm rounded-2xl px-8 py-12 sm:px-12 sm:py-16"
+          className="bg-black/50 backdrop-blur-sm rounded-2xl px-8 py-12 sm:px-12 sm:py-16"
         >
           <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
             Experiencia Selecta
@@ -54,8 +54,13 @@ const VisualHeader = () => {
           </motion.button>
         </motion.div>
 
-        {/* Separador blanco bajo el botón - fuera del contenedor */}
-        <div className="mt-12 h-0.5 bg-white w-3/4 max-w-2xl mx-auto" />
+        {/* Separador blanco bajo el contenedor */}
+        <motion.div 
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-16 h-1 bg-white/80 w-3/4 max-w-2xl mx-auto shadow-lg"
+        />
       </div>
     </section>;
 };
