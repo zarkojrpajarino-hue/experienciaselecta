@@ -76,18 +76,18 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               whileTap={{ scale: 0.9 }}
               onClick={goPrev}
               className="p-0 bg-transparent transition-all duration-300 border-0"
-              style={{ color: currentSlide.navigationColor || currentSlide.textColor || textColor }}
+              style={{ color: '#000000' }}
             >
-              <ChevronUp className="w-4 h-4 md:w-6 md:h-6" />
+              <ChevronUp className="w-10 h-10" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={goNext}
               className="p-0 bg-transparent transition-all duration-300 border-0"
-              style={{ color: currentSlide.navigationColor || currentSlide.textColor || textColor }}
+              style={{ color: '#000000' }}
             >
-              <ChevronDown className="w-4 h-4 md:w-6 md:h-6" />
+              <ChevronDown className="w-10 h-10" />
             </motion.button>
           </div>
         </motion.div>
@@ -95,7 +95,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
         {/* Image Section */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div 
-            className="w-full h-[35vh] md:h-[45vh] relative cursor-pointer rounded-3xl overflow-hidden shadow-xl"
+            className="w-full h-[35vh] md:h-[45vh] relative cursor-pointer overflow-hidden rounded-3xl"
             onClick={() => setIsImageOpen(true)}
           >
             {slides.map((slide, index) => (

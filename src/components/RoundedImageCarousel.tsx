@@ -53,31 +53,31 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} 
               className="p-0 bg-transparent border-0"
-              style={{ color: current.navigationColor || '#ffffff' }}
+              style={{ color: '#000000' }}
             >
-              <ChevronUp className="w-6 h-6" />
+              <ChevronUp className="w-10 h-10" />
             </motion.button>
             <motion.button 
               whileHover={{ scale: 1.1 }} 
               whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p + 1) % slides.length)} 
               className="p-0 bg-transparent border-0"
-              style={{ color: current.navigationColor || '#ffffff' }}
+              style={{ color: '#000000' }}
             >
-              <ChevronDown className="w-6 h-6" />
+              <ChevronDown className="w-10 h-10" />
             </motion.button>
           </div>
         </div>
 
         {/* Image */}
-        <div className="w-full h-[35vh] md:h-[45vh] relative flex items-center justify-center rounded-3xl overflow-hidden">
+        <div className="w-full h-[35vh] md:h-[45vh] relative flex items-center justify-center overflow-hidden rounded-3xl">
           {slides.map((s, i) => (
             <motion.div
               key={i}
               initial={false}
               animate={{ opacity: index === i ? 1 : 0 }}
               transition={{ duration: 0.6 }}
-              className="absolute inset-0 shadow-xl ring-1 ring-black/5 cursor-zoom-in rounded-3xl"
+              className="absolute inset-0 cursor-zoom-in"
               style={{ pointerEvents: index === i ? "auto" : "none" }}
               onClick={() => setOpen(true)}
             >
