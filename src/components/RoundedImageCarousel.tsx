@@ -85,7 +85,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
         </div>
 
         {/* Image */}
-        <div className="w-full max-w-3xl md:max-w-6xl mx-auto h-[35vh] md:h-[50vh] relative flex items-center justify-center overflow-hidden rounded-[2rem]">
+        <div className="w-full max-w-3xl md:max-w-6xl mx-auto h-[35vh] md:h-[50vh] relative flex items-center justify-center rounded-[2rem]">
           {slides.map((s, i) => (
             <motion.div
               key={i}
