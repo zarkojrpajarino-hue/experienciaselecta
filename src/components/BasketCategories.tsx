@@ -187,9 +187,13 @@ const BasketCategories = () => {
         stiffness: 50,
         damping: 15
       }} className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl mb-3 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
             Escoja su categoría.
           </h2>
+          
+          <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
+            Elige con quién quieres compartir: familia, pareja o amigos.
+          </p>
           
           {/* Botones de navegación debajo del título */}
           <div className="flex items-center justify-center gap-8 mb-4">
@@ -242,7 +246,7 @@ const BasketCategories = () => {
                     {/* Card Container */}
                     <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
                       {/* Imagen */}
-                      <div className="w-full h-[250px] md:h-[350px] mb-6 rounded-3xl overflow-hidden md:px-8">
+                      <div className="w-full h-[250px] md:h-[350px] mb-4 rounded-3xl overflow-hidden md:px-8">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
@@ -251,7 +255,7 @@ const BasketCategories = () => {
                       </div>
 
                       {/* Título y Flecha */}
-                      <div className="flex items-center justify-center gap-3 mb-4">
+                      <div className="flex items-center justify-center gap-3">
                         <h3 className="font-bebas font-bold text-3xl md:text-5xl text-white whitespace-nowrap tracking-[0.2em]">
                           {category.title}.
                         </h3>
@@ -270,14 +274,6 @@ const BasketCategories = () => {
                           />
                         </svg>
                       </div>
-
-                      {/* Frase inspiracional */}
-                      <p 
-                        className="text-lg md:text-2xl font-inter font-bold text-white text-center"
-                        dangerouslySetInnerHTML={{ 
-                          __html: renderHighlightedPhrase(category.inspirationalPhrase, category.title, category.highlightColor) 
-                        }}
-                      />
                     </div>
                   </motion.div>
                 </div>
