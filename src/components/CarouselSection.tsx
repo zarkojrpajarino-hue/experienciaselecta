@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { ChevronUp, ChevronDown, X } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -118,13 +118,6 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
         <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
-          <button
-            onClick={() => setIsImageOpen(false)}
-            className="absolute top-3 right-3 z-10 h-10 w-10 inline-flex items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80"
-            aria-label="Cerrar"
-          >
-            <X className="w-5 h-5" />
-          </button>
           <img 
             src={currentSlide.image} 
             alt="Ampliado" 

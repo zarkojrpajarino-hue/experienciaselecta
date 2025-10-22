@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Star, ChevronLeft, ChevronRight, Quote, X, ArrowLeft } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Quote, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -112,7 +112,7 @@ const NuestrosClientesPage = () => {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-0 pb-20 -mt-8">
+        <section className="py-0 pb-20 -mt-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="relative">
@@ -256,13 +256,6 @@ const NuestrosClientesPage = () => {
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
         <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
-          <button
-            onClick={() => setIsImageOpen(false)}
-            className="absolute top-3 right-3 z-10 h-10 w-10 inline-flex items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80"
-            aria-label="Cerrar"
-          >
-            <X className="w-5 h-5" />
-          </button>
           <img 
             src={testimonials[currentTestimonial].image} 
             alt={`experiencia ${testimonials[currentTestimonial].experience}`}
