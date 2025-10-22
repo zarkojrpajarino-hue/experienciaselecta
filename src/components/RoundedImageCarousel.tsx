@@ -33,8 +33,26 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
   return (
     <section className="w-full" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Título principal */}
+        <div className="text-center mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-playfair text-black">
+            ¿Quieres entender como te entendemos?
+          </h2>
+        </div>
+
         {/* Text */}
         <div className="w-full flex flex-col items-center justify-center py-4">
+          <div className="px-6 max-w-4xl mb-4 text-center">
+            <h3
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins font-bold tracking-wide text-black"
+              style={{ textTransform: "none" }}
+              dangerouslySetInnerHTML={{ __html: current.title }}
+            />
+            {current.text && (
+              <p className="mt-2 text-base md:text-lg font-poppins text-black" style={{ textTransform: "none" }} dangerouslySetInnerHTML={{ __html: current.text }} />
+            )}
+          </div>
+
           {/* Indicadores de puntos */}
           <div className="flex gap-2 mb-4">
             {slides.map((_, i) => (
@@ -48,17 +66,6 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
                 }}
               />
             ))}
-          </div>
-
-          <div className="px-6 max-w-4xl mb-4 text-center">
-            <h3
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins font-bold tracking-wide text-black"
-              style={{ textTransform: "none" }}
-              dangerouslySetInnerHTML={{ __html: current.title }}
-            />
-            {current.text && (
-              <p className="mt-2 text-base md:text-lg font-poppins text-black" style={{ textTransform: "none" }} dangerouslySetInnerHTML={{ __html: current.text }} />
-            )}
           </div>
 
           {/* Nav */}
