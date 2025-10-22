@@ -63,8 +63,8 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           className="w-full flex flex-col items-center justify-center py-4"
           style={{ backgroundColor: currentSlide.backgroundColor || backgroundColor, margin: 0 }}
         >
-          <div className="px-6 max-w-4xl mb-4">
-            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-cinzel font-bold leading-tight text-center tracking-wide" style={{ color: currentSlide.textColor || textColor, textTransform: 'none' }}>
+          <div className="px-6 max-w-4xl mb-4 text-center">
+            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans font-bold leading-tight tracking-wide text-white" style={{ textTransform: 'none' }}>
               {currentSlide.content}
             </div>
           </div>
@@ -75,8 +75,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={goPrev}
-              className="p-0 bg-transparent transition-all duration-300 border-0"
-              style={{ color: currentSlide.navigationColor || currentSlide.textColor || textColor }}
+              className="p-0 bg-transparent transition-all duration-300 border-0 text-white"
             >
               <ChevronUp className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
@@ -84,8 +83,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={goNext}
-              className="p-0 bg-transparent transition-all duration-300 border-0"
-              style={{ color: currentSlide.navigationColor || currentSlide.textColor || textColor }}
+              className="p-0 bg-transparent transition-all duration-300 border-0 text-white"
             >
               <ChevronDown className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
@@ -93,33 +91,45 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
         </motion.div>
 
         {/* Image Section */}
-        <div 
-          className="w-full h-[35vh] md:h-[45vh] relative cursor-pointer" 
-          onClick={() => setIsImageOpen(true)}
-        >
-          {slides.map((slide, index) => (
-            <img
-              key={`slide-${index}`}
-              src={slide.image}
-              alt={`Slide ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-contain rounded-3xl transition-opacity duration-700 ease-in-out ${
-                currentIndex === index ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{
-                pointerEvents: currentIndex === index ? 'auto' : 'none'
-              }}
-            />
-          ))}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div 
+            className="w-full h-[35vh] md:h-[45vh] relative cursor-pointer overflow-hidden"
+            style={{ borderRadius: "1.5rem" }}
+            onClick={() => setIsImageOpen(true)}
+          >
+            {slides.map((slide, index) => (
+              <img
+                key={`slide-${index}`}
+                src={slide.image}
+                alt={`Slide ${index + 1}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
+                  currentIndex === index ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{
+                  pointerEvents: currentIndex === index ? 'auto' : 'none',
+                  borderRadius: "1.5rem"
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-4xl w-full p-2 bg-white border-2 border-gray-200">
+        <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
+          <button
+            onClick={() => setIsImageOpen(false)}
+            className="absolute top-3 right-3 z-10 h-10 w-10 inline-flex items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80"
+            aria-label="Cerrar"
+          >
+            <X className="w-5 h-5" />
+          </button>
           <img 
             src={currentSlide.image} 
             alt="Ampliado" 
-            className="w-full h-auto object-contain rounded-3xl" 
+            className="w-full h-[70vh] object-contain"
+            style={{ borderRadius: "1.5rem" }}
           />
         </DialogContent>
       </Dialog>
