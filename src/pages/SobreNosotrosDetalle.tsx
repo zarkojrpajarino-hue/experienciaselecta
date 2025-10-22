@@ -329,7 +329,7 @@ const SobreNosotrosDetalle = () => {
             >
               {expandedCard === 0 && (
                 <div className="rounded-lg p-8 max-w-4xl mx-auto relative overflow-hidden">
-                  <div className="space-y-6 font-playfair text-black text-lg leading-relaxed relative z-10 text-center">
+                  <div className="space-y-6 font-poppins text-black text-lg leading-relaxed relative z-10 text-center">
                     <p className="first-letter:uppercase lowercase text-xl font-semibold">
                       nace de la necesidad de <span className="text-gold font-bold">reconectar</span> con lo que importa.
                     </p>
@@ -348,7 +348,7 @@ const SobreNosotrosDetalle = () => {
 
               {expandedCard === 1 && (
                 <div className="rounded-lg p-8 max-w-4xl mx-auto relative overflow-hidden">
-                  <div className="space-y-6 font-playfair text-black text-lg leading-relaxed relative z-10 text-center">
+                  <div className="space-y-6 font-poppins text-black text-lg leading-relaxed relative z-10 text-center">
                     <p className="first-letter:uppercase lowercase text-xl font-semibold">
                       somos <span className="text-gold font-bold">psicólogos</span>, <span className="text-gold font-bold">gastrónomos</span> y <span className="text-gold font-bold">facilitadores</span> apasionados por las relaciones humanas.
                     </p>
@@ -367,7 +367,7 @@ const SobreNosotrosDetalle = () => {
 
               {expandedCard === 2 && (
                 <div className="rounded-lg p-8 max-w-4xl mx-auto relative overflow-hidden">
-                  <div className="space-y-6 font-playfair text-black text-lg leading-relaxed text-center relative z-10">
+                  <div className="space-y-6 font-poppins text-black text-lg leading-relaxed text-center relative z-10">
                     <p className="text-2xl first-letter:uppercase lowercase font-bold">
                       ¿estás listo para vivir algo <span className="text-gold font-bold">diferente</span>?
                     </p>
