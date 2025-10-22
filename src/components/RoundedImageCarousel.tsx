@@ -99,7 +99,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               <img
                 src={s.image}
                 alt={s.alt || s.title}
-                className="w-full h-full object-cover md:px-8 rounded-[2rem]"
+                className="w-full h-full object-cover md:px-16 rounded-[2rem]"
               />
             </motion.div>
           ))}

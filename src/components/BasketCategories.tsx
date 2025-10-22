@@ -192,7 +192,7 @@ const BasketCategories = () => {
           </h2>
           
           <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
-            Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#ADFF2F' }}>familia</span>, <span className="font-bold" style={{ color: '#FF1493' }}>pareja</span> o <span className="font-bold" style={{ color: '#00BFFF' }}>amigos</span>.
+            Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
           </p>
           
           {/* Botones de navegación debajo del título */}
@@ -259,9 +259,9 @@ const BasketCategories = () => {
                         <h3 
                           className="font-bebas font-bold text-3xl md:text-5xl whitespace-nowrap tracking-[0.2em]"
                           style={{ 
-                            color: category.title === "Familia" ? '#ADFF2F' 
-                                 : category.title === "Pareja" ? '#FF1493'
-                                 : category.title === "Amigos" ? '#00BFFF'
+                            color: category.title === "Familia" ? '#4A7050' 
+                                 : category.title === "Pareja" ? '#782C23'
+                                 : category.title === "Amigos" ? '#44667D'
                                  : '#FFFFFF'
                           }}
                         >
