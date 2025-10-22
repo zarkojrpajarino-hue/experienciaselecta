@@ -14,7 +14,7 @@ import planDiferenteImg from "@/assets/beneficio-plan-diferente-pareja-terraza-c
 import cuandoDondeQuierasImg from "@/assets/beneficio-donde-quieras-grupo-jardin-clean.png";
 import conocerEscucharImg from "@/assets/conocer-amigos-sala-clean.png";
 import momentosUnicosImg from "@/assets/beneficio-momentos-familia-cocina-clean.png";
-import conversacionesProfundasImg from "@/assets/beneficio-conversaciones-pareja-mayor-clean.png";
+import conversacionesProfundasImg from "@/assets/proposito-sobremesas-clean.png";
 import alternativaAsequibleImg from "@/assets/beneficio-asequible-grupo-rooftop-clean.png";
 import equipoBackgroundImg from "@/assets/equipo-pareja-chimenea-clean.png";
 import ctaBackgroundImgNew from "@/assets/cta-pareja-balcon-clean.png";
@@ -67,11 +67,12 @@ const SobreNosotrosDetalle = () => {
     image: planDiferenteImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#00BFFF",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            diferente
+            diferente.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             es <span className="font-bold" style={{ color: '#00BFFF' }}>atreverse</span>.
           </p>
         </>
@@ -79,11 +80,12 @@ const SobreNosotrosDetalle = () => {
     image: cuandoDondeQuierasImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#FFD700",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            pausa
+            pausa.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             es <span className="font-bold" style={{ color: '#FFD700' }}>vivir</span>.
           </p>
         </>
@@ -91,11 +93,12 @@ const SobreNosotrosDetalle = () => {
     image: conocerEscucharImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#ff1493",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            conocer
+            conocer.
           </h3>
-          <p className="font-bold lowercase first-letter:capitalize">
+          <p className="lowercase first-letter:capitalize">
             es <span className="font-bold" style={{ color: '#ff1493' }}>escuchar</span>.
           </p>
         </>
@@ -103,11 +106,12 @@ const SobreNosotrosDetalle = () => {
     image: momentosUnicosImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#00BFFF",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            valioso
+            valioso.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             necesita <span className="font-bold" style={{ color: '#00BFFF' }}>tiempo</span>.
           </p>
         </>
@@ -115,11 +119,12 @@ const SobreNosotrosDetalle = () => {
     image: conversacionesProfundasImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#FFD700",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            propósito
+            propósito.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             falta en <span className="font-bold" style={{ color: '#FFD700' }}>planes</span>.
           </p>
         </>
@@ -127,11 +132,12 @@ const SobreNosotrosDetalle = () => {
     image: alternativaAsequibleImg,
     backgroundColor: "#FFFFFF",
     textColor: "#000000",
+    navigationColor: "#ff1493",
     content: <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
-            sobremesas
+            sobremesas.
           </h3>
-          <p className="lowercase first-letter:capitalize font-bold">
+          <p className="lowercase first-letter:capitalize">
             son <span className="font-bold" style={{ color: '#ff1493' }}>disfrutar</span>.
           </p>
         </>
