@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronUp, ChevronDown, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface SlideItem {
@@ -70,7 +70,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               className="p-0 bg-transparent border-0"
               style={{ color: '#000000' }}
             >
-              <ChevronUp className="w-10 h-10" />
+              <ChevronLeft className="w-10 h-10" />
             </motion.button>
             <motion.button 
               whileHover={{ scale: 1.1 }} 
@@ -79,7 +79,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               className="p-0 bg-transparent border-0"
               style={{ color: '#000000' }}
             >
-              <ChevronDown className="w-10 h-10" />
+              <ChevronRight className="w-10 h-10" />
             </motion.button>
           </div>
         </div>
@@ -99,7 +99,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               <img
                 src={s.image}
                 alt={s.alt || s.title}
-                className="w-full h-full object-cover md:px-0 rounded-[2rem]"
+                className="w-full h-full object-cover md:px-8 rounded-[2rem]"
               />
             </motion.div>
           ))}
