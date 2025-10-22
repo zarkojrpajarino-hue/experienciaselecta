@@ -31,6 +31,7 @@ export default {
         'pacifico': ['Pacifico', 'cursive'],
         'cinzel': ['Cinzel', 'serif'],
         'bebas': ['Bebas Neue', 'sans-serif'],
+        'rubik': ['Rubik', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
