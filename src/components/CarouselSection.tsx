@@ -64,7 +64,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           style={{ backgroundColor: currentSlide.backgroundColor || backgroundColor, margin: 0 }}
         >
           <div className="px-6 max-w-4xl mb-4 text-center">
-            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans leading-tight tracking-wide text-black" style={{ textTransform: 'none' }}>
+            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins leading-tight tracking-wide text-black" style={{ textTransform: 'none' }}>
               {currentSlide.content}
             </div>
           </div>

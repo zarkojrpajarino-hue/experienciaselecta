@@ -389,7 +389,14 @@ const Index = () => {
       <ScrollDownIndicator />
       
       <VisualHeader />
+      
+      {/* Espaciado blanco */}
+      <div className="bg-white py-16"></div>
+      
       <RoundedImageCarousel slides={processSlides} />
+      
+      {/* Espaciado blanco antes de categorías */}
+      <div className="bg-white py-16"></div>
       
       {/* SECCIÓN DE CATEGORÍAS - FAMILIA, PAREJA Y AMIGOS */}
       <div id="categoria-cestas">
