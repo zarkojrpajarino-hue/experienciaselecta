@@ -76,7 +76,7 @@ const BasketCategories = () => {
     gradient: "from-secondary/10 to-secondary/5",
     basketImage: familiaCestasImg,
     order: 0,
-    inspirationalPhrase: "Sabores que unen generaciones.",
+    inspirationalPhrase: "Sabores que unen.",
     highlightColor: "#FFD700",
     arrowColor: "#FFD700",
     cestaColor: "#FFD700"
@@ -89,7 +89,7 @@ const BasketCategories = () => {
     gradient: "from-accent/10 to-accent/5",
     basketImage: amigosCestasImg,
     order: 1,
-    inspirationalPhrase: "Planes que se convierten en recuerdos.",
+    inspirationalPhrase: "Planes que crean recuerdos.",
     highlightColor: "#FFD700",
     arrowColor: "#FFD700",
     cestaColor: "#FFD700"
@@ -102,7 +102,7 @@ const BasketCategories = () => {
     gradient: "from-primary/10 to-primary/5",
     basketImage: parejaCestasImg,
     order: 2,
-    inspirationalPhrase: "Una experiencia íntima para disfrutar juntos.",
+    inspirationalPhrase: "Experiencia íntima juntos.",
     highlightColor: "#FFD700",
     arrowColor: "#FFD700",
     cestaColor: "#FFD700"
@@ -130,7 +130,7 @@ const BasketCategories = () => {
           </h2>
         </motion.div>
 
-        <div className="max-w-6xl mx-auto flex flex-col gap-16 sm:gap-20 mt-6">
+        <div className="max-w-6xl mx-auto flex flex-col gap-8 sm:gap-10 mt-6">
           {categories.sort((a, b) => a.order - b.order).map((category, index) => {
           const isAmigos = category.title === "Amigos";
           
@@ -166,8 +166,8 @@ const BasketCategories = () => {
           >
             {/* Línea separatoria blanca si no es el primer elemento */}
             {index > 0 && (
-              <div className="mb-12 sm:mb-16">
-                <div className="w-full h-[1px] bg-white/30"></div>
+              <div className="mb-8 sm:mb-10">
+                <div className="w-full h-[3px] bg-white/50"></div>
               </div>
             )}
 
@@ -207,7 +207,7 @@ const BasketCategories = () => {
                   >
                     {/* Title - Horizontal letters in center with arrow */}
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <h3 className="font-bebas font-bold text-lg sm:text-3xl text-white whitespace-nowrap" style={{ textTransform: 'none' }}>
+                      <h3 className="font-bebas font-bold text-lg sm:text-3xl text-white whitespace-nowrap tracking-[0.2em]" style={{ textTransform: 'none' }}>
                         {category.title}.
                       </h3>
                       <svg 
@@ -228,7 +228,7 @@ const BasketCategories = () => {
 
                     {/* Inspirational phrase - Below the card */}
                     <p 
-                      className="absolute -bottom-6 left-0 right-0 text-sm sm:text-base font-inter font-bold text-white text-center"
+                      className="absolute -bottom-6 left-0 right-0 text-base sm:text-lg md:text-xl font-inter font-bold text-white text-center"
                       style={{ textTransform: 'none' }}
                       dangerouslySetInnerHTML={{ __html: renderHighlightedPhrase(category.inspirationalPhrase, '#FFD700') }}
                     />
