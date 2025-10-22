@@ -186,10 +186,31 @@ const BasketCategories = () => {
         type: "spring",
         stiffness: 50,
         damping: 15
-      }} className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl mb-2 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
+      }} className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
             Escoja su categoría.
           </h2>
+          
+          {/* Botones de navegación debajo del título */}
+          <div className="flex items-center justify-center gap-8 mb-4">
+            <button
+              onClick={prevSlide}
+              className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            >
+              <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <button
+              onClick={nextSlide}
+              className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
+            >
+              <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </motion.div>
 
         {/* Carrusel 3D Container */}
@@ -221,7 +242,7 @@ const BasketCategories = () => {
                     {/* Card Container */}
                     <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
                       {/* Imagen */}
-                      <div className="w-full h-[250px] md:h-[350px] mb-6 rounded-3xl overflow-hidden">
+                      <div className="w-full h-[250px] md:h-[350px] mb-6 rounded-3xl overflow-hidden md:px-8">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
@@ -264,24 +285,6 @@ const BasketCategories = () => {
             })}
           </div>
 
-          {/* Botones de navegación */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-300"
-          >
-            <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-300"
-          >
-            <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
         </div>
       </div>
 
