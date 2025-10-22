@@ -218,7 +218,7 @@ const BasketCategories = () => {
         </motion.div>
 
         {/* Carrusel 3D Container */}
-        <div className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center mx-auto" style={{ perspective: '2000px' }}>
+        <div className="relative w-full h-[450px] md:h-[550px] flex items-center justify-center mx-auto" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
           <div className="absolute inset-0 flex items-center justify-center">
             {categories.map((category, index) => {
