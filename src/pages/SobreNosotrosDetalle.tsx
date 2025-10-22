@@ -69,10 +69,10 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#00BFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
             diferente.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             es <span style={{ color: '#00BFFF' }}>atreverse</span>.
           </p>
         </>
@@ -82,10 +82,10 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#FFD700",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
             pausa.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             es <span style={{ color: '#FFD700' }}>vivir</span>.
           </p>
         </>
@@ -95,10 +95,10 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#ff1493",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
             conocer.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             es <span style={{ color: '#ff1493' }}>escuchar</span>.
           </p>
         </>
@@ -108,10 +108,10 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#00BFFF",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
             valioso.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             necesita <span style={{ color: '#00BFFF' }}>tiempo</span>.
           </p>
         </>
@@ -121,10 +121,10 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#FFD700",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
             propósito.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             falta en <span style={{ color: '#FFD700' }}>planes</span>.
           </p>
         </>
@@ -134,10 +134,10 @@ const SobreNosotrosDetalle = () => {
     textColor: "#000000",
     navigationColor: "#ff1493",
     content: <>
-          <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
+          <h3 className="text-xl md:text-2xl font-rubik font-bold mb-4 lowercase first-letter:uppercase">
             sobremesas.
           </h3>
-          <p className="lowercase first-letter:capitalize">
+          <p className="font-poppins lowercase first-letter:capitalize">
             son <span style={{ color: '#ff1493' }}>disfrutar</span>.
           </p>
         </>
