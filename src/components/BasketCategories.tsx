@@ -166,8 +166,8 @@ const BasketCategories = () => {
           >
             {/* Línea separatoria blanca si no es el primer elemento */}
             {index > 0 && (
-              <div className="mb-8 sm:mb-10">
-                <div className="w-full h-[3px] bg-white/50"></div>
+              <div className="mb-8 sm:mb-10 -mx-4 sm:-mx-6 lg:-mx-8">
+                <div className="w-screen h-[4px] bg-white"></div>
               </div>
             )}
 
