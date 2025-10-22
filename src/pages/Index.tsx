@@ -17,6 +17,7 @@ import BasketCategories from "@/components/BasketCategories";
 import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
+import VisualHeader from "@/components/VisualHeader";
 import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
 import aboutBackgroundImg from "@/assets/sobre-nosotros-hero-final.jpg";
 import jamonPinzasImg from "@/assets/jamon-pinzas-primera.png";
@@ -387,57 +388,8 @@ const Index = () => {
       {/* <PageNavigation /> */}
       <ScrollDownIndicator />
       
-      {/* PRIMERA SECCIÓN - Process Steps */}
-      <section className="pt-32 md:pt-40 bg-black">
-        {/* Título y frase arriba de la imagen */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center mb-2">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
-              <span style={{ color: "#FFD700" }}>Experiencia</span> <span style={{ color: "#FFD700" }}>Selecta</span>.
-            </h1>
-            <p className="text-sm md:text-base font-poppins font-bold text-white max-w-2xl mx-auto mb-8">
-              En una sociedad en la que las <span style={{ color: "#FFD700" }}>pantallas</span> nos conectan con todos pero nos <span style={{ color: "#FFD700" }}>alejan</span> de nosotros mismos, donde vemos todo pero no <span style={{ color: "#FFD700" }}>sentimos</span> nada.
-            </p>
-          </motion.div>
-        </div>
-        
-        {/* Imagen de cesta con botón debajo */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-          <div className="flex flex-col items-center gap-6">
-            <div 
-              className="w-full h-[35vh] md:h-[40vh] overflow-hidden cursor-pointer bg-black"
-              onClick={() => setIsImageOpen(true)}
-              style={{ borderRadius: "1.5rem" }}
-            >
-              <img 
-                src={cestaHeroImage}
-                alt="Cesta de experiencia"
-                className="w-full h-full object-cover"
-                style={{ borderRadius: "1.5rem" }}
-              />
-            </div>
-            
-            <motion.button 
-              whileHover={{ scale: 1.05, color: '#FFD700' }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                const element = document.getElementById('categoria-cestas');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className="text-white hover:text-[#FFD700] px-8 py-4 font-work-sans font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 flex items-center gap-2 uppercase whitespace-nowrap"
-            >
-              ¡DESCUBRE TU <span style={{ color: "#FFD700" }}>EXPERIENCIA</span>!
-              <ChevronDown className="w-5 h-5" />
-            </motion.button>
-          </div>
-        </div>
-        
-        <RoundedImageCarousel slides={processSlides} />
-      </section>
+      <VisualHeader />
+      <RoundedImageCarousel slides={processSlides} />
       
       {/* SECCIÓN DE CATEGORÍAS - FAMILIA, PAREJA Y AMIGOS */}
       <div id="categoria-cestas">
