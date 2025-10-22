@@ -47,10 +47,10 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
 
           {/* Nav */}
           <div className="flex gap-6">
-            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} className="p-0 bg-transparent border-0 text-white/90">
+            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} className="p-0 bg-transparent border-0 text-black">
               <ChevronUp className="w-6 h-6" />
             </motion.button>
-            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIndex((p) => (p + 1) % slides.length)} className="p-0 bg-transparent border-0 text-white/90">
+            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => setIndex((p) => (p + 1) % slides.length)} className="p-0 bg-transparent border-0 text-black">
               <ChevronDown className="w-6 h-6" />
             </motion.button>
           </div>
@@ -71,7 +71,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               <img
                 src={s.image}
                 alt={s.alt || s.title}
-                className="w-full h-full object-cover md:object-contain"
+                className="w-full h-full object-cover"
               />
             </motion.div>
           ))}
