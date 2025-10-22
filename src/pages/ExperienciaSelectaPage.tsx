@@ -43,7 +43,7 @@ const ExperienciaSelectaPage = () => {
           >
             Selecta
           </h3>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg font-work-sans lowercase first-letter:capitalize" style={{ color: '#ff1493' }}>
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-work-sans lowercase first-letter:capitalize" style={{ color: '#ff1493' }}>
             Calidad sin igual.
           </p>
         </div>
