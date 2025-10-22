@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, X } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface SlideItem {
   image: string;
@@ -18,6 +19,7 @@ interface RoundedImageCarouselProps {
 const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }: RoundedImageCarouselProps) => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!autoPlay || paused) return;
@@ -67,12 +69,32 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
               initial={false}
               animate={{ opacity: index === i ? 1 : 0 }}
               transition={{ duration: 0.6 }}
-              className="absolute inset-0 w-full h-full object-contain rounded-3xl shadow-xl"
-              style={{ pointerEvents: index === i ? "auto" : "none" }}
+              className="absolute inset-0 w-full h-full object-contain rounded-3xl shadow-xl cursor-zoom-in"
+              style={{ pointerEvents: index === i ? "auto" : "none", borderRadius: "1.5rem" }}
+              onClick={() => setOpen(true)}
             />
           ))}
         </div>
       </div>
+
+      {/* Modal enlarge */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
+          <button
+            onClick={() => setOpen(false)}
+            className="absolute top-3 right-3 z-10 h-10 w-10 inline-flex items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80"
+            aria-label="Cerrar"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <img
+            src={current.image}
+            alt={current.alt || current.title}
+            className="w-full h-[70vh] object-contain rounded-3xl"
+            style={{ borderRadius: "1.5rem" }}
+          />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
