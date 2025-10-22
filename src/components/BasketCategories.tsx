@@ -246,7 +246,7 @@ const BasketCategories = () => {
                     {/* Card Container */}
                     <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
                       {/* Imagen */}
-                      <div className="w-full h-[250px] md:h-[350px] mb-4 rounded-3xl overflow-hidden md:px-8">
+                      <div className="w-full h-[250px] md:h-[350px] mb-4 rounded-3xl overflow-hidden md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
