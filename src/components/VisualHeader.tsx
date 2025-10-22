@@ -48,13 +48,13 @@ const VisualHeader = () => {
           <motion.button 
             whileHover={{ color: '#FFD700' }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 text-white font-bebas font-semibold text-base sm:text-lg transition-all duration-300 uppercase tracking-widest"
+            className="px-8 py-4 text-white font-bebas font-semibold text-xl sm:text-2xl md:text-3xl transition-all duration-300 uppercase tracking-widest"
             onClick={() => {
               const element = document.getElementById('categoria-cestas');
               element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
           >
-            ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!. <ChevronDown className="inline-block ml-2 w-5 h-5" />
+            ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!. <ChevronDown className="inline-block ml-2 w-6 h-6 md:w-8 md:h-8" />
           </motion.button>
         </motion.div>
       </div>
