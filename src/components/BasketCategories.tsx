@@ -218,7 +218,7 @@ const BasketCategories = () => {
         </motion.div>
 
         {/* Carrusel 3D Container */}
-        <div className="relative w-full h-[350px] md:h-[550px] flex items-center justify-center mx-auto" style={{ perspective: '2000px' }}>
+        <div className="relative w-full h-[280px] md:h-[550px] flex items-center justify-center mx-auto" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
           <div className="absolute inset-0 flex items-center justify-center">
             {categories.map((category, index) => {
@@ -228,7 +228,7 @@ const BasketCategories = () => {
               return (
                   <div
                     key={category.id}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[65%] sm:w-[70%] md:w-[65%] max-w-3xl"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[55%] sm:w-[65%] md:w-[65%] max-w-3xl"
                     style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
                     onClick={() => isActive && handleCategoryClick(category.title)}
                   >
@@ -246,7 +246,7 @@ const BasketCategories = () => {
                     {/* Card Container */}
                     <div className="relative bg-transparent rounded-3xl p-4 md:p-8 shadow-2xl border-0">
                       {/* Imagen */}
-                      <div className="w-full h-[160px] md:h-[350px] mb-4 rounded-3xl overflow-hidden px-0 md:px-2">
+                      <div className="w-full h-[120px] md:h-[350px] mb-4 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
