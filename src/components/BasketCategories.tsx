@@ -192,7 +192,7 @@ const BasketCategories = () => {
           </h2>
           
           <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
-            Elige con quién quieres compartir: <span className="text-gold font-bold">familia</span>, <span className="text-gold font-bold">pareja</span> o <span className="text-gold font-bold">amigos</span>.
+            Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#ADFF2F' }}>familia</span>, <span className="font-bold" style={{ color: '#FF1493' }}>pareja</span> o <span className="font-bold" style={{ color: '#00BFFF' }}>amigos</span>.
           </p>
           
           {/* Botones de navegación debajo del título */}
