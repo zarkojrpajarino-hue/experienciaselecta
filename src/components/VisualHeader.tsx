@@ -52,6 +52,9 @@ const VisualHeader = () => {
           >
             Descubre tu experiencia
           </motion.button>
+
+          {/* Separador blanco bajo el botón */}
+          <div className="mt-8 h-px bg-white/50 w-3/4 mx-auto" />
         </motion.div>
       </div>
     </section>;
