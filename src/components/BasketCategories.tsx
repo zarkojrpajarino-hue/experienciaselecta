@@ -226,12 +226,12 @@ const BasketCategories = () => {
               const isActive = (index - currentIndex + categories.length) % categories.length === 0;
 
               return (
-                <div
-                  key={category.id}
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[65%] max-w-3xl"
-                  style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
-                  onClick={() => isActive && handleCategoryClick(category.title)}
-                >
+                  <div
+                    key={category.id}
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[75%] sm:w-[80%] md:w-[65%] max-w-3xl"
+                    style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
+                    onClick={() => isActive && handleCategoryClick(category.title)}
+                  >
                   <motion.div
                     animate={{
                       x: position.x,
@@ -244,13 +244,13 @@ const BasketCategories = () => {
                     style={{ transformStyle: 'preserve-3d' }}
                   >
                     {/* Card Container */}
-                    <div className="relative bg-gradient-to-br from-black/90 to-black/70 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-white/20">
+                    <div className="relative bg-transparent rounded-3xl p-4 md:p-8 shadow-2xl border-0">
                       {/* Imagen */}
-                      <div className="w-full h-[250px] md:h-[350px] mb-4 rounded-3xl overflow-hidden md:px-2">
+                      <div className="w-full h-[200px] md:h-[350px] mb-4 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-3xl"
                         />
                       </div>
 
