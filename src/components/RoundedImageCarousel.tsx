@@ -36,12 +36,13 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000 }:
         <div className="w-full flex flex-col items-center justify-center py-4">
           <div className="px-6 max-w-4xl mb-4 text-center">
             <h3
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-cinzel font-bold tracking-wide lowercase first-letter:uppercase"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-work-sans font-bold tracking-wide"
+              style={{ textTransform: "none" }}
             >
               {current.title}
             </h3>
             {current.text && (
-              <p className="mt-2 text-base md:text-lg font-work-sans lowercase first-letter:capitalize">
+              <p className="mt-2 text-base md:text-lg font-work-sans" style={{ textTransform: "none" }}>
                 {current.text}
               </p>
             )}

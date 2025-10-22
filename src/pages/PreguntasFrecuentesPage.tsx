@@ -76,8 +76,8 @@ const PreguntasFrecuentesPage = () => {
       <div className="py-16 md:py-32 flex justify-center bg-white">
         <ContactModal>
           <div className="flex flex-col items-center gap-2 cursor-pointer">
-            <p className="text-black hover:text-gray-600 font-cinzel font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300">
-              Contáctanos
+            <p className="text-black hover:text-gray-600 font-work-sans font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300" style={{ textTransform: "none" }}>
+              Contáctanos.
             </p>
             <motion.div
               whileHover={{ scale: 1.1 }}
