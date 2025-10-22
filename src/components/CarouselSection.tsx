@@ -94,19 +94,18 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
 
         {/* Image Section */}
         <div 
-          className="w-full h-[35vh] md:h-[45vh] relative overflow-hidden cursor-pointer" 
+          className="w-full h-[35vh] md:h-[45vh] relative overflow-hidden cursor-pointer rounded-3xl" 
           style={{ 
             backgroundColor: currentSlide.backgroundColor || backgroundColor, 
             margin: 0, 
-            padding: 0,
-            borderRadius: "24px"
+            padding: 0
           }}
           onClick={() => setIsImageOpen(true)}
         >
           {slides.map((slide, index) => (
             <div
               key={`slide-${index}`}
-              className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+              className="absolute inset-0 transition-opacity duration-700 ease-in-out rounded-3xl"
               style={{
                 backgroundImage: `url(${slide.image})`,
                 backgroundSize: 'contain',
@@ -116,7 +115,6 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
                 pointerEvents: currentIndex === index ? 'auto' : 'none',
                 margin: 0,
                 padding: 0,
-                borderRadius: "24px",
                 transitionProperty: 'opacity, transform',
                 transitionDuration: '700ms, 500ms'
               }}
