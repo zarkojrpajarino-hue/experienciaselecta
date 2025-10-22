@@ -31,14 +31,14 @@ const PreguntasFrecuentesPage = () => {
   }, []);
 
   const faqSlides = [
-    { image: faqParejaRooftop, title: "¿Qué incluye <span class='text-gold'>cada cesta</span>?", text: "Contenido <span class='text-gold'>exclusivo personalizado</span>." },
-    { image: faqAmigosMesa, title: "¿Cuánto dura <span class='text-gold'>la experiencia</span>?", text: "A <span class='text-gold'>tu ritmo</span>." },
-    { image: faqParejaCostaNueva, title: "¿Para <span class='text-gold'>desconocidos</span>?", text: "Cestas para <span class='text-gold'>primeros encuentros</span>." },
-    { image: faqJamonPinzas, title: "¿<span class='text-gold'>Calidad</span> de productos?", text: "<span class='text-gold'>Certificada</span>." },
-    { image: faqProductoresLocales, title: "¿De dónde vienen <span class='text-gold'>los productos</span>?", text: "De <span class='text-gold'>productores locales</span>." },
-    { image: faqAmigosProyector, title: "¿Qué combináis en <span class='text-gold'>las experiencias</span>?", text: "<span class='text-gold'>Tradición española</span> con <span class='text-gold'>dinámicas modernas</span>." },
-    { image: faqParejaVinedo, title: "¿Cuál es <span class='text-gold'>vuestra filosofía</span>?", text: "Los mejores recuerdos <span class='text-gold'>se viven, no se graban</span>." },
-    { image: faqFamiliaPorche, title: "¿Por qué son importantes <span class='text-gold'>las conexiones</span>?", text: "Hablamos más pero <span class='text-gold'>escuchamos menos</span>." }
+    { image: faqParejaRooftop, title: "¿Qué incluye <span class='text-gold font-bold'>cada cesta</span>?", text: "Contenido <span class='text-gold font-bold'>exclusivo personalizado</span>." },
+    { image: faqAmigosMesa, title: "¿Cuánto dura <span class='text-gold font-bold'>la experiencia</span>?", text: "A <span class='text-gold font-bold'>tu ritmo</span>." },
+    { image: faqParejaCostaNueva, title: "¿Para <span class='text-gold font-bold'>desconocidos</span>?", text: "Cestas para <span class='text-gold font-bold'>primeros encuentros</span>." },
+    { image: faqJamonPinzas, title: "¿<span class='text-gold font-bold'>Calidad</span> de productos?", text: "<span class='text-gold font-bold'>Certificada</span>." },
+    { image: faqProductoresLocales, title: "¿De dónde vienen <span class='text-gold font-bold'>los productos</span>?", text: "De <span class='text-gold font-bold'>productores locales</span>." },
+    { image: faqAmigosProyector, title: "¿Qué combináis en <span class='text-gold font-bold'>las experiencias</span>?", text: "<span class='text-gold font-bold'>Tradición española</span> con <span class='text-gold font-bold'>dinámicas modernas</span>." },
+    { image: faqParejaVinedo, title: "¿Cuál es <span class='text-gold font-bold'>vuestra filosofía</span>?", text: "Los mejores recuerdos <span class='text-gold font-bold'>se viven, no se graban</span>." },
+    { image: faqFamiliaPorche, title: "¿Por qué son importantes <span class='text-gold font-bold'>las conexiones</span>?", text: "Hablamos más pero <span class='text-gold font-bold'>escuchamos menos</span>." }
   ];
 
 
