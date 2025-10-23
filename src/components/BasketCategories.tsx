@@ -58,71 +58,64 @@ const BasketCategories = () => {
       12: { category: 'Familia', groupSize: '7-8' },
     };
 
-    const handleHash = () => {
+    const scrollToHashElement = (retries = 0) => {
       const hash = window.location.hash;
+      if (!hash) return;
+
+      const match = hash.match(/^#cesta-(\d+)$/);
+      if (!match) return;
+
+      const basketId = parseInt(match[1]);
+      const basketInfo = idMap[basketId];
       
-      if (hash.startsWith('#cesta-')) {
-        const basketIdStr = hash.substring(7); // Extrae después de '#cesta-'
-        const basketId = parseInt(basketIdStr, 10);
-        
-        if (!isNaN(basketId)) {
-          const basketInfo = idMap[basketId];
-          
-          if (basketInfo) {
-            // Configurar estado para abrir el Sheet correcto
-            setSelectedCategory(basketInfo.category);
-            setGroupSize(basketInfo.groupSize);
-            setIsSheetOpen(true);
-            setSheetKey(prev => prev + 1);
-            
-            // Limpiar timeout anterior si existe
-            if (scrollTimeoutRef.current) {
-              clearTimeout(scrollTimeoutRef.current);
-            }
-            
-            // Esperar a que el Sheet se abra y renderice (1.2 segundos)
-            scrollTimeoutRef.current = setTimeout(() => {
-              const targetElement = document.getElementById(`cesta-${basketId}`);
-              
-              if (targetElement) {
-                // Hacer scroll al elemento
-                targetElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'center' 
-                });
-                
-                // Añadir highlight temporal
-                targetElement.style.transition = 'background-color 0.5s ease-in-out';
-                targetElement.style.backgroundColor = 'rgba(255, 235, 59, 0.3)';
-                
-                setTimeout(() => {
-                  targetElement.style.backgroundColor = '';
-                }, 1500);
-              } else {
-                console.warn(`Elemento cesta-${basketId} no encontrado en el DOM`);
-              }
-            }, 1200);
-          } else {
-            console.warn(`ID ${basketId} no existe en el catálogo`);
-          }
-        }
+      if (!basketInfo) {
+        console.warn(`ID ${basketId} no existe en el catálogo`);
+        return;
       }
+
+      // Configurar estado para abrir el Sheet correcto
+      setSelectedCategory(basketInfo.category);
+      setGroupSize(basketInfo.groupSize);
+      setIsSheetOpen(true);
+      setSheetKey(prev => prev + 1);
+
+      // Wait for DOM to update and then scroll
+      setTimeout(() => {
+        const element = document.getElementById(`cesta-${basketId}`);
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+          
+          // Add highlight effect with CSS classes
+          element.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
+          setTimeout(() => {
+            element.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
+          }, 2000);
+        } else if (retries < 10) {
+          // Retry if element not found yet
+          setTimeout(() => scrollToHashElement(retries + 1), 200);
+        } else {
+          console.warn(`Elemento cesta-${basketId} no encontrado en el DOM después de ${retries} intentos`);
+        }
+      }, 300);
     };
-    
-    // Ejecutar al montar el componente
-    handleHash();
-    
-    // Escuchar cambios en el hash
-    window.addEventListener('hashchange', handleHash);
-    
-    // Cleanup
+
+    // Scroll on mount
+    scrollToHashElement();
+
+    // Listen for hash changes
+    const handleHashChange = () => scrollToHashElement();
+    window.addEventListener('hashchange', handleHashChange);
+
     return () => {
-      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('hashchange', handleHashChange);
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, []); // Sin dependencias para que solo se ejecute al montar
+  }, []);
 
   // Determine background based on group size
   const getBackgroundImage = () => {
