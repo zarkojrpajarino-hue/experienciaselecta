@@ -37,6 +37,12 @@ const BasketCategories = () => {
   // Tooltip open state (show once on first visit + hover)
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const tooltipTimerRef = useRef<number | null>(null);
+  const openTooltipTemporarily = (ms = 2000) => {
+    setTooltipOpen(true);
+    if (tooltipTimerRef.current) window.clearTimeout(tooltipTimerRef.current);
+    tooltipTimerRef.current = window.setTimeout(() => setTooltipOpen(false), ms);
+  };
 
   // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
   useEffect(() => {
@@ -97,20 +103,47 @@ const BasketCategories = () => {
     };
   }, []);
 
-  // Auto-open tooltip when the section enters viewport
+  // Auto-open tooltip when the section enters viewport or when hash targets the section
   useEffect(() => {
     const el = sectionRef.current;
-    if (!el) return;
     let closeTimer: number | undefined;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setTooltipOpen(true);
-        closeTimer = window.setTimeout(() => setTooltipOpen(false), 2000);
+    const openOnce = () => {
+      setTooltipOpen(true);
+      closeTimer = window.setTimeout(() => setTooltipOpen(false), 2000);
+    };
+
+    const onHash = () => {
+      if (window.location.hash === '#categoria-cestas') {
+        openOnce();
       }
-    }, { threshold: 0.4 });
-    observer.observe(el);
+    };
+
+    if (el) {
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          openOnce();
+        }
+      }, { threshold: 0.1, rootMargin: '0px 0px -20% 0px' });
+      observer.observe(el);
+      // Initial checks
+      if (window.location.hash === '#categoria-cestas') {
+        openOnce();
+      }
+      window.addEventListener('hashchange', onHash);
+      return () => {
+        observer.disconnect();
+        window.removeEventListener('hashchange', onHash);
+        if (closeTimer) window.clearTimeout(closeTimer);
+      };
+    }
+
+    // Fallback if no ref available
+    if (window.location.hash === '#categoria-cestas') {
+      openOnce();
+    }
+    window.addEventListener('hashchange', onHash);
     return () => {
-      observer.disconnect();
+      window.removeEventListener('hashchange', onHash);
       if (closeTimer) window.clearTimeout(closeTimer);
     };
   }, []);
@@ -288,6 +321,10 @@ const BasketCategories = () => {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }
                     }}
+                    onMouseEnter={() => setTooltipOpen(true)}
+                    onMouseLeave={() => setTooltipOpen(false)}
+                    onFocus={() => setTooltipOpen(true)}
+                    onBlur={() => setTooltipOpen(false)}
                     className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
                     style={{ fontSize: 'inherit', color: '#FFD700' }}
                     animate={{ rotateZ: [0, 180, 0] }}
