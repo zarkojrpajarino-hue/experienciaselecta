@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
+import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -255,7 +255,7 @@ const BasketCategories = () => {
         stiffness: 50,
         damping: 15
       }} className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-2" style={{ textTransform: 'none' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-6" style={{ textTransform: 'none' }}>
             Escoja su categoría.
             <TooltipProvider>
               <Tooltip>
@@ -267,10 +267,11 @@ const BasketCategories = () => {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }
                     }}
-                    className="cursor-pointer hover:text-gold transition-colors duration-300"
-                    style={{ fontSize: 'inherit' }}
+                    className="cursor-pointer hover:opacity-80 transition-opacity duration-300 inline-flex items-center gap-2"
+                    style={{ fontSize: 'inherit', color: '#FFD700' }}
                   >
-                    ??
+                    ¿?
+                    <ArrowDown size={28} className="text-gold" />
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
