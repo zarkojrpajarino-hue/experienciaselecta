@@ -204,7 +204,7 @@ const BasketCategories = () => {
         {/* Contenedor flex para ordenar botones y carrusel */}
         <div className="flex flex-col md:flex-col items-center">
           {/* Botones de navegación - orden 2 en móvil, orden 1 en desktop */}
-          <div className="flex items-center justify-center gap-8 mb-4 order-2 md:order-1">
+          <div className="flex items-center justify-center gap-8 mb-2 md:mb-4 order-2 md:order-1">
             <button
               onClick={prevSlide}
               className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
@@ -225,7 +225,7 @@ const BasketCategories = () => {
           </div>
 
         {/* Carrusel 3D Container - orden 1 en móvil, orden 2 en desktop */}
-        <div className="relative w-full h-[180px] md:h-[450px] flex items-center justify-center mx-auto order-1 md:order-2" style={{ perspective: '2000px' }}>
+        <div className="relative w-full h-[180px] md:h-[450px] flex items-center justify-center mx-auto mt-0 order-1 md:order-2" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
           <div className="absolute inset-0 flex items-center justify-center">
             {categories.map((category, index) => {
