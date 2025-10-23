@@ -125,7 +125,7 @@ const ExperienciaSelectaPage = () => {
       </section>
 
       {/* Carrusel Section */}
-      <div className="py-4">
+      <div className="py-2">
         <CarouselSection 
           slides={experienciaSelectaSlides}
           imageHeightClasses="h-[220px] md:h-[260px]"

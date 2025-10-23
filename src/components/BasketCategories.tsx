@@ -96,19 +96,11 @@ const BasketCategories = () => {
     };
   }, []);
 
-  // Show tooltip once when section is visited
+  // Show tooltip once when section is visited (each time, not just once per session)
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem('basketTooltipShown') === 'true') return;
-    } catch (e) {
-      // ignore if sessionStorage is unavailable
-    }
     setTooltipOpen(true);
     const t = setTimeout(() => {
       setTooltipOpen(false);
-      try {
-        sessionStorage.setItem('basketTooltipShown', 'true');
-      } catch (e) {}
     }, 2000);
     return () => clearTimeout(t);
   }, []);
