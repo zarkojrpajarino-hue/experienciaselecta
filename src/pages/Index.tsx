@@ -13,7 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
 import BasketCTASection from "@/components/BasketCTASection";
-import BasketCatalog from "@/components/BasketCatalog";
+import BasketCategories from "@/components/BasketCategories";
 import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -59,8 +59,6 @@ const Index = () => {
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Familia');
-  const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -414,70 +412,10 @@ const Index = () => {
       {/* Espaciado blanco antes de categorías */}
       <div className="bg-white py-16"></div>
       
-      {/* SECCIÓN DE CATÁLOGO - FAMILIA, PAREJA Y AMIGOS */}
-      <section id="categoria-cestas" className="pt-8 pb-8 md:pt-10 md:pb-10 bg-black rounded-3xl mx-4 sm:mx-6 lg:mx-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0, x: -100, scale: 0.85 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 1.3, type: "spring", stiffness: 50, damping: 15 }}
-            className="text-center mb-8"
-          >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-3 leading-tight font-poppins font-bold text-white">
-              Nuestro catálogo de cestas.
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
-              Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
-            </p>
-          </motion.div>
-
-          {/* Category Filter Buttons */}
-          <div className="flex justify-center items-center gap-4 mb-8 flex-wrap">
-            <motion.button
-              onClick={() => setSelectedCategory('Familia')}
-              className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${
-                selectedCategory === 'Familia' 
-                  ? 'bg-[#4A7050] text-white scale-110' 
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Familia' ? 1.1 : 1.05 }}
-            >
-              Familia.
-            </motion.button>
-            
-            <motion.button
-              onClick={() => setSelectedCategory('Amigos')}
-              className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${
-                selectedCategory === 'Amigos' 
-                  ? 'bg-[#44667D] text-white scale-110' 
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Amigos' ? 1.1 : 1.05 }}
-            >
-              Amigos.
-            </motion.button>
-
-            <motion.button
-              onClick={() => setSelectedCategory('Pareja')}
-              className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${
-                selectedCategory === 'Pareja' 
-                  ? 'bg-[#782C23] text-white scale-110' 
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Pareja' ? 1.1 : 1.05 }}
-            >
-              Pareja.
-            </motion.button>
-          </div>
-        </div>
-      </section>
-
-      {/* Basket Catalog Section */}
-      <section className="py-8 md:py-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
-        </div>
-      </section>
+      {/* SECCIÓN DE CATEGORÍAS - FAMILIA, PAREJA Y AMIGOS */}
+      <div id="categoria-cestas">
+        <BasketCategories />
+      </div>
 
       {/* Image Modal for cesta */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
