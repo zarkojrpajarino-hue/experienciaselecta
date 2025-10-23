@@ -306,7 +306,7 @@ const BasketCategories = () => {
           <SheetHeader className="relative p-6 text-left bg-white" style={{ paddingTop: '3rem' }}>
             <div className="flex items-center justify-between">
               <div className="text-left">
-                <SheetTitle className="text-3xl font-poppins font-bold text-left text-black">
+                <SheetTitle className="text-2xl sm:text-3xl font-poppins font-bold text-left text-black whitespace-nowrap">
                   <span className="text-gold">Experiencia</span> Selecta
                 </SheetTitle>
             <SheetDescription className="font-work-sans font-bold text-left text-black">
