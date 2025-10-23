@@ -4,6 +4,7 @@ import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
 import catalogHeaderBg from "@/assets/catalog-header-background.jpg";
 import basketDetailsBg from "@/assets/basket-details-background.jpg";
@@ -254,8 +255,29 @@ const BasketCategories = () => {
         stiffness: 50,
         damping: 15
       }} className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-2" style={{ textTransform: 'none' }}>
             Escoja su categoría.
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span 
+                    onClick={() => {
+                      const element = document.getElementById('que-vendemos');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="cursor-pointer hover:text-gold transition-colors duration-300"
+                    style={{ fontSize: 'inherit' }}
+                  >
+                    ??
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>¿Qué vendemos?</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </h2>
           
           <p className="text-base sm:text-lg md:text-xl font-inter text-white">
@@ -357,24 +379,6 @@ const BasketCategories = () => {
               );
             })}
           </div>
-        </div>
-        
-        {/* Botón ¿Qué vendemos? debajo del carrusel */}
-        <div className="flex justify-center md:justify-end mt-4 md:mt-6 md:pr-[10%]">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              const element = document.getElementById('que-vendemos');
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-            }}
-            className="px-4 py-2 text-sm md:text-base rounded-full font-poppins font-bold text-black transition-all duration-300 whitespace-nowrap"
-            style={{ backgroundColor: '#FFD700', border: 'none' }}
-          >
-            ¿Qué vendemos?
-          </motion.button>
         </div>
         </div>
       </div>
