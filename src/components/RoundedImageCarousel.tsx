@@ -38,23 +38,23 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título principal */}
         {!hideMainTitle && (
-          <div className="text-center mb-6">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-poppins font-bold text-black tracking-wide">
+          <div className="text-center mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-poppins font-bold text-black tracking-wide">
               Déjanos explicarte como te entendemos.
             </h2>
           </div>
         )}
 
         {/* Text */}
-        <div className="w-full flex flex-col items-center justify-center py-4">
-          <div className="px-6 max-w-4xl mb-4 text-center">
+        <div className="w-full flex flex-col items-center justify-center py-3">
+          <div className="px-6 max-w-3xl mb-3 text-center">
             <h3
-              className={`text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
+              className={`text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-3xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
               style={{ textTransform: "none" }}
               dangerouslySetInnerHTML={{ __html: current.title }}
             />
             {current.text && (
-              <p className="mt-2 text-base md:text-lg font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: current.text }} />
+              <p className="mt-2 text-base md:text-base font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: current.text }} />
             )}
           </div>
 
@@ -97,7 +97,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         </div>
 
         {/* Image */}
-        <div className="w-full max-w-3xl md:max-w-6xl mx-auto h-[35vh] md:h-[50vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden">
+        <div className="w-full max-w-3xl md:max-w-4xl mx-auto h-[35vh] md:h-[40vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden">
           {slides.map((s, i) => (
             <motion.div
               key={i}
