@@ -1572,7 +1572,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             <X className="h-6 w-6" />
           </Button>
           {selectedImage && (
-            <div className="rounded-3xl overflow-hidden">
+            <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white">
               <img 
                 src={selectedImage} 
                 alt="Cesta completa"

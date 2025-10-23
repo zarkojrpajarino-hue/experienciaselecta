@@ -429,11 +429,11 @@ const Index = () => {
           >
             <X className="h-6 w-6" />
           </Button>
-          <div className="rounded-3xl overflow-hidden">
+          <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white">
             <img 
               src={cestaHeroImage} 
               alt="Cesta de experiencia ampliada" 
-              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" 
+              className="w-full h-auto max-h-[80vh] object-contain" 
             />
           </div>
         </DialogContent>
