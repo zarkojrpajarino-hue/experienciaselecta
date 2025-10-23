@@ -97,7 +97,7 @@ const NuestraIdentidadPage = () => {
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-0 shadow-none">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen">
           <Button 
             onClick={() => setIsImageOpen(false)} 
             className="absolute top-4 right-4 z-50 h-14 w-14 rounded-full bg-black/90 hover:bg-gold hover:text-black shadow-2xl transition-all duration-300 border-2 border-white/20" 
@@ -113,7 +113,7 @@ const NuestraIdentidadPage = () => {
           <img 
             src={trioIbericoImg} 
             alt="Nuestra Identidad" 
-            className="w-full h-auto max-h-[90vh] object-contain" 
+            className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" 
           />
         </DialogContent>
       </Dialog>

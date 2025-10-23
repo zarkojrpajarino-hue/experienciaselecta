@@ -132,12 +132,11 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen">
           <img 
             src={currentSlide.image} 
             alt="Ampliado" 
-            className="w-full h-[70vh] object-contain"
-            style={{ borderRadius: "1.5rem" }}
+            className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
           />
         </DialogContent>
       </Dialog>
