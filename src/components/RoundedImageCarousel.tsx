@@ -38,32 +38,32 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título principal */}
         {!hideMainTitle && (
-          <div className="text-center mb-4">
-            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-poppins font-bold text-black tracking-wide">
+          <div className="text-center mb-3">
+            <h2 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-poppins font-bold text-black tracking-wide">
               Déjanos explicarte como te entendemos.
             </h2>
           </div>
         )}
 
         {/* Text */}
-        <div className="w-full flex flex-col items-center justify-center py-3">
-          <div className="px-6 max-w-3xl mb-3 text-center">
+        <div className="w-full flex flex-col items-center justify-center py-2">
+          <div className="px-4 max-w-2xl mb-2 text-center">
             <h3
-              className={`text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-3xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
+              className={`text-base sm:text-lg md:text-lg lg:text-xl xl:text-2xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
               style={{ textTransform: "none" }}
               dangerouslySetInnerHTML={{ __html: current.title }}
             />
             {current.text && (
-              <p className="mt-2 text-base md:text-base font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: current.text }} />
+              <p className="mt-1 text-sm md:text-sm font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: current.text }} />
             )}
           </div>
 
           {/* Indicadores de puntos */}
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-3">
             {slides.map((_, i) => (
               <div
                 key={i}
-                className="w-3 h-3 rounded-full transition-all duration-300"
+                className="w-2.5 h-2.5 rounded-full transition-all duration-300"
                 style={{
                   backgroundColor: index === i 
                     ? (i % 2 === 0 ? '#000000' : '#FFD700')
@@ -74,7 +74,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           </div>
 
           {/* Nav */}
-          <div className="flex gap-6">
+          <div className="flex gap-4">
             <motion.button 
               whileHover={{ scale: 1.1 }} 
               whileTap={{ scale: 0.9 }} 
@@ -82,7 +82,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               className="p-0 bg-transparent border-0"
               style={{ color: '#000000' }}
             >
-              <ChevronLeft className="w-10 h-10" />
+              <ChevronLeft className="w-8 h-8" />
             </motion.button>
             <motion.button 
               whileHover={{ scale: 1.1 }} 
@@ -91,13 +91,13 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               className="p-0 bg-transparent border-0"
               style={{ color: '#000000' }}
             >
-              <ChevronRight className="w-10 h-10" />
+              <ChevronRight className="w-8 h-8" />
             </motion.button>
           </div>
         </div>
 
         {/* Image */}
-        <div className="w-full max-w-3xl md:max-w-4xl mx-auto h-[35vh] md:h-[40vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden">
+        <div className="w-full max-w-2xl md:max-w-3xl mx-auto h-[28vh] md:h-[32vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden">
           {slides.map((s, i) => (
             <motion.div
               key={i}
