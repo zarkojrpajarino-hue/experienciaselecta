@@ -419,7 +419,14 @@ const Index = () => {
 
       {/* Image Modal for cesta */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen overflow-hidden rounded-3xl">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-0 shadow-none overflow-hidden rounded-3xl">
+          <Button 
+            onClick={() => setIsImageOpen(false)} 
+            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+            size="icon"
+          >
+            <X className="h-6 w-6" />
+          </Button>
           <img 
             src={cestaHeroImage} 
             alt="Cesta de experiencia ampliada" 

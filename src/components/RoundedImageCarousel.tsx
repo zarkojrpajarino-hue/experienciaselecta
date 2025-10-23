@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface SlideItem {
   image: string;
@@ -119,7 +120,14 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
 
       {/* Modal enlarge */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen overflow-hidden rounded-3xl">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-0 shadow-none overflow-hidden rounded-3xl">
+          <Button 
+            onClick={() => setOpen(false)} 
+            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+            size="icon"
+          >
+            <X className="h-6 w-6" />
+          </Button>
           <img
             src={current.image}
             alt={current.alt || current.title}
