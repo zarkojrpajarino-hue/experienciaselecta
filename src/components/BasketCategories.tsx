@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -34,7 +34,6 @@ const BasketCategories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
   useEffect(() => {
@@ -233,15 +232,10 @@ const BasketCategories = () => {
     }
     return phrase;
   };
-  // Auto-show tooltip every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowTooltip(true);
-      setTimeout(() => setShowTooltip(false), 2000);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+  // Eliminado scroll automático al montar para evitar desplazamiento al abrir la página
+  // useEffect(() => {
+  //   // Antes: desplazaba a #recogida
+  // }, []);
 
   return <section id="recogida" className="pt-24 pb-24 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
@@ -263,48 +257,33 @@ const BasketCategories = () => {
       }} className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-6" style={{ textTransform: 'none' }}>
             Escoja su categoría.
-            <div className="relative">
-              <TooltipProvider delayDuration={80}>
-                <Tooltip open={showTooltip}>
-                  <TooltipTrigger asChild>
-                    <span 
-                      onClick={() => {
-                        const element = document.getElementById('que-vendemos');
-                        if (element) {
-                          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                      }}
-                      onMouseEnter={() => setShowTooltip(true)}
-                      onMouseLeave={() => setShowTooltip(false)}
-                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300 relative inline-block w-[1.6em]"
-                      style={{ fontSize: 'inherit', color: '#FFD700' }}
-                    >
-                      <span className="invisible">¿?</span>
-                      <motion.span 
-                        className="absolute inset-0"
-                        animate={{ opacity: [1, 0, 1] }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      >
-                        ¿?
-                      </motion.span>
-                      <motion.span 
-                        className="absolute inset-0"
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      >
-                        ?¿
-                      </motion.span>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent 
-                    className="bg-white text-black border-2 border-gold rounded-2xl px-4 py-2 shadow-lg relative before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-gold after:absolute after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-transparent after:border-b-white after:translate-y-[2px]"
-                    sideOffset={8}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.span 
+                    onClick={() => {
+                      const element = document.getElementById('que-vendemos');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                    style={{ fontSize: 'inherit', color: '#FFD700' }}
+                    animate={{ rotateZ: [0, 180, 0] }}
+                    transition={{ 
+                      duration: 3, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
                   >
-                    <p className="font-work-sans font-semibold">Haz click</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+                    ¿?
+                  </motion.span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Haz click</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </h2>
           
           <p className="text-base sm:text-lg md:text-xl font-inter text-white">

@@ -48,7 +48,7 @@ const ExperienceExplainer = () => {
     setIsAutoPlaying(false);
     setTimeout(() => setIsAutoPlaying(true), 8000);
   };
-  return <section className="py-4 px-4 bg-[url('/src/assets/experiencia-conecta-bg.jpg')] bg-cover bg-center bg-no-repeat relative before:absolute before:inset-0 before:bg-black/5 before:z-0 min-h-0 flex items-center justify-center" onMouseEnter={() => setIsAutoPlaying(false)} onMouseLeave={() => setIsAutoPlaying(true)}>
+  return <section className="py-24 px-4 bg-[url('/src/assets/experiencia-conecta-bg.jpg')] bg-cover bg-center bg-no-repeat relative before:absolute before:inset-0 before:bg-black/5 before:z-0 min-h-[78vh] flex items-center justify-center" onMouseEnter={() => setIsAutoPlaying(false)} onMouseLeave={() => setIsAutoPlaying(true)}>
       <div className="relative z-10 w-full">
         <div className="max-w-4xl mx-auto">
           {/* 3D Card Stack with rotation effect */}
