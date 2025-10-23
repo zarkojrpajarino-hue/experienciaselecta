@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import impactBackgroundImg from "@/assets/people-sharing-experience.jpg";
-import statsBackgroundImg from "@/assets/experiencia-gastronomica.jpg";
-import celebracionBackgroundImg from "@/assets/celebracion-iberica-nuevo.jpg";
+import statsBackgroundImg from "@/assets/experiencia-gastronomica-nueva.jpg";
+import celebracionBackgroundImg from "@/assets/celebracion-iberica-nuevo-2.jpg";
 
 const ImpactPage = () => {
   const [openStatId, setOpenStatId] = useState<number | null>(null);

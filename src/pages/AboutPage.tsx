@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import aboutBackgroundImg from "@/assets/sobre-nosotros-hero-marca.jpg";
-import basketImg from "@/assets/experiencia-selecta-nuevo.jpg";
+import basketImg from "@/assets/experiencia-selecta-nuevo-2.jpg";
 import teamBackgroundImg from "@/assets/equipo-background-nueva.jpg";
 import valuesAutenticidadImg from "@/assets/valores-autenticidad-bg.jpg";
 import valuesExcelenciaImg from "@/assets/valores-excelencia-bg.jpg";

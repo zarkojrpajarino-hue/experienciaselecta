@@ -21,12 +21,12 @@ import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
 import trioIbericoNuevoImg from "@/assets/trio-iberico-nuevo-2.jpg";
 import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-2.jpg";
 import ibericosSelectosNuevoImg from "@/assets/ibericos-selectos-nuevo-2.jpg";
-import familiarClasicaNuevoImg from "@/assets/familiar-clasica-nuevo.jpg";
-import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica.jpg";
-import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo.jpg";
-import celebracionIbericaNuevoImg from "@/assets/celebracion-iberica-nuevo.jpg";
-import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo.jpg";
-import experienciaSelectaImg from "@/assets/experiencia-selecta-nuevo.jpg";
+import familiarClasicaNuevoImg from "@/assets/familiar-clasica-nuevo-2.jpg";
+import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-nueva.jpg";
+import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-2.jpg";
+import celebracionIbericaNuevoImg from "@/assets/celebracion-iberica-nuevo-2.jpg";
+import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo-2.jpg";
+import experienciaSelectaImg from "@/assets/experiencia-selecta-nuevo-2.jpg";
 
 // Import images - Grupos 6-8
 import celebracionIbericaImg from "@/assets/celebracion-iberica.png";

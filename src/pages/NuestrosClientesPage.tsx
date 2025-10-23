@@ -12,9 +12,9 @@ import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
 import amigosExperience from "@/assets/amigos-experience.jpg";
 import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-2.jpg";
 import parejaExperience from "@/assets/pareja-experience.jpg";
-import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo.jpg";
+import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo-2.jpg";
 import familiaExperience from "@/assets/familia-experience.jpg";
-import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo.jpg";
+import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-2.jpg";
 import grupoMedianoExperience from "@/assets/grupo-mediano-experience.jpg";
 const NuestrosClientesPage = () => {
   const navigate = useNavigate();

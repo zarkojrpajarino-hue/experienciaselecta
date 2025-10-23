@@ -17,11 +17,11 @@ import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
 import trioIbericoImg from "@/assets/trio-iberico-nuevo-2.jpg";
 import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo-2.jpg";
 import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo-2.jpg";
-import familiarClasicaImg from "@/assets/familiar-clasica-nuevo.jpg";
-import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica.jpg";
-import granTertuliaImg from "@/assets/gran-tertulia-nuevo.jpg";
-import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo.jpg";
-import festinSelectoImg from "@/assets/festin-selecto-nuevo.jpg";
+import familiarClasicaImg from "@/assets/familiar-clasica-nuevo-2.jpg";
+import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-nueva.jpg";
+import granTertuliaImg from "@/assets/gran-tertulia-nuevo-2.jpg";
+import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-2.jpg";
+import festinSelectoImg from "@/assets/festin-selecto-nuevo-2.jpg";
 import profileBgImg from "@/assets/perfil-marca-final.jpg";
 import valoracionesBgImg from "@/assets/valoraciones-background.jpg";
 
