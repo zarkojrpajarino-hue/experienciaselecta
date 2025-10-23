@@ -341,6 +341,20 @@ const Index = () => {
   useEffect(() => {
     const locationState = location.state as { preventScroll?: boolean } | null;
     
+    // Prevent anchor auto-scroll ONLY on first load
+    const firstLoadHandled = sessionStorage.getItem('initialLoadHandled');
+    if (!firstLoadHandled) {
+      sessionStorage.setItem('initialLoadHandled', 'true');
+      if (location.pathname === '/' && location.hash) {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+          // Remove hash from URL to keep user at top
+          window.history.replaceState({}, document.title, '/');
+        });
+        return;
+      }
+    }
+    
     // If preventScroll is set, restore the saved scroll position smoothly
     if (locationState?.preventScroll) {
       const savedScrollPosition = sessionStorage.getItem('scrollPosition');
