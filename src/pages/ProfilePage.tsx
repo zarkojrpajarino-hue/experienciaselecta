@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 // Import images
@@ -667,9 +667,18 @@ const ProfilePage = () => {
           {/* Image Zoom Modal */}
           {zoomedImage && (
             <div 
-              className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 cursor-pointer"
-              onClick={() => setZoomedImage(null)}
+              className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setZoomedImage(null);
+              }}
             >
+              <Button 
+                onClick={() => setZoomedImage(null)} 
+                className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+                size="icon"
+              >
+                <X className="h-6 w-6" />
+              </Button>
               <img 
                 src={zoomedImage} 
                 alt="Cesta ampliada"
