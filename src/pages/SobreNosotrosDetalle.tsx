@@ -169,7 +169,7 @@ const SobreNosotrosDetalle = () => {
       
       
       {/* Sección Porque Elegirnos */}
-      <section id="porque-elegirnos-section" className="pb-24">
+      <section id="porque-elegirnos-section" className="py-4">
         <CarouselSection slides={benefitsSlides} position="right" />
       </section>
 
