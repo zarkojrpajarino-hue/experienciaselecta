@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
-import nuestrosClientesBg from "@/assets/nuestros-clientes-bg.png";
+import nuestrosClientesBg from "@/assets/nuestros-clientes-bg-clean.png";
 import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
 import conversacionNaturalImg from "@/assets/pareja-natural-nueva-clean.jpg";
 import amigosExperience from "@/assets/amigos-experience.jpg";
@@ -102,7 +102,7 @@ const NuestrosClientesPage = () => {
             x: 0
           }} transition={{
             duration: 0.5
-          }} className="mb-0 md:mb-4 pt-1">
+          }} className="mb-0 md:mb-12 pt-1">
               <Button onClick={() => navigate("/#categoria-cestas")} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent">
                 <ArrowLeft className="w-5 h-5 mr-2" />
                 Volver
@@ -112,7 +112,7 @@ const NuestrosClientesPage = () => {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-0 pb-20 mt-10 md:-mt-16">
+        <section className="py-0 pb-20 mt-10 md:mt-0">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="relative">
