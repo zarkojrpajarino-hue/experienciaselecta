@@ -134,7 +134,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
             <img
               src={current.image}
               alt={current.alt || current.title}
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
             />
           </div>
         </DialogContent>
