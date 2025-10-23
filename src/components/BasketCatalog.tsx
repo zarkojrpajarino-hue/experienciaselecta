@@ -1525,7 +1525,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
       {/* Image Dialog */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
+        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de cesta</DialogTitle>
           <DialogDescription className="sr-only">
             Imagen ampliada de la cesta seleccionada
@@ -1541,7 +1541,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             <img 
               src={selectedImage} 
               alt="Cesta completa"
-              className="w-full h-auto max-h-[80vh] object-contain rounded-2xl"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
               loading="eager"
               decoding="async"
             />

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -56,7 +56,9 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
+        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
+          <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
+          <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
             onClick={() => setIsImageOpen(false)} 
             className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
@@ -67,7 +69,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
           <img 
             src={image} 
             alt={imageAlt} 
-            className="w-full h-auto max-h-[80vh] object-contain rounded-2xl" 
+            className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" 
           />
         </DialogContent>
       </Dialog>
