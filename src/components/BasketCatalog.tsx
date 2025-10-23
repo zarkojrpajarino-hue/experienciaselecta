@@ -1308,7 +1308,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
 
                     {/* Center: Imagen centrada */}
-                    <div className="col-span-2 flex justify-center my-4">
+                    <div className="col-span-2 flex flex-col items-center my-4 gap-3">
                       <div 
                         className="relative w-56 h-44 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300"
                         onClick={() => setSelectedImage(basket.imagen)}
@@ -1319,24 +1319,42 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     className="w-full h-full object-cover rounded-3xl"
                   />
                       </div>
-                    </div>
-
-                    {/* Center: Personas y Precio por persona */}
-                    <div className="col-span-2 flex justify-center mt-1">
-                      {basket.personas && basket.costePersona && (
-                        <p className={`text-base sm:text-lg font-bold ${colorCombo.text} basket-coste text-center whitespace-nowrap`}>
-                          {basket.personas} personas - <span className={`${colorCombo.important} font-bold text-lg sm:text-xl`}>{basket.costePersona}</span>
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Center: Añadir al carrito - Compacto */}
-                    <div className="col-span-2 flex justify-center mt-2">
+                      
+                      {/* Añadir al carrito - Justo debajo de la imagen */}
                       <AddToCartButton 
                         onClick={() => handleAddToCart(basket)}
                         price={basket.precio}
-                        className={colorCombo.text}
+                        className="text-black"
                       />
+                    </div>
+
+                    {/* Center: Coste por persona - Desplegable */}
+                    <div className="col-span-2 flex justify-center">
+                      <div className="w-full max-w-md">
+                        <Collapsible
+                          open={openIdeal[basket.id]}
+                          onOpenChange={() => setOpenIdeal(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
+                        >
+                          <CollapsibleTrigger asChild>
+                            <button className={`w-full flex items-center justify-between gap-2 ${colorCombo.text} hover:opacity-80 transition-opacity py-2 px-4 rounded-lg hover:bg-black/5 border border-black/10`}>
+                              <span className="text-sm font-bold lowercase first-letter:capitalize">
+                                coste por persona
+                              </span>
+                              {openIdeal[basket.id] ? 
+                                <ChevronUp className="w-4 h-4 flex-shrink-0" /> : 
+                                <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                              }
+                            </button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-2">
+                            {basket.personas && basket.costePersona && (
+                              <p className={`text-base sm:text-lg font-bold ${colorCombo.text} text-center`}>
+                                {basket.personas} personas - <span className={`${colorCombo.important} font-bold text-lg sm:text-xl`}>{basket.costePersona}</span>
+                              </p>
+                            )}
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
                     </div>
 
                   </div>

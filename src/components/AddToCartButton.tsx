@@ -9,12 +9,12 @@ interface AddToCartButtonProps {
 const AddToCartButton = ({ onClick, price, className = "" }: AddToCartButtonProps) => {
   return (
     <div 
-      className={`relative inline-block ${className}`}
+      className={`relative inline-block`}
       style={{ perspective: '800px' }}
     >
       <button
         onClick={onClick}
-        className="relative bg-transparent text-white font-bold text-base transition-all duration-300 border-0 rounded-xl px-4 py-2 flex items-center gap-2 hover:scale-105 whitespace-nowrap"
+        className="relative bg-transparent text-black font-bold text-base transition-all duration-300 border-0 rounded-xl px-4 py-2 flex items-center gap-2 hover:scale-105 whitespace-nowrap"
         style={{ 
           transformStyle: 'preserve-3d',
           cursor: 'pointer'
@@ -41,7 +41,7 @@ const AddToCartButton = ({ onClick, price, className = "" }: AddToCartButtonProp
       >
         <ShoppingCart className="w-4 h-4" />
         <span>
-          añadir - <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span>
+          añadir al carrito - <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span>
         </span>
       </button>
     </div>
