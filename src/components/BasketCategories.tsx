@@ -264,10 +264,10 @@ const BasketCategories = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-6" style={{ textTransform: 'none' }}>
             Escoja su categoría.
             <div className="relative">
-              <TooltipProvider delayDuration={200}>
+              <TooltipProvider delayDuration={80}>
                 <Tooltip open={showTooltip}>
                   <TooltipTrigger asChild>
-                    <motion.span 
+                    <span 
                       onClick={() => {
                         const element = document.getElementById('que-vendemos');
                         if (element) {
@@ -276,17 +276,25 @@ const BasketCategories = () => {
                       }}
                       onMouseEnter={() => setShowTooltip(true)}
                       onMouseLeave={() => setShowTooltip(false)}
-                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300 relative inline-block w-[1.6em]"
                       style={{ fontSize: 'inherit', color: '#FFD700' }}
-                      animate={{ rotateZ: [0, 180, 0] }}
-                      transition={{ 
-                        duration: 3, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
                     >
-                      ¿?
-                    </motion.span>
+                      <span className="invisible">¿?</span>
+                      <motion.span 
+                        className="absolute inset-0"
+                        animate={{ opacity: [1, 0, 1] }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        ¿?
+                      </motion.span>
+                      <motion.span 
+                        className="absolute inset-0"
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        ?¿
+                      </motion.span>
+                    </span>
                   </TooltipTrigger>
                   <TooltipContent 
                     className="bg-white text-black border-2 border-gold rounded-2xl px-4 py-2 shadow-lg relative before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-gold after:absolute after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-transparent after:border-b-white after:translate-y-[2px]"
