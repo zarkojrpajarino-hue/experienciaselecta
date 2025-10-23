@@ -1,4 +1,4 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ArrowRight } from "lucide-react";
 
 interface AddToCartButtonProps {
   onClick: () => void;
@@ -40,8 +40,8 @@ const AddToCartButton = ({ onClick, price, className = "" }: AddToCartButtonProp
         }}
       >
         <ShoppingCart className="w-4 h-4" />
-        <span>
-          Añadir al carrito <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span>.
+        <span className="flex items-center gap-1">
+          Añadir al carrito <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span> <ArrowRight className="w-4 h-4 text-black" />
         </span>
       </button>
     </div>

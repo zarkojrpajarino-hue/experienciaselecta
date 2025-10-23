@@ -1349,7 +1349,14 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           <CollapsibleContent className="mt-2">
                             {basket.costePersona && (
                               <p className={`text-base sm:text-lg font-bold text-center`}>
-                                <span style={{ color: '#FFD700' }} className="font-bold text-lg sm:text-xl">{basket.costePersona}</span>
+                                {basket.costePersona.split(/(\([^)]+\))/).map((part, index) => {
+                                  if (part.match(/\([^)]+\)/)) {
+                                    return <span key={index} className="text-black">{part}</span>;
+                                  } else if (part.trim()) {
+                                    return <span key={index} style={{ color: '#FFD700' }} className="font-bold text-lg sm:text-xl">{part}</span>;
+                                  }
+                                  return null;
+                                })}
                               </p>
                             )}
                           </CollapsibleContent>
