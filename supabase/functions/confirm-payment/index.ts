@@ -23,6 +23,22 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     });
 
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('No authorization header');
+    }
+
+    const jwt = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabase.auth.getUser(jwt);
+    
+    if (userError || !user) {
+      console.error('Authentication error');
+      throw new Error('Authentication required');
+    }
+
+    console.log('User authenticated:', user.id);
+
     const { paymentIntentId } = await req.json();
 
     console.log('Processing payment confirmation');
@@ -31,6 +47,35 @@ serve(async (req) => {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     
     if (paymentIntent.status === 'succeeded') {
+      // Verify user owns the order before updating
+      const { data: orderCheck, error: orderCheckError } = await supabase
+        .from('orders')
+        .select(`
+          id,
+          customer_id,
+          customers!inner (
+            user_id
+          )
+        `)
+        .eq('stripe_payment_intent_id', paymentIntentId)
+        .single();
+
+      if (orderCheckError || !orderCheck) {
+        console.error('Order not found:', orderCheckError);
+        throw new Error('Order not found');
+      }
+
+      // Extract user_id from customers (it's returned as an array due to join)
+      const customerUserId = (orderCheck.customers as any).user_id || (orderCheck.customers as any)[0]?.user_id;
+      
+      // Verify the authenticated user owns this order
+      if (customerUserId !== user.id) {
+        console.error('Unauthorized: User does not own this order');
+        throw new Error('Unauthorized access');
+      }
+
+      console.log('User authorization verified for order:', orderCheck.id);
+
       // Update order status
       const { error: updateError } = await supabase
         .from('orders')
