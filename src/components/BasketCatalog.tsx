@@ -201,41 +201,41 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         {
           id: 1,
           nombre: "Pareja Inicial",
-          precio: 35,
+          precio: 30,
           descripcion: "Primera experiencia con sabores ibéricos.",
           categoria: "Accesible",
           sinAlcohol: false,
           productos: [
-            "Salchichón de jabalí loncheado 80 gr",
+            "Salchichón de pato 250 gr",
             "Jamón Reserva 100 gr",
             "Paté de morcilla 100 gr",
-            "Manzanilla La Gitana",
-            "Piquitos"
+            "Ricardo del Duero Ricardo Dumas 75 cl",
+            "Piquitos 250 gr"
           ],
           ideal: (
             <>
               Parejas que buscan una <span className="text-gold font-bold">primera experiencia gourmet</span> con productos de <span className="text-gold font-bold">calidad excepcional</span>
             </>
           ),
-          maridaje: "La manzanilla realza sabores del jamón.",
+          maridaje: "El Ricardo del Duero realza los sabores del jamón y embutidos.",
           personas: "2",
-          costePersona: "17.50€",
+          costePersona: "15€",
           imagen: parejaInicialImg
         },
         {
           id: 2,
-          nombre: "Conversación Natural (sin alcohol)",
-          precio: 45,
+          nombre: "Pareja Natural (sin alcohol)",
+          precio: 40,
           descripcion: "Selección refinada para momentos especiales.",
           categoria: "Sin Alcohol",
           sinAlcohol: true,
           productos: [
             "Salchichón de pato 250 gr",
-            "Jamón reserva 100 gr",
-            "Piquitos",
-            "Paté de ciervo tarro 100 gr",
-            "Lomo de jabalí al romero loncheado 80 gr",
-            "Chorizo de gamo loncheado 80 gr"
+            "Jamón Reserva 100 gr",
+            "Paté de ciervo 100 gr",
+            "Chorizo de gamo 250 gr",
+            "Queso de Oveja Diablo 200 gr",
+            "Piquitos 250 gr"
           ],
           ideal: (
             <>
@@ -244,33 +244,32 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ),
           maridaje: "Disfruta de sabores puros sin necesidad de maridaje.",
           personas: "2",
-          costePersona: "22.50€",
+          costePersona: "20€",
           imagen: conversacionNaturalImg
         },
         {
           id: 3,
           nombre: "Pareja Gourmet",
-          precio: 55,
+          precio: 50,
           descripcion: "Máxima calidad seleccionada.",
           categoria: "Luxury",
           sinAlcohol: false,
           productos: [
-            "Ribera del Duero Ricardo Dumas",
-            "Jamón ibérico 50% 100 gr",
+            "Vino Tinto Entrechuelos Roble 75 cl",
+            "Jamón 100% Ibérico 100 gr",
             "Chorizo de pato 250 gr",
-            "Salchichón de gamo 250 gr",
-            "Paté de pato tarro 100 gr",
-            "Queso oveja curado trufa negra 200 gr",
-            "Piquitos"
+            "Paté de pato 100 gr",
+            "Queso de oveja de trufa 200 gr",
+            "Piquitos 250 gr"
           ],
           ideal: (
             <>
               <span className="text-gold font-bold">Ocasiones especiales</span> que merecen <span className="text-gold font-bold">lo mejor</span>, con jamón <span className="text-gold font-bold">ibérico</span>
             </>
           ),
-          maridaje: "Ribera del duero realza jamón y queso.",
+          maridaje: "El Entrechuelos Roble realza el jamón ibérico y queso trufado.",
           personas: "2",
-          costePersona: "27.50€",
+          costePersona: "25€",
           imagen: parejaGourmetImg
         }
       ];
