@@ -254,27 +254,9 @@ const BasketCategories = () => {
         stiffness: 50,
         damping: 15
       }} className="text-center mb-8">
-          <div className="flex items-center justify-center gap-4 mb-3">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
-              Escoja su categoría.
-            </h2>
-            
-            {/* Botón ¿Qué vendemos? */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                const element = document.getElementById('que-vendemos');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-              }}
-              className="px-4 py-2 text-sm rounded-full font-poppins font-bold text-black transition-all duration-300"
-              style={{ backgroundColor: '#FFD700', border: 'none' }}
-            >
-              ¿Qué vendemos?
-            </motion.button>
-          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white" style={{ textTransform: 'none' }}>
+            Escoja su categoría.
+          </h2>
           
           <p className="text-base sm:text-lg md:text-xl font-inter text-white">
             Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
@@ -375,6 +357,24 @@ const BasketCategories = () => {
               );
             })}
           </div>
+        </div>
+        
+        {/* Botón ¿Qué vendemos? debajo del carrusel */}
+        <div className="flex justify-center mt-6">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              const element = document.getElementById('que-vendemos');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }}
+            className="px-4 py-2 text-sm rounded-full font-poppins font-bold text-black transition-all duration-300"
+            style={{ backgroundColor: '#FFD700', border: 'none', marginLeft: '10%' }}
+          >
+            ¿Qué vendemos?
+          </motion.button>
         </div>
         </div>
       </div>
