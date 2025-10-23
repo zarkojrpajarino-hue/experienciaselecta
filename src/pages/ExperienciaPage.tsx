@@ -2,7 +2,7 @@
 import ProcessSteps from "@/components/ProcessSteps";
 import AboutSection from "@/components/AboutSection";
 import PageNavigation from "@/components/PageNavigation";
-import experienciaBg from "@/assets/experiencia-selecta-nuevo-2.jpg";
+import experienciaBg from "@/assets/experiencia-selecta-nuevo-clean.jpg";
 
 const ExperienciaPage = () => {
   return (

@@ -11,17 +11,17 @@ import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp } from "lucide-r
 import Navbar from "@/components/Navbar";
 
 // Import images
-import parejaInicialImg from "@/assets/pareja-inicial-nueva-3.jpg";
-import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
-import trioIbericoImg from "@/assets/trio-iberico-nuevo-2.jpg";
-import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo-2.jpg";
-import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo-2.jpg";
-import familiarClasicaImg from "@/assets/familiar-clasica-nuevo-2.jpg";
-import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-nueva.jpg";
-import granTertuliaImg from "@/assets/gran-tertulia-nuevo-2.jpg";
-import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-2.jpg";
-import festinSelectoImg from "@/assets/festin-selecto-nuevo-2.jpg";
+import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-clean.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
+import trioIbericoImg from "@/assets/trio-iberico-nuevo-clean.jpg";
+import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo-clean.jpg";
+import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo-clean.jpg";
+import familiarClasicaImg from "@/assets/familiar-clasica-nuevo-clean.jpg";
+import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-clean.jpg";
+import granTertuliaImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
+import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
+import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
 import profileBgImg from "@/assets/perfil-marca-final.jpg";
 import valoracionesBgImg from "@/assets/valoraciones-background.jpg";
 

@@ -13,20 +13,20 @@ import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
 
 // Import images - Pareja
-import parejaInicialImg from "@/assets/pareja-inicial-nueva-3.jpg";
-import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
+import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-clean.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
 
 // Import images - Familia/Amigos
-import trioIbericoNuevoImg from "@/assets/trio-iberico-nuevo-2.jpg";
-import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-2.jpg";
-import ibericosSelectosNuevoImg from "@/assets/ibericos-selectos-nuevo-2.jpg";
-import familiarClasicaNuevoImg from "@/assets/familiar-clasica-nuevo-2.jpg";
-import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-nueva.jpg";
-import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-2.jpg";
-import celebracionIbericaNuevoImg from "@/assets/celebracion-iberica-nuevo-2.jpg";
-import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo-2.jpg";
-import experienciaSelectaImg from "@/assets/experiencia-selecta-nuevo-2.jpg";
+import trioIbericoNuevoImg from "@/assets/trio-iberico-nuevo-clean.jpg";
+import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-clean.jpg";
+import ibericosSelectosNuevoImg from "@/assets/ibericos-selectos-nuevo-clean.jpg";
+import familiarClasicaNuevoImg from "@/assets/familiar-clasica-nuevo-clean.jpg";
+import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-clean.jpg";
+import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
+import celebracionIbericaNuevoImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
+import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
+import experienciaSelectaImg from "@/assets/experiencia-selecta-nuevo-clean.jpg";
 
 // Import images - Grupos 6-8
 import celebracionIbericaImg from "@/assets/celebracion-iberica.png";

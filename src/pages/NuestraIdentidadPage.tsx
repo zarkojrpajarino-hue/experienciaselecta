@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useEffect } from "react";
-import trioIbericoImg from "@/assets/trio-iberico-nuevo-2.jpg";
+import trioIbericoImg from "@/assets/trio-iberico-nuevo-clean.jpg";
 const NuestraIdentidadPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
