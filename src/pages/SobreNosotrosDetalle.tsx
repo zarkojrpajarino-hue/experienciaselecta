@@ -170,11 +170,11 @@ const SobreNosotrosDetalle = () => {
       
       {/* Sección Porque Elegirnos */}
       <section id="porque-elegirnos-section" className="relative overflow-hidden py-2">
-        <CarouselSection slides={benefitsSlides} position="right" imageHeightClasses="h-[220px] md:h-[260px]" />
+        <CarouselSection slides={benefitsSlides} position="right" imageHeightClasses="h-[180px] md:h-[220px]" />
       </section>
 
       {/* Botón Ver Más Sobre Nosotros */}
-      <div className="pb-8 flex justify-center">
+      <div className="pt-12 pb-8 flex justify-center">
         <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
           const element = document.getElementById('carousel-section');
           if (element) {
