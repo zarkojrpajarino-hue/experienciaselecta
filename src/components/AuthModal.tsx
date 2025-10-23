@@ -57,7 +57,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
   const handleGoogleSignIn = async () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
@@ -65,23 +65,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
             access_type: 'offline',
             prompt: 'consent',
           },
-          skipBrowserRedirect: true,
         }
       });
 
       if (error) throw error;
-      if (data?.url) {
-        const win = window.open(data.url, '_blank', 'noopener,noreferrer');
-        if (!win) {
-          if (window.top) {
-            (window.top as Window).location.href = data.url;
-          } else {
-            window.location.href = data.url;
-          }
-        }
-      } else {
-        throw new Error('No se pudo iniciar la redirección de Google.');
-      }
+      
+      // Supabase maneja la redirección automáticamente
+      // No necesitamos hacer nada más aquí
     } catch (error: any) {
       toast({
         variant: "destructive",
