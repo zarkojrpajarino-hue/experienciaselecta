@@ -169,13 +169,10 @@ const BasketCategories = () => {
     }
     return phrase;
   };
-  useEffect(() => {
-    // Scroll to this section when component mounts
-    const section = document.getElementById('recogida');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, []);
+  // Eliminado scroll automático al montar para evitar desplazamiento al abrir la página
+  // useEffect(() => {
+  //   // Antes: desplazaba a #recogida
+  // }, []);
 
   return <section id="recogida" className="pt-20 pb-20 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}

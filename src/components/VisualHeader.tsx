@@ -48,7 +48,7 @@ const VisualHeader = () => {
           <motion.button 
             whileHover={{ color: '#FFD700' }}
             whileTap={{ scale: 0.95 }}
-            className="px-6 py-3 text-white font-poppins font-semibold text-base sm:text-lg md:text-xl transition-all duration-300 uppercase tracking-widest"
+            className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap mt-0 sm:mt-8 md:mt-12"
             onClick={() => {
               const element = document.getElementById('categoria-cestas');
               element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
