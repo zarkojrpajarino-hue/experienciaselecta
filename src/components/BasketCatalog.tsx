@@ -1347,9 +1347,9 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             </button>
                           </CollapsibleTrigger>
                           <CollapsibleContent className="mt-2">
-                            {basket.personas && basket.costePersona && (
+                            {basket.costePersona && (
                               <p className={`text-base sm:text-lg font-bold text-center`}>
-                                <span style={{ color: '#FFD700' }} className="font-bold text-lg sm:text-xl">{basket.costePersona}</span> <span className="text-black">({basket.personas} personas)</span>
+                                <span style={{ color: '#FFD700' }} className="font-bold text-lg sm:text-xl">{basket.costePersona}</span>
                               </p>
                             )}
                           </CollapsibleContent>
