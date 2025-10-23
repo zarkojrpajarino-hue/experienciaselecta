@@ -345,14 +345,14 @@ const ProfilePage = () => {
         style={{
           backgroundImage: `url(${activeTab === 'reviews' ? valoracionesBgImg : profileBgImg})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center 40%',
           // backgroundAttachment: 'fixed', // removed for mobile compatibility
           backgroundColor: 'hsl(var(--petroleo))'
         }}
       >
-        <img src={activeTab === 'reviews' ? valoracionesBgImg : profileBgImg} alt="Fondo de la página de perfil" className="absolute inset-0 w-full h-full object-cover z-0 rounded-3xl" loading="lazy" style={{ clipPath: 'inset(0 0 3% 0)' }} />
+        <img src={activeTab === 'reviews' ? valoracionesBgImg : profileBgImg} alt="Fondo de la página de perfil" className="absolute inset-0 w-full h-full object-cover z-0" loading="lazy" style={{ objectPosition: 'center 40%' }} />
         {/* Overlay oscuro para mejorar legibilidad */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(45,100%,50%)]/25 to-black/50 z-[1]" />
+        <div className="absolute inset-0 bg-black/40 z-[1]" />
         <div className="container mx-auto max-w-6xl relative z-[2]">
           {/* Header with Logout */}
           <div className="mb-8 flex justify-end">
@@ -382,26 +382,26 @@ const ProfilePage = () => {
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6 animate-slide-in-left">
               {orders.filter(o => o.status !== 'completed').slice(0, 1).length === 0 ? (
-                <Card className="bg-white/90 border-none rounded-2xl">
-                  <CardContent className="pt-6 text-center text-black font-poppins font-bold">
+                <Card className="bg-transparent border-none">
+                  <CardContent className="pt-6 text-center text-white font-poppins font-bold">
                     No tienes pedidos activos.
                   </CardContent>
                 </Card>
               ) : (
                 orders.filter(o => o.status !== 'completed').slice(0, 1).map((order) => (
-                  <Card key={order.id} className="overflow-hidden bg-white/90 border-none shadow-lg rounded-2xl">
+                  <Card key={order.id} className="overflow-hidden bg-transparent border-none shadow-lg">
                     <CardHeader className="p-6">
                       <Collapsible
                         open={openOrders[order.id]}
                         onOpenChange={() => setOpenOrders(prev => ({ ...prev, [order.id]: !prev[order.id] }))}
                       >
                         <div className="space-y-4">
-                          <div className="flex justify-between items-start px-4">
+                            <div className="flex justify-between items-start px-4">
                             <div className="flex-1 text-right pr-4">
                               <h2 className="text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
                                 ¡Enhorabuena!
                               </h2>
-                              <p className="text-sm text-black font-poppins font-bold">
+                              <p className="text-sm text-white font-poppins font-bold">
                                 📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
                                   year: "numeric",
                                   month: "long",
@@ -412,7 +412,7 @@ const ProfilePage = () => {
                               </p>
                             </div>
                             <div className="flex-1 text-center px-4">
-                              <p className="font-poppins font-bold text-black text-3xl">
+                              <p className="font-poppins font-bold text-white text-3xl">
                                 {(
                                   order.items.reduce((sum, i) => sum + ((basketData[i.basket_name]?.precio ? basketData[i.basket_name].precio * 100 : i.price_per_item) * i.quantity), 0) / 100
                                 ).toFixed(2)}€.
@@ -428,7 +428,7 @@ const ProfilePage = () => {
                           <CollapsibleTrigger asChild>
                             <Button
                               variant="ghost"
-                              className="w-full flex items-center justify-center gap-2 text-black hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold transition-colors"
+                              className="w-full flex items-center justify-center gap-2 text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold transition-colors"
                             >
                               {openOrders[order.id] ? (
                                 <>
@@ -452,8 +452,8 @@ const ProfilePage = () => {
                             <div className="flex flex-col items-start justify-start h-full">
                               {order.items.map((item, idx) => (
                                 <div key={idx} className="inline-block">
-                                  <p className="font-poppins font-bold text-black inline">{item.basket_name}.</p>
-                                  <p className="text-sm text-black font-poppins font-bold inline ml-2">{( (basketData[item.basket_name]?.precio ?? (item.price_per_item / 100)) ).toFixed(2)}€.</p>
+                                  <p className="font-poppins font-bold text-white inline">{item.basket_name}.</p>
+                                  <p className="text-sm text-white font-poppins font-bold inline ml-2">{( (basketData[item.basket_name]?.precio ?? (item.price_per_item / 100)) ).toFixed(2)}€.</p>
                                 </div>
                               ))}
                             </div>
@@ -477,19 +477,19 @@ const ProfilePage = () => {
                             {/* Dirección de envío - escalera de derecha a izquierda bajando */}
                             {/* Dirección de envío - escalera de derecha a izquierda bajando */}
                             <div className="flex flex-col items-end justify-start h-full">
-                              <p className="text-sm text-black font-poppins font-bold">{order.shipping_address_line1}.</p>
+                              <p className="text-sm text-white font-poppins font-bold">{order.shipping_address_line1}.</p>
                               {order.shipping_address_line2 && (
-                                <p className="text-sm text-black font-poppins font-bold">{order.shipping_address_line2}.</p>
+                                <p className="text-sm text-white font-poppins font-bold">{order.shipping_address_line2}.</p>
                               )}
-                              <p className="text-sm text-black font-poppins font-bold">{order.shipping_city}, {order.shipping_postal_code}.</p>
-                              <p className="text-sm text-black font-poppins font-bold">{order.shipping_country}.</p>
+                              <p className="text-sm text-white font-poppins font-bold">{order.shipping_city}, {order.shipping_postal_code}.</p>
+                              <p className="text-sm text-white font-poppins font-bold">{order.shipping_country}.</p>
                             </div>
                           </div>
                             
                           {!order.hasReview && order.status === "completed" && (
                             <Button
                               onClick={() => startReview(order.id, order.items[0]?.basket_name)}
-                              className="w-full mt-4 bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold rounded-xl"
+                              className="w-full mt-4 bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
                             >
                               ⭐ Valorar experiencia.
                             </Button>
@@ -505,14 +505,14 @@ const ProfilePage = () => {
             {/* Reviews Tab */}
             <TabsContent value="reviews" className="space-y-6 animate-slide-in-right">
               {/* Formulario para nueva valoración */}
-              <Card className="bg-white/90 border-none shadow-lg rounded-2xl">
+              <Card className="bg-transparent border-none shadow-lg">
                 <CardContent className="space-y-4 pt-6">
                   <div>
                     <label className="block mb-2 font-bungee tracking-wider text-[hsl(45,100%,65%)]">Cesta.</label>
                     <select
                       value={newReview.basketName}
                       onChange={(e) => setNewReview({ ...newReview, basketName: e.target.value })}
-                      className="w-full p-3 rounded-xl bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:outline-none focus:border-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] transition-all cursor-pointer" 
+                      className="w-full p-3 bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:outline-none focus:border-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] transition-all cursor-pointer" 
                     >
                       {orders.length === 0 ? (
                         <option value="" className="font-poppins font-bold bg-white text-black">No hay pedidos disponibles.</option>
@@ -537,7 +537,7 @@ const ProfilePage = () => {
                             className={`w-8 h-8 cursor-pointer transition-colors ${
                               star <= newReview.rating
                                 ? "fill-[hsl(45,100%,50%)] text-[hsl(45,100%,50%)]"
-                                : "text-black hover:text-[hsl(45,100%,50%)]"
+                                : "text-white hover:text-[hsl(45,100%,50%)]"
                             }`}
                           />
                         </button>
@@ -551,13 +551,13 @@ const ProfilePage = () => {
                       onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
                       placeholder="Cuéntanos tu experiencia..."
                       rows={4}
-                      className="bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:border-[hsl(45,100%,65%)] placeholder:text-black/50 rounded-xl"
+                      className="bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:border-[hsl(45,100%,65%)] placeholder:text-black/50"
                     />
                   </div>
                   <Button
                     onClick={submitNewReview}
                     disabled={submitting}
-                    className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold border-none shadow-lg transition-all duration-300 hover:shadow-xl disabled:opacity-50 rounded-xl"
+                    className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold border-none shadow-lg transition-all duration-300 hover:shadow-xl disabled:opacity-50"
                   >
                     {submitting ? (
                       <>
@@ -576,10 +576,10 @@ const ProfilePage = () => {
                 <div className="space-y-4">
                   <h3 className="text-white text-lg font-bungee tracking-wider">Mis valoraciones anteriores.</h3>
                   {reviews.map((review) => (
-                    <Card key={review.id} className="bg-white/90 border-none shadow-lg rounded-2xl">
+                    <Card key={review.id} className="bg-transparent border-none shadow-lg">
                       <CardHeader>
                         <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg text-black font-poppins font-bold">{review.basket_name}.</CardTitle>
+                          <CardTitle className="text-lg text-white font-poppins font-bold">{review.basket_name}.</CardTitle>
                           <div className="flex gap-1">
                             {[...Array(5)].map((_, i) => (
                               <Star
@@ -587,13 +587,13 @@ const ProfilePage = () => {
                                 className={`w-5 h-5 ${
                                   i < review.rating
                                     ? "fill-[hsl(45,100%,65%)] text-[hsl(45,100%,65%)]"
-                                    : "text-black"
+                                    : "text-white"
                                 }`}
                               />
                             ))}
                           </div>
                         </div>
-                        <p className="text-sm text-black font-poppins font-bold">
+                        <p className="text-sm text-white font-poppins font-bold">
                           {new Date(review.created_at).toLocaleDateString("es-ES", {
                             year: "numeric",
                             month: "long",
@@ -602,7 +602,7 @@ const ProfilePage = () => {
                         </p>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-black font-poppins font-bold">{review.comment}.</p>
+                        <p className="text-white font-poppins font-bold">{review.comment}.</p>
                       </CardContent>
                     </Card>
                   ))}
