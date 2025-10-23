@@ -120,7 +120,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
 
       {/* Modal enlarge */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
+        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl sm:rounded-3xl md:rounded-3xl lg:rounded-3xl xl:rounded-3xl overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
