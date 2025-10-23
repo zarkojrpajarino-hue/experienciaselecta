@@ -106,62 +106,49 @@ const BasketCategories = () => {
 
   // Auto-open tooltip when the section enters viewport or when hash targets the section
   useEffect(() => {
-    const refEl = sectionRef.current;
-    const hashEl = document.getElementById('categoria-cestas');
-    const targetEl = hashEl || refEl;
-    let closeTimer: number | undefined;
+    const el = sectionRef.current;
+    if (!el) return;
 
-    const openWithCooldown = () => {
-      if (hasShownRef.current) return;
-      hasShownRef.current = true;
+    let hideTimer: number | null = null;
+    let cooldownTimer: number | null = null;
+    let canOpen = true;
+
+    const openTemporarily = () => {
+      if (!canOpen) return;
       setTooltipOpen(true);
-      closeTimer = window.setTimeout(() => setTooltipOpen(false), 2000);
-      // allow showing again after user leaves section for a bit
-      window.setTimeout(() => { hasShownRef.current = false; }, 4000);
+      if (hideTimer) window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => setTooltipOpen(false), 2000);
+      // cooldown to avoid flicker while staying in view, but allow re-open after leaving
+      canOpen = false;
+      if (cooldownTimer) window.clearTimeout(cooldownTimer);
+      cooldownTimer = window.setTimeout(() => { canOpen = true; }, 3000);
     };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        openTemporarily();
+      }
+    }, { threshold: 0.15, rootMargin: '0px 0px -20% 0px' });
+
+    observer.observe(el);
+
+    // If hash already targets the section, open shortly after mount
+    if (window.location.hash === '#categoria-cestas') {
+      setTimeout(openTemporarily, 150);
+    }
 
     const onHash = () => {
       if (window.location.hash === '#categoria-cestas') {
-        openWithCooldown();
+        setTimeout(openTemporarily, 50);
       }
     };
-
-    // Helper to check if element is in viewport now
-    const isInViewport = (el: Element) => {
-      const r = el.getBoundingClientRect();
-      return r.top < window.innerHeight * 0.8 && r.bottom > window.innerHeight * 0.2;
-    };
-
-    if (targetEl) {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          openWithCooldown();
-        }
-      }, { threshold: 0.01, rootMargin: '0px 0px -40% 0px' });
-
-      observer.observe(targetEl);
-
-      // Initial checks on mount
-      if (window.location.hash === '#categoria-cestas' || isInViewport(targetEl)) {
-        openWithCooldown();
-      }
-
-      window.addEventListener('hashchange', onHash);
-      return () => {
-        observer.disconnect();
-        window.removeEventListener('hashchange', onHash);
-        if (closeTimer) window.clearTimeout(closeTimer);
-      };
-    }
-
-    // Fallback: just react to hash
-    if (window.location.hash === '#categoria-cestas') {
-      openWithCooldown();
-    }
     window.addEventListener('hashchange', onHash);
+
     return () => {
+      observer.disconnect();
       window.removeEventListener('hashchange', onHash);
-      if (closeTimer) window.clearTimeout(closeTimer);
+      if (hideTimer) window.clearTimeout(hideTimer);
+      if (cooldownTimer) window.clearTimeout(cooldownTimer);
     };
   }, []);
 
@@ -308,7 +295,7 @@ const BasketCategories = () => {
   //   // Antes: desplazaba a #recogida
   // }, []);
 
-  return <section id="recogida" ref={sectionRef} className="pt-24 pb-24 relative overflow-hidden bg-black rounded-3xl">
+  return <section id="categoria-cestas" ref={sectionRef} className="pt-24 pb-24 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
