@@ -405,12 +405,12 @@ const Index = () => {
       <VisualHeader />
       
       {/* Espaciado blanco */}
-      <div className="bg-white py-16"></div>
+      <div className="bg-white py-8"></div>
       
       <RoundedImageCarousel slides={processSlides} titleBold={false} />
       
       {/* Espaciado blanco antes de categorías */}
-      <div className="bg-white py-16"></div>
+      <div className="bg-white py-8"></div>
       
       {/* SECCIÓN DE CATEGORÍAS - FAMILIA, PAREJA Y AMIGOS */}
       <div id="categoria-cestas">
