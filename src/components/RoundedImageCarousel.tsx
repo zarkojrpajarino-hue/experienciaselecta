@@ -74,7 +74,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           </div>
 
           {/* Nav */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 py-4">
             <motion.button 
               whileHover={{ scale: 1.1 }} 
               whileTap={{ scale: 0.9 }} 
