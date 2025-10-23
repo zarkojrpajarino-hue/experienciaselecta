@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp, X, ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 // Import images
@@ -362,8 +362,16 @@ const ProfilePage = () => {
         {/* Overlay oscuro para mejorar legibilidad */}
         <div className="absolute inset-0 bg-black/40 z-[1]" />
         <div className="container mx-auto max-w-6xl relative z-[2]">
-          {/* Header with Logout */}
-          <div className="mb-8 flex justify-end">
+          {/* Header with Back and Logout buttons */}
+          <div className="mb-8 flex justify-between items-center">
+            <Button
+              onClick={() => navigate('/')}
+              variant="ghost"
+              className="gap-2 text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver
+            </Button>
             <Button
               onClick={handleLogout}
               variant="ghost"
