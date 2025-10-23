@@ -36,49 +36,49 @@ const PreguntasFrecuentesPage = () => {
     { 
       image: faqParejaRooftop, 
       title: "¿Qué incluye <span class='text-gold font-bold'>cada cesta</span>?", 
-      text: "Contenido <span class='text-gold font-bold'>exclusivo personalizado</span>.",
+      text: "Contenido <span class='text-gold'>exclusivo personalizado</span>.",
       navigationColor: "#FFD700"
     },
     { 
       image: faqAmigosMesa, 
       title: "¿Cuánto dura <span style='color: #ff1493' class='font-bold'>la experiencia</span>?", 
-      text: "A <span style='color: #ff1493' class='font-bold'>tu ritmo</span>.",
+      text: "A <span style='color: #ff1493'>tu ritmo</span>.",
       navigationColor: "#ff1493"
     },
     { 
       image: faqParejaCostaNueva, 
       title: "¿Para <span style='color: #00BFFF' class='font-bold'>desconocidos</span>?", 
-      text: "Cestas para <span style='color: #00BFFF' class='font-bold'>primeros encuentros</span>.",
+      text: "Cestas para <span style='color: #00BFFF'>primeros encuentros</span>.",
       navigationColor: "#00BFFF"
     },
     { 
       image: faqJamonPinzas, 
       title: "¿<span class='text-gold font-bold'>Calidad</span> de productos?", 
-      text: "<span class='text-gold font-bold'>Certificada</span>.",
+      text: "<span class='text-gold'>Certificada</span>.",
       navigationColor: "#FFD700"
     },
     { 
       image: faqProductoresLocales, 
       title: "¿De dónde vienen <span style='color: #ff1493' class='font-bold'>los productos</span>?", 
-      text: "De <span style='color: #ff1493' class='font-bold'>productores locales</span>.",
+      text: "De <span style='color: #ff1493'>productores locales</span>.",
       navigationColor: "#ff1493"
     },
     { 
       image: faqAmigosProyector, 
       title: "¿Qué combináis en <span style='color: #00BFFF' class='font-bold'>las experiencias</span>?", 
-      text: "<span style='color: #00BFFF' class='font-bold'>Tradición española</span> con <span style='color: #00BFFF' class='font-bold'>dinámicas modernas</span>.",
+      text: "<span style='color: #00BFFF'>Tradición española</span> con <span style='color: #00BFFF'>dinámicas modernas</span>.",
       navigationColor: "#00BFFF"
     },
     { 
       image: faqParejaVinedo, 
       title: "¿Cuál es <span class='text-gold font-bold'>vuestra filosofía</span>?", 
-      text: "Los mejores recuerdos <span class='text-gold font-bold'>se viven, no se graban</span>.",
+      text: "Los mejores recuerdos <span class='text-gold'>se viven, no se graban</span>.",
       navigationColor: "#FFD700"
     },
     { 
       image: faqFamiliaPorche, 
       title: "¿Por qué son importantes <span style='color: #ff1493' class='font-bold'>las conexiones</span>?", 
-      text: "Hablamos más pero <span style='color: #ff1493' class='font-bold'>escuchamos menos</span>.",
+      text: "Hablamos más pero <span style='color: #ff1493'>escuchamos menos</span>.",
       navigationColor: "#ff1493"
     }
   ];
