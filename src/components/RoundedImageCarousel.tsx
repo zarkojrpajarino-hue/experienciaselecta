@@ -16,9 +16,10 @@ interface RoundedImageCarouselProps {
   autoPlay?: boolean;
   autoPlayDelay?: number;
   hideMainTitle?: boolean;
+  titleBold?: boolean;
 }
 
-const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, hideMainTitle = false }: RoundedImageCarouselProps) => {
+const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, hideMainTitle = false, titleBold = true }: RoundedImageCarouselProps) => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState(false);
@@ -47,7 +48,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         <div className="w-full flex flex-col items-center justify-center py-4">
           <div className="px-6 max-w-4xl mb-4 text-center">
             <h3
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins font-bold tracking-wide text-black"
+              className={`text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
               style={{ textTransform: "none" }}
               dangerouslySetInnerHTML={{ __html: current.title }}
             />

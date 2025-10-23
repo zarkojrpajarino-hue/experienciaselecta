@@ -407,7 +407,7 @@ const Index = () => {
       {/* Espaciado blanco */}
       <div className="bg-white py-16"></div>
       
-      <RoundedImageCarousel slides={processSlides} />
+      <RoundedImageCarousel slides={processSlides} titleBold={false} />
       
       {/* Espaciado blanco antes de categorías */}
       <div className="bg-white py-16"></div>
