@@ -22,7 +22,7 @@ interface CarouselSectionProps {
   imageHeightClasses?: string;
 }
 
-const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayDelay = 5000, backgroundColor = "#000000", textColor = "#1e3a8a", imageHeightClasses = "h-[35vh] md:h-[50vh]" }: CarouselSectionProps) => {
+const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayDelay = 5000, backgroundColor = "#000000", textColor = "#1e3a8a", imageHeightClasses = "h-[44vh] md:h-[63vh]" }: CarouselSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
@@ -65,7 +65,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           style={{ backgroundColor: currentSlide.backgroundColor || backgroundColor, margin: 0 }}
         >
           <div className="px-6 max-w-4xl mb-4 text-center">
-            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl leading-tight tracking-wide text-black" style={{ textTransform: 'none' }}>
+            <div className="text-sm md:text-base leading-tight tracking-wide text-black font-poppins font-bold" style={{ textTransform: 'none' }}>
               {currentSlide.content}
             </div>
           </div>
@@ -111,7 +111,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
         {/* Image Section */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div 
-            className={`w-full max-w-3xl md:max-w-6xl mx-auto ${imageHeightClasses} relative cursor-pointer overflow-hidden rounded-[2rem]`}
+            className={`w-full max-w-2xl md:max-w-4xl mx-auto ${imageHeightClasses} relative cursor-pointer overflow-hidden rounded-[2rem]`}
             onClick={() => setIsImageOpen(true)}
           >
             {slides.map((slide, index) => (
