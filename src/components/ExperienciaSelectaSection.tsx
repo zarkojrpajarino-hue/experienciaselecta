@@ -45,8 +45,7 @@ const ExperienciaSelectaSection = () => {
                 <img
                   src={experienciaSelectaImg}
                   alt="Experiencia Selecta"
-                  className="w-full h-[500px] md:h-[700px] object-cover group-hover:scale-105 transition-transform duration-500"
-                  style={{ borderRadius: "1.5rem" }}
+                  className="w-full h-[500px] md:h-[700px] object-cover group-hover:scale-105 transition-transform duration-500 rounded-3xl md:rounded-[2rem]"
                 />
               </div>
             </div>

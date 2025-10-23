@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
+import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -261,6 +261,21 @@ const BasketCategories = () => {
           <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
             Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
           </p>
+          
+          {/* Botón "¿Qué vendemos?" con flecha hacia arriba */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="mt-4 px-6 py-3 rounded-full font-poppins font-bold text-black flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+            style={{ backgroundColor: '#FFD700' }}
+          >
+            <ArrowUp className="w-5 h-5" />
+            ¿Qué vendemos?
+          </motion.button>
         </motion.div>
           
         {/* Contenedor flex para ordenar botones y carrusel */}
@@ -319,7 +334,7 @@ const BasketCategories = () => {
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
-                          className="w-full h-full object-cover rounded-3xl"
+                          className="w-full h-full object-cover rounded-3xl md:rounded-[2rem]"
                         />
                       </div>
 

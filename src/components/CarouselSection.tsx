@@ -118,7 +118,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
                 key={`slide-${index}`}
                 src={slide.image}
                 alt={`Slide ${index + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover rounded-[2rem] transition-opacity duration-700 ease-in-out ${
+                className={`absolute inset-0 w-full h-full object-cover rounded-3xl md:rounded-[2rem] transition-opacity duration-700 ease-in-out ${
                   currentIndex === index ? 'opacity-100' : 'opacity-0'
                 }`}
                 style={{
@@ -146,7 +146,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
             <img 
               src={currentSlide.image} 
               alt="Ampliado" 
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl md:rounded-[2rem]"
             />
           </div>
         </DialogContent>

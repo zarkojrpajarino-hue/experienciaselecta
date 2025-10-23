@@ -32,7 +32,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
                   <img
                     src={image}
                     alt={imageAlt}
-                    className="w-full h-64 md:h-80 object-cover group-hover:scale-105 transition-transform duration-500 rounded-3xl"
+                    className="w-full h-64 md:h-80 object-cover group-hover:scale-105 transition-transform duration-500 rounded-3xl md:rounded-[2rem]"
                   />
                 </div>
               </div>
@@ -70,7 +70,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
             <img 
               src={image} 
               alt={imageAlt} 
-              className="w-full h-auto max-h-[80vh] object-contain" 
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl md:rounded-[2rem]" 
             />
           </div>
         </DialogContent>

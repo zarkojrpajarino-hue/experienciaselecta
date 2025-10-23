@@ -130,7 +130,7 @@ const HeroSection = () => {
         }} className="space-y-6">
             {/* Jamón ibérico image */}
             <div className="relative rounded-3xl overflow-hidden shadow-xl mb-6 mt-8 lg:mt-0">
-              <img src={couplePicnic} alt="Pareja disfrutando cesta ibérica en picnic." className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-3xl" />
+              <img src={couplePicnic} alt="Pareja disfrutando cesta ibérica en picnic." className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-3xl md:rounded-[2rem]" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent rounded-3xl"></div>
             </div>
 

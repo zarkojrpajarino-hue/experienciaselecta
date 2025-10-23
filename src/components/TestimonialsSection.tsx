@@ -193,7 +193,7 @@ const TestimonialsSection = () => {
                   <img 
                     src={testimonials[currentTestimonial].image}
                     alt={`Experiencia ${testimonials[currentTestimonial].experience}.`}
-                    className="w-full h-80 object-cover rounded-3xl"
+                    className="w-full h-80 object-cover rounded-3xl md:rounded-[2rem]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />
                   
