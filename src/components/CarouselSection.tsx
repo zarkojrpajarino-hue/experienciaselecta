@@ -19,9 +19,10 @@ interface CarouselSectionProps {
   autoPlayDelay?: number;
   backgroundColor?: string;
   textColor?: string;
+  imageHeightClasses?: string;
 }
 
-const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayDelay = 5000, backgroundColor = "#000000", textColor = "#1e3a8a" }: CarouselSectionProps) => {
+const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayDelay = 5000, backgroundColor = "#000000", textColor = "#1e3a8a", imageHeightClasses = "h-[35vh] md:h-[50vh]" }: CarouselSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
@@ -110,7 +111,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
         {/* Image Section */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div 
-            className="w-full max-w-3xl md:max-w-6xl mx-auto h-[35vh] md:h-[50vh] relative cursor-pointer overflow-hidden rounded-[2rem]"
+            className={`w-full max-w-3xl md:max-w-6xl mx-auto ${imageHeightClasses} relative cursor-pointer overflow-hidden rounded-[2rem]`}
             onClick={() => setIsImageOpen(true)}
           >
             {slides.map((slide, index) => (

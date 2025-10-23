@@ -34,6 +34,8 @@ const BasketCategories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
+  // Tooltip open state (show once on first visit + hover)
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
   useEffect(() => {
@@ -92,6 +94,23 @@ const BasketCategories = () => {
       window.removeEventListener('hashchange', onHashChange);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
+  }, []);
+
+  // Show tooltip once when section is visited
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('basketTooltipShown') === 'true') return;
+    } catch (e) {
+      // ignore if sessionStorage is unavailable
+    }
+    setTooltipOpen(true);
+    const t = setTimeout(() => {
+      setTooltipOpen(false);
+      try {
+        sessionStorage.setItem('basketTooltipShown', 'true');
+      } catch (e) {}
+    }, 2000);
+    return () => clearTimeout(t);
   }, []);
 
 
@@ -257,8 +276,8 @@ const BasketCategories = () => {
       }} className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-6" style={{ textTransform: 'none' }}>
             Escoja su categoría.
-            <TooltipProvider>
-              <Tooltip>
+            <TooltipProvider delayDuration={80}>
+              <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
                 <TooltipTrigger asChild>
                   <motion.span 
                     onClick={() => {
@@ -279,8 +298,8 @@ const BasketCategories = () => {
                     ¿?
                   </motion.span>
                 </TooltipTrigger>
-                <TooltipContent>
-                  <p>Haz click</p>
+                <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2 before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-black/10 after:absolute after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-transparent after:border-b-white">
+                  <p className="font-medium">Haz click</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

@@ -169,7 +169,7 @@ const SobreNosotrosDetalle = () => {
       
       
       {/* Sección Porque Elegirnos */}
-      <section id="porque-elegirnos-section" className="pb-24">
+      <section id="porque-elegirnos-section" className="py-4">
         <CarouselSection slides={benefitsSlides} position="right" />
       </section>
 
@@ -198,7 +198,7 @@ const SobreNosotrosDetalle = () => {
       <section 
         id="carousel-section"
         ref={carouselSectionRef}
-        className="relative z-10 overflow-hidden min-h-screen pt-12 bg-white"
+        className="relative z-10 overflow-hidden pt-6 bg-white"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-7xl mx-auto">
