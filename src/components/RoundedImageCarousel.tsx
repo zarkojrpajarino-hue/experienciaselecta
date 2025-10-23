@@ -52,7 +52,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               dangerouslySetInnerHTML={{ __html: current.title }}
             />
             {current.text && (
-              <p className="mt-2 text-base md:text-lg font-poppins font-normal text-black" style={{ textTransform: "none" }} dangerouslySetInnerHTML={{ __html: current.text }} />
+              <p className="mt-2 text-base md:text-lg font-poppins font-normal text-black no-bold" style={{ textTransform: "none" }} dangerouslySetInnerHTML={{ __html: current.text }} />
             )}
           </div>
 

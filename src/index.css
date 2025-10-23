@@ -168,4 +168,8 @@
   .perspective-2000 {
     perspective: 2000px;
   }
+  /* Utility to force-remove bold from nested content */
+  .no-bold, .no-bold * {
+    font-weight: 400 !important;
+  }
 }
