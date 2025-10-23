@@ -34,65 +34,62 @@ const BasketCategories = () => {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
 
-  // Handle direct links to baskets via hash #cesta-ID
+  // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
   useEffect(() => {
-    // Mapeo completo de IDs a categorías y tamaños de grupo
-    const idMap: Record<number, { category: 'Pareja' | 'Familia' | 'Amigos'; groupSize: '3-4' | '5-6' | '7-8' }> = {
-      // Pareja (2 personas)
-      1: { category: 'Pareja', groupSize: '3-4' },
-      2: { category: 'Pareja', groupSize: '3-4' },
-      3: { category: 'Pareja', groupSize: '3-4' },
-      
-      // Familia/Amigos (3-4 personas)
-      9: { category: 'Familia', groupSize: '3-4' },
-      10: { category: 'Familia', groupSize: '3-4' },
-      11: { category: 'Familia', groupSize: '3-4' },
-      
-      // Familia/Amigos (5-6 personas)
-      12: { category: 'Familia', groupSize: '5-6' },
-      13: { category: 'Familia', groupSize: '5-6' },
-      14: { category: 'Familia', groupSize: '5-6' },
-      
-      // Familia/Amigos (7-8 personas)
-      15: { category: 'Familia', groupSize: '7-8' },
-      16: { category: 'Familia', groupSize: '7-8' },
-      17: { category: 'Familia', groupSize: '7-8' },
+    const parseBasketId = (): number | null => {
+      const hash = window.location.hash;
+      const match = hash.match(/^#cesta-(\d+)$/);
+      return match ? parseInt(match[1], 10) : null;
     };
 
-    const handleDeepLink = () => {
-      const hash = window.location.hash;
-      if (!hash) return;
+    const basketId = parseBasketId();
+    if (basketId == null) return;
 
-      const match = hash.match(/^#cesta-(\d+)$/);
-      if (!match) return;
+    const categoriesToTry: Array<'Familia' | 'Amigos' | 'Pareja'> = ['Familia', 'Amigos', 'Pareja'];
 
-      const basketId = parseInt(match[1], 10);
-      const basketInfo = idMap[basketId];
-      
-      if (!basketInfo) {
-        console.warn(`Cesta ${basketId} no encontrada en el mapeo`);
-        return;
-      }
+    const tryCategory = (idx: number) => {
+      if (idx >= categoriesToTry.length) return;
 
-      // Configurar categoría, tamaño de grupo y abrir Sheet
-      setSelectedCategory(basketInfo.category);
-      setGroupSize(basketInfo.groupSize);
+      const category = categoriesToTry[idx];
+      setSelectedCategory(category);
       setIsSheetOpen(true);
       setSheetKey(prev => prev + 1);
       setInitialBasketId(basketId);
+
+      const tryScroll = (attempt = 0) => {
+        const el = document.getElementById(`cesta-${basketId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
+          setTimeout(() => {
+            el.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
+          }, 2000);
+        } else if (attempt < 10) {
+          setTimeout(() => tryScroll(attempt + 1), 200);
+        } else {
+          // No encontrado en esta categoría; probar la siguiente
+          setTimeout(() => tryCategory(idx + 1), 200);
+        }
+      };
+
+      // Dar tiempo a montar el contenido del Sheet
+      setTimeout(() => tryScroll(0), 400);
     };
 
-    // Ejecutar al montar
-    handleDeepLink();
+    tryCategory(0);
 
-    // Escuchar cambios en el hash
-    window.addEventListener('hashchange', handleDeepLink);
+    const onHashChange = () => {
+      const newId = parseBasketId();
+      if (newId != null) {
+        setInitialBasketId(newId);
+        tryCategory(0);
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
 
     return () => {
-      window.removeEventListener('hashchange', handleDeepLink);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
+      window.removeEventListener('hashchange', onHashChange);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
   }, []);
 
