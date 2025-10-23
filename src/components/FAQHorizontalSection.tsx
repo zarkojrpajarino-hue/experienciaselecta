@@ -164,7 +164,7 @@ const FAQHorizontalSection = () => {
                           >
                             <div className={alignRight ? 'md:text-right' : 'md:text-left'}>
                               <div className={`flex items-center justify-between gap-4 ${alignRight ? 'flex-row-reverse' : ''}`}>
-                                <h4 className={`text-sm md:text-base font-cinzel font-semibold text-white transition-all duration-300 ${alignRight ? 'text-right' : ''}`}>
+                                <h4 className={`text-sm md:text-base font-poppins font-bold text-white transition-all duration-300 ${alignRight ? 'text-right' : ''}`}>
                                   {faq.question}
                                 </h4>
                               </div>

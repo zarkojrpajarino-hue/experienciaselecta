@@ -72,7 +72,7 @@ const Index = () => {
           <div className="flex items-center justify-center gap-2 md:gap-4">
             <h3 
               onClick={() => navigate('/nuestra-identidad#experiencia')}
-              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-tight cursor-pointer" 
+              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-poppins font-bold leading-tight cursor-pointer" 
               style={{ color: '#000000' }}
             >
               Experiencia
@@ -99,7 +99,7 @@ const Index = () => {
           <div className="flex items-center justify-center gap-2 md:gap-4">
             <h3 
               onClick={() => navigate('/nuestra-identidad#selecta')}
-              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-tight cursor-pointer" 
+              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-poppins font-bold leading-tight cursor-pointer" 
               style={{ color: '#000000' }}
             >
               Selecta
