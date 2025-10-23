@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import testimonialsBackground from "@/assets/testimonials-background.jpg";
 import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
