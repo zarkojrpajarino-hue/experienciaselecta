@@ -199,9 +199,12 @@ const BasketCategories = () => {
           <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
             Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
           </p>
+        </motion.div>
           
-          {/* Botones de navegación debajo del título */}
-          <div className="flex items-center justify-center gap-8 mb-4">
+        {/* Contenedor flex para ordenar botones y carrusel */}
+        <div className="flex flex-col md:flex-col items-center">
+          {/* Botones de navegación - orden 2 en móvil, orden 1 en desktop */}
+          <div className="flex items-center justify-center gap-8 mb-4 order-2 md:order-1">
             <button
               onClick={prevSlide}
               className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
@@ -220,10 +223,9 @@ const BasketCategories = () => {
               </svg>
             </button>
           </div>
-        </motion.div>
 
-        {/* Carrusel 3D Container */}
-        <div className="relative w-full h-[200px] md:h-[550px] flex items-center justify-center mx-auto mt-2" style={{ perspective: '2000px' }}>
+        {/* Carrusel 3D Container - orden 1 en móvil, orden 2 en desktop */}
+        <div className="relative w-full h-[180px] md:h-[450px] flex items-center justify-center mx-auto order-1 md:order-2" style={{ perspective: '2000px' }}>
           {/* Tarjetas en carrusel 3D */}
           <div className="absolute inset-0 flex items-center justify-center">
             {categories.map((category, index) => {
@@ -233,7 +235,7 @@ const BasketCategories = () => {
               return (
                   <div
                     key={category.id}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[45%] sm:w-[60%] md:w-[65%] max-w-3xl"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl"
                     style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
                     onClick={() => isActive && handleCategoryClick(category.title)}
                   >
@@ -249,9 +251,9 @@ const BasketCategories = () => {
                     style={{ transformStyle: 'preserve-3d' }}
                   >
                     {/* Card Container */}
-                    <div className="relative bg-transparent rounded-3xl p-4 md:p-8 shadow-2xl border-0">
+                    <div className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0">
                       {/* Imagen */}
-                      <div className="w-full h-[90px] md:h-[350px] mb-4 rounded-3xl overflow-hidden px-0 md:px-2">
+                      <div className="w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
@@ -260,9 +262,9 @@ const BasketCategories = () => {
                       </div>
 
                       {/* Título y Flecha */}
-                      <div className="flex items-center justify-center gap-3">
+                      <div className="flex items-center justify-center gap-2 md:gap-3">
                         <h3 
-                          className="font-bebas font-bold text-3xl md:text-5xl whitespace-nowrap tracking-[0.2em]"
+                          className="font-bebas font-bold text-2xl md:text-4xl whitespace-nowrap tracking-[0.2em]"
                           style={{ 
                             color: category.title === "Familia" ? '#4A7050' 
                                  : category.title === "Pareja" ? '#782C23'
@@ -273,7 +275,7 @@ const BasketCategories = () => {
                           {category.title}.
                         </h3>
                         <svg 
-                          className="w-7 h-7 md:w-9 md:h-9 flex-shrink-0"
+                          className="w-5 h-5 md:w-7 md:h-7 flex-shrink-0"
                           fill="none" 
                           stroke="currentColor" 
                           viewBox="0 0 24 24"
@@ -293,7 +295,7 @@ const BasketCategories = () => {
               );
             })}
           </div>
-
+        </div>
         </div>
       </div>
 
