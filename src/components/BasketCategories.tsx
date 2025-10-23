@@ -71,7 +71,7 @@ const BasketCategories = () => {
           element.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
           setTimeout(() => element.classList.remove('ring-2', 'ring-primary', 'ring-offset-2'), 2000);
         }
-      }, 500);
+      }, 800);
     };
     
     handleHashChange();
