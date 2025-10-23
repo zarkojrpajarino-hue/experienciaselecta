@@ -369,34 +369,34 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         },
         {
           id: 12,
-          nombre: "Familiar clásica",
-          precio: 60,
+          nombre: "Familiar Clásica",
+          precio: 65,
           descripcion: "Cesta familiar tradicional.",
           categoria: "Tradicional",
           sinAlcohol: false,
           productos: [
-            "Chorizo de gamo loncheado 80 gr",
-            "Jamón Reserva 100 gr",
-            "Queso oveja curado trufa negra 200 gr",
+            "Jamón 50% Ibérico 100 gr",
+            "Piquitos 250 gr",
             "Paté de morcilla 100 gr",
-            "Salchichón de jabalí loncheado 80 gr",
-            "Manzanilla La Gitana 37,5 cl",
-            "Piquitos",
-            "El Paje Rueda Verdejo 75 cl"
+            "Queso de Oveja Boletus 200 gr",
+            "Chorizo de gamo 250 gr",
+            "Salchichón de pato 250 gr",
+            "Vino Entrechuelos Roble 75 cl",
+            "Cecina de ciervo loncheada 80 gr"
           ],
           ideal: (
             <>
               <span className="text-gold font-bold">Reuniones familiares</span> que buscan <span className="text-gold font-bold">sabores tradicionales</span>
             </>
           ),
-          maridaje: "Manzanilla y verdejo para ibéricos.",
+          maridaje: "Vino roble para ibéricos.",
           ocasion: (
             <>
               <span className="text-gold font-bold">Comidas familiares</span> • <span className="text-gold font-bold">Reuniones tradicionales</span> • <span className="text-gold font-bold">Celebraciones clásicas</span>
             </>
           ),
           personas: "5-6",
-          costePersona: "12€ (5p) / 10€ (6p)",
+          costePersona: "13€ (5p) / 10.83€ (6p)",
           imagen: familiarClasicaNuevoImg
         },
         {
@@ -407,13 +407,15 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           categoria: "Premium Sin Alcohol",
           sinAlcohol: true,
           productos: [
-            "Queso oveja curado boletus 200 gr",
-            "Jamón Ibérico bellota 50% 100 gr",
-            "Lomo 100% bellota",
+            "Jamón 50% Ibérico 100 gr",
+            "Piquitos 250 gr",
+            "Paté de perdiz 100 gr",
+            "Queso de Oveja Diablo 200 gr",
+            "Chorizo de jabalí 250 gr",
+            "Salchichón de ciervo 250 gr",
             "Chorizo de pato 250 gr",
-            "Paté de ciervo tarro 100 gr",
             "Salchichón de gamo 250 gr",
-            "Piquitos"
+            "Mermelada Arbequina 100 gr"
           ],
           ideal: (
             <>
@@ -432,28 +434,29 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         },
         {
           id: 14,
-          nombre: "Gran tertulia",
+          nombre: "Gran Tertulia",
           precio: 80,
           descripcion: "Máxima calidad para tertulias.",
           categoria: "Premium",
           sinAlcohol: false,
           productos: [
-            "Cecina de ciervo al tomillo loncheada 80 gr",
-            "Jamón Ibérico Bellota 50% 100 gr",
-            "Lomo de jabalí al romero loncheado 80 gr",
-            "El Bufón Rueda Verdejo 75 cl",
-            "Ricardo Dumas Joven 75 cl",
-            "Piquitos",
-            "Paté de pato tarro 100 gr",
-            "Queso oveja curado trufa negra 200 gr",
-            "Salchichón de pato 250 gr"
+            "Jamón 100% Ibérico 100 gr",
+            "Piquitos 250 gr",
+            "Paté de ciervo 100 gr",
+            "Queso de Oveja Ajo Negro 200 gr",
+            "Cecina de ciervo loncheada 80 gr",
+            "Chorizo de ciervo 250 gr",
+            "Salchichón de gamo 250 gr",
+            "Salchichón de pato 250 gr",
+            "Vino Rioja Tradición Crianza 75 cl",
+            "Ribera del Duero Ricardo Dumas 75 cl"
           ],
           ideal: (
             <>
               <span className="text-gold font-bold">Tertulias memorables</span> con productos de <span className="text-gold font-bold">categoría superior</span>
             </>
           ),
-          maridaje: "Verdejo y ribera del duero.",
+          maridaje: "Rioja Crianza y Ribera del Duero.",
           ocasion: (
             <>
               <span className="text-gold font-bold">Tertulias especiales</span> • <span className="text-gold font-bold">Celebraciones importantes</span> • <span className="text-gold font-bold">Eventos premium</span>
@@ -466,56 +469,61 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         {
           id: 15,
           nombre: "Celebración Ibérica",
-          precio: 75,
+          precio: 85,
           descripcion: "Celebración completa con ibéricos.",
           categoria: "Premium",
           sinAlcohol: false,
           productos: [
+            "Jamón 50% Ibérico 100 gr",
+            "Jamón 50% Ibérico 100 gr",
+            "Piquitos 250 gr",
+            "Paté de morcilla 100 gr",
+            "Queso de Oveja Ajo Negro 200 gr",
+            "Vino Entrechuelos Blanco Chardonnay 75 cl",
+            "Vino Entrechuelos Roble 75 cl",
+            "Salchichón de ciervo 250 gr",
             "Chorizo de gamo 250 gr",
-            "Queso oveja curado trufa negra 200 gr",
-            "Jamón Ibérico 50% 100 gr",
-            "Lomo de jabalí al romero loncheado 80 gr",
-            "Salchichón de pato 250 gr",
-            "Piquitos",
-            "El Paje Rueda Verdejo 75 cl",
-            "Paté de ciervo tarro 100 gr",
-            "Ricardo Dumas Joven 75 cl"
+            "Salchichón de pato loncheado 80 gr",
+            "Queso de Oveja Trufa 200 gr"
           ],
           ideal: (
             <>
               <span className="text-gold font-bold">Celebraciones especiales</span> para grupos de <span className="text-gold font-bold">7-8 personas</span>
             </>
           ),
-          maridaje: "Verdejo y ribera completan experiencia.",
+          maridaje: "Chardonnay y roble completan experiencia.",
           ocasion: (
             <>
               <span className="text-gold font-bold">Celebraciones familiares</span> • <span className="text-gold font-bold">Eventos especiales</span> • <span className="text-gold font-bold">Reuniones grandes</span>
             </>
           ),
           personas: "7-8",
-          costePersona: "10.71€ (7p) / 9.38€ (8p)",
+          costePersona: "12.14€ (7p) / 10.63€ (8p)",
           imagen: celebracionIbericaNuevoImg
         },
         {
           id: 16,
           nombre: "Festín Selecto (sin alcohol)",
-          precio: 85,
+          precio: 90,
           descripcion: "Festín premium sin alcohol.",
           categoria: "Luxury Sin Alcohol",
           sinAlcohol: true,
           productos: [
-            "Lomo 100% bellota",
-            "Jamón Ibérico Bellota 100%",
-            "Cecina de ciervo al tomillo loncheada 80 gr",
-            "Paté de pato tarro 100 gr",
-            "Mermelada Arbequina",
-            "Salchichón de jabalí loncheado 80 gr",
-            "Chorizo de pato 250 gr",
-            "Queso oveja ajo negro 100 gr"
+            "Jamón 50% Ibérico 100 gr",
+            "Jamón 50% Ibérico 100 gr",
+            "Piquitos 250 gr",
+            "Paté de jabalí 100 gr",
+            "Queso de Oveja Boletus 200 gr",
+            "Queso de Oveja Ajo Negro 200 gr",
+            "Mermelada Arbequina 100 gr",
+            "Cecina de ciervo Loncheada 80 gr",
+            "Salchichón de jabalí 250 gr",
+            "Salchichón de gamo 250 gr",
+            "Chorizo de ciervo 250 gr"
           ],
           ideal: (
             <>
-              La <span className="text-gold font-bold">máxima calidad</span> sin alcohol, con <span className="text-gold font-bold">ibéricos 100% bellota</span>
+              La <span className="text-gold font-bold">máxima calidad</span> sin alcohol, con <span className="text-gold font-bold">productos premium</span>
             </>
           ),
           maridaje: "Sin alcohol, sabores puros.",
@@ -525,7 +533,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             </>
           ),
           personas: "7-8",
-          costePersona: "12.14€ (7p) / 10.63€ (8p)",
+          costePersona: "12.86€ (7p) / 11.25€ (8p)",
           imagen: festinSelectoNuevoImg
         },
         {
@@ -536,24 +544,24 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           categoria: "Luxury",
           sinAlcohol: false,
           productos: [
-            "Mermelada Arbequina",
-            "Jamón Ibérico Bellota 100%",
+            "Jamón 100% Ibérico 100 gr",
+            "Jamón 100% Ibérico 100 gr",
+            "Piquitos 250 gr",
+            "Paté de perdiz 100 gr",
+            "Queso de Oveja de Trufa 200 gr",
+            "Queso de Oveja Boletus 200 gr",
+            "Ribera del Duero Ricardo Dumas 75 cl",
+            "Vino Tinto Rioja Tradición Reserva 75 cl",
+            "Chorizo de pato 250 gr",
             "Salchichón de gamo 250 gr",
-            "Lomo 100% bellota",
-            "Queso oveja boletus 100 gr",
-            "Manzanilla La Gitana En Rama 37,5 cl",
-            "Paté de morcilla 100 gr",
-            "Rioja Tradición Crianza 75 cl",
-            "Piquitos",
-            "Cecina de ciervo al tomillo loncheada 80 gr",
-            "Lomo de jabalí al romero loncheado 80 gr"
+            "Chorizo de ciervo 250 gr"
           ],
           ideal: (
             <>
-              Para quienes buscan <span className="text-gold font-bold">lo mejor de lo mejor</span>, con jamón <span className="text-gold font-bold">100% bellota</span>
+              Para quienes buscan <span className="text-gold font-bold">lo mejor de lo mejor</span>, con jamón <span className="text-gold font-bold">100% ibérico</span>
             </>
           ),
-          maridaje: "Manzanilla en rama y rioja crianza.",
+          maridaje: "Ribera del Duero y Rioja Reserva.",
           ocasion: (
             <>
               <span className="text-gold font-bold">Ocasiones especiales</span> • Celebraciones únicas • <span className="text-gold font-bold">Experiencias memorables</span>
@@ -561,7 +569,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ),
           personas: "7-8",
           costePersona: "14.29€ (7p) / 12.50€ (8p)",
-          imagen: granTertuliaNuevoImg
+          imagen: experienciaSelectaImg
         }
       ];
     } else if (categoria === "Desconocidos-2") {
