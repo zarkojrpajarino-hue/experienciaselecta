@@ -360,19 +360,19 @@ const Index = () => {
       return;
     }
     
-    // If there's a hash, scroll to that section
-    if (location.hash) {
-      const id = location.hash.replace('#', '');
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      }, 100);
-    }
+    // If there's a hash, scroll to that section - DISABLED to prevent auto-scroll on page load
+    // if (location.hash) {
+    //   const id = location.hash.replace('#', '');
+    //   setTimeout(() => {
+    //     const element = document.getElementById(id);
+    //     if (element) {
+    //       element.scrollIntoView({
+    //         behavior: 'smooth',
+    //         block: 'start'
+    //       });
+    //     }
+    //   }, 100);
+    // }
   }, [location.pathname, location.hash, location.state]);
   const handleAuthModalClose = () => {
     setShowAuthModal(false);

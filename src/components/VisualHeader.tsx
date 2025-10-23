@@ -37,7 +37,7 @@ const VisualHeader = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="px-8 py-12 sm:px-12 sm:py-16"
         >
-          <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 whitespace-nowrap">
+          <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-10 whitespace-nowrap">
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
@@ -48,7 +48,7 @@ const VisualHeader = () => {
           <motion.button 
             whileHover={{ color: '#FFD700' }}
             whileTap={{ scale: 0.95 }}
-            className="px-6 py-3 text-white font-bebas font-semibold text-lg sm:text-xl md:text-2xl transition-all duration-300 uppercase tracking-widest"
+            className="px-6 py-3 text-white font-poppins font-semibold text-base sm:text-lg md:text-xl transition-all duration-300 uppercase tracking-widest"
             onClick={() => {
               const element = document.getElementById('categoria-cestas');
               element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
