@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Star, ChevronLeft, ChevronRight, Quote, ArrowLeft } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Quote, ArrowLeft, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
