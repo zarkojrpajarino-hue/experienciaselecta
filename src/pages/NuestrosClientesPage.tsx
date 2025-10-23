@@ -163,21 +163,21 @@ const NuestrosClientesPage = () => {
                   </motion.div>
 
                   {/* 2. Navigation arrows - SECOND (IN THE MIDDLE) */}
-                  <div className="flex justify-center gap-4">
+                  <div className="flex justify-center gap-4 -mt-6 md:-mt-4">
                     <motion.button whileHover={{
                     scale: 1.1
                   }} whileTap={{
                     scale: 0.9
-                  }} onClick={prevTestimonial} className="flex items-center justify-center w-12 h-12 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
-                      <ChevronLeft className="w-6 h-6" />
+                  }} onClick={prevTestimonial} className="flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
+                      <ChevronLeft className="w-8 h-8 md:w-10 md:h-10" strokeWidth={3} />
                     </motion.button>
                     
                     <motion.button whileHover={{
                     scale: 1.1
                   }} whileTap={{
                     scale: 0.9
-                  }} onClick={nextTestimonial} className="flex items-center justify-center w-12 h-12 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
-                      <ChevronRight className="w-6 h-6" />
+                  }} onClick={nextTestimonial} className="flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-transparent hover:bg-transparent text-white hover:text-gold rounded-full shadow-lg hover:shadow-xl hover:shadow-gold/50 transition-all duration-300 border-0">
+                      <ChevronRight className="w-8 h-8 md:w-10 md:h-10" strokeWidth={3} />
                     </motion.button>
                   </div>
 
