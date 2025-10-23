@@ -41,7 +41,7 @@ const AddToCartButton = ({ onClick, price, className = "" }: AddToCartButtonProp
       >
         <ShoppingCart className="w-4 h-4" />
         <span>
-          Añadir al carrito. <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span>
+          Añadir al carrito <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span>.
         </span>
       </button>
     </div>

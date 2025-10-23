@@ -1336,7 +1336,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           onOpenChange={() => setOpenIdeal(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
                         >
                           <CollapsibleTrigger asChild>
-                            <button className={`w-full flex items-center justify-between gap-2 ${colorCombo.text} hover:opacity-80 transition-opacity py-2 px-4 rounded-lg hover:bg-black/5`}>
+                            <button className={`w-full flex items-center justify-between gap-2 text-black hover:opacity-80 transition-opacity py-2 px-4 rounded-lg hover:bg-black/5`}>
                               <span className="text-sm font-bold lowercase first-letter:capitalize">
                                 coste por persona.
                               </span>
