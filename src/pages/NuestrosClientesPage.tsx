@@ -92,7 +92,7 @@ const NuestrosClientesPage = () => {
       <div className="relative z-10 min-h-screen">
         
         {/* Hero Section with Back Button */}
-        <section className="relative pt-2 md:pt-8 pb-2">
+        <section className="relative pt-0 md:pt-8 pb-2 bg-transparent">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div initial={{
             opacity: 0,
@@ -102,8 +102,8 @@ const NuestrosClientesPage = () => {
             x: 0
           }} transition={{
             duration: 0.5
-          }} className="mb-4">
-              <Button onClick={() => navigate("/#categoria-cestas")} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent">
+          }} className="mb-2 md:mb-4">
+              <Button onClick={() => navigate("/#categoria-cestas")} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent mt-2">
                 <ArrowLeft className="w-5 h-5 mr-2" />
                 Volver
               </Button>
@@ -112,7 +112,7 @@ const NuestrosClientesPage = () => {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-0 pb-20 -mt-12 md:-mt-16">
+        <section className="py-0 pb-20 -mt-8 md:-mt-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="relative">
