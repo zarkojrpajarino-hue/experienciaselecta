@@ -360,7 +360,7 @@ const BasketCategories = () => {
         </div>
         
         {/* Botón ¿Qué vendemos? debajo del carrusel */}
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center md:justify-end mt-4 md:mt-6 md:pr-[10%]">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -370,8 +370,8 @@ const BasketCategories = () => {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }
             }}
-            className="px-4 py-2 text-sm rounded-full font-poppins font-bold text-black transition-all duration-300"
-            style={{ backgroundColor: '#FFD700', border: 'none', marginLeft: '10%' }}
+            className="px-4 py-2 text-sm md:text-base rounded-full font-poppins font-bold text-black transition-all duration-300 whitespace-nowrap"
+            style={{ backgroundColor: '#FFD700', border: 'none' }}
           >
             ¿Qué vendemos?
           </motion.button>
