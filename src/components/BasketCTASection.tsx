@@ -90,7 +90,7 @@ const BasketCTASection = ({ basketImage, basketName, position = "left", arrowCol
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] sm:rounded-[2rem] md:rounded-[2rem] lg:rounded-[2rem] xl:rounded-[2rem] overflow-hidden">
+        <DialogContent hideClose className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-3xl overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
@@ -100,11 +100,11 @@ const BasketCTASection = ({ basketImage, basketName, position = "left", arrowCol
           >
             <X className="h-6 w-6" />
           </Button>
-          <div className="rounded-[2rem] overflow-hidden">
+          <div className="rounded-3xl overflow-hidden">
             <img 
               src={basketImage} 
               alt={basketName} 
-              className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]" 
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
             />
           </div>
         </DialogContent>

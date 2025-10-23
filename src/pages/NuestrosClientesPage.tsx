@@ -269,7 +269,7 @@ const NuestrosClientesPage = () => {
             <img 
               src={testimonials[currentTestimonial].image} 
               alt={`experiencia ${testimonials[currentTestimonial].experience}`} 
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
             />
           </div>
         </DialogContent>

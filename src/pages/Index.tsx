@@ -433,7 +433,7 @@ const Index = () => {
             <img 
               src={cestaHeroImage} 
               alt="Cesta de experiencia ampliada" 
-              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl md:rounded-[2rem]" 
+              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" 
             />
           </div>
         </DialogContent>

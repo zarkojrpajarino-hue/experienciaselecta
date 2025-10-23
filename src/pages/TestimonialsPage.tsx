@@ -298,7 +298,7 @@ const TestimonialsPage = () => {
             <X className="h-6 w-6" />
           </Button>
           <div className="rounded-3xl overflow-hidden">
-            <img src={testimonials[currentTestimonial].image} alt={`Experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-auto max-h-[80vh] object-contain" />
+            <img src={testimonials[currentTestimonial].image} alt={`Experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" />
           </div>
         </DialogContent>
       </Dialog>
