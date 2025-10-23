@@ -1338,7 +1338,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           <CollapsibleTrigger asChild>
                             <button className={`w-full flex items-center justify-between gap-2 ${colorCombo.text} hover:opacity-80 transition-opacity py-2 px-4 rounded-lg hover:bg-black/5 border border-black/10`}>
                               <span className="text-sm font-bold lowercase first-letter:capitalize">
-                                coste por persona
+                                coste por persona.
                               </span>
                               {openIdeal[basket.id] ? 
                                 <ChevronUp className="w-4 h-4 flex-shrink-0" /> : 
@@ -1349,7 +1349,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           <CollapsibleContent className="mt-2">
                             {basket.personas && basket.costePersona && (
                               <p className={`text-base sm:text-lg font-bold ${colorCombo.text} text-center`}>
-                                {basket.personas} personas - <span className={`${colorCombo.important} font-bold text-lg sm:text-xl`}>{basket.costePersona}</span>
+                                {basket.personas} personas <span style={{ color: '#FFD700' }} className="font-bold text-lg sm:text-xl">{basket.costePersona}</span>
                               </p>
                             )}
                           </CollapsibleContent>
