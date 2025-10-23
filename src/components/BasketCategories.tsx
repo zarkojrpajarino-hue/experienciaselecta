@@ -35,7 +35,7 @@ const BasketCategories = () => {
 
   // Handle direct links to baskets via hash
   useEffect(() => {
-    // idMap actualizado con las 12 cestas actuales
+    // idMap actualizado con las 12 cestas del catálogo externo
     const idMap: Record<number, { category: string; groupSize: '3-4' | '5-6' | '7-8' }> = {
       // Pareja (2 personas)
       1: { category: 'Pareja', groupSize: '3-4' },
@@ -43,19 +43,19 @@ const BasketCategories = () => {
       3: { category: 'Pareja', groupSize: '3-4' },
       
       // Familia/Amigos (3-4 personas)
-      9: { category: 'Familia', groupSize: '3-4' },
-      10: { category: 'Familia', groupSize: '3-4' },
-      11: { category: 'Familia', groupSize: '3-4' },
+      4: { category: 'Familia', groupSize: '3-4' },
+      5: { category: 'Familia', groupSize: '3-4' },
+      6: { category: 'Familia', groupSize: '3-4' },
       
       // Familia/Amigos (5-6 personas)
-      12: { category: 'Familia', groupSize: '5-6' },
-      13: { category: 'Familia', groupSize: '5-6' },
-      14: { category: 'Familia', groupSize: '5-6' },
+      7: { category: 'Familia', groupSize: '5-6' },
+      8: { category: 'Familia', groupSize: '5-6' },
+      9: { category: 'Familia', groupSize: '5-6' },
       
       // Familia/Amigos (7-8 personas)
-      15: { category: 'Familia', groupSize: '7-8' },
-      16: { category: 'Familia', groupSize: '7-8' },
-      17: { category: 'Familia', groupSize: '7-8' },
+      10: { category: 'Familia', groupSize: '7-8' },
+      11: { category: 'Familia', groupSize: '7-8' },
+      12: { category: 'Familia', groupSize: '7-8' },
     };
 
     const handleHash = () => {
