@@ -120,7 +120,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
 
       {/* Modal enlarge */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl sm:rounded-3xl md:rounded-3xl lg:rounded-3xl xl:rounded-3xl overflow-hidden">
+        <DialogContent hideClose className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] sm:rounded-[2rem] md:rounded-[2rem] lg:rounded-[2rem] xl:rounded-[2rem] overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
@@ -130,11 +130,11 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           >
             <X className="h-6 w-6" />
           </Button>
-          <div className="rounded-3xl overflow-hidden">
+          <div className="rounded-[2rem] overflow-hidden">
             <img
               src={current.image}
               alt={current.alt || current.title}
-              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]"
             />
           </div>
         </DialogContent>
