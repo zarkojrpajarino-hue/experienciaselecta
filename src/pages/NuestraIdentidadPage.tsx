@@ -41,7 +41,7 @@ const NuestraIdentidadPage = () => {
             className="mb-8"
           >
             <Button
-              onClick={() => navigate("/#nosotros")}
+              onClick={() => navigate("/#categoria-cestas")}
               variant="ghost"
               className="text-gold hover:text-gold/80 hover:bg-gold/10"
             >

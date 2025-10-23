@@ -112,11 +112,8 @@ const PreguntasFrecuentesPage = () => {
       {/* Espacio superior para centrar */}
       <div className="pt-16 md:pt-24"></div>
 
-      {/* Sección única fusionada de FAQ y Valores */}
-      <RoundedImageCarousel slides={faqSlides} autoPlay hideMainTitle />
-      
       {/* Botón Contáctanos */}
-      <div className="py-16 md:py-32 flex justify-center bg-white">
+      <div className="py-8 md:py-12 flex justify-center bg-white">
         <ContactModal>
           <div className="flex flex-col items-center gap-2 cursor-pointer">
             <p className="text-black hover:text-gray-600 font-work-sans font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300" style={{ textTransform: "none" }}>
@@ -132,6 +129,9 @@ const PreguntasFrecuentesPage = () => {
           </div>
         </ContactModal>
       </div>
+
+      {/* Sección única fusionada de FAQ y Valores */}
+      <RoundedImageCarousel slides={faqSlides} autoPlay hideMainTitle />
     </div>
   );
 };

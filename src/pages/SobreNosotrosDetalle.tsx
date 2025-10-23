@@ -211,7 +211,7 @@ const SobreNosotrosDetalle = () => {
             >
               <Button
                 onClick={() => {
-                  navigate('/', { state: { preventScroll: true } });
+                  navigate('/#categoria-cestas');
                 }}
                 variant="ghost"
                 className="text-black hover:text-gold hover:bg-transparent transition-all duration-300 font-work-sans"
