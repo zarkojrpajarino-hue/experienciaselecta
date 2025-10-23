@@ -169,8 +169,8 @@ const SobreNosotrosDetalle = () => {
       
       
       {/* Sección Porque Elegirnos */}
-      <section id="porque-elegirnos-section" className="py-4">
-        <CarouselSection slides={benefitsSlides} position="right" />
+      <section id="porque-elegirnos-section" className="relative overflow-hidden py-2">
+        <CarouselSection slides={benefitsSlides} position="right" imageHeightClasses="h-[220px] md:h-[260px]" />
       </section>
 
       {/* Botón Ver Más Sobre Nosotros */}
