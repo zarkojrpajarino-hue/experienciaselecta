@@ -308,7 +308,7 @@ const Navbar = () => {
                     <Button
                       onClick={() => {
                         setShowCartPreview(false);
-                        navigate('/cestas');
+                        navigate('/carrito');
                       }}
                       className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-[hsl(271,100%,20%)] font-bold"
                     >
