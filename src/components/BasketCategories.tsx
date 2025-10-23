@@ -280,7 +280,7 @@ const BasketCategories = () => {
                   </motion.span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>¿Qué vendemos?</p>
+                  <p>Haz click</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
