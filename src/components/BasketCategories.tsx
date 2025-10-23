@@ -32,6 +32,53 @@ const BasketCategories = () => {
   const [sheetKey, setSheetKey] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Handle direct links to baskets via hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const match = window.location.hash.match(/^#cesta-(\d+)$/);
+      if (!match) return;
+      
+      const id = parseInt(match[1]);
+      
+      // Mapeo de IDs a categorías
+      const idMap: Record<number, { category: 'Pareja' | 'Familia' | 'Amigos', groupSize: '3-4' | '5-6' | '7-8' }> = {
+        1: { category: 'Pareja', groupSize: '3-4' },
+        2: { category: 'Pareja', groupSize: '3-4' },
+        3: { category: 'Pareja', groupSize: '3-4' },
+        9: { category: 'Familia', groupSize: '3-4' },
+        10: { category: 'Familia', groupSize: '3-4' },
+        11: { category: 'Familia', groupSize: '3-4' },
+        12: { category: 'Familia', groupSize: '5-6' },
+        13: { category: 'Familia', groupSize: '5-6' },
+        14: { category: 'Familia', groupSize: '5-6' },
+        15: { category: 'Familia', groupSize: '7-8' },
+        16: { category: 'Familia', groupSize: '7-8' },
+        17: { category: 'Familia', groupSize: '7-8' },
+      };
+      
+      const config = idMap[id];
+      if (!config) return;
+      
+      setSelectedCategory(config.category);
+      setGroupSize(config.groupSize);
+      setIsSheetOpen(true);
+      setSheetKey(prev => prev + 1);
+      
+      setTimeout(() => {
+        const element = document.getElementById(`cesta-${id}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          setTimeout(() => element.classList.remove('ring-2', 'ring-primary', 'ring-offset-2'), 2000);
+        }
+      }, 500);
+    };
+    
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   // Determine background based on group size
   const getBackgroundImage = () => {
     switch (groupSize) {
