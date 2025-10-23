@@ -34,71 +34,65 @@ const BasketCategories = () => {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
 
-  // Handle direct links to baskets via hash or query (?cesta=ID)
+  // Handle direct links to baskets via hash #cesta-ID
   useEffect(() => {
-    const getIncomingBasketId = (): number | null => {
-      // Support hash: #cesta-12
-      const hash = window.location.hash;
-      const hashMatch = hash.match(/^#cesta-(\d+)$/);
-      if (hashMatch) return parseInt(hashMatch[1], 10);
-
-      // Support query: ?cesta=12
-      const params = new URLSearchParams(window.location.search);
-      const q = params.get('cesta');
-      if (q && /^\d+$/.test(q)) return parseInt(q, 10);
-
-      return null;
+    // Mapeo completo de IDs a categorías y tamaños de grupo
+    const idMap: Record<number, { category: 'Pareja' | 'Familia' | 'Amigos'; groupSize: '3-4' | '5-6' | '7-8' }> = {
+      // Pareja (2 personas)
+      1: { category: 'Pareja', groupSize: '3-4' },
+      2: { category: 'Pareja', groupSize: '3-4' },
+      3: { category: 'Pareja', groupSize: '3-4' },
+      
+      // Familia/Amigos (3-4 personas)
+      9: { category: 'Familia', groupSize: '3-4' },
+      10: { category: 'Familia', groupSize: '3-4' },
+      11: { category: 'Familia', groupSize: '3-4' },
+      
+      // Familia/Amigos (5-6 personas)
+      12: { category: 'Familia', groupSize: '5-6' },
+      13: { category: 'Familia', groupSize: '5-6' },
+      14: { category: 'Familia', groupSize: '5-6' },
+      
+      // Familia/Amigos (7-8 personas)
+      15: { category: 'Familia', groupSize: '7-8' },
+      16: { category: 'Familia', groupSize: '7-8' },
+      17: { category: 'Familia', groupSize: '7-8' },
     };
 
-    const basketId = getIncomingBasketId();
-    if (basketId == null) return;
+    const handleDeepLink = () => {
+      const hash = window.location.hash;
+      if (!hash) return;
 
-    const categoriesToTry: Array<'Pareja' | 'Familia' | 'Amigos'> = ['Pareja', 'Familia', 'Amigos'];
+      const match = hash.match(/^#cesta-(\d+)$/);
+      if (!match) return;
 
-    const tryCategory = (index: number) => {
-      if (index >= categoriesToTry.length) return; // No encontrado en ninguna categoría
+      const basketId = parseInt(match[1], 10);
+      const basketInfo = idMap[basketId];
+      
+      if (!basketInfo) {
+        console.warn(`Cesta ${basketId} no encontrada en el mapeo`);
+        return;
+      }
 
-      const category = categoriesToTry[index];
-      setSelectedCategory(category);
+      // Configurar categoría, tamaño de grupo y abrir Sheet
+      setSelectedCategory(basketInfo.category);
+      setGroupSize(basketInfo.groupSize);
       setIsSheetOpen(true);
       setSheetKey(prev => prev + 1);
       setInitialBasketId(basketId);
-
-      // Intentos de localizar el elemento dentro de esta categoría
-      const tryScroll = (attempt = 0) => {
-        const el = document.getElementById(`cesta-${basketId}`);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
-          setTimeout(() => {
-            el.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
-          }, 2000);
-        } else if (attempt < 10) {
-          setTimeout(() => tryScroll(attempt + 1), 200);
-        } else {
-          // Probar siguiente categoría si no se encontró en ésta
-          setTimeout(() => tryCategory(index + 1), 200);
-        }
-      };
-
-      // Dar tiempo a montar el contenido del Sheet
-      setTimeout(() => tryScroll(0), 350);
     };
 
-    tryCategory(0);
+    // Ejecutar al montar
+    handleDeepLink();
 
-    // Listener para cambios futuros del hash
-    const onHashChange = () => {
-      const newId = getIncomingBasketId();
-      if (newId != null) {
-        tryCategory(0);
-      }
-    };
-    window.addEventListener('hashchange', onHashChange);
+    // Escuchar cambios en el hash
+    window.addEventListener('hashchange', handleDeepLink);
 
     return () => {
-      window.removeEventListener('hashchange', onHashChange);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      window.removeEventListener('hashchange', handleDeepLink);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
     };
   }, []);
 
