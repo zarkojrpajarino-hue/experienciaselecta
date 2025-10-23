@@ -1,10 +1,47 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { Resend } from 'https://esm.sh/resend@4.0.0'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// HTML escape function to prevent XSS in emails
+const escapeHtml = (text: string): string => {
+  const map: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+};
+
+// Validation schema for order data
+const orderItemSchema = z.object({
+  basket_name: z.string().max(200),
+  basket_category: z.string().max(100),
+  price_per_item: z.number().int().positive(),
+});
+
+const orderSchema = z.object({
+  id: z.string().uuid(),
+  total_amount: z.number().int().positive(),
+  created_at: z.string(),
+  shipping_address_line1: z.string().max(200),
+  shipping_address_line2: z.string().max(200).optional().nullable(),
+  shipping_city: z.string().max(100),
+  shipping_postal_code: z.string().max(20),
+  shipping_country: z.string().max(100),
+  customers: z.object({
+    name: z.string().max(200),
+    email: z.string().email().max(255),
+    phone: z.string().max(50).optional().nullable(),
+  }),
+  order_items: z.array(orderItemSchema).min(1),
+});
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -14,32 +51,35 @@ serve(async (req) => {
 
   try {
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    const { order } = await req.json();
+    const { order: rawOrder } = await req.json();
 
+    // Validate and sanitize order data
+    const order = orderSchema.parse(rawOrder);
+    
     console.log('Sending order confirmation for:', order.id);
 
-    // Format order items for email
-    const itemsList = order.order_items.map((item: any) => 
-      `• ${item.basket_name} - ${item.basket_category} (${(item.price_per_item / 100).toFixed(2)}€)`
+    // Format order items for email with HTML escaping
+    const itemsList = order.order_items.map((item) => 
+      `• ${escapeHtml(item.basket_name)} - ${escapeHtml(item.basket_category)} (${(item.price_per_item / 100).toFixed(2)}€)`
     ).join('\n');
 
     const customerEmailContent = `
-¡Hola ${order.customers.name}!
+¡Hola ${escapeHtml(order.customers.name)}!
 
 ¡Gracias por tu pedido! Hemos recibido tu pago correctamente.
 
 📦 DETALLES DEL PEDIDO
-Número de pedido: ${order.id}
+Número de pedido: ${escapeHtml(order.id)}
 Total: ${(order.total_amount / 100).toFixed(2)}€
 
 🛍️ PRODUCTOS ADQUIRIDOS
 ${itemsList}
 
 📍 DIRECCIÓN DE ENVÍO
-${order.customers.name}
-${order.shipping_address_line1}
-${order.shipping_address_line2 ? order.shipping_address_line2 + '\n' : ''}${order.shipping_city}, ${order.shipping_postal_code}
-${order.shipping_country}
+${escapeHtml(order.customers.name)}
+${escapeHtml(order.shipping_address_line1)}
+${order.shipping_address_line2 ? escapeHtml(order.shipping_address_line2) + '\n' : ''}${escapeHtml(order.shipping_city)}, ${escapeHtml(order.shipping_postal_code)}
+${escapeHtml(order.shipping_country)}
 
 Tu cesta será preparada con cariño y enviada a la dirección indicada.
 
@@ -52,10 +92,10 @@ El equipo de Experiencia Selecta
     const adminEmailContent = `
 NUEVO PEDIDO CONFIRMADO
 
-Número de pedido: ${order.id}
-Cliente: ${order.customers.name}
-Email: ${order.customers.email}
-Teléfono: ${order.customers.phone || 'No proporcionado'}
+Número de pedido: ${escapeHtml(order.id)}
+Cliente: ${escapeHtml(order.customers.name)}
+Email: ${escapeHtml(order.customers.email)}
+Teléfono: ${order.customers.phone ? escapeHtml(order.customers.phone) : 'No proporcionado'}
 
 Productos:
 ${itemsList}
@@ -63,10 +103,10 @@ ${itemsList}
 Total: ${(order.total_amount / 100).toFixed(2)}€
 
 Dirección de envío:
-${order.customers.name}
-${order.shipping_address_line1}
-${order.shipping_address_line2 ? order.shipping_address_line2 + '\n' : ''}${order.shipping_city}, ${order.shipping_postal_code}
-${order.shipping_country}
+${escapeHtml(order.customers.name)}
+${escapeHtml(order.shipping_address_line1)}
+${order.shipping_address_line2 ? escapeHtml(order.shipping_address_line2) + '\n' : ''}${escapeHtml(order.shipping_city)}, ${escapeHtml(order.shipping_postal_code)}
+${escapeHtml(order.shipping_country)}
 
 Fecha del pedido: ${new Date(order.created_at).toLocaleString('es-ES')}
 `;
@@ -99,11 +139,24 @@ Fecha del pedido: ${new Date(order.created_at).toLocaleString('es-ES')}
 
   } catch (error: any) {
     console.error('Error sending order confirmation:', error);
+    
+    // Handle validation errors specifically
+    if (error instanceof z.ZodError) {
+      console.error('Validation error:', error.errors);
+      return new Response(
+        JSON.stringify({ error: 'Invalid order data', details: error.errors }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ error: error?.message || 'Unknown error occurred' }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
+        status: 500,
       }
     );
   }
