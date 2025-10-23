@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X, ArrowDown } from "lucide-react";
+import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -260,19 +260,24 @@ const BasketCategories = () => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span 
+                  <motion.span 
                     onClick={() => {
                       const element = document.getElementById('que-vendemos');
                       if (element) {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }
                     }}
-                    className="cursor-pointer hover:opacity-80 transition-opacity duration-300 inline-flex items-center gap-2"
+                    className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
                     style={{ fontSize: 'inherit', color: '#FFD700' }}
+                    animate={{ rotateZ: [0, 180, 0] }}
+                    transition={{ 
+                      duration: 3, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
                   >
                     ¿?
-                    <ArrowDown size={28} className="text-gold" />
-                  </span>
+                  </motion.span>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>¿Qué vendemos?</p>
