@@ -87,6 +87,7 @@ const ProfilePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("orders");
+  const [openPreviousReviews, setOpenPreviousReviews] = useState(false);
   const [newReview, setNewReview] = useState<{
     basketName: string;
     rating: number;
@@ -419,7 +420,7 @@ const ProfilePage = () => {
                               </p>
                             </div>
                             <div className="flex-1 text-center">
-                              <p className="text-sm text-green-600 font-poppins font-bold">
+                              <p className="text-2xl text-green-600 font-poppins font-bold">
                                 ✓ Pagado.
                               </p>
                             </div>
@@ -462,7 +463,7 @@ const ProfilePage = () => {
                             <div className="flex justify-center items-start">
                               {order.items[0] && basketData[order.items[0].basket_name] && (
                                 <div 
-                                  className="w-32 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105"
+                                  className="w-24 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
                                   onClick={() => setZoomedImage(basketData[order.items[0].basket_name].imagen)}
                                 >
                                   <img 
@@ -573,40 +574,70 @@ const ProfilePage = () => {
 
               {/* Valoraciones existentes */}
               {reviews.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-white text-lg font-bungee tracking-wider">Mis valoraciones anteriores.</h3>
-                  {reviews.map((review) => (
-                    <Card key={review.id} className="bg-transparent border-none shadow-lg">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg text-white font-poppins font-bold">{review.basket_name}.</CardTitle>
-                          <div className="flex gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-5 h-5 ${
-                                  i < review.rating
-                                    ? "fill-[hsl(45,100%,65%)] text-[hsl(45,100%,65%)]"
-                                    : "text-white"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-sm text-white font-poppins font-bold">
-                          {new Date(review.created_at).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}.
-                        </p>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-white font-poppins font-bold">{review.comment}.</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                <Card className="bg-transparent border-none shadow-lg">
+                  <CardContent className="pt-6">
+                    <Collapsible
+                      open={openPreviousReviews}
+                      onOpenChange={setOpenPreviousReviews}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-white text-lg font-bungee tracking-wider">Mis valoraciones anteriores.</h3>
+                        <CollapsibleTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold"
+                          >
+                            {openPreviousReviews ? (
+                              <>
+                                <ChevronUp className="w-4 h-4 mr-2" />
+                                Ocultar
+                              </>
+                            ) : (
+                              <>
+                                <ChevronDown className="w-4 h-4 mr-2" />
+                                Ver valoraciones
+                              </>
+                            )}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                      
+                      <CollapsibleContent className="mt-4 space-y-4">
+                        {reviews.map((review) => (
+                          <Card key={review.id} className="bg-white/10 border-none shadow-lg">
+                            <CardHeader>
+                              <div className="flex justify-between items-start">
+                                <CardTitle className="text-lg text-white font-poppins font-bold">{review.basket_name}.</CardTitle>
+                                <div className="flex gap-1">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`w-5 h-5 ${
+                                        i < review.rating
+                                          ? "fill-[hsl(45,100%,65%)] text-[hsl(45,100%,65%)]"
+                                          : "text-white"
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-sm text-white font-poppins font-bold">
+                                {new Date(review.created_at).toLocaleDateString("es-ES", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}.
+                              </p>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-white font-poppins font-bold">{review.comment}.</p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </CardContent>
+                </Card>
               )}
             </TabsContent>
           </Tabs>
