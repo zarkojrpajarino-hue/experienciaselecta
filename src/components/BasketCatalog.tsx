@@ -10,6 +10,7 @@ import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, Shoppin
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import CheckoutModal from "./CheckoutModal";
+import AddToCartButton from "./AddToCartButton";
 
 // Import images - Pareja
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-2.jpg";
@@ -1331,26 +1332,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
                     {/* Center: Añadir al carrito - Compacto */}
                     <div className="col-span-2 flex justify-center mt-2">
-                      <button 
+                      <AddToCartButton 
                         onClick={() => handleAddToCart(basket)}
-                        className={`font-bold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2 group basket-add-cart ${colorCombo.text} hover:scale-105 py-2`}
-                      >
-                        <ShoppingCart className="w-4 h-4 flex-shrink-0" />
-                        <span>añadir al carrito - <span style={{ color: "#FFD700" }} className="text-xl sm:text-2xl font-bold">{basket.precio}€</span></span>
-                        <svg 
-                          className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 flex-shrink-0"
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                          strokeWidth={3}
-                        >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            d="M13 7l5 5m0 0l-5 5m5-5H6" 
-                          />
-                        </svg>
-                      </button>
+                        price={basket.precio}
+                        className={colorCombo.text}
+                      />
                     </div>
 
                   </div>
@@ -1491,26 +1477,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             )}
 
                             <div className="flex flex-col gap-2">
-                              <button 
-                                onClick={() => handleAddToCart(basket)}
-                                className={`w-full font-bold transition-all duration-300 text-lg md:text-xl flex items-center justify-center gap-2 group basket-add-cart ${colorCombo.text} hover:scale-105 py-2`}
-                              >
-                                <ShoppingCart className="w-5 h-5" />
-                                <span>añadir al carrito - <span style={{ color: "#FFD700" }} className="text-2xl md:text-3xl font-bold">{basket.precio}€</span></span>
-                                <svg 
-                                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={3}
-                                >
-                                  <path 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                    d="M13 7l5 5m0 0l-5 5m5-5H6" 
-                                  />
-                                </svg>
-                              </button>
+                              <div className="flex justify-center">
+                                <AddToCartButton 
+                                  onClick={() => handleAddToCart(basket)}
+                                  price={basket.precio}
+                                  className={colorCombo.text}
+                                />
+                              </div>
                             </div>
                           </motion.div>
                         )}
