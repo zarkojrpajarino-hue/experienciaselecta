@@ -92,7 +92,7 @@ const NuestrosClientesPage = () => {
       <div className="relative z-10 min-h-screen">
         
         {/* Hero Section with Back Button */}
-        <section className="relative pt-6 md:pt-8 pb-2">
+        <section className="relative pt-2 md:pt-8 pb-2">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div initial={{
             opacity: 0,
