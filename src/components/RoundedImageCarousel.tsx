@@ -37,7 +37,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {/* Título principal */}
         {!hideMainTitle && (
           <div className="text-center mb-6">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-rubik text-black tracking-wide">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-poppins font-bold text-black tracking-wide">
               Déjanos explicarte como te entendemos.
             </h2>
           </div>
@@ -47,7 +47,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         <div className="w-full flex flex-col items-center justify-center py-4">
           <div className="px-6 max-w-4xl mb-4 text-center">
             <h3
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins font-bold tracking-wide text-black"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-poppins tracking-wide text-black"
               style={{ textTransform: "none" }}
               dangerouslySetInnerHTML={{ __html: current.title }}
             />

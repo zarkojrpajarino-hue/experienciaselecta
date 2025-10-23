@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -169,6 +169,14 @@ const BasketCategories = () => {
     }
     return phrase;
   };
+  useEffect(() => {
+    // Scroll to this section when component mounts
+    const section = document.getElementById('recogida');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
+
   return <section id="recogida" className="pt-20 pb-20 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
