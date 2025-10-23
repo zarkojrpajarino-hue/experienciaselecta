@@ -91,9 +91,10 @@ interface Basket {
 interface BasketCatalogProps {
   categoria: string;
   onGroupSizeChange?: (size: '3-4' | '5-6' | '7-8') => void;
+  initialBasketId?: number;
 }
 
-const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeChange }) => {
+const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeChange, initialBasketId }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [openCard, setOpenCard] = useState<number | null>(null);
@@ -117,6 +118,38 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   React.useEffect(() => {
     onGroupSizeChange?.(showGroupSize);
   }, []);
+
+  // Si llega un id de cesta, ajusta tamaño de grupo y desplaza con reintentos
+  React.useEffect(() => {
+    if (initialBasketId == null) return;
+
+    // Encuentra la cesta objetivo en el catálogo actual para deducir personas
+    const all = getBaskets();
+    const target = all.find(b => b.id === initialBasketId);
+
+    if (target && (target.personas === '3-4' || target.personas === '5-6' || target.personas === '7-8')) {
+      if (showGroupSize !== target.personas) {
+        setShowGroupSize(target.personas as '3-4' | '5-6' | '7-8');
+        onGroupSizeChange?.(target.personas as '3-4' | '5-6' | '7-8');
+      }
+    }
+
+    const tryScroll = (attempt = 0) => {
+      const element = document.getElementById(`cesta-${initialBasketId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
+        setTimeout(() => {
+          element.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
+        }, 2000);
+      } else if (attempt < 12) {
+        setTimeout(() => tryScroll(attempt + 1), 200);
+      }
+    };
+
+    // Dar tiempo a re-render si cambiamos showGroupSize
+    setTimeout(() => tryScroll(0), 350);
+  }, [initialBasketId, categoria, showGroupSize]);
 
   // Handle card toggle and reset collapsibles when closed
   const handleCardToggle = (cardId: number) => {

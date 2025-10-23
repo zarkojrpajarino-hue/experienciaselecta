@@ -32,90 +32,76 @@ const BasketCategories = () => {
   const [sheetKey, setSheetKey] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
 
-  // Handle direct links to baskets via hash
+  // Handle direct links to baskets via hash or query (?cesta=ID)
   useEffect(() => {
-    // idMap actualizado con las 12 cestas del catálogo externo
-    const idMap: Record<number, { category: string; groupSize: '3-4' | '5-6' | '7-8' }> = {
-      // Pareja (2 personas)
-      1: { category: 'Pareja', groupSize: '3-4' },
-      2: { category: 'Pareja', groupSize: '3-4' },
-      3: { category: 'Pareja', groupSize: '3-4' },
-      
-      // Familia/Amigos (3-4 personas)
-      4: { category: 'Familia', groupSize: '3-4' },
-      5: { category: 'Familia', groupSize: '3-4' },
-      6: { category: 'Familia', groupSize: '3-4' },
-      
-      // Familia/Amigos (5-6 personas)
-      7: { category: 'Familia', groupSize: '5-6' },
-      8: { category: 'Familia', groupSize: '5-6' },
-      9: { category: 'Familia', groupSize: '5-6' },
-      
-      // Familia/Amigos (7-8 personas)
-      10: { category: 'Familia', groupSize: '7-8' },
-      11: { category: 'Familia', groupSize: '7-8' },
-      12: { category: 'Familia', groupSize: '7-8' },
+    const getIncomingBasketId = (): number | null => {
+      // Support hash: #cesta-12
+      const hash = window.location.hash;
+      const hashMatch = hash.match(/^#cesta-(\d+)$/);
+      if (hashMatch) return parseInt(hashMatch[1], 10);
+
+      // Support query: ?cesta=12
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('cesta');
+      if (q && /^\d+$/.test(q)) return parseInt(q, 10);
+
+      return null;
     };
 
-    const scrollToHashElement = (retries = 0) => {
-      const hash = window.location.hash;
-      if (!hash) return;
+    const basketId = getIncomingBasketId();
+    if (basketId == null) return;
 
-      const match = hash.match(/^#cesta-(\d+)$/);
-      if (!match) return;
+    const categoriesToTry: Array<'Pareja' | 'Familia' | 'Amigos'> = ['Pareja', 'Familia', 'Amigos'];
 
-      const basketId = parseInt(match[1]);
-      const basketInfo = idMap[basketId];
-      
-      if (!basketInfo) {
-        console.warn(`ID ${basketId} no existe en el catálogo`);
-        return;
-      }
+    const tryCategory = (index: number) => {
+      if (index >= categoriesToTry.length) return; // No encontrado en ninguna categoría
 
-      // Configurar estado para abrir el Sheet correcto
-      setSelectedCategory(basketInfo.category);
-      setGroupSize(basketInfo.groupSize);
+      const category = categoriesToTry[index];
+      setSelectedCategory(category);
       setIsSheetOpen(true);
       setSheetKey(prev => prev + 1);
+      setInitialBasketId(basketId);
 
-      // Wait for DOM to update and then scroll
-      setTimeout(() => {
-        const element = document.getElementById(`cesta-${basketId}`);
-        if (element) {
-          element.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
-          });
-          
-          // Add highlight effect with CSS classes
-          element.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
+      // Intentos de localizar el elemento dentro de esta categoría
+      const tryScroll = (attempt = 0) => {
+        const el = document.getElementById(`cesta-${basketId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
           setTimeout(() => {
-            element.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
+            el.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
           }, 2000);
-        } else if (retries < 10) {
-          // Retry if element not found yet
-          setTimeout(() => scrollToHashElement(retries + 1), 200);
+        } else if (attempt < 10) {
+          setTimeout(() => tryScroll(attempt + 1), 200);
         } else {
-          console.warn(`Elemento cesta-${basketId} no encontrado en el DOM después de ${retries} intentos`);
+          // Probar siguiente categoría si no se encontró en ésta
+          setTimeout(() => tryCategory(index + 1), 200);
         }
-      }, 300);
+      };
+
+      // Dar tiempo a montar el contenido del Sheet
+      setTimeout(() => tryScroll(0), 350);
     };
 
-    // Scroll on mount
-    scrollToHashElement();
+    tryCategory(0);
 
-    // Listen for hash changes
-    const handleHashChange = () => scrollToHashElement();
-    window.addEventListener('hashchange', handleHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
+    // Listener para cambios futuros del hash
+    const onHashChange = () => {
+      const newId = getIncomingBasketId();
+      if (newId != null) {
+        tryCategory(0);
       }
     };
+    window.addEventListener('hashchange', onHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', onHashChange);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
   }, []);
+
 
   // Determine background based on group size
   const getBackgroundImage = () => {
@@ -411,7 +397,7 @@ const BasketCategories = () => {
             </div>
           </SheetHeader>
           <div className="mt-0">
-            {selectedCategory ? <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} /> : null}
+            {selectedCategory ? <BasketCatalog categoria={selectedCategory} initialBasketId={initialBasketId ?? undefined} onGroupSizeChange={setGroupSize} /> : null}
           </div>
         </SheetContent>
       </Sheet>
