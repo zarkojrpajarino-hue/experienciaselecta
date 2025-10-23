@@ -50,11 +50,13 @@ const ClickableImage = ({
           >
             <X className="h-6 w-6" />
           </Button>
-          <img 
-            src={src} 
-            alt={alt} 
-            className="w-full h-auto max-h-[85vh] object-contain rounded-3xl" 
-          />
+          <div className="rounded-3xl overflow-hidden">
+            <img 
+              src={src} 
+              alt={alt} 
+              className="w-full h-auto max-h-[85vh] object-contain" 
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </>

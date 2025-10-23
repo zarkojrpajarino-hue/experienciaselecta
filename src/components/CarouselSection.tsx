@@ -142,11 +142,13 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           >
             <X className="h-6 w-6" />
           </Button>
-          <img 
-            src={currentSlide.image} 
-            alt="Ampliado" 
-            className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
-          />
+          <div className="rounded-3xl overflow-hidden">
+            <img 
+              src={currentSlide.image} 
+              alt="Ampliado" 
+              className="w-full h-auto max-h-[80vh] object-contain"
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </section>

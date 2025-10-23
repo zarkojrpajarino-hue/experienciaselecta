@@ -1539,13 +1539,15 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             <X className="h-6 w-6" />
           </Button>
           {selectedImage && (
-            <img 
-              src={selectedImage} 
-              alt="Cesta completa"
-              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
-              loading="eager"
-              decoding="async"
-            />
+            <div className="rounded-3xl overflow-hidden">
+              <img 
+                src={selectedImage} 
+                alt="Cesta completa"
+                className="w-full h-auto max-h-[80vh] object-contain"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>

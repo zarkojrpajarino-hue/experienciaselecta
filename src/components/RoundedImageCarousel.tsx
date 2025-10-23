@@ -130,11 +130,13 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           >
             <X className="h-6 w-6" />
           </Button>
-          <img
-            src={current.image}
-            alt={current.alt || current.title}
-            className="w-full h-auto max-h-[80vh] object-contain rounded-3xl"
-          />
+          <div className="rounded-3xl overflow-hidden">
+            <img
+              src={current.image}
+              alt={current.alt || current.title}
+              className="w-full h-auto max-h-[80vh] object-contain"
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </section>

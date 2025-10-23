@@ -100,11 +100,13 @@ const BasketCTASection = ({ basketImage, basketName, position = "left", arrowCol
           >
             <X className="h-6 w-6" />
           </Button>
-          <img 
-            src={basketImage} 
-            alt={basketName} 
-            className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" 
-          />
+          <div className="rounded-3xl overflow-hidden">
+            <img 
+              src={basketImage} 
+              alt={basketName} 
+              className="w-full h-auto max-h-[80vh] object-contain" 
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </>
