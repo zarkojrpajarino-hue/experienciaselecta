@@ -419,7 +419,7 @@ const Index = () => {
 
       {/* Image Modal for cesta */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen overflow-hidden rounded-3xl">
           <img 
             src={cestaHeroImage} 
             alt="Cesta de experiencia ampliada" 

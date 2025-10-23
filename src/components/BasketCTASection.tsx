@@ -90,7 +90,7 @@ const BasketCTASection = ({ basketImage, basketName, position = "left", arrowCol
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen overflow-hidden rounded-3xl">
           <Button 
             onClick={() => setIsImageOpen(false)} 
             className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-black/80 hover:bg-gold hover:text-black shadow-lg transition-all duration-300 border-0" 

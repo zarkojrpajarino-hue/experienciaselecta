@@ -291,7 +291,7 @@ const TestimonialsPage = () => {
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-4 shadow-none flex items-center justify-center min-h-screen overflow-hidden rounded-3xl">
           <Button onClick={() => setIsImageOpen(false)} className="absolute top-4 right-4 z-50 h-14 w-14 rounded-full bg-black/90 hover:bg-gold hover:text-black shadow-2xl transition-all duration-300 border-2 border-white/20" size="icon">
             <motion.div whileHover={{ scale: 1.1, rotate: 90 }} transition={{ duration: 0.3 }}>
               <X className="w-7 h-7 stroke-[2.5]" />
