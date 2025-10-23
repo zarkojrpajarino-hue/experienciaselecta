@@ -38,6 +38,7 @@ const BasketCategories = () => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<number | null>(null);
+  const hasShownRef = useRef(false);
   const openTooltipTemporarily = (ms = 2000) => {
     setTooltipOpen(true);
     if (tooltipTimerRef.current) window.clearTimeout(tooltipTimerRef.current);
@@ -105,30 +106,46 @@ const BasketCategories = () => {
 
   // Auto-open tooltip when the section enters viewport or when hash targets the section
   useEffect(() => {
-    const el = sectionRef.current;
+    const refEl = sectionRef.current;
+    const hashEl = document.getElementById('categoria-cestas');
+    const targetEl = hashEl || refEl;
     let closeTimer: number | undefined;
-    const openOnce = () => {
+
+    const openWithCooldown = () => {
+      if (hasShownRef.current) return;
+      hasShownRef.current = true;
       setTooltipOpen(true);
       closeTimer = window.setTimeout(() => setTooltipOpen(false), 2000);
+      // allow showing again after user leaves section for a bit
+      window.setTimeout(() => { hasShownRef.current = false; }, 4000);
     };
 
     const onHash = () => {
       if (window.location.hash === '#categoria-cestas') {
-        openOnce();
+        openWithCooldown();
       }
     };
 
-    if (el) {
+    // Helper to check if element is in viewport now
+    const isInViewport = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return r.top < window.innerHeight * 0.8 && r.bottom > window.innerHeight * 0.2;
+    };
+
+    if (targetEl) {
       const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
-          openOnce();
+          openWithCooldown();
         }
-      }, { threshold: 0.1, rootMargin: '0px 0px -20% 0px' });
-      observer.observe(el);
-      // Initial checks
-      if (window.location.hash === '#categoria-cestas') {
-        openOnce();
+      }, { threshold: 0.01, rootMargin: '0px 0px -40% 0px' });
+
+      observer.observe(targetEl);
+
+      // Initial checks on mount
+      if (window.location.hash === '#categoria-cestas' || isInViewport(targetEl)) {
+        openWithCooldown();
       }
+
       window.addEventListener('hashchange', onHash);
       return () => {
         observer.disconnect();
@@ -137,9 +154,9 @@ const BasketCategories = () => {
       };
     }
 
-    // Fallback if no ref available
+    // Fallback: just react to hash
     if (window.location.hash === '#categoria-cestas') {
-      openOnce();
+      openWithCooldown();
     }
     window.addEventListener('hashchange', onHash);
     return () => {
