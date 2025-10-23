@@ -123,11 +123,11 @@ const FAQHorizontalSection = () => {
 
       <div className="relative z-10">
         {/* FAQ Section */}
-        <section className="pt-8 pb-4 flex items-end min-h-[500px]">
+        <section className="pt-8 pb-4 flex items-end min-h-[625px]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             
             <div
-              className="relative max-w-4xl mx-auto h-[280px] perspective-1000 mb-2"
+              className="relative max-w-4xl mx-auto h-[350px] perspective-1000 mb-2"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               ref={cardRef}

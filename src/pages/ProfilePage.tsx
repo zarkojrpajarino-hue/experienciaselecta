@@ -41,6 +41,13 @@ const basketData: Record<string, { imagen: string; precio: number }> = {
   "Festín Selecto": { imagen: festinSelectoImg, precio: 140 },
 };
 
+// Fallback por categoría si no encontramos la cesta exacta
+const categoryFallbackImage: Record<string, string> = {
+  Pareja: parejaGourmetImg,
+  Familia: familiarClasicaImg,
+  Amigos: granTertuliaImg,
+};
+
 interface Order {
   id: string;
   created_at: string;
@@ -461,18 +468,33 @@ const ProfilePage = () => {
 
                             {/* Imagen de la cesta en el centro */}
                             <div className="flex justify-center items-start">
-                              {order.items[0] && basketData[order.items[0].basket_name] && (
-                                <div 
-                                  className="w-24 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
-                                  onClick={() => setZoomedImage(basketData[order.items[0].basket_name].imagen)}
-                                >
-                                  <img 
-                                    src={basketData[order.items[0].basket_name].imagen} 
-                                    alt={order.items[0].basket_name}
-                                    className="w-full h-auto object-cover"
-                                  />
-                                </div>
-                              )}
+                              {order.items && order.items.length > 0 ? (
+                                (() => {
+                                  const item = order.items[0];
+                                  const byName = basketData[item.basket_name]?.imagen;
+                                  const cat = (item.basket_category || '').toLowerCase();
+                                  const byCategory = cat.includes('pareja')
+                                    ? categoryFallbackImage.Pareja
+                                    : cat.includes('familia')
+                                      ? categoryFallbackImage.Familia
+                                      : cat.includes('amig')
+                                        ? categoryFallbackImage.Amigos
+                                        : undefined;
+                                  const imgSrc = byName || byCategory || parejaInicialImg;
+                                  return (
+                                    <div 
+                                      className="w-28 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
+                                      onClick={() => setZoomedImage(imgSrc)}
+                                    >
+                                      <img 
+                                        src={imgSrc} 
+                                        alt={item.basket_name}
+                                        className="w-full h-auto object-cover"
+                                      />
+                                    </div>
+                                  );
+                                })()
+                              ) : null}
                             </div>
 
                             {/* Dirección de envío - escalera de derecha a izquierda bajando */}

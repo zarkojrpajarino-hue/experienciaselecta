@@ -123,8 +123,8 @@ const KeyBenefitsSection = () => {
   const endIndex = Math.min(startIndex + 3, benefits.length);
   const isLeft = currentCardIndex % 2 === 0;
   const bgPosition = currentCardIndex === 0 ? 'center 35%' : 'center';
-  return <section id="beneficios" className="py-24 relative overflow-hidden flex items-center" style={{
-    minHeight: '86vh'
+return <section id="beneficios" className="py-24 relative overflow-hidden flex items-center" style={{
+    minHeight: '107vh'
   }}>
       {/* Background Images with Crossfade */}
       {benefits.map((benefit, index) => <div key={index} className="absolute inset-0 transition-opacity duration-700" style={{
