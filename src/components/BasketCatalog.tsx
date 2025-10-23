@@ -13,14 +13,14 @@ import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
 
 // Import images - Pareja
-import parejaInicialImg from "@/assets/pareja-inicial-nueva-2.jpg";
-import conversacionNaturalImg from "@/assets/conversacion-natural-original.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-2.jpg";
+import parejaInicialImg from "@/assets/pareja-inicial-nueva-3.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
 
 // Import images - Familia/Amigos
-import trioIbericoNuevoImg from "@/assets/trio-iberico-nuevo.jpg";
-import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo.jpg";
-import ibericosSelectosNuevoImg from "@/assets/ibericos-selectos-nuevo.jpg";
+import trioIbericoNuevoImg from "@/assets/trio-iberico-nuevo-2.jpg";
+import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-2.jpg";
+import ibericosSelectosNuevoImg from "@/assets/ibericos-selectos-nuevo-2.jpg";
 import familiarClasicaNuevoImg from "@/assets/familiar-clasica-nuevo.jpg";
 import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica.jpg";
 import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo.jpg";

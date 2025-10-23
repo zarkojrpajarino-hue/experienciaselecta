@@ -6,10 +6,10 @@ import PageNavigation from "@/components/PageNavigation";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import testimonialsBackground from "@/assets/testimonials-background.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-2.jpg";
-import conversacionNaturalImg from "@/assets/conversacion-natural-original.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
 import amigosExperience from "@/assets/amigos-experience.jpg";
-import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo.jpg";
+import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-2.jpg";
 import parejaExperience from "@/assets/pareja-experience.jpg";
 import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo.jpg";
 import familiaExperience from "@/assets/familia-experience.jpg";
@@ -291,23 +291,13 @@ const TestimonialsPage = () => {
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-6xl bg-black/95 border-gold/50">
-          <Button onClick={() => setIsImageOpen(false)} className="absolute top-2 right-2 z-50 h-10 w-10 rounded-full bg-background/90 hover:bg-gold hover:text-primary shadow-lg hover:shadow-gold/50 transition-all duration-300 backdrop-blur-sm border border-primary/20 hover:border-gold" size="icon">
-            <motion.div whileHover={{
-            scale: 1.1,
-            rotate: 90
-          }} transition={{
-            duration: 0.3
-          }}>
-              <X className="w-6 h-6" />
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-0 shadow-none">
+          <Button onClick={() => setIsImageOpen(false)} className="absolute top-4 right-4 z-50 h-14 w-14 rounded-full bg-black/90 hover:bg-gold hover:text-black shadow-2xl transition-all duration-300 border-2 border-white/20" size="icon">
+            <motion.div whileHover={{ scale: 1.1, rotate: 90 }} transition={{ duration: 0.3 }}>
+              <X className="w-7 h-7 stroke-[2.5]" />
             </motion.div>
           </Button>
           <img src={testimonials[currentTestimonial].image} alt={`Experiencia ${testimonials[currentTestimonial].experience}`} className="w-full h-auto max-h-[90vh] object-contain rounded-3xl" />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-            <h3 className="font-cinzel font-bold text-gold text-xl text-center">
-              {testimonials[currentTestimonial].experience}
-            </h3>
-          </div>
         </DialogContent>
       </Dialog>
     </div>;

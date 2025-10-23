@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import nuestrosClientesBg from "@/assets/nuestros-clientes-bg.png";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-2.jpg";
-import conversacionNaturalImg from "@/assets/conversacion-natural-original.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
 import amigosExperience from "@/assets/amigos-experience.jpg";
-import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo.jpg";
+import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-2.jpg";
 import parejaExperience from "@/assets/pareja-experience.jpg";
 import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo.jpg";
 import familiaExperience from "@/assets/familia-experience.jpg";
@@ -255,12 +255,20 @@ const NuestrosClientesPage = () => {
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent className="max-w-5xl bg-white/95 p-2 border-0">
+        <DialogContent className="max-w-7xl bg-transparent border-0 p-0 shadow-none">
+          <Button 
+            onClick={() => setIsImageOpen(false)} 
+            className="absolute top-4 right-4 z-50 h-14 w-14 rounded-full bg-black/90 hover:bg-gold hover:text-black shadow-2xl transition-all duration-300 border-2 border-white/20" 
+            size="icon"
+          >
+            <motion.div whileHover={{ scale: 1.1, rotate: 90 }} transition={{ duration: 0.3 }}>
+              <X className="w-7 h-7 stroke-[2.5]" />
+            </motion.div>
+          </Button>
           <img 
             src={testimonials[currentTestimonial].image} 
             alt={`experiencia ${testimonials[currentTestimonial].experience}`}
-            className="w-full h-[70vh] object-contain rounded-3xl"
-            style={{ borderRadius: "1.5rem" }}
+            className="w-full h-auto max-h-[90vh] object-contain rounded-3xl"
           />
         </DialogContent>
       </Dialog>

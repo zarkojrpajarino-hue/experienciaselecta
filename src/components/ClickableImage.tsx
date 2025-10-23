@@ -43,14 +43,14 @@ const ClickableImage = ({
         <DialogContent className="max-w-7xl bg-transparent border-0 p-0 shadow-none">
           <Button 
             onClick={() => setIsOpen(false)} 
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-black/80 hover:bg-gold hover:text-black shadow-lg transition-all duration-300 border-0" 
+            className="absolute top-4 right-4 z-50 h-14 w-14 rounded-full bg-black/90 hover:bg-gold hover:text-black shadow-2xl transition-all duration-300 border-2 border-white/20" 
             size="icon"
           >
             <motion.div 
               whileHover={{ scale: 1.1, rotate: 90 }} 
               transition={{ duration: 0.3 }}
             >
-              <X className="w-6 h-6" />
+              <X className="w-7 h-7 stroke-[2.5]" />
             </motion.div>
           </Button>
           <img 

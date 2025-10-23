@@ -11,12 +11,12 @@ import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp } from "lucide-r
 import Navbar from "@/components/Navbar";
 
 // Import images
-import parejaInicialImg from "@/assets/pareja-inicial-nueva-2.jpg";
-import conversacionNaturalImg from "@/assets/conversacion-natural-original.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-2.jpg";
-import trioIbericoImg from "@/assets/trio-iberico-nuevo.jpg";
-import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo.jpg";
-import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo.jpg";
+import parejaInicialImg from "@/assets/pareja-inicial-nueva-3.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-2.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-3.jpg";
+import trioIbericoImg from "@/assets/trio-iberico-nuevo-2.jpg";
+import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo-2.jpg";
+import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo-2.jpg";
 import familiarClasicaImg from "@/assets/familiar-clasica-nuevo.jpg";
 import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica.jpg";
 import granTertuliaImg from "@/assets/gran-tertulia-nuevo.jpg";
