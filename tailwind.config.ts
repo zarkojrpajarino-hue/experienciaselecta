@@ -32,6 +32,7 @@ export default {
         'cinzel': ['Cinzel', 'serif'],
         'bebas': ['Bebas Neue', 'sans-serif'],
         'rubik': ['Rubik', 'sans-serif'],
+        'bungee': ['Bungee', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
