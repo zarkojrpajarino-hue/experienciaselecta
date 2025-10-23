@@ -174,7 +174,7 @@ const BasketCategories = () => {
   //   // Antes: desplazaba a #recogida
   // }, []);
 
-  return <section id="recogida" className="pt-20 pb-20 relative overflow-hidden bg-black rounded-3xl">
+  return <section id="recogida" className="pt-24 pb-24 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -204,7 +204,7 @@ const BasketCategories = () => {
         {/* Contenedor flex para ordenar botones y carrusel */}
         <div className="flex flex-col md:flex-col items-center">
           {/* Botones de navegación - orden 2 en móvil, orden 1 en desktop */}
-          <div className="flex items-center justify-center gap-8 mb-2 md:mb-4 order-2 md:order-1">
+          <div className="flex items-center justify-center gap-8 mb-1 md:mb-2 order-2 md:order-1">
             <button
               onClick={prevSlide}
               className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
