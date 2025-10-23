@@ -36,6 +36,7 @@ const BasketCategories = () => {
   const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
   // Tooltip open state (show once on first visit + hover)
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
   useEffect(() => {
@@ -96,13 +97,22 @@ const BasketCategories = () => {
     };
   }, []);
 
-  // Show tooltip once when section is visited (each time, not just once per session)
+  // Auto-open tooltip when the section enters viewport
   useEffect(() => {
-    setTooltipOpen(true);
-    const t = setTimeout(() => {
-      setTooltipOpen(false);
-    }, 2000);
-    return () => clearTimeout(t);
+    const el = sectionRef.current;
+    if (!el) return;
+    let closeTimer: number | undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTooltipOpen(true);
+        closeTimer = window.setTimeout(() => setTooltipOpen(false), 2000);
+      }
+    }, { threshold: 0.4 });
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      if (closeTimer) window.clearTimeout(closeTimer);
+    };
   }, []);
 
 
@@ -248,7 +258,7 @@ const BasketCategories = () => {
   //   // Antes: desplazaba a #recogida
   // }, []);
 
-  return <section id="recogida" className="pt-24 pb-24 relative overflow-hidden bg-black rounded-3xl">
+  return <section id="recogida" ref={sectionRef} className="pt-24 pb-24 relative overflow-hidden bg-black rounded-3xl">
       {/* Background decoration removed to reveal page background */}
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
