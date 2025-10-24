@@ -82,9 +82,8 @@ const PaymentForm: React.FC<{
   onSuccess: () => void;
   isGiftMode?: boolean;
   giftData?: GiftData;
-  selectedBasketIds?: string[];
   expandedBasketItems?: (BasketItem & { uniqueId: string })[];
-}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData, selectedBasketIds = [], expandedBasketItems = [] }) => {
+}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData, expandedBasketItems = [] }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -104,13 +103,14 @@ const PaymentForm: React.FC<{
         throw new Error('No active session. Please log in again.');
       }
 
-      // For gift mode, aggregate expanded items back into regular basket items
+      // For gift mode, use only assigned baskets
       let itemsToProcess: BasketItem[];
-      if (isGiftMode) {
-        const selectedExpanded = expandedBasketItems.filter(item => selectedBasketIds.includes(item.uniqueId));
+      if (isGiftMode && giftData) {
+        const assignedIds = giftData.recipients.flatMap(r => r.basketIds);
+        const assignedExpanded = expandedBasketItems.filter(item => assignedIds.includes(item.uniqueId));
         // Aggregate back by original ID
         const aggregated = new Map<number, BasketItem>();
-        selectedExpanded.forEach(item => {
+        assignedExpanded.forEach(item => {
           if (aggregated.has(item.id)) {
             const existing = aggregated.get(item.id)!;
             aggregated.set(item.id, { ...existing, quantity: existing.quantity + 1 });
@@ -306,7 +306,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [selectedBasketIds, setSelectedBasketIds] = useState<string[]>(expandedBasketItems.map(item => item.uniqueId));
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -397,14 +396,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate that at least one basket is selected in gift mode
-    if (isGiftMode && selectedBasketIds.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Debes seleccionar al menos una cesta para enviar como regalo",
-      });
-      return;
+    // Validate that at least one basket is assigned in gift mode
+    if (isGiftMode) {
+      const assignedBaskets = giftData.recipients.flatMap(r => r.basketIds);
+      if (assignedBaskets.length === 0) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Debes asignar al menos una cesta a un destinatario",
+        });
+        return;
+      }
     }
     
     // Validate based on mode
@@ -447,16 +449,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handlePaymentSuccess = () => {
-    // Remove only selected items from cart after successful payment
+    // Remove only assigned items from cart after successful payment
     if (isGiftMode && onRemoveItems) {
-      // Count how many of each basket type were selected
-      const selectedExpanded = expandedBasketItems.filter(item => selectedBasketIds.includes(item.uniqueId));
+      // Get all assigned basket IDs
+      const assignedIds = giftData.recipients.flatMap(r => r.basketIds);
+      const assignedExpanded = expandedBasketItems.filter(item => assignedIds.includes(item.uniqueId));
+      
+      // Count how many of each basket type were assigned
       const countMap = new Map<number, number>();
-      selectedExpanded.forEach(item => {
+      assignedExpanded.forEach(item => {
         countMap.set(item.id, (countMap.get(item.id) || 0) + 1);
       });
       
-      // Remove only the selected quantities
+      // Remove only the assigned quantities
       const itemsToRemove = Array.from(countMap.entries()).map(([id, quantityToRemove]) => ({ 
         id, 
         isGift: true,
@@ -472,7 +477,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleClose = () => {
     setStep('auth');
     setUser(null);
-    setSelectedBasketIds(expandedBasketItems.map(item => item.uniqueId));
     setCustomerData({
       name: '',
       email: '',
@@ -512,26 +516,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           <CardContent className="space-y-3">
             {isGiftMode && (
               <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium mb-2">Selecciona las cestas que quieres enviar como regalo:</p>
+                <p className="text-sm font-medium mb-2">Cestas disponibles para asignar:</p>
               </div>
             )}
-            {expandedBasketItems.map((item, index) => (
+            {expandedBasketItems.map((item) => (
               <div key={item.uniqueId} className="flex justify-between items-center">
                 <div className="flex items-center gap-3 flex-1">
-                  {isGiftMode && (
-                    <input
-                      type="checkbox"
-                      checked={selectedBasketIds.includes(item.uniqueId)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedBasketIds(prev => [...prev, item.uniqueId]);
-                        } else {
-                          setSelectedBasketIds(prev => prev.filter(id => id !== item.uniqueId));
-                        }
-                      }}
-                      className="w-4 h-4 rounded border-gray-300"
-                    />
-                  )}
                   <div>
                     <p className="font-medium">{item.name}</p>
                     <div className="flex items-center gap-2">
@@ -545,19 +535,31 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             ))}
             <Separator />
-            <div className="flex justify-between items-center text-lg font-bold">
-              <span>Total a pagar:</span>
-              <span>
-                {expandedBasketItems
-                  .filter(item => selectedBasketIds.includes(item.uniqueId))
-                  .reduce((sum, item) => sum + item.price, 0)
-                  .toFixed(2)}€
-              </span>
-            </div>
-            {isGiftMode && selectedBasketIds.length < expandedBasketItems.length && (
-              <p className="text-xs text-muted-foreground">
-                Las cestas no seleccionadas permanecerán en tu carrito
-              </p>
+            {isGiftMode && (
+              <>
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>Total a pagar:</span>
+                  <span>
+                    {(() => {
+                      // Calculate total based on assigned baskets
+                      const assignedIds = new Set(giftData.recipients.flatMap(r => r.basketIds));
+                      return expandedBasketItems
+                        .filter(item => assignedIds.has(item.uniqueId))
+                        .reduce((sum, item) => sum + item.price, 0)
+                        .toFixed(2);
+                    })()}€
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Solo se cobrarán las cestas que asignes a destinatarios
+                </p>
+              </>
+            )}
+            {!isGiftMode && (
+              <div className="flex justify-between items-center text-lg font-bold">
+                <span>Total a pagar:</span>
+                <span>{totalAmount.toFixed(2)}€</span>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -693,17 +695,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </p>
                     </div>
 
-                    {selectedBasketIds.length > 1 && (
-                      <div>
-                        <Label htmlFor={`basketAssignment-${index}`}>
-                          Asignar cestas a este destinatario
-                        </Label>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
-                        </p>
-                        <div className="space-y-2">
-                          {expandedBasketItems.filter(item => selectedBasketIds.includes(item.uniqueId)).map((item, itemIndex) => (
-                            <div key={item.uniqueId} className="flex items-center space-x-2">
+                    <div>
+                      <Label htmlFor={`basketAssignment-${index}`}>
+                        Asignar cestas a este destinatario
+                      </Label>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
+                      </p>
+                      <div className="space-y-2">
+                        {expandedBasketItems.map((item) => (
+                          <div key={item.uniqueId} className="flex items-center justify-between space-x-2">
+                            <div className="flex items-center space-x-2">
                               <input
                                 type="checkbox"
                                 id={`basket-${item.uniqueId}-recipient-${index}`}
@@ -723,14 +725,15 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                 {item.name}
                               </Label>
                             </div>
-                          ))}
-                        </div>
+                            <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
+                          </div>
+                        ))}
                       </div>
-                    )}
+                    </div>
                   </div>
                 ))}
 
-                {selectedBasketIds.length > 1 && (
+                {expandedBasketItems.length > 1 && (
                   <Button
                     type="button"
                     variant="outline"
@@ -917,11 +920,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 customerData={customerData}
                 basketItems={basketItems}
                 totalAmount={totalAmount}
-                onSuccess={handlePaymentSuccess}
-                isGiftMode={isGiftMode}
-                giftData={giftData}
-                selectedBasketIds={selectedBasketIds}
-                expandedBasketItems={expandedBasketItems}
+              onSuccess={handlePaymentSuccess}
+              isGiftMode={isGiftMode}
+              giftData={giftData}
+              expandedBasketItems={expandedBasketItems}
               />
             </div>
           </Elements>
