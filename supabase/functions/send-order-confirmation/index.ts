@@ -141,6 +141,8 @@ Fecha del pedido: ${new Date(order.created_at).toLocaleString('es-ES')}
         subject: `🛒 Nuevo pedido confirmado - ${order.id}`,
         text: adminEmailContent,
       });
+    } else {
+      console.log('Gift order: skipping admin email until recipient provides shipping address');
     }
 
     console.log('Order confirmation emails sent successfully');

@@ -105,8 +105,10 @@ serve(async (req) => {
 
       // Send confirmation emails
       try {
-        // Check if this is a gift order
-        const isGift = order.metadata?.is_gift === true;
+        // Check if this is a gift order (handle boolean, string, or number)
+        const rawGiftFlag = (order as any).metadata?.is_gift;
+        const isGift = rawGiftFlag === true || rawGiftFlag === 'true' || rawGiftFlag === 1 || rawGiftFlag === '1';
+        console.log('Gift flag detected:', rawGiftFlag, '=> isGift:', isGift);
         
         if (isGift) {
           // Send gift email to recipient with gift notification
