@@ -16,6 +16,7 @@ interface CartContextType {
   removeFromCart: (id: number, isGift?: boolean) => void;
   updateQuantity: (id: number, quantity: number, isGift?: boolean) => void;
   clearCart: () => void;
+  removeMultipleItems: (itemsToRemove: Array<{ id: number; isGift?: boolean }>) => void;
   getTotalItems: () => number;
   getTotalAmount: () => number;
 }
@@ -62,6 +63,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCart([]);
   };
 
+  const removeMultipleItems = (itemsToRemove: Array<{ id: number; isGift?: boolean }>) => {
+    setCart(prevCart => 
+      prevCart.filter(item => 
+        !itemsToRemove.some(removeItem => 
+          removeItem.id === item.id && removeItem.isGift === item.isGift
+        )
+      )
+    );
+  };
+
   const getTotalItems = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
@@ -78,6 +89,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         removeFromCart,
         updateQuantity,
         clearCart,
+        removeMultipleItems,
         getTotalItems,
         getTotalAmount,
       }}

@@ -4,6 +4,7 @@ import PageNavigation from "@/components/PageNavigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 const CestasPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Pareja');
@@ -65,6 +66,15 @@ const CestasPage = () => {
       {/* Header Section */}
       <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-black rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-start mb-4">
+            <Button
+              variant="ghost"
+              onClick={() => window.location.href = '/'}
+              className="text-white hover:text-white/80"
+            >
+              ← Volver al inicio
+            </Button>
+          </div>
           <motion.div 
             initial={{ opacity: 0, x: -100, scale: 0.85 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}

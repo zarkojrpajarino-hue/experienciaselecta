@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const CartPage = () => {
-  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart, removeMultipleItems } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
@@ -428,6 +428,7 @@ const CartPage = () => {
         totalAmount={checkoutItems.reduce((total, item) => total + (item.precio * item.quantity), 0)}
         isGiftMode={isGiftMode}
         onClearCart={clearCart}
+        onRemoveItems={removeMultipleItems}
       />
 
       {/* Imagen Expandida Modal */}

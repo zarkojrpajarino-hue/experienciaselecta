@@ -35,6 +35,7 @@ interface CheckoutModalProps {
   totalAmount: number;
   isGiftMode?: boolean;
   onClearCart?: () => void;
+  onRemoveItems?: (itemIds: Array<{ id: number; isGift?: boolean }>) => void;
 }
 
 interface CustomerData {
@@ -68,7 +69,8 @@ const PaymentForm: React.FC<{
   onSuccess: () => void;
   isGiftMode?: boolean;
   giftData?: GiftData;
-}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData }) => {
+  selectedBasketIds?: number[];
+}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData, selectedBasketIds = [] }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -88,14 +90,21 @@ const PaymentForm: React.FC<{
         throw new Error('No active session. Please log in again.');
       }
 
+      // Filter basket items based on selection (only for gift mode)
+      const itemsToProcess = isGiftMode 
+        ? basketItems.filter(item => selectedBasketIds.includes(item.id))
+        : basketItems;
+
+      const calculatedTotal = itemsToProcess.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
       // Create payment intent with authentication
       const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
         'create-payment-intent',
         {
           body: {
             customerData,
-            basketItems,
-            totalAmount,
+            basketItems: itemsToProcess,
+            totalAmount: calculatedTotal,
             isGiftMode,
             giftData
           },
@@ -233,11 +242,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   basketItems,
   totalAmount,
   isGiftMode = false,
-  onClearCart
+  onClearCart,
+  onRemoveItems
 }) => {
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [selectedBasketIds, setSelectedBasketIds] = useState<number[]>(basketItems.map(item => item.id));
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -328,6 +339,16 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate that at least one basket is selected in gift mode
+    if (isGiftMode && selectedBasketIds.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Debes seleccionar al menos una cesta para enviar como regalo",
+      });
+      return;
+    }
+    
     // Validate based on mode
     try {
       if (isGiftMode) {
@@ -368,8 +389,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handlePaymentSuccess = () => {
-    // Clear cart after successful payment
-    if (onClearCart) {
+    // Remove only selected items from cart after successful payment
+    if (isGiftMode && onRemoveItems) {
+      const itemsToRemove = basketItems
+        .filter(item => selectedBasketIds.includes(item.id))
+        .map(item => ({ id: item.id, isGift: true }));
+      onRemoveItems(itemsToRemove);
+    } else if (onClearCart) {
       onClearCart();
     }
     setStep('success');
@@ -378,6 +404,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleClose = () => {
     setStep('auth');
     setUser(null);
+    setSelectedBasketIds(basketItems.map(item => item.id));
     setCustomerData({
       name: '',
       email: '',
@@ -415,15 +442,36 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <CardTitle className="text-lg">Resumen del pedido</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {isGiftMode && (
+              <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                <p className="text-sm font-medium mb-2">Selecciona las cestas que quieres enviar como regalo:</p>
+              </div>
+            )}
             {basketItems.map((item) => (
               <div key={item.id} className="flex justify-between items-center">
-                <div>
-                  <p className="font-medium">{item.name}</p>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">{item.category}</Badge>
-                    <span className="text-sm text-muted-foreground">
-                      Cantidad: {item.quantity}
-                    </span>
+                <div className="flex items-center gap-3 flex-1">
+                  {isGiftMode && (
+                    <input
+                      type="checkbox"
+                      checked={selectedBasketIds.includes(item.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedBasketIds(prev => [...prev, item.id]);
+                        } else {
+                          setSelectedBasketIds(prev => prev.filter(id => id !== item.id));
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-gray-300"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium">{item.name}</p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">{item.category}</Badge>
+                      <span className="text-sm text-muted-foreground">
+                        Cantidad: {item.quantity}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <p className="font-semibold">
@@ -433,9 +481,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             ))}
             <Separator />
             <div className="flex justify-between items-center text-lg font-bold">
-              <span>Total:</span>
-              <span>{totalAmount.toFixed(2)}€</span>
+              <span>Total a pagar:</span>
+              <span>
+                {basketItems
+                  .filter(item => selectedBasketIds.includes(item.id))
+                  .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                  .toFixed(2)}€
+              </span>
             </div>
+            {isGiftMode && selectedBasketIds.length < basketItems.length && (
+              <p className="text-xs text-muted-foreground">
+                Las cestas no seleccionadas permanecerán en tu carrito
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -570,7 +628,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </p>
                     </div>
 
-                    {basketItems.length > 1 && (
+                    {selectedBasketIds.length > 1 && (
                       <div>
                         <Label htmlFor={`basketAssignment-${index}`}>
                           Asignar cestas a este destinatario
@@ -579,7 +637,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
                         </p>
                         <div className="space-y-2">
-                          {basketItems.map((item) => (
+                          {basketItems.filter(item => selectedBasketIds.includes(item.id)).map((item) => (
                             <div key={item.id} className="flex items-center space-x-2">
                               <input
                                 type="checkbox"
@@ -607,7 +665,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                 ))}
 
-                {basketItems.length > 1 && giftData.recipients.length < basketItems.length && (
+                {selectedBasketIds.length > 1 && giftData.recipients.length < selectedBasketIds.length && (
                   <Button
                     type="button"
                     variant="outline"
@@ -617,7 +675,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
                       }));
                     }}
-                    className="w-full"
+                    className="w-full font-bold tracking-wider uppercase"
+                    style={{ fontFamily: 'var(--font-boulder)' }}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Añadir otro destinatario
@@ -796,6 +855,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 onSuccess={handlePaymentSuccess}
                 isGiftMode={isGiftMode}
                 giftData={giftData}
+                selectedBasketIds={selectedBasketIds}
               />
             </div>
           </Elements>
