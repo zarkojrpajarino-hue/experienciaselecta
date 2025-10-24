@@ -104,7 +104,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [openMaridaje, setOpenMaridaje] = useState<{ [key: number]: boolean }>({});
   const [openOcasion, setOpenOcasion] = useState<{ [key: number]: boolean }>({});
   const [showGroupSize, setShowGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
-  const { cart: globalCart, addToCart: addToGlobalCart, getTotalAmount, getTotalItems } = useCart();
+  const { cart: globalCart, addToCart: addToGlobalCart, getTotalAmount, getTotalItems, clearCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -1603,10 +1603,15 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         isOpen={showCheckout}
         onClose={() => {
           setShowCheckout(false);
-          setCart([]); // Clear cart after successful purchase
+          setCart([]); // Clear local cart
+          navigate('/perfil');
         }}
         basketItems={basketItems}
         totalAmount={getLocalTotalAmount()}
+        onClearCart={() => {
+          clearCart(); // Clear global cart
+          setCart([]); // Clear local cart
+        }}
       />
     </div>
   );
