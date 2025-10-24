@@ -71,15 +71,12 @@ const CestasPage = () => {
             transition={{ duration: 1.3, type: "spring", stiffness: 50, damping: 15 }}
             className="text-center mb-8"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-3 leading-tight font-poppins font-bold text-white">
-              Regala una experiencia personalizada.
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-white">
-              Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
-            </p>
-            
-            {/* Interrogaciones */}
-            <div className="flex justify-center items-center gap-2 mb-4">
+            <div className="flex flex-wrap justify-center items-center gap-2 mb-3">
+              <h2 className="text-xl sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-white">
+                Regala una experiencia personalizada.
+              </h2>
+              
+              {/* Interrogaciones al final de la frase */}
               <TooltipProvider delayDuration={80}>
                 <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
                   <TooltipTrigger asChild>
@@ -89,7 +86,7 @@ const CestasPage = () => {
                       }}
                       onMouseEnter={() => setTooltipOpen(true)}
                       onMouseLeave={() => setTooltipOpen(false)}
-                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-3xl"
+                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-xl sm:text-2xl md:text-4xl font-bold"
                       style={{ color: '#FFD700' }}
                       animate={{ rotateZ: [0, 180, 0] }}
                       transition={{ 
@@ -107,6 +104,10 @@ const CestasPage = () => {
                 </Tooltip>
               </TooltipProvider>
             </div>
+            
+            <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-white">
+              Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
+            </p>
 
             {/* Flecha hacia abajo */}
             <motion.div

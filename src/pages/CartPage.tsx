@@ -95,7 +95,7 @@ const CartPage = () => {
               <Button
                 onClick={() => navigate('/cestas')}
                 variant="ghost"
-                className="text-black hover:text-gold bg-transparent"
+                className="text-black hover:text-gold bg-transparent hover:bg-transparent"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Seguir comprando regalos
@@ -105,7 +105,7 @@ const CartPage = () => {
               <Button
                 onClick={() => navigate('/#categoria-cestas')}
                 variant="ghost"
-                className="text-black hover:text-gold bg-transparent"
+                className="text-black hover:text-gold bg-transparent hover:bg-transparent"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Seguir comprando
