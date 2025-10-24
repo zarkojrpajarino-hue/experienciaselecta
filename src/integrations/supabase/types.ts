@@ -98,6 +98,13 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["order_id"]
+          },
         ]
       }
       orders: {
@@ -237,6 +244,13 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "pending_gifts_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["order_id"]
+          },
         ]
       }
       profiles: {
@@ -320,11 +334,30 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["order_id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      purchases: {
+        Row: {
+          basket_category: string | null
+          basket_name: string | null
+          email: string | null
+          order_id: string | null
+          order_status: string | null
+          purchased_at: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
