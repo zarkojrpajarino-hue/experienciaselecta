@@ -89,34 +89,20 @@ const CartPage = () => {
       <Navbar />
       <div className="min-h-screen pt-24 pb-12 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
-          {/* Botones de seguir comprando según contexto */}
-          <div className="flex gap-2 mb-6">
-            {giftItems.length > 0 && (
-              <Button
-                onClick={() => navigate('/cestas')}
-                variant="ghost"
-                className="text-black hover:text-gold bg-transparent hover:bg-transparent"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Seguir comprando regalos
-              </Button>
-            )}
-            {personalItems.length > 0 && (
-              <Button
-                onClick={() => navigate('/#categoria-cestas')}
-                variant="ghost"
-                className="text-black hover:text-gold bg-transparent hover:bg-transparent"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Seguir comprando
-              </Button>
-            )}
-          </div>
-
           <div className="space-y-8">
             {/* Cestas para Regalar Section */}
             {giftItems.length > 0 && (
               <div>
+                {/* Botón seguir comprando regalos */}
+                <Button
+                  onClick={() => navigate('/cestas')}
+                  variant="ghost"
+                  className="text-black hover:text-gold bg-transparent hover:bg-transparent mb-4"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Seguir comprando regalos
+                </Button>
+                
                 <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
                   🎁 Cestas que vas a regalar
                 </h1>
@@ -268,6 +254,16 @@ const CartPage = () => {
             {/* Tus Cestas Section */}
             {personalItems.length > 0 && (
               <div>
+                {/* Botón seguir comprando */}
+                <Button
+                  onClick={() => navigate('/#categoria-cestas')}
+                  variant="ghost"
+                  className="text-black hover:text-gold bg-transparent hover:bg-transparent mb-4"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Seguir comprando
+                </Button>
+                
                 <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
                   <ShoppingCart className="w-8 h-8 text-gold" />
                   Tus cestas
@@ -404,7 +400,7 @@ const CartPage = () => {
                           }}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
-                          Pagar para mí
+                          Pagar
                         </Button>
 
                         <p className="text-xs text-gray-500 text-center">
@@ -436,25 +432,28 @@ const CartPage = () => {
       <AnimatePresence>
         {expandedImage && (
           <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
-            <DialogContent className="max-w-4xl w-full p-0 overflow-hidden bg-transparent border-none">
+            <DialogContent className="max-w-4xl w-full p-4 bg-black/90 border-none">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="relative"
+                className="relative flex items-center justify-center"
               >
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full"
-                  onClick={() => setExpandedImage(null)}
+                  className="absolute -top-2 -right-2 z-50 bg-white hover:bg-gray-200 text-black rounded-full h-10 w-10 shadow-lg"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpandedImage(null);
+                  }}
                 >
                   <X className="w-6 h-6" />
                 </Button>
                 <img
                   src={expandedImage}
                   alt="Cesta expandida"
-                  className="w-full h-auto rounded-2xl"
+                  className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
                 />
               </motion.div>
             </DialogContent>
