@@ -51,7 +51,11 @@ const RegalosPage = () => {
 
       if (profile?.name) {
         setUserName(profile.name);
+        setShippingData(prev => ({ ...prev, name: prev.name || profile.name }));
       }
+
+      // Prefill email from authenticated user
+      setShippingData(prev => ({ ...prev, email: prev.email || (user.email || '') }));
 
       // Get pending gifts by email
       const { data: gifts, error } = await supabase
@@ -83,6 +87,12 @@ const RegalosPage = () => {
     try {
       console.log('Iniciando envío de información de regalo:', giftId);
       console.log('Datos de envío:', shippingData);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Debes iniciar sesión para enviar la información');
+        return;
+      }
       
       if (!shippingData.name || !shippingData.email || !shippingData.address_line1 || !shippingData.city || !shippingData.postal_code) {
         console.error('Campos obligatorios faltantes');
@@ -97,6 +107,8 @@ const RegalosPage = () => {
         .update({
           recipient_name: shippingData.name,
           recipient_email: shippingData.email,
+          recipient_user_id: user.id,
+          gift_claimed: true,
           shipping_address_line1: shippingData.address_line1,
           shipping_address_line2: shippingData.address_line2,
           shipping_city: shippingData.city,
@@ -208,6 +220,7 @@ const RegalosPage = () => {
                       onChange={(e) => setShippingData({...shippingData, email: e.target.value})}
                       placeholder="tu@email.com"
                       required
+                      readOnly
                     />
                   </div>
 
@@ -259,6 +272,9 @@ const RegalosPage = () => {
                   >
                     Enviar Información
                   </Button>
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    Nota: el email debe ser el de tu cuenta para verificar el regalo.
+                  </p>
                 </div>
               </div>
             ))}
