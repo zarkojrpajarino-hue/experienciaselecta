@@ -1231,15 +1231,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           </div>
           <Button 
             onClick={() => {
-              if (isGiftCatalog) {
-                navigate('/carrito', { state: { fromGiftCatalog: true } });
-              } else {
-                setShowCheckout(true);
-              }
+              navigate('/carrito', { state: { fromGiftCatalog: isGiftCatalog } });
             }}
             className="w-full bg-primary hover:bg-primary/90"
           >
-            {isGiftCatalog ? 'IR AL CARRITO' : 'PROCEDER AL PAGO'}
+            IR AL CARRITO
             </Button>
         </div>
       )}

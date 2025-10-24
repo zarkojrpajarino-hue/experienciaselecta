@@ -43,7 +43,8 @@ const CartPage = () => {
     name: item.nombre,
     price: item.precio,
     category: item.categoria,
-    quantity: item.quantity
+    quantity: item.quantity,
+    imagen: item.imagen
   }));
 
   if (cart.length === 0) {
