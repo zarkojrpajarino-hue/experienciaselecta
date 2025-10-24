@@ -31,6 +31,7 @@ interface CheckoutModalProps {
   onClose: () => void;
   basketItems: BasketItem[];
   totalAmount: number;
+  isGiftMode?: boolean;
 }
 
 interface CustomerData {
@@ -44,12 +45,20 @@ interface CustomerData {
   country: string;
 }
 
+interface GiftData {
+  recipientName: string;
+  recipientEmail: string;
+  senderName: string;
+}
+
 const PaymentForm: React.FC<{
   customerData: CustomerData;
   basketItems: BasketItem[];
   totalAmount: number;
   onSuccess: () => void;
-}> = ({ customerData, basketItems, totalAmount, onSuccess }) => {
+  isGiftMode?: boolean;
+  giftData?: GiftData;
+}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -76,7 +85,9 @@ const PaymentForm: React.FC<{
           body: {
             customerData,
             basketItems,
-            totalAmount
+            totalAmount,
+            isGiftMode,
+            giftData
           },
           headers: {
             Authorization: `Bearer ${session.access_token}`
@@ -192,7 +203,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   isOpen,
   onClose,
   basketItems,
-  totalAmount
+  totalAmount,
+  isGiftMode = false
 }) => {
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
@@ -207,9 +219,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     postal_code: '',
     country: 'España'
   });
+  const [giftData, setGiftData] = useState<GiftData>({
+    recipientName: '',
+    recipientEmail: '',
+    senderName: ''
+  });
   const { toast } = useToast();
 
-  // Validation schema
+  // Validation schemas
   const customerSchema = z.object({
     name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
     email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
@@ -219,6 +236,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     city: z.string().trim().min(1, "City is required").max(100, "City must be less than 100 characters"),
     postal_code: z.string().trim().min(1, "Postal code is required").max(20, "Postal code must be less than 20 characters"),
     country: z.string().trim().min(1, "Country is required").max(100, "Country must be less than 100 characters")
+  });
+
+  const giftSchema = z.object({
+    recipientName: z.string().trim().min(1, "El nombre del destinatario es requerido").max(100),
+    recipientEmail: z.string().trim().email("Email inválido").max(255),
+    senderName: z.string().trim().min(1, "Tu nombre es requerido").max(100)
   });
 
   // Check authentication status when modal opens
@@ -269,9 +292,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate using zod schema
+    // Validate based on mode
     try {
-      customerSchema.parse(customerData);
+      if (isGiftMode) {
+        giftSchema.parse(giftData);
+        // For gifts, we still need shipping address from customerData
+        const giftCustomerSchema = z.object({
+          address_line1: z.string().trim().min(1, "Dirección requerida").max(255),
+          address_line2: z.string().trim().max(255).optional(),
+          city: z.string().trim().min(1, "Ciudad requerida").max(100),
+          postal_code: z.string().trim().min(1, "Código postal requerido").max(20),
+          country: z.string().trim().min(1, "País requerido").max(100)
+        });
+        giftCustomerSchema.parse(customerData);
+      } else {
+        customerSchema.parse(customerData);
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
@@ -283,8 +319,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     }
 
-    // Save/update profile data for future use
-    if (user) {
+    // Save/update profile data for future use (only for non-gift purchases)
+    if (user && !isGiftMode) {
       await supabase
         .from('profiles')
         .upsert({
@@ -321,6 +357,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       postal_code: '',
       country: 'España'
     });
+    setGiftData({
+      recipientName: '',
+      recipientEmail: '',
+      senderName: ''
+    });
     onClose();
   };
 
@@ -329,11 +370,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <ShoppingCart className="w-5 h-5" />
-            {step === 'auth' && 'Acceso requerido'}
-            {step === 'customer' && 'Información de envío'}
+            {isGiftMode ? '🎁' : <ShoppingCart className="w-5 h-5" />}
+            {step === 'auth' && (isGiftMode ? 'Acceso requerido para regalar' : 'Acceso requerido')}
+            {step === 'customer' && (isGiftMode ? 'Información del regalo' : 'Información de envío')}
             {step === 'payment' && 'Información de pago'}
-            {step === 'success' && '¡Pedido confirmado!'}
+            {step === 'success' && (isGiftMode ? '¡Regalo enviado!' : '¡Pedido confirmado!')}
           </DialogTitle>
         </DialogHeader>
 
@@ -393,39 +434,93 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Customer Information Step */}
         {step === 'customer' && (
           <form onSubmit={handleCustomerSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="name">Nombre completo *</Label>
-                <Input
-                  id="name"
-                  value={customerData.name}
-                  onChange={(e) => setCustomerData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Tu nombre completo"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={customerData.email}
-                  onChange={(e) => setCustomerData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="tu@email.com"
-                  required
-                />
-              </div>
-            </div>
+            {isGiftMode ? (
+              /* Gift Mode Fields */
+              <>
+                <div className="p-4 bg-muted/50 rounded-lg mb-4">
+                  <p className="text-sm text-muted-foreground">
+                    🎁 Estás regalando esta cesta. Ingresa los datos del destinatario y tu nombre.
+                  </p>
+                </div>
 
-            <div>
-              <Label htmlFor="phone">Teléfono</Label>
-              <Input
-                id="phone"
-                value={customerData.phone}
-                onChange={(e) => setCustomerData(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder="+34 123 456 789"
-              />
-            </div>
+                <div>
+                  <Label htmlFor="senderName">Tu nombre *</Label>
+                  <Input
+                    id="senderName"
+                    value={giftData.senderName}
+                    onChange={(e) => setGiftData(prev => ({ ...prev, senderName: e.target.value }))}
+                    placeholder="¿Quién regala?"
+                    required
+                  />
+                </div>
+
+                <Separator />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="recipientName">Nombre del destinatario *</Label>
+                    <Input
+                      id="recipientName"
+                      value={giftData.recipientName}
+                      onChange={(e) => setGiftData(prev => ({ ...prev, recipientName: e.target.value }))}
+                      placeholder="¿A quién se lo regalas?"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="recipientEmail">Email del destinatario *</Label>
+                    <Input
+                      id="recipientEmail"
+                      type="email"
+                      value={giftData.recipientEmail}
+                      onChange={(e) => setGiftData(prev => ({ ...prev, recipientEmail: e.target.value }))}
+                      placeholder="email@ejemplo.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <Separator />
+                <p className="text-sm font-medium">Dirección de envío del regalo</p>
+              </>
+            ) : (
+              /* Normal Purchase Fields */
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Nombre completo *</Label>
+                    <Input
+                      id="name"
+                      value={customerData.name}
+                      onChange={(e) => setCustomerData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Tu nombre completo"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={customerData.email}
+                      onChange={(e) => setCustomerData(prev => ({ ...prev, email: e.target.value }))}
+                      placeholder="tu@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="phone">Teléfono</Label>
+                  <Input
+                    id="phone"
+                    value={customerData.phone}
+                    onChange={(e) => setCustomerData(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="+34 123 456 789"
+                  />
+                </div>
+              </>
+            )}
 
             <div>
               <Label htmlFor="address1">Dirección *</Label>
@@ -481,7 +576,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             <Button type="submit" className="w-full" size="lg">
-              <Truck className="w-4 h-4 mr-2" />
+              {isGiftMode ? '🎁' : <Truck className="w-4 h-4 mr-2" />}
               Continuar al pago
             </Button>
           </form>
@@ -515,6 +610,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 basketItems={basketItems}
                 totalAmount={totalAmount}
                 onSuccess={handlePaymentSuccess}
+                isGiftMode={isGiftMode}
+                giftData={giftData}
               />
             </div>
           </Elements>
@@ -524,15 +621,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {step === 'success' && (
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-              <Check className="w-8 h-8 text-green-600" />
+              {isGiftMode ? <span className="text-4xl">🎁</span> : <Check className="w-8 h-8 text-green-600" />}
             </div>
-            <h3 className="text-xl font-semibold">¡Pedido confirmado!</h3>
+            <h3 className="text-xl font-semibold">
+              {isGiftMode ? '¡Regalo enviado!' : '¡Pedido confirmado!'}
+            </h3>
             <p className="text-muted-foreground">
-              Tu pago ha sido procesado correctamente. Recibirás un email de confirmación
-              con todos los detalles de tu pedido.
+              {isGiftMode 
+                ? 'Tu regalo ha sido enviado correctamente. El destinatario recibirá un email con los detalles de tu regalo.'
+                : 'Tu pago ha sido procesado correctamente. Recibirás un email de confirmación con todos los detalles de tu pedido.'
+              }
             </p>
             <p className="text-sm text-muted-foreground">
-              Tu cesta será preparada con cariño y enviada a la dirección indicada.
+              {isGiftMode
+                ? 'La cesta será preparada con cariño y enviada a la dirección indicada.'
+                : 'Tu cesta será preparada con cariño y enviada a la dirección indicada.'
+              }
             </p>
             <Button onClick={handleClose} className="w-full" size="lg">
               Continuar navegando

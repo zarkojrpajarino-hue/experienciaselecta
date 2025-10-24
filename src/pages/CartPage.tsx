@@ -12,9 +12,11 @@ import { motion } from "framer-motion";
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity, getTotalAmount } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isGiftMode, setIsGiftMode] = useState(false);
   const navigate = useNavigate();
 
-  const handleCheckout = () => {
+  const handleCheckout = (giftMode: boolean = false) => {
+    setIsGiftMode(giftMode);
     setIsCheckoutOpen(true);
   };
 
@@ -196,12 +198,20 @@ const CartPage = () => {
                     Gastos de envío calculados en el checkout
                   </p>
 
-                  {/* Checkout Button */}
+                  {/* Checkout Buttons */}
                   <Button
-                    onClick={handleCheckout}
+                    onClick={() => handleCheckout(true)}
+                    variant="outline"
+                    className="w-full border-gold text-gold hover:bg-gold hover:text-black font-poppins font-bold text-lg py-6"
+                  >
+                    🎁 Regalar esta cesta
+                  </Button>
+
+                  <Button
+                    onClick={() => handleCheckout(false)}
                     className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                   >
-                    Pagar
+                    Pagar para mí
                   </Button>
 
                   <p className="text-xs text-gray-500 text-center">
@@ -217,9 +227,13 @@ const CartPage = () => {
       {/* Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
+        onClose={() => {
+          setIsCheckoutOpen(false);
+          setIsGiftMode(false);
+        }}
         basketItems={basketItems}
         totalAmount={getTotalAmount()}
+        isGiftMode={isGiftMode}
       />
     </>
   );

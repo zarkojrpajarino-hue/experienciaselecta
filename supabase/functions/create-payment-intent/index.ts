@@ -68,9 +68,9 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     });
 
-    const { customerData, basketItems, totalAmount } = await req.json();
+    const { customerData, basketItems, totalAmount, isGiftMode, giftData } = await req.json();
     
-    console.log('Processing payment intent creation');
+    console.log('Processing payment intent creation', isGiftMode ? '(Gift Mode)' : '');
 
     // Validate customer data
     try {
@@ -129,13 +129,17 @@ serve(async (req) => {
 
     console.log('Price validation passed');
 
-    // Create or get customer in our database (now requires user_id)
+    // Create or get customer in our database
+    // For gifts, use the sender's (payer's) user_id but recipient's email for communication
     let customerId;
+    const customerEmail = isGiftMode && giftData?.recipientEmail ? giftData.recipientEmail : customerData.email;
+    const customerName = isGiftMode && giftData?.recipientName ? giftData.recipientName : customerData.name;
+    
     const { data: existingCustomer } = await supabase
       .from('customers')
       .select('id, stripe_customer_id')
       .eq('user_id', user.id)
-      .eq('email', customerData.email)
+      .eq('email', customerEmail)
       .maybeSingle();
 
     if (existingCustomer) {
@@ -145,7 +149,7 @@ serve(async (req) => {
       await supabase
         .from('customers')
         .update({
-          name: customerData.name,
+          name: customerName,
           phone: customerData.phone,
           address_line1: customerData.address_line1,
           address_line2: customerData.address_line2,
@@ -158,9 +162,9 @@ serve(async (req) => {
       const { data: newCustomer, error: customerError } = await supabase
         .from('customers')
         .insert({
-          user_id: user.id,  // Required for security
-          email: customerData.email,
-          name: customerData.name,
+          user_id: user.id,  // Payer's user_id
+          email: customerEmail,  // Recipient's email for gifts
+          name: customerName,  // Recipient's name for gifts
           phone: customerData.phone,
           address_line1: customerData.address_line1,
           address_line2: customerData.address_line2,
@@ -183,8 +187,8 @@ serve(async (req) => {
     
     if (!stripeCustomerId) {
       const stripeCustomer = await stripe.customers.create({
-        email: customerData.email,
-        name: customerData.name,
+        email: customerEmail,
+        name: customerName,
         phone: customerData.phone,
         address: {
           line1: customerData.address_line1,
@@ -250,7 +254,11 @@ serve(async (req) => {
       customer: stripeCustomerId,
       metadata: {
         order_id: order.id,
-        customer_id: customerId
+        customer_id: customerId,
+        is_gift: isGiftMode ? 'true' : 'false',
+        sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
+        recipient_name: isGiftMode && giftData?.recipientName ? giftData.recipientName : '',
+        recipient_email: isGiftMode && giftData?.recipientEmail ? giftData.recipientEmail : ''
       },
       automatic_payment_methods: {
         enabled: true,
@@ -264,6 +272,23 @@ serve(async (req) => {
       .eq('id', order.id);
 
     console.log('Payment intent created successfully');
+
+    // If it's a gift, also prepare to send gift email after payment confirmation
+    // Store gift metadata with the order for later use
+    if (isGiftMode && giftData) {
+      await supabase
+        .from('orders')
+        .update({ 
+          metadata: {
+            is_gift: true,
+            sender_name: giftData.senderName,
+            recipient_name: giftData.recipientName,
+            recipient_email: giftData.recipientEmail,
+            basket_name: validatedItems[0]?.name || 'Cesta Experiencia Selecta'
+          }
+        })
+        .eq('id', order.id);
+    }
 
     return new Response(
       JSON.stringify({

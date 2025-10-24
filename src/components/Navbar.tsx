@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronLeft, ChevronRight, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -169,7 +170,7 @@ const Navbar = () => {
             EXPERIENCIA SELECTA
           </motion.h1>
 
-          {/* Right: User, Cestas Button, Cart and Menu */}
+          {/* Right: User, Gift, Cart and Menu */}
           <div className="flex items-center gap-2">
             {/* User Button */}
             {user ? (
@@ -193,6 +194,26 @@ const Navbar = () => {
                 <User size={20} />
               </motion.button>
             )}
+
+            {/* Gift Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    navigate('/#categoria-cestas');
+                  }}
+                  className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300 text-xl"
+                  aria-label="Regalar una cesta"
+                >
+                  🎁
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Regalar</p>
+              </TooltipContent>
+            </Tooltip>
 
             {/* Cart Button - Only show if cart has items */}
             {getTotalItems() > 0 && (

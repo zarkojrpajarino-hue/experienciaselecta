@@ -105,9 +105,28 @@ serve(async (req) => {
 
       // Send confirmation emails
       try {
-        await supabase.functions.invoke('send-order-confirmation', {
-          body: { order }
-        });
+        // Check if this is a gift order
+        const isGift = order.metadata?.is_gift === true;
+        
+        if (isGift) {
+          // Send gift email to recipient
+          console.log('Sending gift email...');
+          await supabase.functions.invoke('send-gift-email', {
+            body: {
+              recipientName: order.metadata.recipient_name,
+              recipientEmail: order.metadata.recipient_email,
+              senderName: order.metadata.sender_name,
+              basketName: order.metadata.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta',
+              basketImage: 'https://images.unsplash.com/photo-1599666166155-52f1a5d4edfe?w=800&h=600&fit=crop',
+              orderId: order.id
+            }
+          });
+        } else {
+          // Send regular order confirmation
+          await supabase.functions.invoke('send-order-confirmation', {
+            body: { order }
+          });
+        }
       } catch (emailError) {
         console.error('Error sending confirmation email:', emailError);
         // Don't fail the payment confirmation if email fails
