@@ -96,7 +96,7 @@ const CestasPage = () => {
           damping: 15
         }} className="text-center mb-8">
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
-              <h2 className="text-base sm:text-xl md:text-3xl leading-tight font-poppins font-bold text-white whitespace-nowrap">
+              <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-white whitespace-nowrap">
                 Regala una experiencia personalizada.
               </h2>
               

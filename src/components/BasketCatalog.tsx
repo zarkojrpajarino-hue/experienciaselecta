@@ -1166,7 +1166,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       
       {/* Group Size Buttons - Horizontal navigation */}
       {shouldShowGroupButtons && (
-        <div className="mb-8 mt-12 flex justify-center items-center gap-1 sm:gap-2">
+        <div className="mb-4 mt-4 flex justify-center items-center gap-1 sm:gap-2">
           <motion.button
             onClick={() => {
               setShowGroupSize('3-4');
@@ -1262,29 +1262,29 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               {/* Nuevo layout aplicado a todas las cestas cuando están expandidas */}
               {isCardOpen ? (
                 // NUEVO LAYOUT expandido: imagen centrada, coste centrado, info alrededor
-                <div className="relative w-full px-8 mt-8">
-                  <div className="grid grid-cols-2 gap-6">
+                <div className="relative w-full px-4 mt-2">
+                  <div className="grid grid-cols-2 gap-4">
                     {/* Top Left: Título, Descripción y Maridaje */}
                   <div className="col-span-1">
-                    <div className="flex items-start gap-1 mb-2 relative">
-                      <h3 className={`font-poppins font-bold text-xl sm:text-2xl transition-colors basket-title ${colorCombo.text} whitespace-nowrap`}>
+                    <div className="flex items-start gap-1 mb-1 relative">
+                      <h3 className={`font-poppins font-bold text-base sm:text-xl transition-colors basket-title ${colorCombo.text} whitespace-nowrap`}>
                         {basket.nombre}
                       </h3>
                       <button 
                         onClick={() => handleCardToggle(basket.id)}
                         className={`${colorCombo.important} hover:opacity-70 transition-opacity`}
                       >
-                        <X className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <X className="h-4 w-4 sm:h-5 sm:w-5" />
                       </button>
                     </div>
                       
                       {basket.sinAlcohol && (
-                        <Badge className="bg-green-600/80 text-white hover:bg-green-600/90 mb-2">
+                        <Badge className="bg-green-600/80 text-white hover:bg-green-600/90 mb-1 text-xs">
                           Sin alcohol
                         </Badge>
                       )}
                       
-                      <p className={`text-xs leading-relaxed font-bold ${colorCombo.text} basket-descripcion mb-4`}>
+                      <p className={`text-[10px] sm:text-xs leading-relaxed font-bold ${colorCombo.text} basket-descripcion mb-2`}>
                         {basket.descripcion}
                       </p>
                     </div>
@@ -1294,11 +1294,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       <div className="w-full md:w-2/3">
                         <button 
                           onClick={() => setOpenProducts(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
-                          className="flex items-center gap-2 mb-2 hover:opacity-70 transition-opacity ml-auto"
+                          className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto"
                         >
-                          <span className={`font-bold text-sm ${colorCombo.important}`}>Productos incluidos</span>
+                          <span className={`font-bold text-xs sm:text-sm ${colorCombo.important}`}>Productos incluidos</span>
                           <span className={`${colorCombo.text}`}>
-                            {isProductsOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                            {isProductsOpen ? <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" /> : <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />}
                           </span>
                         </button>
                         {isProductsOpen && (
@@ -1317,7 +1317,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     );
                                   })
                                   .map((producto, idx) => (
-                                     <p key={idx} className={`text-xs font-bold ${colorCombo.text} basket-producto-text`}>
+                                     <p key={idx} className={`text-[10px] sm:text-xs font-bold ${colorCombo.text} basket-producto-text`}>
                                        • {producto}
                                      </p>
                                   ))
@@ -1338,7 +1338,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     );
                                   })
                                   .map((producto, idx) => (
-                                     <p key={idx} className={`text-xs font-bold ${colorCombo.text} basket-producto-text`}>
+                                     <p key={idx} className={`text-[10px] sm:text-xs font-bold ${colorCombo.text} basket-producto-text`}>
                                        • {producto}
                                      </p>
                                   ))
@@ -1352,9 +1352,9 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
 
                     {/* Center: Imagen centrada */}
-                    <div className="col-span-2 flex flex-col items-center my-4 gap-3">
+                    <div className="col-span-2 flex flex-col items-center my-2 gap-2">
                       <div 
-                        className="relative w-40 h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300"
+                        className="relative w-32 h-24 sm:w-40 sm:h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300"
                         onClick={() => setSelectedImage(basket.imagen)}
                       >
                   <img
@@ -1368,7 +1368,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       <AddToCartButton 
                         onClick={() => handleAddToCart(basket)}
                         price={basket.precio}
-                        className="text-black"
+                        className="text-black text-xs sm:text-sm"
                       />
                     </div>
 
@@ -1380,24 +1380,24 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           onOpenChange={() => setOpenIdeal(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
                         >
                           <CollapsibleTrigger asChild>
-                            <button className={`w-full flex items-center justify-between gap-2 text-black hover:opacity-80 transition-opacity py-2 px-4 rounded-lg hover:bg-black/5`}>
-                              <span className="text-sm font-bold lowercase first-letter:capitalize">
+                            <button className={`w-full flex items-center justify-between gap-2 text-black hover:opacity-80 transition-opacity py-1 px-3 sm:py-2 sm:px-4 rounded-lg hover:bg-black/5`}>
+                              <span className="text-xs sm:text-sm font-bold lowercase first-letter:capitalize">
                                 coste por persona.
                               </span>
                               {openIdeal[basket.id] ? 
-                                <ChevronUp className="w-4 h-4 flex-shrink-0" /> : 
-                                <ChevronDown className="w-4 h-4 flex-shrink-0" />
+                                <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : 
+                                <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                               }
                             </button>
                           </CollapsibleTrigger>
                           <CollapsibleContent className="mt-2">
                             {basket.costePersona && (
-                              <p className={`text-base sm:text-lg font-bold text-center`}>
+                              <p className={`text-sm sm:text-base font-bold text-center`}>
                                 {basket.costePersona.split(/(\([^)]+\))/).map((part, index) => {
                                   if (part.match(/\([^)]+\)/)) {
                                     return <span key={index} className="text-black">{part}</span>;
                                   } else if (part.trim()) {
-                                    return <span key={index} style={{ color: '#FFD700' }} className="font-bold text-lg sm:text-xl">{part}</span>;
+                                    return <span key={index} style={{ color: '#FFD700' }} className="font-bold text-base sm:text-lg">{part}</span>;
                                   }
                                   return null;
                                 })}
