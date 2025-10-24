@@ -202,7 +202,20 @@ const Navbar = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
-                    navigate('/#categoria-cestas');
+                    if (location.pathname !== '/') {
+                      navigate('/');
+                      setTimeout(() => {
+                        const element = document.getElementById('categoria-cestas');
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }, 100);
+                    } else {
+                      const element = document.getElementById('categoria-cestas');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }
                   }}
                   className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300 text-xl"
                   aria-label="Regalar una cesta"
