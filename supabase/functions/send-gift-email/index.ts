@@ -50,7 +50,7 @@ serve(async (req) => {
     const recipientEmailResponse = await resend.emails.send({
       from: 'Experiencias Selecta <onboarding@resend.dev>',
       to: [validatedData.recipientEmail],
-      subject: '🎁 ¡Te han regalado una experiencia única e inolvidable!',
+      subject: '🎁 ¡Te han regalado una experiencia!',
       html: `
         <!DOCTYPE html>
         <html>
@@ -67,7 +67,7 @@ serve(async (req) => {
                     <!-- Header -->
                     <tr>
                       <td style="padding: 40px 30px; text-align: center; background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%);">
-                        <h1 style="margin: 0; color: #1a1a1a; font-size: 32px; font-weight: bold;">
+                        <h1 style="margin: 0; color: #1a1a1a; font-size: 28px; font-weight: bold;">
                           🎁 ¡Te han regalado una experiencia única e inolvidable!
                         </h1>
                       </td>
@@ -80,34 +80,26 @@ serve(async (req) => {
                           Hola <strong>${escapeHtml(validatedData.recipientName)}</strong>,
                         </p>
                         
-                        <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #666666;">
-                          <strong>${escapeHtml(validatedData.senderName)}</strong> (${escapeHtml(validatedData.senderEmail)}) 
-                          te ha regalado una experiencia gastronómica única:
+                        <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.8; color: #666666;">
+                          <strong>${escapeHtml(validatedData.senderName)}</strong><br/>
+                          <span style="color: #999999;">${escapeHtml(validatedData.senderEmail)}</span><br/><br/>
+                          te ha regalado una experiencia única e inolvidable que creemos que deberías descubrir.
                         </p>
                         
                         <!-- Gift Box -->
                         <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0; background-color: #FFF9E6; border: 2px solid #D4AF37; border-radius: 8px;">
                           <tr>
                             <td style="padding: 25px; text-align: center;">
-                              <h2 style="margin: 0 0 15px; color: #D4AF37; font-size: 24px; font-weight: bold;">
+                              <h2 style="margin: 0; color: #D4AF37; font-size: 24px; font-weight: bold;">
                                 ${escapeHtml(validatedData.basketName)}
                               </h2>
-                              <p style="margin: 0; font-size: 16px; color: #666666;">
-                                Una selección cuidadosa de productos ibéricos premium para disfrutar en buena compañía.
-                              </p>
                             </td>
                           </tr>
                         </table>
                         
-                        <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #666666;">
-                          <strong>¿Qué tienes que hacer ahora?</strong>
+                        <p style="margin: 30px 0 20px; font-size: 16px; line-height: 1.6; color: #666666; text-align: center;">
+                          <strong>Entra en esta web y regístrate con este correo para recibir el regalo de ${escapeHtml(validatedData.senderName)}</strong>
                         </p>
-                        
-                        <ol style="margin: 0 0 20px; padding-left: 20px; font-size: 16px; line-height: 1.8; color: #666666;">
-                          <li>Regístrate en nuestra web con este mismo correo electrónico (${escapeHtml(validatedData.recipientEmail)})</li>
-                          <li>Ve al icono de regalos 🎁 en la página principal</li>
-                          <li>Completa los datos de envío para que podamos enviarte tu cesta</li>
-                        </ol>
                         
                         <!-- CTA Button -->
                         <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
@@ -115,7 +107,7 @@ serve(async (req) => {
                             <td align="center">
                               <a href="https://experienciaselecta.com" 
                                  style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%); color: #1a1a1a; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);">
-                                Ir a la web y completar datos
+                                Entrar a la web
                               </a>
                             </td>
                           </tr>
@@ -146,19 +138,16 @@ serve(async (req) => {
         </html>
       `,
       text: `
-¡Te han regalado una experiencia única e inolvidable!
-
 Hola ${validatedData.recipientName},
 
-${validatedData.senderName} (${validatedData.senderEmail}) te ha regalado una experiencia gastronómica única:
+${validatedData.senderName}
+${validatedData.senderEmail}
+
+te ha regalado una experiencia única e inolvidable que creemos que deberías descubrir.
 
 🎁 ${validatedData.basketName}
 
-¿Qué tienes que hacer ahora?
-
-1. Regístrate en nuestra web con este mismo correo electrónico (${validatedData.recipientEmail})
-2. Ve al icono de regalos 🎁 en la página principal
-3. Completa los datos de envío para que podamos enviarte tu cesta
+Entra en esta web y regístrate con este correo para recibir el regalo de ${validatedData.senderName}
 
 Visita: https://experienciaselecta.com
 
