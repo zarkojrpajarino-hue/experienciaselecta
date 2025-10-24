@@ -13,8 +13,9 @@ Deno.serve(async (req) => {
 
   try {
     const { email } = await req.json();
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    if (!email) {
+    if (!normalizedEmail) {
       return new Response(
         JSON.stringify({ error: 'Email is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -30,7 +31,7 @@ Deno.serve(async (req) => {
     const { data: customer } = await supabase
       .from('customers')
       .select('id')
-      .eq('email', email)
+      .eq('email', normalizedEmail)
       .maybeSingle();
 
     let hasCompletedOrder = false;
@@ -55,7 +56,7 @@ Deno.serve(async (req) => {
     const { data: gifts, error: giftsError } = await supabase
       .from('pending_gifts')
       .select('id')
-      .eq('recipient_email', email)
+      .eq('recipient_email', normalizedEmail)
       .limit(1);
 
     if (giftsError) {
@@ -65,7 +66,7 @@ Deno.serve(async (req) => {
     const hasReceivedGift = gifts && gifts.length > 0;
     const hasAccess = hasCompletedOrder || hasReceivedGift;
 
-    console.log(`Access check for ${email}: ${hasAccess} (order: ${hasCompletedOrder}, gift: ${hasReceivedGift})`);
+    console.log(`Access check for ${normalizedEmail}: ${hasAccess} (order: ${hasCompletedOrder}, gift: ${hasReceivedGift})`);
 
     return new Response(
       JSON.stringify({ 
