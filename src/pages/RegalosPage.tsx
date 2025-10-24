@@ -79,12 +79,17 @@ const RegalosPage = () => {
 
   const handleSubmitShipping = async (giftId: string) => {
     try {
+      console.log('Iniciando envío de información de regalo:', giftId);
+      console.log('Datos de envío:', shippingData);
+      
       if (!shippingData.address_line1 || !shippingData.city || !shippingData.postal_code) {
+        console.error('Campos obligatorios faltantes');
         toast.error('Por favor completa todos los campos obligatorios');
         return;
       }
 
       // Update pending gift with shipping data
+      console.log('Actualizando regalo en base de datos...');
       const { error: updateError } = await supabase
         .from('pending_gifts')
         .update({
@@ -97,7 +102,11 @@ const RegalosPage = () => {
         })
         .eq('id', giftId);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Error al actualizar regalo:', updateError);
+        throw updateError;
+      }
+      console.log('Regalo actualizado exitosamente');
 
       // Call edge function to send confirmation emails
       const gift = pendingGifts.find(g => g.id === giftId);
@@ -115,9 +124,9 @@ const RegalosPage = () => {
 
       toast.success('¡Información enviada! Tu regalo está de camino.');
       loadPendingGifts();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting shipping:', error);
-      toast.error('Error al enviar la información');
+      toast.error(`Error al enviar la información: ${error?.message || 'Error desconocido'}`);
     }
   };
 
