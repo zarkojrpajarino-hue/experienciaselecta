@@ -76,10 +76,39 @@ serve(async (req) => {
 
       console.log('User authorization verified for order:', orderCheck.id);
 
+      // Get order details first to check if it's a gift
+      const { data: orderDetails, error: orderDetailsError } = await supabase
+        .from('orders')
+        .select('metadata')
+        .eq('stripe_payment_intent_id', paymentIntentId)
+        .single();
+
+      if (orderDetailsError) {
+        console.error('Error fetching order details:', orderDetailsError);
+        throw new Error('Failed to fetch order details');
+      }
+
+      // Detect if it's a gift order
+      const rawGiftFlag = (orderDetails as any)?.metadata?.is_gift;
+      const stripeGiftFlag = (paymentIntent?.metadata as any)?.is_gift;
+      const isGiftOrder = rawGiftFlag === true || rawGiftFlag === 'true' || rawGiftFlag === 1 || rawGiftFlag === '1'
+        || stripeGiftFlag === 'true' || stripeGiftFlag === true || stripeGiftFlag === '1' || stripeGiftFlag === 1
+        || Boolean((orderDetails as any)?.metadata?.recipient_email);
+
       // Update order status
+      // For gifts, keep status as 'pending' until recipient completes shipping info
+      // For regular orders, mark as 'completed' immediately
+      const newStatus = isGiftOrder ? 'pending' : 'completed';
+      const updateData: any = { status: newStatus };
+      
+      // Only set completed_at for non-gift orders
+      if (!isGiftOrder) {
+        updateData.completed_at = new Date().toISOString();
+      }
+
       const { error: updateError } = await supabase
         .from('orders')
-        .update({ status: 'paid' })
+        .update(updateData)
         .eq('stripe_payment_intent_id', paymentIntentId);
 
       if (updateError) {
@@ -180,7 +209,7 @@ serve(async (req) => {
         JSON.stringify({ 
           success: true, 
           orderId: order.id,
-          status: 'paid'
+          status: newStatus
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -1,4 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { Resend } from 'https://esm.sh/resend@4.0.0'
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
@@ -34,12 +35,55 @@ serve(async (req) => {
   }
 
   try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
     const shippingData = await req.json();
 
     const validatedData = shippingSchema.parse(shippingData);
     
     console.log('Processing gift shipping for:', validatedData.giftId);
+
+    // Get gift details to find the associated order
+    const { data: gift, error: giftError } = await supabase
+      .from('pending_gifts')
+      .select('order_id, recipient_email')
+      .eq('id', validatedData.giftId)
+      .single();
+
+    if (giftError || !gift) {
+      console.error('Error fetching gift:', giftError);
+      throw new Error('Gift not found');
+    }
+
+    // Mark the order as completed now that recipient has provided shipping info
+    const { error: orderUpdateError } = await supabase
+      .from('orders')
+      .update({ 
+        status: 'completed',
+        completed_at: new Date().toISOString()
+      })
+      .eq('id', gift.order_id);
+
+    if (orderUpdateError) {
+      console.error('Error updating order status:', orderUpdateError);
+      throw new Error('Failed to update order status');
+    }
+
+    // Mark gift as shipping completed
+    const { error: giftUpdateError } = await supabase
+      .from('pending_gifts')
+      .update({ shipping_completed: true })
+      .eq('id', validatedData.giftId);
+
+    if (giftUpdateError) {
+      console.error('Error updating gift status:', giftUpdateError);
+    }
+
+    console.log('Order marked as completed for gift:', validatedData.giftId);
 
     // Email to host (as order notification)
     const hostEmail = `
