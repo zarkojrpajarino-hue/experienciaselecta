@@ -82,13 +82,16 @@ Total: ${(order.total_amount / 100).toFixed(2)}€
 🛍️ PRODUCTOS ADQUIRIDOS
 ${itemsList}
 
-📍 DIRECCIÓN DE ENVÍO
+${isGift 
+? '' 
+: `📍 DIRECCIÓN DE ENVÍO
 ${escapeHtml(order.customers.name)}
 ${escapeHtml(order.shipping_address_line1)}
 ${order.shipping_address_line2 ? escapeHtml(order.shipping_address_line2) + '\n' : ''}${escapeHtml(order.shipping_city)}, ${escapeHtml(order.shipping_postal_code)}
 ${escapeHtml(order.shipping_country)}
 
 Tu cesta será preparada con cariño y enviada a la dirección indicada.
+`}
 
 ¡Esperamos que disfrutes de esta experiencia gastronómica única!
 
@@ -120,7 +123,7 @@ Fecha del pedido: ${new Date(order.created_at).toLocaleString('es-ES')}
 
     // Send email to customer
     const subject = isGift 
-      ? '✅ Confirmación de pago - Regalo enviado - Experiencia Selecta'
+      ? '✅ Confirmación de pago de tu regalo - Experiencia Selecta'
       : '✅ Confirmación de tu pedido - Experiencia Selecta';
     
     await resend.emails.send({

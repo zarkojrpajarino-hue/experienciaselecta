@@ -107,7 +107,7 @@ serve(async (req) => {
                             <td align="center">
                               <a href="https://experienciaselecta.com" 
                                  style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%); color: #1a1a1a; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);">
-                                Entrar a la web
+                                Regístrate con este mismo correo para recibir el regalo de ${escapeHtml(validatedData.senderName)}
                               </a>
                             </td>
                           </tr>
