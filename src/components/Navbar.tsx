@@ -305,7 +305,7 @@ const Navbar = () => {
                             </p>
                           </div>
                           <button
-                            onClick={() => removeFromCart(item.id)}
+                            onClick={() => removeFromCart(item.id, item.isGift)}
                             className="text-red-500 hover:text-red-700 text-xs"
                           >
                             ✕

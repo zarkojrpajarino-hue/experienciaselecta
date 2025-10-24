@@ -186,13 +186,14 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [cart, setCart] = useState<Basket[]>([]);
 
   const handleAddToCart = (basket: Basket) => {
-    // Add to global cart
+    // Add to global cart with isGift flag if from gift catalog
     addToGlobalCart({
       id: basket.id,
       nombre: basket.nombre,
       precio: basket.precio,
       categoria: basket.categoria,
-      imagen: basket.imagen
+      imagen: basket.imagen,
+      isGift: isGiftCatalog
     });
     
     // Also add to local cart for checkout

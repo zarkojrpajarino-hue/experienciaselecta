@@ -7,13 +7,14 @@ export interface CartItem {
   categoria: string;
   quantity: number;
   imagen: string;
+  isGift?: boolean;
 }
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: number, isGift?: boolean) => void;
+  updateQuantity: (id: number, quantity: number, isGift?: boolean) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalAmount: () => number;
@@ -26,10 +27,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addToCart = (item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
+      // Buscar item con mismo id y mismo tipo (regalo o personal)
+      const existingItem = prevCart.find(
+        cartItem => cartItem.id === item.id && cartItem.isGift === item.isGift
+      );
       if (existingItem) {
         return prevCart.map(cartItem =>
-          cartItem.id === item.id
+          cartItem.id === item.id && cartItem.isGift === item.isGift
             ? { ...cartItem, quantity: cartItem.quantity + 1 }
             : cartItem
         );
@@ -38,18 +42,18 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const removeFromCart = (id: number) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== id));
+  const removeFromCart = (id: number, isGift?: boolean) => {
+    setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: number, quantity: number, isGift?: boolean) => {
     if (quantity <= 0) {
-      removeFromCart(id);
+      removeFromCart(id, isGift);
       return;
     }
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === id ? { ...item, quantity } : item
+        item.id === id && item.isGift === isGift ? { ...item, quantity } : item
       )
     );
   };

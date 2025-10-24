@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -10,29 +10,33 @@ import CheckoutModal from "@/components/CheckoutModal";
 import { motion } from "framer-motion";
 
 const CartPage = () => {
-  const { cart, removeFromCart, updateQuantity, getTotalAmount } = useCart();
+  const { cart, removeFromCart, updateQuantity } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Detectar si viene de /cestas (modo regalo)
-  const isFromGiftCatalog = location.state?.fromGiftCatalog === true;
+  // Separar cestas de regalo y cestas personales
+  const giftItems = cart.filter(item => item.isGift === true);
+  const personalItems = cart.filter(item => !item.isGift);
 
-  useEffect(() => {
-    // Si viene del catálogo de regalo, activar modo regalo automáticamente
-    if (isFromGiftCatalog) {
-      setIsGiftMode(true);
-    }
-  }, [isFromGiftCatalog]);
+  const getGiftTotal = () => {
+    return giftItems.reduce((total, item) => total + (item.precio * item.quantity), 0);
+  };
 
-  const handleCheckout = (giftMode: boolean = false) => {
+  const getPersonalTotal = () => {
+    return personalItems.reduce((total, item) => total + (item.precio * item.quantity), 0);
+  };
+
+  const handleCheckout = (giftMode: boolean = false, items: typeof cart) => {
     setIsGiftMode(giftMode);
     setIsCheckoutOpen(true);
   };
 
-  // Map CartItem to BasketItem for CheckoutModal
-  const basketItems = cart.map(item => ({
+  // Map CartItem to BasketItem for CheckoutModal - basado en modo
+  const [checkoutItems, setCheckoutItems] = useState<typeof cart>([]);
+  
+  const getBasketItems = (items: typeof cart) => items.map(item => ({
     id: item.id,
     name: item.nombre,
     price: item.precio,
@@ -92,156 +96,303 @@ const CartPage = () => {
             Seguir comprando
           </Button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Products List */}
-            <div className="lg:col-span-2 space-y-4">
-              <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
-                <ShoppingCart className="w-8 h-8 text-gold" />
-                Tu Carrito
-              </h1>
+          <div className="space-y-8">
+            {/* Cestas para Regalar Section */}
+            {giftItems.length > 0 && (
+              <div>
+                <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
+                  🎁 Cestas que vas a regalar
+                </h1>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Products List */}
+                  <div className="lg:col-span-2 space-y-4">
+                    {giftItems.map((item) => (
+                      <motion.div
+                        key={`gift-${item.id}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                      >
+                        <Card>
+                          <CardContent className="p-6">
+                            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                              {/* Imagen de la cesta */}
+                              <div className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+                                <img 
+                                  src={item.imagen} 
+                                  alt={item.nombre}
+                                  className="w-full h-auto object-cover"
+                                />
+                              </div>
 
-              {cart.map((item) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
-                >
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-lg font-poppins font-bold text-black">
-                            {item.nombre}
-                          </h3>
-                          <p className="text-sm text-gray-600 capitalize">
-                            {item.categoria}
-                          </p>
-                          <p className="text-xl font-poppins font-bold text-gold mt-2">
-                            {item.precio.toFixed(2)}€
-                          </p>
-                        </div>
+                              <div className="flex-1">
+                                <h3 className="text-lg font-poppins font-bold text-black">
+                                  {item.nombre}
+                                </h3>
+                                <p className="text-sm text-gray-600 capitalize">
+                                  {item.categoria}
+                                </p>
+                                <p className="text-xl font-poppins font-bold text-gold mt-2">
+                                  {item.precio.toFixed(2)}€
+                                </p>
+                              </div>
 
-                        <div className="flex items-center gap-4">
-                          {/* Quantity Controls */}
-                          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => {
-                                if (item.quantity > 1) {
-                                  updateQuantity(item.id, item.quantity - 1);
-                                }
-                              }}
-                              disabled={item.quantity <= 1}
-                              className="h-8 w-8 text-black hover:text-gold"
-                            >
-                              <Minus className="w-4 h-4" />
-                            </Button>
-                            
-                            <span className="w-8 text-center font-poppins font-bold text-black">
-                              {item.quantity}
-                            </span>
-                            
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="h-8 w-8 text-black hover:text-gold"
-                            >
-                              <Plus className="w-4 h-4" />
-                            </Button>
-                          </div>
+                              <div className="flex items-center gap-4">
+                                {/* Quantity Controls */}
+                                <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      if (item.quantity > 1) {
+                                        updateQuantity(item.id, item.quantity - 1, item.isGift);
+                                      }
+                                    }}
+                                    disabled={item.quantity <= 1}
+                                    className="h-8 w-8 text-black hover:text-gold"
+                                  >
+                                    <Minus className="w-4 h-4" />
+                                  </Button>
+                                  
+                                  <span className="w-8 text-center font-poppins font-bold text-black">
+                                    {item.quantity}
+                                  </span>
+                                  
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1, item.isGift)}
+                                    className="h-8 w-8 text-black hover:text-gold"
+                                  >
+                                    <Plus className="w-4 h-4" />
+                                  </Button>
+                                </div>
 
-                          {/* Remove Button */}
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-24">
-                <CardHeader>
-                  <CardTitle className="font-poppins text-black">
-                    Resumen del pedido
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Items breakdown */}
-                  <div className="space-y-2">
-                    {cart.map((item) => (
-                      <div key={item.id} className="flex justify-between text-sm">
-                        <span className="text-gray-600">
-                          {item.nombre} x{item.quantity}
-                        </span>
-                        <span className="font-poppins font-bold text-black">
-                          {(item.precio * item.quantity).toFixed(2)}€
-                        </span>
-                      </div>
+                                {/* Remove Button */}
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={() => removeFromCart(item.id, item.isGift)}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="w-5 h-5" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
 
-                  <Separator />
+                  {/* Order Summary for Gifts */}
+                  <div className="lg:col-span-1">
+                    <Card className="sticky top-24">
+                      <CardHeader>
+                        <CardTitle className="font-poppins text-black">
+                          Resumen de regalos
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {/* Items breakdown */}
+                        <div className="space-y-2">
+                          {giftItems.map((item) => (
+                            <div key={item.id} className="flex justify-between text-sm">
+                              <span className="text-gray-600">
+                                {item.nombre} x{item.quantity}
+                              </span>
+                              <span className="font-poppins font-bold text-black">
+                                {(item.precio * item.quantity).toFixed(2)}€
+                              </span>
+                            </div>
+                          ))}
+                        </div>
 
-                  {/* Subtotal */}
-                  <div className="flex justify-between text-lg">
-                    <span className="font-poppins font-bold text-black">Subtotal</span>
-                    <span className="font-poppins font-bold text-gold text-xl">
-                      {getTotalAmount().toFixed(2)}€
-                    </span>
+                        <Separator />
+
+                        {/* Subtotal */}
+                        <div className="flex justify-between text-lg">
+                          <span className="font-poppins font-bold text-black">Subtotal</span>
+                          <span className="font-poppins font-bold text-gold text-xl">
+                            {getGiftTotal().toFixed(2)}€
+                          </span>
+                        </div>
+
+                        <Separator />
+
+                        <p className="text-xs text-gray-500 text-center">
+                          Gastos de envío calculados en el checkout
+                        </p>
+
+                        <Button
+                          onClick={() => {
+                            setCheckoutItems(giftItems);
+                            handleCheckout(true, giftItems);
+                          }}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          🎁 Pagar regalos
+                        </Button>
+
+                        <p className="text-xs text-gray-500 text-center">
+                          Pago seguro con Stripe
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tus Cestas Section */}
+            {personalItems.length > 0 && (
+              <div>
+                <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
+                  <ShoppingCart className="w-8 h-8 text-gold" />
+                  Tus cestas
+                </h1>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Products List */}
+                  <div className="lg:col-span-2 space-y-4">
+                    {personalItems.map((item) => (
+                      <motion.div
+                        key={`personal-${item.id}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                      >
+                        <Card>
+                          <CardContent className="p-6">
+                            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                              {/* Imagen de la cesta */}
+                              <div className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+                                <img 
+                                  src={item.imagen} 
+                                  alt={item.nombre}
+                                  className="w-full h-auto object-cover"
+                                />
+                              </div>
+
+                              <div className="flex-1">
+                                <h3 className="text-lg font-poppins font-bold text-black">
+                                  {item.nombre}
+                                </h3>
+                                <p className="text-sm text-gray-600 capitalize">
+                                  {item.categoria}
+                                </p>
+                                <p className="text-xl font-poppins font-bold text-gold mt-2">
+                                  {item.precio.toFixed(2)}€
+                                </p>
+                              </div>
+
+                              <div className="flex items-center gap-4">
+                                {/* Quantity Controls */}
+                                <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      if (item.quantity > 1) {
+                                        updateQuantity(item.id, item.quantity - 1, item.isGift);
+                                      }
+                                    }}
+                                    disabled={item.quantity <= 1}
+                                    className="h-8 w-8 text-black hover:text-gold"
+                                  >
+                                    <Minus className="w-4 h-4" />
+                                  </Button>
+                                  
+                                  <span className="w-8 text-center font-poppins font-bold text-black">
+                                    {item.quantity}
+                                  </span>
+                                  
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1, item.isGift)}
+                                    className="h-8 w-8 text-black hover:text-gold"
+                                  >
+                                    <Plus className="w-4 h-4" />
+                                  </Button>
+                                </div>
+
+                                {/* Remove Button */}
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={() => removeFromCart(item.id, item.isGift)}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="w-5 h-5" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
                   </div>
 
-                  <Separator />
+                  {/* Order Summary for Personal */}
+                  <div className="lg:col-span-1">
+                    <Card className="sticky top-24">
+                      <CardHeader>
+                        <CardTitle className="font-poppins text-black">
+                          Resumen del pedido
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {/* Items breakdown */}
+                        <div className="space-y-2">
+                          {personalItems.map((item) => (
+                            <div key={item.id} className="flex justify-between text-sm">
+                              <span className="text-gray-600">
+                                {item.nombre} x{item.quantity}
+                              </span>
+                              <span className="font-poppins font-bold text-black">
+                                {(item.precio * item.quantity).toFixed(2)}€
+                              </span>
+                            </div>
+                          ))}
+                        </div>
 
-                  <p className="text-xs text-gray-500 text-center">
-                    Gastos de envío calculados en el checkout
-                  </p>
+                        <Separator />
 
-                  {/* Checkout Buttons - Solo regalo si viene de /cestas */}
-                  {isFromGiftCatalog ? (
-                    <Button
-                      onClick={() => handleCheckout(true)}
-                      className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                    >
-                      🎁 Regalar esta cesta
-                    </Button>
-                  ) : (
-                    <>
-                      <Button
-                        onClick={() => handleCheckout(true)}
-                        variant="outline"
-                        className="w-full border-gold text-gold hover:bg-gold hover:text-black font-poppins font-bold text-lg py-6"
-                      >
-                        🎁 Regalar esta cesta
-                      </Button>
+                        {/* Subtotal */}
+                        <div className="flex justify-between text-lg">
+                          <span className="font-poppins font-bold text-black">Subtotal</span>
+                          <span className="font-poppins font-bold text-gold text-xl">
+                            {getPersonalTotal().toFixed(2)}€
+                          </span>
+                        </div>
 
-                      <Button
-                        onClick={() => handleCheckout(false)}
-                        className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                      >
-                        Pagar para mí
-                      </Button>
-                    </>
-                  )}
+                        <Separator />
 
-                  <p className="text-xs text-gray-500 text-center">
-                    Pago seguro con Stripe
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+                        <p className="text-xs text-gray-500 text-center">
+                          Gastos de envío calculados en el checkout
+                        </p>
+
+                        <Button
+                          onClick={() => {
+                            setCheckoutItems(personalItems);
+                            handleCheckout(false, personalItems);
+                          }}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          Pagar para mí
+                        </Button>
+
+                        <p className="text-xs text-gray-500 text-center">
+                          Pago seguro con Stripe
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -253,8 +404,8 @@ const CartPage = () => {
           setIsCheckoutOpen(false);
           setIsGiftMode(false);
         }}
-        basketItems={basketItems}
-        totalAmount={getTotalAmount()}
+        basketItems={getBasketItems(checkoutItems)}
+        totalAmount={checkoutItems.reduce((total, item) => total + (item.precio * item.quantity), 0)}
         isGiftMode={isGiftMode}
       />
     </>
