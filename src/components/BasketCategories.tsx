@@ -313,8 +313,8 @@ const BasketCategories = () => {
         stiffness: 50,
         damping: 15
       }} className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-6" style={{ textTransform: 'none' }}>
-            Escoja su categoría.
+          <h2 className="text-base sm:text-xl md:text-2xl leading-tight font-poppins font-bold text-white inline-flex items-center gap-3 sm:gap-4" style={{ textTransform: 'none' }}>
+            Crea tu experiencia personalizada.
             <TooltipProvider delayDuration={80}>
               <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
                 <TooltipTrigger asChild>
