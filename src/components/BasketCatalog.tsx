@@ -1166,50 +1166,50 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       
       {/* Group Size Buttons - Horizontal navigation */}
       {shouldShowGroupButtons && (
-        <div className="mb-8 mt-12 flex justify-center items-center gap-2 flex-wrap">
+        <div className="mb-8 mt-12 flex justify-center items-center gap-1 sm:gap-2">
           <motion.button
             onClick={() => {
               setShowGroupSize('3-4');
               onGroupSizeChange?.('3-4');
             }}
-            className={`font-bold transition-all duration-300 px-6 py-2 ${
+            className={`font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-2 ${
               showGroupSize === '3-4' 
-                ? 'text-2xl scale-110' 
-                : 'text-lg hover:opacity-70'
+                ? 'text-xl sm:text-2xl scale-110' 
+                : 'text-base sm:text-lg hover:opacity-70'
             }`}
             whileHover={{ scale: showGroupSize === '3-4' ? 1.1 : 1.05 }}
           >
             <span className={showGroupSize === '3-4' ? 'text-gold' : 'text-black'}>3-4</span>
           </motion.button>
           
-          <span className="text-black text-xl mx-2">|</span>
+          <span className="text-black text-base sm:text-xl mx-1 sm:mx-2">|</span>
           
           <motion.button
             onClick={() => {
               setShowGroupSize('5-6');
               onGroupSizeChange?.('5-6');
             }}
-            className={`font-bold transition-all duration-300 px-6 py-2 ${
+            className={`font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-2 ${
               showGroupSize === '5-6' 
-                ? 'text-2xl scale-110' 
-                : 'text-lg hover:opacity-70'
+                ? 'text-xl sm:text-2xl scale-110' 
+                : 'text-base sm:text-lg hover:opacity-70'
             }`}
             whileHover={{ scale: showGroupSize === '5-6' ? 1.1 : 1.05 }}
           >
             <span className={showGroupSize === '5-6' ? 'text-gold' : 'text-black'}>5-6</span>
           </motion.button>
           
-          <span className="text-black text-xl mx-2">|</span>
+          <span className="text-black text-base sm:text-xl mx-1 sm:mx-2">|</span>
           
           <motion.button
             onClick={() => {
               setShowGroupSize('7-8');
               onGroupSizeChange?.('7-8');
             }}
-            className={`font-bold transition-all duration-300 px-6 py-2 ${
+            className={`font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-2 ${
               showGroupSize === '7-8' 
-                ? 'text-2xl scale-110' 
-                : 'text-lg hover:opacity-70'
+                ? 'text-xl sm:text-2xl scale-110' 
+                : 'text-base sm:text-lg hover:opacity-70'
             }`}
             whileHover={{ scale: showGroupSize === '7-8' ? 1.1 : 1.05 }}
           >

@@ -95,8 +95,8 @@ const CestasPage = () => {
           stiffness: 50,
           damping: 15
         }} className="text-center mb-8">
-            <div className="flex flex-wrap justify-center items-center gap-2 mb-3">
-              <h2 className="text-xl sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-white">
+            <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
+              <h2 className="text-lg sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-white whitespace-nowrap">
                 Regala una experiencia personalizada.
               </h2>
               
@@ -150,20 +150,20 @@ const CestasPage = () => {
           </motion.div>
 
           {/* Category Filter Buttons - Pareja primero */}
-          <div className="flex justify-center items-center gap-4 mb-8 flex-wrap">
-            <motion.button onClick={() => setSelectedCategory('Pareja')} className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${selectedCategory === 'Pareja' ? 'bg-[#782C23] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
+          <div className="flex justify-center items-center gap-2 sm:gap-4 mb-8">
+            <motion.button onClick={() => setSelectedCategory('Pareja')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Pareja' ? 'bg-[#782C23] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
             scale: selectedCategory === 'Pareja' ? 1.1 : 1.05
           }}>
               Pareja.
             </motion.button>
 
-            <motion.button onClick={() => setSelectedCategory('Familia')} className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${selectedCategory === 'Familia' ? 'bg-[#4A7050] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
+            <motion.button onClick={() => setSelectedCategory('Familia')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Familia' ? 'bg-[#4A7050] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
             scale: selectedCategory === 'Familia' ? 1.1 : 1.05
           }}>
               Familia.
             </motion.button>
             
-            <motion.button onClick={() => setSelectedCategory('Amigos')} className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${selectedCategory === 'Amigos' ? 'bg-[#44667D] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
+            <motion.button onClick={() => setSelectedCategory('Amigos')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Amigos' ? 'bg-[#44667D] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
             scale: selectedCategory === 'Amigos' ? 1.1 : 1.05
           }}>
               Amigos.
