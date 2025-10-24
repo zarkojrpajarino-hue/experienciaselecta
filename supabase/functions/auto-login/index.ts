@@ -65,15 +65,110 @@ Deno.serve(async (req) => {
       `Auto-login check for ${normalizedEmail}: ${hasAccess} (order: ${hasCompletedOrder}, gift: ${hasReceivedGift})`
     );
 
-    // Respond in the shape expected by the other web: { success: boolean }
+    if (!hasAccess) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'No purchases or gifts found',
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // User has access - create or get auth user and generate session
+    console.log(`User has access, generating session for ${normalizedEmail}`);
+    
+    // First, check if user exists in auth
+    const { data: existingUser } = await supabase.auth.admin.listUsers();
+    const user = existingUser?.users.find(u => u.email === normalizedEmail);
+
+    console.log(`User ${user ? 'exists' : 'does not exist'} in auth`);
+
+    let userId: string;
+
+    if (!user) {
+      // Create new user with auto-confirmed email
+      console.log(`Creating new user for ${normalizedEmail}`);
+      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+        email: normalizedEmail,
+        email_confirm: true,
+        user_metadata: { auto_created: true }
+      });
+
+      if (createError || !newUser.user) {
+        console.error('Error creating user:', createError);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Error creating user session',
+          }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      userId = newUser.user.id;
+      console.log(`User created with ID: ${userId}`);
+    } else {
+      userId = user.id;
+      console.log(`Using existing user with ID: ${userId}`);
+    }
+
+    // Generate a magic link which contains the access tokens
+    console.log(`Generating magic link for ${normalizedEmail}`);
+    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+      type: 'magiclink',
+      email: normalizedEmail,
+    });
+
+    if (linkError || !linkData) {
+      console.error('Error generating link:', linkError);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Error generating session tokens',
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Magic link generated successfully');
+
+    // Get purchase data for welcome message
+    const { data: purchaseData } = await supabase
+      .from('purchases')
+      .select('user_name, basket_name, basket_category')
+      .eq('email', normalizedEmail)
+      .limit(1)
+      .maybeSingle();
+
+    console.log(`Session created for ${normalizedEmail}`);
+
+    // Log linkData structure for debugging
+    console.log('Link data properties:', JSON.stringify(linkData.properties));
+
+    // Extract tokens - they come in the linkData properties directly
+    const accessToken = linkData.properties.hashed_token;
+    const refreshToken = linkData.properties.hashed_token; // For magic link, same token is used
+
+    if (!accessToken) {
+      console.error('Missing token in generated link');
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Error extracting session tokens',
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     return new Response(
       JSON.stringify({
-        success: hasAccess,
-        message: hasAccess
-          ? hasCompletedOrder
-            ? 'Customer has purchased'
-            : 'Customer has received a gift'
-          : 'No purchases or gifts found',
+        success: true,
+        message: hasCompletedOrder ? 'Customer has purchased' : 'Customer has received a gift',
+        session: {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        },
+        purchaseData: purchaseData || null,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
