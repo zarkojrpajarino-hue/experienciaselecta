@@ -733,16 +733,25 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                 ))}
 
-                {expandedBasketItems.length > 1 && giftData.recipients.length < expandedBasketItems.length && (
+                {expandedBasketItems.length > 1 && (
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => {
+                      if (giftData.recipients.length >= expandedBasketItems.length) {
+                        toast({
+                          variant: "destructive",
+                          title: "Límite alcanzado",
+                          description: "No puedes añadir más destinatarios que cestas disponibles",
+                        });
+                        return;
+                      }
                       setGiftData(prev => ({
                         ...prev,
                         recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
                       }));
                     }}
+                    disabled={giftData.recipients.length >= expandedBasketItems.length}
                     className="w-full font-bold tracking-[0.15em] uppercase"
                     style={{ fontFamily: 'Boulder, sans-serif' }}
                   >

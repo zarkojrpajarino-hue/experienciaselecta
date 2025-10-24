@@ -1604,15 +1604,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         onClose={() => {
           setShowCheckout(false);
           setCart([]); // Clear local cart
-          // Verificar si quedan cestas en el carrito global después del pago
-          // Nota: usar setTimeout para dar tiempo a que el carrito se actualice
-          setTimeout(() => {
-            if (globalCart.length === 0) {
-              navigate('/');
-            } else {
-              navigate('/carrito');
-            }
-          }, 100);
+          if (globalCart.length === 0) {
+            navigate('/');
+          } else {
+            navigate('/carrito');
+          }
         }}
         basketItems={basketItems}
         totalAmount={getLocalTotalAmount()}
