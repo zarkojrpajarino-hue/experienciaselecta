@@ -115,10 +115,11 @@ serve(async (req) => {
         
         if (isGift) {
           // Send gift email to recipient with gift notification (no payment wording)
-          const recipientEmail = (order as any).metadata?.recipient_email;
-          const recipientName = (order as any).metadata?.recipient_name;
-          const senderEmail = (order as any).metadata?.sender_email;
-          const senderName = (order as any).metadata?.sender_name;
+          const piMeta = (paymentIntent?.metadata || {}) as Record<string, string>;
+          const recipientEmail = piMeta.recipient_email || (order as any).metadata?.recipient_email;
+          const recipientName = piMeta.recipient_name || (order as any).metadata?.recipient_name;
+          const senderEmail = piMeta.sender_email || (order as any).metadata?.sender_email;
+          const senderName = piMeta.sender_name || (order as any).metadata?.sender_name;
           const basketName = (order as any).metadata?.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta';
 
           if (recipientEmail && recipientName && senderEmail && senderName) {
