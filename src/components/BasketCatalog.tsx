@@ -1284,7 +1284,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                         </Badge>
                       )}
                       
-                      <p className={`text-[10px] sm:text-xs leading-relaxed font-bold ${colorCombo.text} basket-descripcion mb-2`}>
+                      <p className={`text-[9px] sm:text-xs leading-tight font-bold ${colorCombo.text} basket-descripcion mb-2 whitespace-nowrap`}>
                         {basket.descripcion}
                       </p>
                     </div>
