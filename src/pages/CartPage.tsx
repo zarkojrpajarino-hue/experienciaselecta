@@ -95,8 +95,8 @@ const CartPage = () => {
               navigate('/');
               setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
             }}
-            variant="ghost"
-            className="text-black hover:text-gold bg-transparent hover:bg-transparent mb-6"
+            variant="link"
+            className="text-black hover:text-gold mb-6 p-0"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver a la página principal

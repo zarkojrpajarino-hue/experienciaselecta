@@ -233,7 +233,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     name: item.nombre,
     price: item.precio,
     category: item.categoria,
-    quantity: item.quantity || 1
+    quantity: item.quantity || 1,
+    imagen: item.imagen
   }));
 
   const getBaskets = (): Basket[] => {

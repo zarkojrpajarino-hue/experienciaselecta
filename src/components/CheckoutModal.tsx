@@ -26,6 +26,7 @@ interface BasketItem {
   price: number;
   category: string;
   quantity: number;
+  imagen?: string;
 }
 
 interface CheckoutModalProps {
@@ -279,6 +280,33 @@ const PaymentForm: React.FC<{
   );
 };
 
+// Component for clickable basket image
+const BasketImageThumbnail: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
+  const [imageOpen, setImageOpen] = useState(false);
+  
+  return (
+    <>
+      <img
+        src={src}
+        alt={alt}
+        className="w-12 h-12 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
+        onClick={() => setImageOpen(true)}
+      />
+      <Dialog open={imageOpen} onOpenChange={setImageOpen}>
+        <DialogContent className="max-w-2xl" hideClose={false}>
+          <div className="relative">
+            <img
+              src={src}
+              alt={alt}
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
 const CheckoutModal: React.FC<CheckoutModalProps> = ({
   isOpen,
   onClose,
@@ -522,6 +550,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {expandedBasketItems.map((item) => (
               <div key={item.uniqueId} className="flex justify-between items-center">
                 <div className="flex items-center gap-3 flex-1">
+                  {item.imagen && <BasketImageThumbnail src={item.imagen} alt={item.name} />}
                   <div>
                     <p className="font-medium">{item.name}</p>
                     <div className="flex items-center gap-2">
