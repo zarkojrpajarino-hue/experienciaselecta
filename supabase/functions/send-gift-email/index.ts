@@ -48,7 +48,7 @@ serve(async (req) => {
 
     // Send email to recipient with gift details
     const recipientEmailResponse = await resend.emails.send({
-      from: 'Experiencias Selecta <selectaexperiencia@gmail.com>',
+      from: 'Experiencias Selecta <onboarding@resend.dev>',
       to: [validatedData.recipientEmail],
       subject: '🎁 ¡Te han regalado una experiencia!',
       html: `
