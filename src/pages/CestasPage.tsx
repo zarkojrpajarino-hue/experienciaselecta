@@ -77,6 +77,37 @@ const CestasPage = () => {
             <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-white">
               Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
             </p>
+            
+            {/* Interrogaciones */}
+            <div className="flex justify-center items-center gap-2 mb-4">
+              <TooltipProvider delayDuration={80}>
+                <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+                  <TooltipTrigger asChild>
+                    <motion.span 
+                      onClick={() => {
+                        window.location.href = '/#que-vendemos';
+                      }}
+                      onMouseEnter={() => setTooltipOpen(true)}
+                      onMouseLeave={() => setTooltipOpen(false)}
+                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-3xl"
+                      style={{ color: '#FFD700' }}
+                      animate={{ rotateZ: [0, 180, 0] }}
+                      transition={{ 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    >
+                      ¿?
+                    </motion.span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2">
+                    <p className="font-medium">Haz click</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
             {/* Flecha hacia abajo */}
             <motion.div
               animate={{ y: [0, 10, 0] }}

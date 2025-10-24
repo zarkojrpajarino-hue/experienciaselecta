@@ -4,15 +4,17 @@ import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import CheckoutModal from "@/components/CheckoutModal";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -87,14 +89,29 @@ const CartPage = () => {
       <Navbar />
       <div className="min-h-screen pt-24 pb-12 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
-          <Button
-            onClick={() => navigate('/#categoria-cestas')}
-            variant="ghost"
-            className="mb-6 text-black hover:text-gold"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Seguir comprando
-          </Button>
+          {/* Botones de seguir comprando según contexto */}
+          <div className="flex gap-2 mb-6">
+            {giftItems.length > 0 && (
+              <Button
+                onClick={() => navigate('/cestas')}
+                variant="ghost"
+                className="text-black hover:text-gold bg-transparent"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Seguir comprando regalos
+              </Button>
+            )}
+            {personalItems.length > 0 && (
+              <Button
+                onClick={() => navigate('/#categoria-cestas')}
+                variant="ghost"
+                className="text-black hover:text-gold bg-transparent"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Seguir comprando
+              </Button>
+            )}
+          </div>
 
           <div className="space-y-8">
             {/* Cestas para Regalar Section */}
@@ -118,11 +135,14 @@ const CartPage = () => {
                           <CardContent className="p-6">
                             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                               {/* Imagen de la cesta */}
-                              <div className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+                              <div 
+                                className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                                onClick={() => setExpandedImage(item.imagen)}
+                              >
                                 <img 
                                   src={item.imagen} 
                                   alt={item.nombre}
-                                  className="w-full h-auto object-cover"
+                                  className="w-full h-auto object-cover rounded-2xl"
                                 />
                               </div>
 
@@ -232,7 +252,7 @@ const CartPage = () => {
                           }}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
-                          🎁 Pagar regalos
+                          Pagar regalos
                         </Button>
 
                         <p className="text-xs text-gray-500 text-center">
@@ -267,11 +287,14 @@ const CartPage = () => {
                           <CardContent className="p-6">
                             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                               {/* Imagen de la cesta */}
-                              <div className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+                              <div 
+                                className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                                onClick={() => setExpandedImage(item.imagen)}
+                              >
                                 <img 
                                   src={item.imagen} 
                                   alt={item.nombre}
-                                  className="w-full h-auto object-cover"
+                                  className="w-full h-auto object-cover rounded-2xl"
                                 />
                               </div>
 
@@ -408,6 +431,36 @@ const CartPage = () => {
         totalAmount={checkoutItems.reduce((total, item) => total + (item.precio * item.quantity), 0)}
         isGiftMode={isGiftMode}
       />
+
+      {/* Imagen Expandida Modal */}
+      <AnimatePresence>
+        {expandedImage && (
+          <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
+            <DialogContent className="max-w-4xl w-full p-0 overflow-hidden bg-transparent border-none">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="relative"
+              >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full"
+                  onClick={() => setExpandedImage(null)}
+                >
+                  <X className="w-6 h-6" />
+                </Button>
+                <img
+                  src={expandedImage}
+                  alt="Cesta expandida"
+                  className="w-full h-auto rounded-2xl"
+                />
+              </motion.div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </>
   );
 };
