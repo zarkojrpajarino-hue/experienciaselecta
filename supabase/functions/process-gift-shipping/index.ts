@@ -50,7 +50,7 @@ serve(async (req) => {
     // Get gift details to find the associated order
     const { data: gift, error: giftError } = await supabase
       .from('pending_gifts')
-      .select('order_id, recipient_email')
+      .select('order_id, recipient_email, recipient_name, sender_name, basket_name')
       .eq('id', validatedData.giftId)
       .single();
 
@@ -87,112 +87,54 @@ serve(async (req) => {
 
     // Email to host (as order notification)
     const hostEmail = `
-      <!DOCTYPE html>
-      <html>
-        <body style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2>📦 Nuevo pedido de regalo</h2>
-          <p><strong>${escapeHtml(validatedData.senderName)}</strong> ha regalado <strong>${escapeHtml(validatedData.basketName)}</strong> a <strong>${escapeHtml(validatedData.recipientName)}</strong></p>
-          <h3>Dirección de envío:</h3>
-          <p>${escapeHtml(validatedData.shippingAddress)}</p>
-        </body>
-      </html>
+¡NUEVO PEDIDO DE REGALO CONFIRMADO!
+
+${escapeHtml(validatedData.senderName)} ha regalado ${escapeHtml(validatedData.basketName)} a ${escapeHtml(validatedData.recipientName)}
+
+Dirección de envío:
+${escapeHtml(validatedData.shippingAddress)}
+
+El destinatario ha completado sus datos y el pedido está listo para enviar.
     `;
 
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
-      to: ['admin@experienciaselecta.com'], // Change to actual host email
+      to: ['selectaexperiencia@gmail.com'],
       subject: `📦 Nuevo pedido de regalo - ${validatedData.basketName}`,
-      html: hostEmail,
+      text: hostEmail,
     });
 
-    // Email to recipient
-    const recipientEmail = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-            }
-            .header {
-              text-align: center;
-              padding: 30px 0;
-              background: linear-gradient(135deg, #1a0033 0%, #4a0080 100%);
-              color: white;
-              border-radius: 10px 10px 0 0;
-            }
-            .content {
-              background: #ffffff;
-              padding: 30px;
-              border: 2px solid #daa520;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>🎁 ¡Tu regalo está de camino!</h1>
-          </div>
-          <div class="content">
-            <p>Hola <strong>${escapeHtml(validatedData.recipientName)}</strong>,</p>
-            <p>Tu regalo <strong>${escapeHtml(validatedData.basketName)}</strong> ya está en camino.</p>
-            <p>Lo recibirás pronto en la dirección que nos has proporcionado.</p>
-            <p>¡Disfruta de esta experiencia gastronómica única!</p>
-          </div>
-        </body>
-      </html>
+    // Email to recipient with access information
+    const recipientEmailContent = `
+¡Enhorabuena ${escapeHtml(validatedData.recipientName)}!
+
+✅ Tu pedido está de camino.
+
+Al haber recibido una cesta en nuestra web, no solo tienes acceso a los productos de alta calidad que esta trae, también a la web paragenteselecta.com
+
+En esta web están todas las dinámicas para llevar a cabo toda la experiencia.
+
+⚠️ IMPORTANTE: UNA VEZ ABIERTA LA WEB SOLO TENDRÁS 24 HORAS DE ACCESO A ESTA. ES UNA WEB PRIVADA Y ÚNICA, PARA NUESTROS CLIENTES Y EXPERIENCIAS.
+
+🎁 DETALLES DEL REGALO
+Regalo: ${escapeHtml(validatedData.basketName)}
+De parte de: ${escapeHtml(validatedData.senderName)}
+
+📍 DIRECCIÓN DE ENVÍO
+${escapeHtml(validatedData.shippingAddress)}
+
+¡Esperamos que disfrutes de esta experiencia gastronómica única!
+
+Saludos,
+El equipo de Experiencia Selecta
     `;
 
-    // Note: We need to get recipient email from database
-    // This is a placeholder - you'll need to fetch it from pending_gifts table
-
-    // Email to sender
-    const senderEmail = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-            }
-            .header {
-              text-align: center;
-              padding: 30px 0;
-              background: linear-gradient(135deg, #1a0033 0%, #4a0080 100%);
-              color: white;
-              border-radius: 10px 10px 0 0;
-            }
-            .content {
-              background: #ffffff;
-              padding: 30px;
-              border: 2px solid #daa520;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>✨ Gracias por regalar</h1>
-          </div>
-          <div class="content">
-            <p>Hola <strong>${escapeHtml(validatedData.senderName)}</strong>,</p>
-            <p>El regalo de <strong>${escapeHtml(validatedData.recipientName)}</strong> ya está de camino.</p>
-            <p>Gracias por compartir momentos especiales con Experiencia Selecta.</p>
-          </div>
-        </body>
-      </html>
-    `;
-
-    // Note: We need to get sender email from database
-    // This is a placeholder - you'll need to fetch it from the order/customer tables
+    await resend.emails.send({
+      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
+      to: [gift.recipient_email],
+      subject: '✅ ¡Tu pedido está de camino! - Experiencia Selecta',
+      text: recipientEmailContent,
+    });
 
     console.log('Gift shipping emails sent successfully');
 
