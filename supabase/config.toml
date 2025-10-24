@@ -1,1 +1,4 @@
 project_id = "tyorpbzvjnasyaqbggcp"
+
+[functions.verify-customer-access]
+verify_jwt = false
