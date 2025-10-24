@@ -116,9 +116,11 @@ serve(async (req) => {
               recipientName: order.metadata.recipient_name,
               recipientEmail: order.metadata.recipient_email,
               senderName: order.metadata.sender_name,
+              senderEmail: user.email,
               basketName: order.metadata.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta',
               basketImage: 'https://images.unsplash.com/photo-1599666166155-52f1a5d4edfe?w=800&h=600&fit=crop',
-              orderId: order.id
+              orderId: order.id,
+              totalAmount: order.total_amount
             }
           });
         } else {

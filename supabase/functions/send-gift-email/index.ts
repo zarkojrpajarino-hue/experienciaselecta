@@ -24,9 +24,11 @@ const giftSchema = z.object({
   recipientName: z.string().max(100),
   recipientEmail: z.string().email().max(255),
   senderName: z.string().max(100),
+  senderEmail: z.string().email().max(255),
   basketName: z.string().max(200),
   basketImage: z.string().url().optional(),
   orderId: z.string().uuid(),
+  totalAmount: z.number(),
 });
 
 serve(async (req) => {
@@ -174,6 +176,112 @@ El equipo de Experiencia Selecta
     });
 
     console.log('Gift email sent successfully to:', validatedData.recipientEmail);
+
+    // Create confirmation email for sender
+    const senderHtmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              color: #333;
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+            }
+            .header {
+              text-align: center;
+              padding: 30px 0;
+              background: linear-gradient(135deg, #1a0033 0%, #4a0080 100%);
+              color: white;
+              border-radius: 10px 10px 0 0;
+            }
+            .content {
+              background: #ffffff;
+              padding: 30px;
+              border: 2px solid #daa520;
+            }
+            .success-icon {
+              font-size: 60px;
+              margin-bottom: 10px;
+            }
+            .message {
+              background: #f0f8ff;
+              padding: 20px;
+              border-left: 4px solid #daa520;
+              margin: 20px 0;
+            }
+            .basket-name {
+              font-size: 20px;
+              font-weight: bold;
+              color: #1a0033;
+              text-align: center;
+              margin: 20px 0;
+            }
+            .footer {
+              text-align: center;
+              padding: 20px;
+              color: #666;
+              font-size: 14px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="success-icon">✅</div>
+            <h1>¡Pago completado con éxito!</h1>
+          </div>
+          <div class="content">
+            <p>Hola <strong>${escapeHtml(validatedData.senderName)}</strong>,</p>
+            
+            <div class="message">
+              <p>Tu pago ha sido procesado correctamente. El regalo para <strong>${escapeHtml(validatedData.recipientName)}</strong> ha sido enviado.</p>
+            </div>
+
+            <div class="basket-name">
+              ${escapeHtml(validatedData.basketName)}
+            </div>
+
+            ${validatedData.basketImage ? `
+              <img src="${escapeHtml(validatedData.basketImage)}" alt="${escapeHtml(validatedData.basketName)}" style="width: 100%; max-width: 400px; height: auto; margin: 20px auto; display: block; border-radius: 8px;" />
+            ` : ''}
+
+            <p><strong>Detalles del pago:</strong></p>
+            <ul>
+              <li>Destinatario: ${escapeHtml(validatedData.recipientName)}</li>
+              <li>Email: ${escapeHtml(validatedData.recipientEmail)}</li>
+              <li>Cesta: ${escapeHtml(validatedData.basketName)}</li>
+              <li>Total pagado: ${validatedData.totalAmount.toFixed(2)}€</li>
+            </ul>
+
+            <p style="margin-top: 20px;">
+              Hemos enviado un correo a <strong>${escapeHtml(validatedData.recipientEmail)}</strong> con las instrucciones para reclamar el regalo.
+            </p>
+
+            <p style="margin-top: 30px;">¡Gracias por compartir momentos especiales con Experiencia Selecta!</p>
+          </div>
+          <div class="footer">
+            <p>Experiencia Selecta<br/>
+            La mejor selección de productos ibéricos</p>
+            <p style="font-size: 12px; color: #999;">
+              Este es un correo automático, por favor no respondas a este mensaje.
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    // Send confirmation email to sender
+    await resend.emails.send({
+      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
+      to: [validatedData.senderEmail],
+      subject: `✅ Pago completado - Regalo para ${validatedData.recipientName}`,
+      html: senderHtmlContent,
+    });
+
+    console.log('Confirmation email sent successfully to sender:', validatedData.senderEmail);
 
     return new Response(
       JSON.stringify({ success: true }),
