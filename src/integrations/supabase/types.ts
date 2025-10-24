@@ -168,6 +168,7 @@ export type Database = {
           gift_claimed: boolean
           id: string
           order_id: string
+          personal_note: string | null
           price: number
           quantity: number
           recipient_email: string
@@ -190,6 +191,7 @@ export type Database = {
           gift_claimed?: boolean
           id?: string
           order_id: string
+          personal_note?: string | null
           price: number
           quantity?: number
           recipient_email: string
@@ -212,6 +214,7 @@ export type Database = {
           gift_claimed?: boolean
           id?: string
           order_id?: string
+          personal_note?: string | null
           price?: number
           quantity?: number
           recipient_email?: string

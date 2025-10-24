@@ -16,6 +16,7 @@ interface PendingGift {
   quantity: number;
   gift_claimed: boolean;
   shipping_completed: boolean;
+  personal_note: string | null;
 }
 
 const RegalosPage = () => {
@@ -159,6 +160,16 @@ const RegalosPage = () => {
                     <p className="text-lg text-muted-foreground mb-2">
                       {gift.sender_name} te ha regalado: <strong>{gift.basket_name}</strong>
                     </p>
+                    {gift.personal_note && (
+                      <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-md my-3">
+                        <p className="text-sm italic text-foreground">
+                          "{gift.personal_note}"
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          - {gift.sender_name}
+                        </p>
+                      </div>
+                    )}
                     <p className="text-sm text-muted-foreground">
                       Rellena la información para que podamos enviártelo
                     </p>

@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, CreditCard, Truck, Check, Lock } from "lucide-react";
+import { ShoppingCart, CreditCard, Truck, Check, Lock, Plus, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { loadStripe } from "@stripe/stripe-js";
@@ -46,11 +48,17 @@ interface CustomerData {
   country: string;
 }
 
-interface GiftData {
+interface RecipientData {
   recipientName: string;
   recipientEmail: string;
+  personalNote: string;
+  basketIds: number[]; // IDs of baskets assigned to this recipient
+}
+
+interface GiftData {
   senderName: string;
   senderEmail: string;
+  recipients: RecipientData[];
 }
 
 const PaymentForm: React.FC<{
@@ -241,10 +249,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     country: 'España'
   });
   const [giftData, setGiftData] = useState<GiftData>({
-    recipientName: '',
-    recipientEmail: '',
     senderName: '',
-    senderEmail: ''
+    senderEmail: '',
+    recipients: [{ recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
   });
   const { toast } = useToast();
 
@@ -260,11 +267,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     country: z.string().trim().min(1, "Country is required").max(100, "Country must be less than 100 characters")
   });
 
-  const giftSchema = z.object({
+  const recipientSchema = z.object({
     recipientName: z.string().trim().min(1, "El nombre del destinatario es requerido").max(100),
     recipientEmail: z.string().trim().email("Email inválido").max(255),
+    personalNote: z.string().trim().max(500, "La nota debe tener menos de 500 caracteres").optional(),
+    basketIds: z.array(z.number())
+  });
+
+  const giftSchema = z.object({
     senderName: z.string().trim().min(1, "Tu nombre es requerido").max(100),
-    senderEmail: z.string().trim().email("Tu email es inválido").max(255)
+    senderEmail: z.string().trim().email("Tu email es inválido").max(255),
+    recipients: z.array(recipientSchema).min(1, "Debe haber al menos un destinatario")
   });
 
   // Check authentication status when modal opens
@@ -376,10 +389,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       country: 'España'
     });
     setGiftData({
-      recipientName: '',
-      recipientEmail: '',
       senderName: '',
-      senderEmail: ''
+      senderEmail: '',
+      recipients: [{ recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
     });
     onClose();
   };
@@ -488,29 +500,129 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                 <Separator />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="recipientName">Nombre del destinatario *</Label>
-                    <Input
-                      id="recipientName"
-                      value={giftData.recipientName}
-                      onChange={(e) => setGiftData(prev => ({ ...prev, recipientName: e.target.value }))}
-                      placeholder="¿A quién se lo regalas?"
-                      required
-                    />
+{giftData.recipients.map((recipient, index) => (
+                  <div key={index} className="border rounded-lg p-4 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-medium">Destinatario {index + 1}</h3>
+                      {giftData.recipients.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const newRecipients = giftData.recipients.filter((_, i) => i !== index);
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor={`recipientName-${index}`}>Nombre del destinatario *</Label>
+                        <Input
+                          id={`recipientName-${index}`}
+                          value={recipient.recipientName}
+                          onChange={(e) => {
+                            const newRecipients = [...giftData.recipients];
+                            newRecipients[index].recipientName = e.target.value;
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                          placeholder="¿A quién se lo regalas?"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`recipientEmail-${index}`}>Email del destinatario *</Label>
+                        <Input
+                          id={`recipientEmail-${index}`}
+                          type="email"
+                          value={recipient.recipientEmail}
+                          onChange={(e) => {
+                            const newRecipients = [...giftData.recipients];
+                            newRecipients[index].recipientEmail = e.target.value;
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                          placeholder="email@ejemplo.com"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`personalNote-${index}`}>Nota personal para {recipient.recipientName || 'el destinatario'}</Label>
+                      <Textarea
+                        id={`personalNote-${index}`}
+                        value={recipient.personalNote}
+                        onChange={(e) => {
+                          const newRecipients = [...giftData.recipients];
+                          newRecipients[index].personalNote = e.target.value;
+                          setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                        }}
+                        placeholder="Escribe una nota personal para acompañar tu regalo..."
+                        rows={3}
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {recipient.personalNote.length}/500 caracteres
+                      </p>
+                    </div>
+
+                    {basketItems.length > 1 && (
+                      <div>
+                        <Label htmlFor={`basketAssignment-${index}`}>
+                          Asignar cestas a este destinatario
+                        </Label>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
+                        </p>
+                        <div className="space-y-2">
+                          {basketItems.map((item) => (
+                            <div key={item.id} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id={`basket-${item.id}-recipient-${index}`}
+                                checked={recipient.basketIds.includes(item.id)}
+                                onChange={(e) => {
+                                  const newRecipients = [...giftData.recipients];
+                                  if (e.target.checked) {
+                                    newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.id];
+                                  } else {
+                                    newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.id);
+                                  }
+                                  setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                }}
+                                className="rounded border-gray-300"
+                              />
+                              <Label htmlFor={`basket-${item.id}-recipient-${index}`} className="cursor-pointer">
+                                {item.name} x{item.quantity}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <Label htmlFor="recipientEmail">Email del destinatario *</Label>
-                    <Input
-                      id="recipientEmail"
-                      type="email"
-                      value={giftData.recipientEmail}
-                      onChange={(e) => setGiftData(prev => ({ ...prev, recipientEmail: e.target.value }))}
-                      placeholder="email@ejemplo.com"
-                      required
-                    />
-                  </div>
-                </div>
+                ))}
+
+                {basketItems.length > 1 && giftData.recipients.length < basketItems.length && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setGiftData(prev => ({
+                        ...prev,
+                        recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
+                      }));
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Añadir otro destinatario
+                  </Button>
+                )}
               </>
             ) : (
               /* Normal Purchase Fields */
@@ -633,9 +745,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <p className="text-center font-poppins font-bold text-black text-lg">
                     🎁 Vas a regalar una cesta
                   </p>
-                  <div className="mt-3 text-sm text-muted-foreground">
-                    <p><strong>Para:</strong> {giftData.recipientName} ({giftData.recipientEmail})</p>
+                  <div className="mt-3 text-sm text-muted-foreground space-y-2">
                     <p><strong>De:</strong> {giftData.senderName} ({giftData.senderEmail})</p>
+                    <div className="space-y-1">
+                      <p><strong>Para:</strong></p>
+                      {giftData.recipients.map((recipient, index) => (
+                        <div key={index} className="ml-4">
+                          <p>• {recipient.recipientName} ({recipient.recipientEmail})</p>
+                          {recipient.personalNote && (
+                            <p className="text-xs italic ml-2">Nota: "{recipient.personalNote.substring(0, 50)}{recipient.personalNote.length > 50 ? '...' : ''}"</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <Button
                     variant="outline"

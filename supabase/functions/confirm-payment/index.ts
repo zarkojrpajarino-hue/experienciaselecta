@@ -114,30 +114,32 @@ serve(async (req) => {
         console.log('Gift detection => order.metadata.is_gift:', rawGiftFlag, 'stripe.metadata.is_gift:', stripeGiftFlag, '=> isGift:', isGift);
         
         if (isGift) {
-          // Send gift email to recipient with gift notification (no payment wording)
-          const piMeta = (paymentIntent?.metadata || {}) as Record<string, string>;
-          const recipientEmail = piMeta.recipient_email || (order as any).metadata?.recipient_email;
-          const recipientName = piMeta.recipient_name || (order as any).metadata?.recipient_name;
-          const senderEmail = piMeta.sender_email || (order as any).metadata?.sender_email;
-          const senderName = piMeta.sender_name || (order as any).metadata?.sender_name;
-          const basketName = (order as any).metadata?.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta';
+          // Send gift email to recipients with gift notification
+          const orderMetadata = (order as any).metadata || {};
+          const senderEmail = (paymentIntent?.metadata as any)?.sender_email || orderMetadata.sender_email;
+          const senderName = (paymentIntent?.metadata as any)?.sender_name || orderMetadata.sender_name;
+          const recipients = orderMetadata.recipients || [];
 
-          if (recipientEmail && recipientName && senderEmail && senderName) {
-            console.log('Sending gift notification email to recipient:', recipientEmail);
+          if (senderEmail && senderName && recipients.length > 0) {
+            console.log('Sending gift notification emails to', recipients.length, 'recipient(s)');
             await supabase.functions.invoke('send-gift-email', {
               body: {
-                recipientName,
-                recipientEmail,
                 senderName,
                 senderEmail,
-                basketName,
-                orderId: order.id,
-                totalAmount: order.total_amount
+                recipients,
+                basketItems: order.order_items.map((item: any) => ({
+                  id: item.id,
+                  name: item.basket_name,
+                  category: item.basket_category,
+                  price: item.price_per_item / 100,
+                  quantity: item.quantity
+                })),
+                orderId: order.id
               },
               headers: { Authorization: authHeader }
             });
           } else {
-            console.warn('Missing gift metadata; skipping recipient email', { recipientEmail, recipientName, senderEmail, senderName });
+            console.warn('Missing gift metadata; skipping recipient emails', { senderEmail, senderName, recipients });
           }
           
           // Send confirmation email ONLY to the payer (sender). Never to host/admin here.

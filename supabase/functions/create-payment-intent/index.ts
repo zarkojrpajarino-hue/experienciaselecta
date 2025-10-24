@@ -258,8 +258,7 @@ serve(async (req) => {
         is_gift: isGiftMode ? 'true' : 'false',
         sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
         sender_email: isGiftMode && giftData?.senderEmail ? giftData.senderEmail : '',
-        recipient_name: isGiftMode && giftData?.recipientName ? giftData.recipientName : '',
-        recipient_email: isGiftMode && giftData?.recipientEmail ? giftData.recipientEmail : ''
+        recipients_count: isGiftMode && giftData?.recipients ? String(giftData.recipients.length) : '0'
       },
       automatic_payment_methods: {
         enabled: true,
@@ -274,9 +273,34 @@ serve(async (req) => {
 
     console.log('Payment intent created successfully');
 
-    // If it's a gift, also prepare to send gift email after payment confirmation
-    // Store gift metadata with the order for later use
+    // If it's a gift, create pending_gifts records for each recipient and store metadata
     if (isGiftMode && giftData) {
+      // Create pending gifts for each recipient
+      for (const recipient of giftData.recipients) {
+        // Get basket items for this recipient
+        const recipientBaskets = basketItems.filter((item: any) => recipient.basketIds.includes(item.id));
+        
+        for (const basket of recipientBaskets) {
+          await supabase
+            .from('pending_gifts')
+            .insert({
+              order_id: order.id,
+              sender_name: giftData.senderName,
+              recipient_name: recipient.recipientName,
+              recipient_email: recipient.recipientEmail,
+              basket_name: basket.name,
+              basket_image: basket.image || null,
+              basket_category: basket.category,
+              price: Math.round(basket.price * 100),
+              quantity: basket.quantity,
+              personal_note: recipient.personalNote || null,
+              gift_claimed: false,
+              shipping_completed: false
+            });
+        }
+      }
+
+      // Store gift metadata with order
       await supabase
         .from('orders')
         .update({ 
@@ -284,9 +308,7 @@ serve(async (req) => {
             is_gift: true,
             sender_name: giftData.senderName,
             sender_email: giftData.senderEmail,
-            recipient_name: giftData.recipientName,
-            recipient_email: giftData.recipientEmail,
-            basket_name: validatedItems[0]?.name || 'Cesta Experiencia Selecta'
+            recipients: giftData.recipients
           }
         })
         .eq('id', order.id);
