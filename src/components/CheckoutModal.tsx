@@ -188,10 +188,15 @@ const PaymentForm: React.FC<{
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
             Procesando pago...
           </>
-        ) : (
+        ) : isGiftMode ? (
           <>
             <CreditCard className="w-4 h-4 mr-2" />
             Pagar y Regalar
+          </>
+        ) : (
+          <>
+            <CreditCard className="w-4 h-4 mr-2" />
+            Pagar {totalAmount.toFixed(2)}€
           </>
         )}
       </Button>

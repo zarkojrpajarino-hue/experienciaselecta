@@ -18,6 +18,7 @@ const CestasPage = lazy(() => import("./pages/CestasPage"));
 const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const ExperienciaSelectaPage = lazy(() => import("./pages/ExperienciaSelectaPage"));
 const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPage"));
+const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CookieBanner = lazy(() => import("./components/CookieBanner"));
 
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="/experiencia" element={<ExperienciaPage />} />
               <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
               <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+              <Route path="/regalos" element={<RegalosPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

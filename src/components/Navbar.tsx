@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronLeft, ChevronRight, ShoppingCart, User } from "lucide-react";
+import { Menu, X, ChevronLeft, ChevronRight, ShoppingCart, User, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -18,6 +18,7 @@ const Navbar = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
+  const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, getTotalItems, getTotalAmount, removeFromCart } = useCart();
@@ -29,18 +30,40 @@ const Navbar = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkPendingGifts(session.user.email!);
+      }
     });
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkPendingGifts(session.user.email!);
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  const checkPendingGifts = async (email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('pending_gifts')
+        .select('id')
+        .eq('recipient_email', email)
+        .eq('shipping_completed', false);
+
+      if (!error && data) {
+        setPendingGiftsCount(data.length);
+      }
+    } catch (error) {
+      console.error('Error checking pending gifts:', error);
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -193,6 +216,35 @@ const Navbar = () => {
               >
                 <User size={20} />
               </motion.button>
+            )}
+
+            {/* Pending Gifts Badge */}
+            {user && pendingGiftsCount > 0 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.button
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/regalos')}
+                    className="relative p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
+                    aria-label="Ver regalos pendientes"
+                  >
+                    <Gift size={20} />
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                    >
+                      {pendingGiftsCount}
+                    </motion.span>
+                  </motion.button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Regalos pendientes</p>
+                </TooltipContent>
+              </Tooltip>
             )}
 
             {/* Gift Button */}

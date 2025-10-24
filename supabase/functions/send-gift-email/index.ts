@@ -115,6 +115,10 @@ serve(async (req) => {
             
             <div class="message">
               <p><strong>${escapeHtml(validatedData.senderName)}</strong> te ha regalado una experiencia única, personalizada e inolvidable.</p>
+              <p style="margin-top: 20px;">
+                <strong>Para recibir tu regalo:</strong><br/>
+                Entra en <a href="https://tyorpbzvjnasyaqbggcp.supabase.co" style="color: #daa520; text-decoration: underline;">nuestra web</a> y regístrate con este mismo correo (${escapeHtml(validatedData.recipientEmail)}) para que puedas recibir tu regalo.
+              </p>
             </div>
 
             <div class="basket-name">

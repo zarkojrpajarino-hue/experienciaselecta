@@ -159,6 +159,83 @@ export type Database = {
           },
         ]
       }
+      pending_gifts: {
+        Row: {
+          basket_category: string
+          basket_image: string | null
+          basket_name: string
+          created_at: string
+          gift_claimed: boolean
+          id: string
+          order_id: string
+          price: number
+          quantity: number
+          recipient_email: string
+          recipient_name: string
+          recipient_user_id: string | null
+          sender_name: string
+          shipping_address_line1: string | null
+          shipping_address_line2: string | null
+          shipping_city: string | null
+          shipping_completed: boolean
+          shipping_country: string | null
+          shipping_postal_code: string | null
+          updated_at: string
+        }
+        Insert: {
+          basket_category: string
+          basket_image?: string | null
+          basket_name: string
+          created_at?: string
+          gift_claimed?: boolean
+          id?: string
+          order_id: string
+          price: number
+          quantity?: number
+          recipient_email: string
+          recipient_name: string
+          recipient_user_id?: string | null
+          sender_name: string
+          shipping_address_line1?: string | null
+          shipping_address_line2?: string | null
+          shipping_city?: string | null
+          shipping_completed?: boolean
+          shipping_country?: string | null
+          shipping_postal_code?: string | null
+          updated_at?: string
+        }
+        Update: {
+          basket_category?: string
+          basket_image?: string | null
+          basket_name?: string
+          created_at?: string
+          gift_claimed?: boolean
+          id?: string
+          order_id?: string
+          price?: number
+          quantity?: number
+          recipient_email?: string
+          recipient_name?: string
+          recipient_user_id?: string | null
+          sender_name?: string
+          shipping_address_line1?: string | null
+          shipping_address_line2?: string | null
+          shipping_city?: string | null
+          shipping_completed?: boolean
+          shipping_country?: string | null
+          shipping_postal_code?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_gifts_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address_line1: string | null
