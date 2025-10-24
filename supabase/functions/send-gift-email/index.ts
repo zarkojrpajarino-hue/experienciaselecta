@@ -118,8 +118,11 @@ serve(async (req) => {
             <div class="message">
               <p><strong>${escapeHtml(validatedData.senderName)}</strong> te ha regalado una experiencia única, personalizada e inolvidable.</p>
               <p style="margin-top: 20px;">
-                <strong>Para recibir tu regalo:</strong><br/>
-                Entra en <a href="https://tyorpbzvjnasyaqbggcp.supabase.co" style="color: #daa520; text-decoration: underline;">nuestra web</a> y regístrate con este mismo correo (${escapeHtml(validatedData.recipientEmail)}) para que puedas recibir tu regalo.
+                <strong>Para recibir tu regalo, sigue estos pasos:</strong><br/>
+                1. Entra en <a href="https://experienciaselecta.com" style="color: #daa520; text-decoration: underline; font-weight: bold;">experienciaselecta.com</a><br/>
+                2. Regístrate o inicia sesión con este mismo correo: <strong>${escapeHtml(validatedData.recipientEmail)}</strong><br/>
+                3. Verás un emoticono de regalo 🎁 en la página principal<br/>
+                4. Haz clic en él para completar los datos de envío de tu regalo
               </p>
             </div>
 
@@ -133,7 +136,7 @@ serve(async (req) => {
 
             <p>Esta cesta ha sido cuidadosamente seleccionada para ti y será preparada con todo nuestro cariño.</p>
             
-            <p>Pronto recibirás tu regalo en la dirección indicada por ${escapeHtml(validatedData.senderName)}.</p>
+            <p><strong>¡No olvides completar los datos de envío en la web para recibir tu regalo!</strong></p>
 
             <p style="margin-top: 30px;">¡Disfruta de esta experiencia gastronómica única!</p>
           </div>

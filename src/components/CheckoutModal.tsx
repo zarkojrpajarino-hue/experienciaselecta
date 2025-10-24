@@ -105,23 +105,29 @@ const PaymentForm: React.FC<{
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) throw new Error('Card element not found');
 
+      // Prepare billing details - don't include address for gift mode
+      const billingDetails: any = {
+        name: customerData.name || giftData?.senderName,
+        email: customerData.email
+      };
+
+      if (!isGiftMode) {
+        billingDetails.phone = customerData.phone;
+        billingDetails.address = {
+          line1: customerData.address_line1,
+          line2: customerData.address_line2,
+          city: customerData.city,
+          postal_code: customerData.postal_code,
+          country: customerData.country === 'España' ? 'ES' : customerData.country
+        };
+      }
+
       const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
         {
           payment_method: {
             card: cardElement,
-            billing_details: {
-              name: customerData.name,
-              email: customerData.email,
-              phone: customerData.phone,
-              address: {
-                line1: customerData.address_line1,
-                line2: customerData.address_line2,
-                city: customerData.city,
-                postal_code: customerData.postal_code,
-                country: customerData.country === 'España' ? 'ES' : customerData.country
-              }
-            }
+            billing_details: billingDetails
           }
         }
       );
@@ -301,15 +307,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     try {
       if (isGiftMode) {
         giftSchema.parse(giftData);
-        // For gifts, we still need shipping address from customerData
-        const giftCustomerSchema = z.object({
-          address_line1: z.string().trim().min(1, "Dirección requerida").max(255),
-          address_line2: z.string().trim().max(255).optional(),
-          city: z.string().trim().min(1, "Ciudad requerida").max(100),
-          postal_code: z.string().trim().min(1, "Código postal requerido").max(20),
-          country: z.string().trim().min(1, "País requerido").max(100)
-        });
-        giftCustomerSchema.parse(customerData);
       } else {
         customerSchema.parse(customerData);
       }
@@ -484,9 +481,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     />
                   </div>
                 </div>
-
-                <Separator />
-                <p className="text-sm font-medium">Dirección de envío del regalo</p>
               </>
             ) : (
               /* Normal Purchase Fields */
@@ -524,61 +518,74 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     placeholder="+34 123 456 789"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="phone">Teléfono</Label>
+                  <Input
+                    id="phone"
+                    value={customerData.phone}
+                    onChange={(e) => setCustomerData(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="+34 123 456 789"
+                  />
+                </div>
               </>
             )}
 
-            <div>
-              <Label htmlFor="address1">Dirección *</Label>
-              <Input
-                id="address1"
-                value={customerData.address_line1}
-                onChange={(e) => setCustomerData(prev => ({ ...prev, address_line1: e.target.value }))}
-                placeholder="Calle, número"
-                required
-              />
-            </div>
+            {!isGiftMode && (
+              <>
+                <div>
+                  <Label htmlFor="address1">Dirección *</Label>
+                  <Input
+                    id="address1"
+                    value={customerData.address_line1}
+                    onChange={(e) => setCustomerData(prev => ({ ...prev, address_line1: e.target.value }))}
+                    placeholder="Calle, número"
+                    required
+                  />
+                </div>
 
-            <div>
-              <Label htmlFor="address2">Dirección (línea 2)</Label>
-              <Input
-                id="address2"
-                value={customerData.address_line2}
-                onChange={(e) => setCustomerData(prev => ({ ...prev, address_line2: e.target.value }))}
-                placeholder="Piso, puerta, etc."
-              />
-            </div>
+                <div>
+                  <Label htmlFor="address2">Dirección (línea 2)</Label>
+                  <Input
+                    id="address2"
+                    value={customerData.address_line2}
+                    onChange={(e) => setCustomerData(prev => ({ ...prev, address_line2: e.target.value }))}
+                    placeholder="Piso, puerta, etc."
+                  />
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="city">Ciudad *</Label>
-                <Input
-                  id="city"
-                  value={customerData.city}
-                  onChange={(e) => setCustomerData(prev => ({ ...prev, city: e.target.value }))}
-                  placeholder="Tu ciudad"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="postal_code">Código postal *</Label>
-                <Input
-                  id="postal_code"
-                  value={customerData.postal_code}
-                  onChange={(e) => setCustomerData(prev => ({ ...prev, postal_code: e.target.value }))}
-                  placeholder="28001"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="country">País</Label>
-                <Input
-                  id="country"
-                  value={customerData.country}
-                  onChange={(e) => setCustomerData(prev => ({ ...prev, country: e.target.value }))}
-                  placeholder="España"
-                />
-              </div>
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="city">Ciudad *</Label>
+                    <Input
+                      id="city"
+                      value={customerData.city}
+                      onChange={(e) => setCustomerData(prev => ({ ...prev, city: e.target.value }))}
+                      placeholder="Tu ciudad"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="postal_code">Código postal *</Label>
+                    <Input
+                      id="postal_code"
+                      value={customerData.postal_code}
+                      onChange={(e) => setCustomerData(prev => ({ ...prev, postal_code: e.target.value }))}
+                      placeholder="28001"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="country">País</Label>
+                    <Input
+                      id="country"
+                      value={customerData.country}
+                      onChange={(e) => setCustomerData(prev => ({ ...prev, country: e.target.value }))}
+                      placeholder="España"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <Button type="submit" className="w-full" size="lg">
               {isGiftMode ? '🎁' : <Truck className="w-4 h-4 mr-2" />}
@@ -591,32 +598,44 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {step === 'payment' && (
           <Elements stripe={stripePromise}>
             <div className="space-y-4">
-              {isGiftMode && (
+              {isGiftMode ? (
                 <div className="p-4 bg-gold/10 border-2 border-gold rounded-lg">
                   <p className="text-center font-poppins font-bold text-black text-lg">
                     🎁 Vas a regalar una cesta
                   </p>
+                  <div className="mt-3 text-sm text-muted-foreground">
+                    <p><strong>Para:</strong> {giftData.recipientName} ({giftData.recipientEmail})</p>
+                    <p><strong>De:</strong> {giftData.senderName}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStep('customer')}
+                    className="mt-3 w-full"
+                  >
+                    Editar información
+                  </Button>
+                </div>
+              ) : (
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <h3 className="font-medium mb-2">Dirección de envío:</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {customerData.name}<br />
+                    {customerData.address_line1}<br />
+                    {customerData.address_line2 && `${customerData.address_line2}\n`}
+                    {customerData.city}, {customerData.postal_code}<br />
+                    {customerData.country}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStep('customer')}
+                    className="mt-2"
+                  >
+                    Editar dirección
+                  </Button>
                 </div>
               )}
-              
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <h3 className="font-medium mb-2">Dirección de envío:</h3>
-                <p className="text-sm text-muted-foreground">
-                  {customerData.name}<br />
-                  {customerData.address_line1}<br />
-                  {customerData.address_line2 && `${customerData.address_line2}\n`}
-                  {customerData.city}, {customerData.postal_code}<br />
-                  {customerData.country}
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setStep('customer')}
-                  className="mt-2"
-                >
-                  Editar dirección
-                </Button>
-              </div>
 
               <PaymentForm
                 customerData={customerData}

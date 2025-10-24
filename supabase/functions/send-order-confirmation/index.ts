@@ -68,7 +68,7 @@ serve(async (req) => {
 
 ✅ Tu cesta ha sido pagada con éxito.
 
-Puedes verla en la sección "Mis Pedidos" en tu perfil en la web: https://tyorpbzvjnasyaqbggcp.supabase.co/perfil
+Puedes verla en la sección "Mis Pedidos" en tu perfil en la web: https://experienciaselecta.com/perfil
 
 📦 DETALLES DEL PEDIDO
 Número de pedido: ${escapeHtml(order.id)}
