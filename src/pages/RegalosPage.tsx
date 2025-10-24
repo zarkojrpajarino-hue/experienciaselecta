@@ -24,6 +24,8 @@ const RegalosPage = () => {
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
   const [shippingData, setShippingData] = useState({
+    name: '',
+    email: '',
     address_line1: '',
     address_line2: '',
     city: '',
@@ -82,7 +84,7 @@ const RegalosPage = () => {
       console.log('Iniciando envío de información de regalo:', giftId);
       console.log('Datos de envío:', shippingData);
       
-      if (!shippingData.address_line1 || !shippingData.city || !shippingData.postal_code) {
+      if (!shippingData.name || !shippingData.email || !shippingData.address_line1 || !shippingData.city || !shippingData.postal_code) {
         console.error('Campos obligatorios faltantes');
         toast.error('Por favor completa todos los campos obligatorios');
         return;
@@ -93,6 +95,8 @@ const RegalosPage = () => {
       const { error: updateError } = await supabase
         .from('pending_gifts')
         .update({
+          recipient_name: shippingData.name,
+          recipient_email: shippingData.email,
           shipping_address_line1: shippingData.address_line1,
           shipping_address_line2: shippingData.address_line2,
           shipping_city: shippingData.city,
@@ -186,6 +190,27 @@ const RegalosPage = () => {
                 </div>
 
                 <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Nombre completo *</label>
+                    <Input
+                      value={shippingData.name}
+                      onChange={(e) => setShippingData({...shippingData, name: e.target.value})}
+                      placeholder="Tu nombre completo"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email *</label>
+                    <Input
+                      type="email"
+                      value={shippingData.email}
+                      onChange={(e) => setShippingData({...shippingData, email: e.target.value})}
+                      placeholder="tu@email.com"
+                      required
+                    />
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium mb-2">Dirección *</label>
                     <Input
