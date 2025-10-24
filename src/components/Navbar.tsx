@@ -157,7 +157,6 @@ const Navbar = () => {
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
   };
-  if (location.pathname !== '/') { return null; }
   return <motion.nav initial={{
     y: -100,
     opacity: 0
