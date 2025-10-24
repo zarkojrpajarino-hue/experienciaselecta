@@ -9,6 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
 
@@ -104,6 +105,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [openOcasion, setOpenOcasion] = useState<{ [key: number]: boolean }>({});
   const [showGroupSize, setShowGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const { cart: globalCart, addToCart: addToGlobalCart, getTotalAmount, getTotalItems } = useCart();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Detectar si estamos en la página de regalo
+  const isGiftCatalog = location.pathname === '/cestas';
 
   // Reset all collapsibles when changing group size
   React.useEffect(() => {
@@ -1222,10 +1228,16 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             <p className="font-bold text-primary">{getLocalTotalAmount().toFixed(2)}€</p>
           </div>
           <Button 
-            onClick={() => setShowCheckout(true)}
+            onClick={() => {
+              if (isGiftCatalog) {
+                navigate('/carrito', { state: { fromGiftCatalog: true } });
+              } else {
+                setShowCheckout(true);
+              }
+            }}
             className="w-full bg-primary hover:bg-primary/90"
           >
-            PROCEDER AL PAGO
+            {isGiftCatalog ? 'IR AL CARRITO' : 'PROCEDER AL PAGO'}
             </Button>
         </div>
       )}

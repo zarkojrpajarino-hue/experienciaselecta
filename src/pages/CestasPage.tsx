@@ -1,13 +1,14 @@
-
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import PageNavigation from "@/components/PageNavigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const CestasPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Familia');
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   // Prevent auto-scroll on mount
   useEffect(() => {
@@ -71,7 +72,7 @@ const CestasPage = () => {
             className="text-center mb-8"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl mb-3 leading-tight font-poppins font-bold text-white">
-              Nuestro catálogo de cestas.
+              Regala una experiencia personalizada.
             </h2>
             <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
               Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
@@ -123,6 +124,56 @@ const CestasPage = () => {
       <section className="py-8 md:py-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
+        </div>
+      </section>
+
+      {/* Interrogaciones al final */}
+      <section className="py-16 bg-black rounded-3xl mx-4 sm:mx-6 lg:mx-8 mb-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-poppins font-bold text-white inline-flex items-center gap-3 sm:gap-4 justify-center flex-wrap">
+              ¿Tienes dudas?
+              <TooltipProvider delayDuration={80}>
+                <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+                  <TooltipTrigger asChild>
+                    <motion.span 
+                      onClick={() => {
+                        const element = document.getElementById('que-vendemos');
+                        if (element) {
+                          window.location.href = '/#que-vendemos';
+                        }
+                      }}
+                      onMouseEnter={() => setTooltipOpen(true)}
+                      onMouseLeave={() => setTooltipOpen(false)}
+                      onFocus={() => setTooltipOpen(true)}
+                      onBlur={() => setTooltipOpen(false)}
+                      className="cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                      style={{ fontSize: 'inherit', color: '#FFD700' }}
+                      animate={{ rotateZ: [0, 180, 0] }}
+                      transition={{ 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    >
+                      ¿?
+                    </motion.span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2 before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-black/10 after:absolute after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-transparent after:border-b-white">
+                    <p className="font-medium">Haz click</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </h3>
+            <p className="text-base sm:text-lg text-white mt-4">
+              Visita nuestras preguntas frecuentes para más información
+            </p>
+          </motion.div>
         </div>
       </section>
     </div>;

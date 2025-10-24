@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +14,17 @@ const CartPage = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Detectar si viene de /cestas (modo regalo)
+  const isFromGiftCatalog = location.state?.fromGiftCatalog === true;
+
+  useEffect(() => {
+    // Si viene del catálogo de regalo, activar modo regalo automáticamente
+    if (isFromGiftCatalog) {
+      setIsGiftMode(true);
+    }
+  }, [isFromGiftCatalog]);
 
   const handleCheckout = (giftMode: boolean = false) => {
     setIsGiftMode(giftMode);
@@ -198,21 +209,32 @@ const CartPage = () => {
                     Gastos de envío calculados en el checkout
                   </p>
 
-                  {/* Checkout Buttons */}
-                  <Button
-                    onClick={() => handleCheckout(true)}
-                    variant="outline"
-                    className="w-full border-gold text-gold hover:bg-gold hover:text-black font-poppins font-bold text-lg py-6"
-                  >
-                    🎁 Regalar esta cesta
-                  </Button>
+                  {/* Checkout Buttons - Solo regalo si viene de /cestas */}
+                  {isFromGiftCatalog ? (
+                    <Button
+                      onClick={() => handleCheckout(true)}
+                      className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                    >
+                      🎁 Regalar esta cesta
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => handleCheckout(true)}
+                        variant="outline"
+                        className="w-full border-gold text-gold hover:bg-gold hover:text-black font-poppins font-bold text-lg py-6"
+                      >
+                        🎁 Regalar esta cesta
+                      </Button>
 
-                  <Button
-                    onClick={() => handleCheckout(false)}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                  >
-                    Pagar para mí
-                  </Button>
+                      <Button
+                        onClick={() => handleCheckout(false)}
+                        className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                      >
+                        Pagar para mí
+                      </Button>
+                    </>
+                  )}
 
                   <p className="text-xs text-gray-500 text-center">
                     Pago seguro con Stripe
