@@ -1438,7 +1438,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
                   {/* DIV Contenido - Ajustado para móvil */}
                   <div className={`flex-1 ${index % 2 === 1 ? 'md:col-start-1 md:row-start-1' : ''}`}>
-                    <div className="rounded-lg shadow-none p-3 md:p-6 bg-white">
+                    <div className="rounded-lg shadow-none p-3 md:p-6 bg-white border-2 border-white">
                       <div className={`flex-1 space-y-2 md:space-y-3 ${!isCardOpen ? 'md:flex md:items-center md:min-h-[16rem]' : ''}`}>
                         {/* Title - clickeable con hover que expande flecha */}
                         {/* Título clickeable */}

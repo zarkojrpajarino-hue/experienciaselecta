@@ -191,7 +191,7 @@ const PaymentForm: React.FC<{
         ) : (
           <>
             <CreditCard className="w-4 h-4 mr-2" />
-            Pagar {totalAmount.toFixed(2)}€
+            Pagar y Regalar
           </>
         )}
       </Button>
@@ -586,6 +586,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {step === 'payment' && (
           <Elements stripe={stripePromise}>
             <div className="space-y-4">
+              {isGiftMode && (
+                <div className="p-4 bg-gold/10 border-2 border-gold rounded-lg">
+                  <p className="text-center font-poppins font-bold text-black text-lg">
+                    🎁 Vas a regalar una cesta
+                  </p>
+                </div>
+              )}
+              
               <div className="p-4 bg-muted/50 rounded-lg">
                 <h3 className="font-medium mb-2">Dirección de envío:</h3>
                 <p className="text-sm text-muted-foreground">

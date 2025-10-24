@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const CestasPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Familia');
+  const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Pareja');
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -74,13 +74,35 @@ const CestasPage = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl mb-3 leading-tight font-poppins font-bold text-white">
               Regala una experiencia personalizada.
             </h2>
-            <p className="text-base sm:text-lg md:text-xl mb-6 font-inter text-white">
+            <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-white">
               Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
             </p>
+            {/* Flecha hacia abajo */}
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="flex justify-center mb-6"
+            >
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
           </motion.div>
 
-          {/* Category Filter Buttons */}
+          {/* Category Filter Buttons - Pareja primero */}
           <div className="flex justify-center items-center gap-4 mb-8 flex-wrap">
+            <motion.button
+              onClick={() => setSelectedCategory('Pareja')}
+              className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${
+                selectedCategory === 'Pareja' 
+                  ? 'bg-[#782C23] text-white scale-110' 
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+              whileHover={{ scale: selectedCategory === 'Pareja' ? 1.1 : 1.05 }}
+            >
+              Pareja.
+            </motion.button>
+
             <motion.button
               onClick={() => setSelectedCategory('Familia')}
               className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${
@@ -103,18 +125,6 @@ const CestasPage = () => {
               whileHover={{ scale: selectedCategory === 'Amigos' ? 1.1 : 1.05 }}
             >
               Amigos.
-            </motion.button>
-
-            <motion.button
-              onClick={() => setSelectedCategory('Pareja')}
-              className={`font-poppins font-bold transition-all duration-300 px-6 py-3 rounded-xl ${
-                selectedCategory === 'Pareja' 
-                  ? 'bg-[#782C23] text-white scale-110' 
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Pareja' ? 1.1 : 1.05 }}
-            >
-              Pareja.
             </motion.button>
           </div>
         </div>
