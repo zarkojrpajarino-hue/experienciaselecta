@@ -66,7 +66,9 @@ serve(async (req) => {
     const customerEmailContent = `
 ¡Hola ${escapeHtml(order.customers.name)}!
 
-¡Gracias por tu pedido! Hemos recibido tu pago correctamente.
+✅ Tu cesta ha sido pagada con éxito.
+
+Puedes verla en la sección "Mis Pedidos" en tu perfil en la web: https://tyorpbzvjnasyaqbggcp.supabase.co/perfil
 
 📦 DETALLES DEL PEDIDO
 Número de pedido: ${escapeHtml(order.id)}
