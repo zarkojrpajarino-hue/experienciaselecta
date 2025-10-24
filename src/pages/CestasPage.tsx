@@ -73,12 +73,12 @@ const CestasPage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start mb-4">
             <Button
-              variant="ghost"
+              variant="link"
               onClick={() => {
                 navigate('/');
                 setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
               }}
-              className="text-white hover:text-white/80"
+              className="text-white hover:text-white/80 p-0"
             >
               ← Volver al inicio
             </Button>
