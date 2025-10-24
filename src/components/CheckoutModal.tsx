@@ -733,7 +733,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                 ))}
 
-                {expandedBasketItems.length > 1 && (
+                {expandedBasketItems.length > 1 && giftData.recipients.length < expandedBasketItems.length && (
                   <Button
                     type="button"
                     variant="outline"

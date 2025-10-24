@@ -422,7 +422,11 @@ const CartPage = () => {
         onClose={() => {
           setIsCheckoutOpen(false);
           setIsGiftMode(false);
-          navigate('/perfil');
+          // Si no quedan cestas, ir a la página principal, si quedan cestas quedarse en el carrito
+          if (cart.length === 0) {
+            navigate('/');
+          }
+          // Si hay cestas, no navegar (quedarse en el carrito)
         }}
         basketItems={getBasketItems(checkoutItems)}
         totalAmount={checkoutItems.reduce((total, item) => total + (item.precio * item.quantity), 0)}
