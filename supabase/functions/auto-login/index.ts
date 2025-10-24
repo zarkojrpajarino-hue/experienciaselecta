@@ -78,6 +78,9 @@ Deno.serve(async (req) => {
     // User has access - create or get auth user and generate session
     console.log(`User has access, generating session for ${normalizedEmail}`);
     
+    // Generate a temporary password for this session
+    const tempPassword = crypto.randomUUID();
+    
     // First, check if user exists in auth
     const { data: existingUser } = await supabase.auth.admin.listUsers();
     const user = existingUser?.users.find(u => u.email === normalizedEmail);
@@ -87,10 +90,11 @@ Deno.serve(async (req) => {
     let userId: string;
 
     if (!user) {
-      // Create new user with auto-confirmed email
+      // Create new user with password and auto-confirmed email
       console.log(`Creating new user for ${normalizedEmail}`);
       const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
         email: normalizedEmail,
+        password: tempPassword,
         email_confirm: true,
         user_metadata: { auto_created: true }
       });
@@ -108,29 +112,45 @@ Deno.serve(async (req) => {
       userId = newUser.user.id;
       console.log(`User created with ID: ${userId}`);
     } else {
+      // Update existing user with new temp password
       userId = user.id;
-      console.log(`Using existing user with ID: ${userId}`);
+      console.log(`Updating password for existing user with ID: ${userId}`);
+      const { error: updateError } = await supabase.auth.admin.updateUserById(
+        userId,
+        { password: tempPassword }
+      );
+      
+      if (updateError) {
+        console.error('Error updating user password:', updateError);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: 'Error updating user',
+          }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
-    // Generate a magic link which contains the access tokens
-    console.log(`Generating magic link for ${normalizedEmail}`);
-    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
-      type: 'magiclink',
+    // Now sign in with the temporary password to get real session tokens
+    console.log(`Signing in to get session tokens for ${normalizedEmail}`);
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email: normalizedEmail,
+      password: tempPassword,
     });
 
-    if (linkError || !linkData) {
-      console.error('Error generating link:', linkError);
+    if (signInError || !signInData.session) {
+      console.error('Error signing in:', signInError);
       return new Response(
         JSON.stringify({
           success: false,
-          message: 'Error generating session tokens',
+          message: 'Error generating session',
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Magic link generated successfully');
+    console.log('Session tokens generated successfully');
 
     // Get purchase data for welcome message
     const { data: purchaseData } = await supabase
@@ -140,33 +160,13 @@ Deno.serve(async (req) => {
       .limit(1)
       .maybeSingle();
 
-    console.log(`Session created for ${normalizedEmail}`);
-
-    // Log linkData structure for debugging
-    console.log('Link data properties:', JSON.stringify(linkData.properties));
-
-    // Extract tokens - they come in the linkData properties directly
-    const accessToken = linkData.properties.hashed_token;
-    const refreshToken = linkData.properties.hashed_token; // For magic link, same token is used
-
-    if (!accessToken) {
-      console.error('Missing token in generated link');
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: 'Error extracting session tokens',
-        }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
         message: hasCompletedOrder ? 'Customer has purchased' : 'Customer has received a gift',
         session: {
-          access_token: accessToken,
-          refresh_token: refreshToken,
+          access_token: signInData.session.access_token,
+          refresh_token: signInData.session.refresh_token,
         },
         purchaseData: purchaseData || null,
       }),
