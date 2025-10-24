@@ -105,56 +105,65 @@ serve(async (req) => {
 
       // Send confirmation emails
       try {
-        // Check if this is a gift order (handle boolean, string, or number)
+        // Robust gift detection using order metadata and Stripe PI metadata
         const rawGiftFlag = (order as any).metadata?.is_gift;
-        const isGift = rawGiftFlag === true || rawGiftFlag === 'true' || rawGiftFlag === 1 || rawGiftFlag === '1';
-        console.log('Gift flag detected:', rawGiftFlag, '=> isGift:', isGift);
+        const stripeGiftFlag = (paymentIntent?.metadata as any)?.is_gift;
+        const isGift = rawGiftFlag === true || rawGiftFlag === 'true' || rawGiftFlag === 1 || rawGiftFlag === '1'
+          || stripeGiftFlag === 'true' || stripeGiftFlag === true || stripeGiftFlag === '1' || stripeGiftFlag === 1
+          || Boolean((order as any).metadata?.recipient_email);
+        console.log('Gift detection => order.metadata.is_gift:', rawGiftFlag, 'stripe.metadata.is_gift:', stripeGiftFlag, '=> isGift:', isGift);
         
         if (isGift) {
-          // Send gift email to recipient with gift notification
-          console.log('Sending gift notification email to recipient...');
-          await supabase.functions.invoke('send-gift-email', {
-            body: {
-              recipientName: order.metadata.recipient_name,
-              recipientEmail: order.metadata.recipient_email,
-              senderName: order.metadata.sender_name,
-              senderEmail: order.metadata.sender_email,
-              basketName: order.metadata.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta',
-              basketImage: 'https://images.unsplash.com/photo-1599666166155-52f1a5d4edfe?w=800&h=600&fit=crop',
-              orderId: order.id,
-              totalAmount: order.total_amount
-            },
-            headers: {
-              Authorization: authHeader
-            }
-          });
-          
-          // Send confirmation email to sender (payer)
-          console.log('Sending payment confirmation email to sender...');
-          await supabase.functions.invoke('send-order-confirmation', {
-            body: { 
-              order: {
-                ...order,
-                // Override email to send to the sender (payer)
-                customers: {
-                  ...order.customers,
-                  email: order.metadata.sender_email,
-                  name: order.metadata.sender_name
-                }
+          // Send gift email to recipient with gift notification (no payment wording)
+          const recipientEmail = (order as any).metadata?.recipient_email;
+          const recipientName = (order as any).metadata?.recipient_name;
+          const senderEmail = (order as any).metadata?.sender_email;
+          const senderName = (order as any).metadata?.sender_name;
+          const basketName = (order as any).metadata?.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta';
+
+          if (recipientEmail && recipientName && senderEmail && senderName) {
+            console.log('Sending gift notification email to recipient:', recipientEmail);
+            await supabase.functions.invoke('send-gift-email', {
+              body: {
+                recipientName,
+                recipientEmail,
+                senderName,
+                senderEmail,
+                basketName,
+                orderId: order.id,
+                totalAmount: order.total_amount
               },
-              isGift: true
-            },
-            headers: {
-              Authorization: authHeader
-            }
-          });
+              headers: { Authorization: authHeader }
+            });
+          } else {
+            console.warn('Missing gift metadata; skipping recipient email', { recipientEmail, recipientName, senderEmail, senderName });
+          }
+          
+          // Send confirmation email ONLY to the payer (sender). Never to host/admin here.
+          if (senderEmail && senderName) {
+            console.log('Sending payment confirmation email to sender:', senderEmail);
+            await supabase.functions.invoke('send-order-confirmation', {
+              body: { 
+                order: {
+                  ...order,
+                  customers: {
+                    ...order.customers,
+                    email: senderEmail,
+                    name: senderName
+                  }
+                },
+                isGift: true
+              },
+              headers: { Authorization: authHeader }
+            });
+          } else {
+            console.warn('Sender email/name missing; skipping sender confirmation email');
+          }
         } else {
-          // Send regular order confirmation
+          // Non-gift: regular confirmation to customer (and admin handled inside function)
           await supabase.functions.invoke('send-order-confirmation', {
             body: { order },
-            headers: {
-              Authorization: authHeader
-            }
+            headers: { Authorization: authHeader }
           });
         }
       } catch (emailError) {
