@@ -1604,11 +1604,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         onClose={() => {
           setShowCheckout(false);
           setCart([]); // Clear local cart
-          if (globalCart.length === 0) {
-            navigate('/');
-          } else {
-            navigate('/carrito');
-          }
+          // Al cerrar desde catálogo, quedarse en el catálogo (no navegar)
         }}
         basketItems={basketItems}
         totalAmount={getLocalTotalAmount()}

@@ -89,6 +89,19 @@ const CartPage = () => {
       <Navbar />
       <div className="min-h-screen pt-24 pb-12 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
+          {/* Botón volver a la página principal - encima de todo */}
+          <Button
+            onClick={() => {
+              navigate('/');
+              setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+            }}
+            variant="ghost"
+            className="text-black hover:text-gold bg-transparent hover:bg-transparent mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver a la página principal
+          </Button>
+
           <div className="space-y-8">
             {/* Cestas para Regalar Section */}
             {giftItems.length > 0 && (
