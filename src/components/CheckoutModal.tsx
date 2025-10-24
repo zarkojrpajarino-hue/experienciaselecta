@@ -170,6 +170,7 @@ const PaymentForm: React.FC<{
         </Label>
         <CardElement
           options={{
+            hidePostalCode: true,
             style: {
               base: {
                 fontSize: '16px',
