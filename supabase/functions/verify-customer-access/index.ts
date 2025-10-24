@@ -27,40 +27,52 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Check if the user has at least one completed purchase
-    const { data: customer, error: customerError } = await supabase
+    const { data: customer } = await supabase
       .from('customers')
       .select('id')
       .eq('email', email)
-      .single();
+      .maybeSingle();
 
-    if (customerError || !customer) {
-      console.log('Customer not found:', email);
-      return new Response(
-        JSON.stringify({ hasAccess: false, message: 'Customer not found' }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    let hasCompletedOrder = false;
+
+    if (customer) {
+      // Check for completed orders
+      const { data: orders, error: ordersError } = await supabase
+        .from('orders')
+        .select('id')
+        .eq('customer_id', customer.id)
+        .eq('status', 'completed')
+        .limit(1);
+
+      if (ordersError) {
+        throw ordersError;
+      }
+
+      hasCompletedOrder = orders && orders.length > 0;
     }
 
-    // Check for completed orders
-    const { data: orders, error: ordersError } = await supabase
-      .from('orders')
+    // Also check if the user has received gifts
+    const { data: gifts, error: giftsError } = await supabase
+      .from('pending_gifts')
       .select('id')
-      .eq('customer_id', customer.id)
-      .eq('status', 'completed')
+      .eq('recipient_email', email)
       .limit(1);
 
-    if (ordersError) {
-      throw ordersError;
+    if (giftsError) {
+      throw giftsError;
     }
 
-    const hasAccess = orders && orders.length > 0;
+    const hasReceivedGift = gifts && gifts.length > 0;
+    const hasAccess = hasCompletedOrder || hasReceivedGift;
 
-    console.log(`Access check for ${email}: ${hasAccess}`);
+    console.log(`Access check for ${email}: ${hasAccess} (order: ${hasCompletedOrder}, gift: ${hasReceivedGift})`);
 
     return new Response(
       JSON.stringify({ 
         hasAccess,
-        message: hasAccess ? 'Customer has purchased' : 'No purchases found'
+        message: hasAccess 
+          ? (hasCompletedOrder ? 'Customer has purchased' : 'Customer has received a gift') 
+          : 'No purchases or gifts found'
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
