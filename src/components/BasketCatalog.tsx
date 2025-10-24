@@ -1354,7 +1354,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     {/* Center: Imagen centrada */}
                     <div className="col-span-2 flex flex-col items-center my-4 gap-3">
                       <div 
-                        className="relative w-56 h-44 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300"
+                        className="relative w-40 h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300"
                         onClick={() => setSelectedImage(basket.imagen)}
                       >
                   <img
