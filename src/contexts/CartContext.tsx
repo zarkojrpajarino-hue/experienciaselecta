@@ -16,7 +16,7 @@ interface CartContextType {
   removeFromCart: (id: number, isGift?: boolean) => void;
   updateQuantity: (id: number, quantity: number, isGift?: boolean) => void;
   clearCart: () => void;
-  removeMultipleItems: (itemsToRemove: Array<{ id: number; isGift?: boolean }>) => void;
+  removeMultipleItems: (itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => void;
   getTotalItems: () => number;
   getTotalAmount: () => number;
 }
@@ -63,14 +63,31 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCart([]);
   };
 
-  const removeMultipleItems = (itemsToRemove: Array<{ id: number; isGift?: boolean }>) => {
-    setCart(prevCart => 
-      prevCart.filter(item => 
-        !itemsToRemove.some(removeItem => 
-          removeItem.id === item.id && removeItem.isGift === item.isGift
-        )
-      )
-    );
+  const removeMultipleItems = (itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
+    setCart(prevCart => {
+      let newCart = [...prevCart];
+      
+      itemsToRemove.forEach(removeItem => {
+        const itemIndex = newCart.findIndex(item => 
+          item.id === removeItem.id && item.isGift === removeItem.isGift
+        );
+        
+        if (itemIndex !== -1) {
+          const item = newCart[itemIndex];
+          const quantityToRemove = removeItem.quantityToRemove || item.quantity;
+          
+          if (item.quantity <= quantityToRemove) {
+            // Remove the item completely
+            newCart = newCart.filter((_, index) => index !== itemIndex);
+          } else {
+            // Just reduce the quantity
+            newCart[itemIndex] = { ...item, quantity: item.quantity - quantityToRemove };
+          }
+        }
+      });
+      
+      return newCart;
+    });
   };
 
   const getTotalItems = () => {

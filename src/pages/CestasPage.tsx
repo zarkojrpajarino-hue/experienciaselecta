@@ -1,12 +1,15 @@
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import PageNavigation from "@/components/PageNavigation";
+import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const CestasPage = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Pareja');
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -55,6 +58,8 @@ const CestasPage = () => {
   }, []);
 
   return <div className="min-h-screen font-work-sans bg-white">
+      {/* Add Navbar */}
+      <Navbar />
       
       <PageNavigation />
       
@@ -69,7 +74,10 @@ const CestasPage = () => {
           <div className="flex justify-start mb-4">
             <Button
               variant="ghost"
-              onClick={() => window.location.href = '/'}
+              onClick={() => {
+                navigate('/');
+                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+              }}
               className="text-white hover:text-white/80"
             >
               ← Volver al inicio

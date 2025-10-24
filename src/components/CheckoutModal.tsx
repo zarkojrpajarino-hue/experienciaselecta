@@ -35,7 +35,7 @@ interface CheckoutModalProps {
   totalAmount: number;
   isGiftMode?: boolean;
   onClearCart?: () => void;
-  onRemoveItems?: (itemIds: Array<{ id: number; isGift?: boolean }>) => void;
+  onRemoveItems?: (itemIds: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => void;
 }
 
 interface CustomerData {
@@ -53,13 +53,26 @@ interface RecipientData {
   recipientName: string;
   recipientEmail: string;
   personalNote: string;
-  basketIds: number[]; // IDs of baskets assigned to this recipient
+  basketIds: string[]; // Unique IDs of baskets assigned to this recipient
 }
 
 interface GiftData {
   senderName: string;
   senderEmail: string;
   recipients: RecipientData[];
+}
+
+interface BackendRecipientData {
+  recipientName: string;
+  recipientEmail: string;
+  personalNote: string;
+  basketIds: number[]; // Original IDs for backend
+}
+
+interface BackendGiftData {
+  senderName: string;
+  senderEmail: string;
+  recipients: BackendRecipientData[];
 }
 
 const PaymentForm: React.FC<{
@@ -69,8 +82,9 @@ const PaymentForm: React.FC<{
   onSuccess: () => void;
   isGiftMode?: boolean;
   giftData?: GiftData;
-  selectedBasketIds?: number[];
-}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData, selectedBasketIds = [] }) => {
+  selectedBasketIds?: string[];
+  expandedBasketItems?: (BasketItem & { uniqueId: string })[];
+}> = ({ customerData, basketItems, totalAmount, onSuccess, isGiftMode, giftData, selectedBasketIds = [], expandedBasketItems = [] }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -90,12 +104,41 @@ const PaymentForm: React.FC<{
         throw new Error('No active session. Please log in again.');
       }
 
-      // Filter basket items based on selection (only for gift mode)
-      const itemsToProcess = isGiftMode 
-        ? basketItems.filter(item => selectedBasketIds.includes(item.id))
-        : basketItems;
+      // For gift mode, aggregate expanded items back into regular basket items
+      let itemsToProcess: BasketItem[];
+      if (isGiftMode) {
+        const selectedExpanded = expandedBasketItems.filter(item => selectedBasketIds.includes(item.uniqueId));
+        // Aggregate back by original ID
+        const aggregated = new Map<number, BasketItem>();
+        selectedExpanded.forEach(item => {
+          if (aggregated.has(item.id)) {
+            const existing = aggregated.get(item.id)!;
+            aggregated.set(item.id, { ...existing, quantity: existing.quantity + 1 });
+          } else {
+            aggregated.set(item.id, { ...item, quantity: 1 });
+          }
+        });
+        itemsToProcess = Array.from(aggregated.values());
+      } else {
+        itemsToProcess = basketItems;
+      }
 
       const calculatedTotal = itemsToProcess.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      // Convert giftData basketIds from uniqueIds back to original IDs for backend
+      let processedGiftData: BackendGiftData | undefined = undefined;
+      if (isGiftMode && giftData) {
+        processedGiftData = {
+          ...giftData,
+          recipients: giftData.recipients.map(recipient => ({
+            ...recipient,
+            basketIds: recipient.basketIds.map(uniqueId => {
+              const expanded = expandedBasketItems.find(item => item.uniqueId === uniqueId);
+              return expanded ? expanded.id : parseInt(uniqueId);
+            })
+          }))
+        };
+      }
 
       // Create payment intent with authentication
       const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
@@ -106,7 +149,7 @@ const PaymentForm: React.FC<{
             basketItems: itemsToProcess,
             totalAmount: calculatedTotal,
             isGiftMode,
-            giftData
+            giftData: processedGiftData
           },
           headers: {
             Authorization: `Bearer ${session.access_token}`
@@ -245,10 +288,25 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClearCart,
   onRemoveItems
 }) => {
+  // Expand basket items so each quantity becomes individual items with unique identifiers
+  const expandedBasketItems = React.useMemo(() => {
+    const expanded: (BasketItem & { uniqueId: string })[] = [];
+    basketItems.forEach(item => {
+      for (let i = 0; i < item.quantity; i++) {
+        expanded.push({
+          ...item,
+          quantity: 1,
+          uniqueId: `${item.id}-${i}`
+        });
+      }
+    });
+    return expanded;
+  }, [basketItems]);
+
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [selectedBasketIds, setSelectedBasketIds] = useState<number[]>(basketItems.map(item => item.id));
+  const [selectedBasketIds, setSelectedBasketIds] = useState<string[]>(expandedBasketItems.map(item => item.uniqueId));
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -282,7 +340,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     recipientName: z.string().trim().min(1, "El nombre del destinatario es requerido").max(100),
     recipientEmail: z.string().trim().email("Email inválido").max(255),
     personalNote: z.string().trim().max(500, "La nota debe tener menos de 500 caracteres").optional(),
-    basketIds: z.array(z.number())
+    basketIds: z.array(z.string())
   });
 
   const giftSchema = z.object({
@@ -391,9 +449,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handlePaymentSuccess = () => {
     // Remove only selected items from cart after successful payment
     if (isGiftMode && onRemoveItems) {
-      const itemsToRemove = basketItems
-        .filter(item => selectedBasketIds.includes(item.id))
-        .map(item => ({ id: item.id, isGift: true }));
+      // Count how many of each basket type were selected
+      const selectedExpanded = expandedBasketItems.filter(item => selectedBasketIds.includes(item.uniqueId));
+      const countMap = new Map<number, number>();
+      selectedExpanded.forEach(item => {
+        countMap.set(item.id, (countMap.get(item.id) || 0) + 1);
+      });
+      
+      // Remove only the selected quantities
+      const itemsToRemove = Array.from(countMap.entries()).map(([id, quantityToRemove]) => ({ 
+        id, 
+        isGift: true,
+        quantityToRemove
+      }));
       onRemoveItems(itemsToRemove);
     } else if (onClearCart) {
       onClearCart();
@@ -404,7 +472,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleClose = () => {
     setStep('auth');
     setUser(null);
-    setSelectedBasketIds(basketItems.map(item => item.id));
+    setSelectedBasketIds(expandedBasketItems.map(item => item.uniqueId));
     setCustomerData({
       name: '',
       email: '',
@@ -447,18 +515,18 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <p className="text-sm font-medium mb-2">Selecciona las cestas que quieres enviar como regalo:</p>
               </div>
             )}
-            {basketItems.map((item) => (
-              <div key={item.id} className="flex justify-between items-center">
+            {expandedBasketItems.map((item, index) => (
+              <div key={item.uniqueId} className="flex justify-between items-center">
                 <div className="flex items-center gap-3 flex-1">
                   {isGiftMode && (
                     <input
                       type="checkbox"
-                      checked={selectedBasketIds.includes(item.id)}
+                      checked={selectedBasketIds.includes(item.uniqueId)}
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setSelectedBasketIds(prev => [...prev, item.id]);
+                          setSelectedBasketIds(prev => [...prev, item.uniqueId]);
                         } else {
-                          setSelectedBasketIds(prev => prev.filter(id => id !== item.id));
+                          setSelectedBasketIds(prev => prev.filter(id => id !== item.uniqueId));
                         }
                       }}
                       className="w-4 h-4 rounded border-gray-300"
@@ -468,14 +536,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <p className="font-medium">{item.name}</p>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">{item.category}</Badge>
-                      <span className="text-sm text-muted-foreground">
-                        Cantidad: {item.quantity}
-                      </span>
                     </div>
                   </div>
                 </div>
                 <p className="font-semibold">
-                  {(item.price * item.quantity).toFixed(2)}€
+                  {item.price.toFixed(2)}€
                 </p>
               </div>
             ))}
@@ -483,13 +548,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="flex justify-between items-center text-lg font-bold">
               <span>Total a pagar:</span>
               <span>
-                {basketItems
-                  .filter(item => selectedBasketIds.includes(item.id))
-                  .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                {expandedBasketItems
+                  .filter(item => selectedBasketIds.includes(item.uniqueId))
+                  .reduce((sum, item) => sum + item.price, 0)
                   .toFixed(2)}€
               </span>
             </div>
-            {isGiftMode && selectedBasketIds.length < basketItems.length && (
+            {isGiftMode && selectedBasketIds.length < expandedBasketItems.length && (
               <p className="text-xs text-muted-foreground">
                 Las cestas no seleccionadas permanecerán en tu carrito
               </p>
@@ -637,25 +702,25 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
                         </p>
                         <div className="space-y-2">
-                          {basketItems.filter(item => selectedBasketIds.includes(item.id)).map((item) => (
-                            <div key={item.id} className="flex items-center space-x-2">
+                          {expandedBasketItems.filter(item => selectedBasketIds.includes(item.uniqueId)).map((item, itemIndex) => (
+                            <div key={item.uniqueId} className="flex items-center space-x-2">
                               <input
                                 type="checkbox"
-                                id={`basket-${item.id}-recipient-${index}`}
-                                checked={recipient.basketIds.includes(item.id)}
+                                id={`basket-${item.uniqueId}-recipient-${index}`}
+                                checked={recipient.basketIds.includes(item.uniqueId)}
                                 onChange={(e) => {
                                   const newRecipients = [...giftData.recipients];
                                   if (e.target.checked) {
-                                    newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.id];
+                                    newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
                                   } else {
-                                    newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.id);
+                                    newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
                                   }
                                   setGiftData(prev => ({ ...prev, recipients: newRecipients }));
                                 }}
                                 className="rounded border-gray-300"
                               />
-                              <Label htmlFor={`basket-${item.id}-recipient-${index}`} className="cursor-pointer">
-                                {item.name} x{item.quantity}
+                              <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
+                                {item.name}
                               </Label>
                             </div>
                           ))}
@@ -665,7 +730,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                 ))}
 
-                {selectedBasketIds.length > 1 && giftData.recipients.length < selectedBasketIds.length && (
+                {selectedBasketIds.length > 1 && (
                   <Button
                     type="button"
                     variant="outline"
@@ -675,8 +740,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
                       }));
                     }}
-                    className="w-full font-bold tracking-wider uppercase"
-                    style={{ fontFamily: 'var(--font-boulder)' }}
+                    className="w-full font-bold tracking-[0.15em] uppercase"
+                    style={{ fontFamily: 'Boulder, sans-serif' }}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Añadir otro destinatario
@@ -856,6 +921,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 isGiftMode={isGiftMode}
                 giftData={giftData}
                 selectedBasketIds={selectedBasketIds}
+                expandedBasketItems={expandedBasketItems}
               />
             </div>
           </Elements>
