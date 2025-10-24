@@ -2,3 +2,6 @@ project_id = "tyorpbzvjnasyaqbggcp"
 
 [functions.verify-customer-access]
 verify_jwt = false
+
+[functions.auto-login]
+verify_jwt = false
