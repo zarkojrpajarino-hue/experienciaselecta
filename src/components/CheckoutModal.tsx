@@ -32,6 +32,7 @@ interface CheckoutModalProps {
   basketItems: BasketItem[];
   totalAmount: number;
   isGiftMode?: boolean;
+  onClearCart?: () => void;
 }
 
 interface CustomerData {
@@ -49,6 +50,7 @@ interface GiftData {
   recipientName: string;
   recipientEmail: string;
   senderName: string;
+  senderEmail: string;
 }
 
 const PaymentForm: React.FC<{
@@ -137,9 +139,15 @@ const PaymentForm: React.FC<{
       }
 
       if (paymentIntent?.status === 'succeeded') {
-        // Confirm payment in our system
+        // Get current session for authentication
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // Confirm payment in our system with authentication
         await supabase.functions.invoke('confirm-payment', {
-          body: { paymentIntentId: paymentIntent.id }
+          body: { paymentIntentId: paymentIntent.id },
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`
+          }
         });
 
         toast({
@@ -216,7 +224,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClose,
   basketItems,
   totalAmount,
-  isGiftMode = false
+  isGiftMode = false,
+  onClearCart
 }) => {
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
@@ -234,7 +243,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [giftData, setGiftData] = useState<GiftData>({
     recipientName: '',
     recipientEmail: '',
-    senderName: ''
+    senderName: '',
+    senderEmail: ''
   });
   const { toast } = useToast();
 
@@ -253,7 +263,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const giftSchema = z.object({
     recipientName: z.string().trim().min(1, "El nombre del destinatario es requerido").max(100),
     recipientEmail: z.string().trim().email("Email inválido").max(255),
-    senderName: z.string().trim().min(1, "Tu nombre es requerido").max(100)
+    senderName: z.string().trim().min(1, "Tu nombre es requerido").max(100),
+    senderEmail: z.string().trim().email("Tu email es inválido").max(255)
   });
 
   // Check authentication status when modal opens
@@ -344,6 +355,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handlePaymentSuccess = () => {
+    // Clear cart after successful payment
+    if (onClearCart) {
+      onClearCart();
+    }
     setStep('success');
   };
 
@@ -363,7 +378,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setGiftData({
       recipientName: '',
       recipientEmail: '',
-      senderName: ''
+      senderName: '',
+      senderEmail: ''
     });
     onClose();
   };
@@ -446,15 +462,28 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </p>
                 </div>
 
-                <div>
-                  <Label htmlFor="senderName">Tu nombre *</Label>
-                  <Input
-                    id="senderName"
-                    value={giftData.senderName}
-                    onChange={(e) => setGiftData(prev => ({ ...prev, senderName: e.target.value }))}
-                    placeholder="¿Quién regala?"
-                    required
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="senderName">Tu nombre *</Label>
+                    <Input
+                      id="senderName"
+                      value={giftData.senderName}
+                      onChange={(e) => setGiftData(prev => ({ ...prev, senderName: e.target.value }))}
+                      placeholder="¿Quién regala?"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="senderEmail">Tu email *</Label>
+                    <Input
+                      id="senderEmail"
+                      type="email"
+                      value={giftData.senderEmail}
+                      onChange={(e) => setGiftData(prev => ({ ...prev, senderEmail: e.target.value }))}
+                      placeholder="tu@email.com"
+                      required
+                    />
+                  </div>
                 </div>
 
                 <Separator />
@@ -606,7 +635,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </p>
                   <div className="mt-3 text-sm text-muted-foreground">
                     <p><strong>Para:</strong> {giftData.recipientName} ({giftData.recipientEmail})</p>
-                    <p><strong>De:</strong> {giftData.senderName}</p>
+                    <p><strong>De:</strong> {giftData.senderName} ({giftData.senderEmail})</p>
                   </div>
                   <Button
                     variant="outline"
@@ -672,7 +701,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               }
             </p>
             <Button onClick={handleClose} className="w-full" size="lg">
-              Continuar navegando
+              Volver a Mis Pedidos
             </Button>
           </div>
         )}

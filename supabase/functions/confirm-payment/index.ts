@@ -109,24 +109,50 @@ serve(async (req) => {
         const isGift = order.metadata?.is_gift === true;
         
         if (isGift) {
-          // Send gift email to recipient
-          console.log('Sending gift email...');
+          // Send gift email to recipient with gift notification
+          console.log('Sending gift notification email to recipient...');
           await supabase.functions.invoke('send-gift-email', {
             body: {
               recipientName: order.metadata.recipient_name,
               recipientEmail: order.metadata.recipient_email,
               senderName: order.metadata.sender_name,
-              senderEmail: user.email,
+              senderEmail: order.metadata.sender_email,
               basketName: order.metadata.basket_name || order.order_items[0]?.basket_name || 'Experiencia Selecta',
               basketImage: 'https://images.unsplash.com/photo-1599666166155-52f1a5d4edfe?w=800&h=600&fit=crop',
               orderId: order.id,
               totalAmount: order.total_amount
+            },
+            headers: {
+              Authorization: authHeader
+            }
+          });
+          
+          // Send confirmation email to sender (payer)
+          console.log('Sending payment confirmation email to sender...');
+          await supabase.functions.invoke('send-order-confirmation', {
+            body: { 
+              order: {
+                ...order,
+                // Override email to send to the sender (payer)
+                customers: {
+                  ...order.customers,
+                  email: order.metadata.sender_email,
+                  name: order.metadata.sender_name
+                }
+              },
+              isGift: true
+            },
+            headers: {
+              Authorization: authHeader
             }
           });
         } else {
           // Send regular order confirmation
           await supabase.functions.invoke('send-order-confirmation', {
-            body: { order }
+            body: { order },
+            headers: {
+              Authorization: authHeader
+            }
           });
         }
       } catch (emailError) {

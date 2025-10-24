@@ -257,6 +257,7 @@ serve(async (req) => {
         customer_id: customerId,
         is_gift: isGiftMode ? 'true' : 'false',
         sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
+        sender_email: isGiftMode && giftData?.senderEmail ? giftData.senderEmail : '',
         recipient_name: isGiftMode && giftData?.recipientName ? giftData.recipientName : '',
         recipient_email: isGiftMode && giftData?.recipientEmail ? giftData.recipientEmail : ''
       },
@@ -282,6 +283,7 @@ serve(async (req) => {
           metadata: {
             is_gift: true,
             sender_name: giftData.senderName,
+            sender_email: giftData.senderEmail,
             recipient_name: giftData.recipientName,
             recipient_email: giftData.recipientEmail,
             basket_name: validatedItems[0]?.name || 'Cesta Experiencia Selecta'

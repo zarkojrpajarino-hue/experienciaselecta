@@ -7,7 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// HTML escape function to prevent XSS in emails
+// HTML escape function to prevent XSS
 const escapeHtml = (text: string): string => {
   const map: { [key: string]: string } = {
     '&': '&amp;',
@@ -21,14 +21,14 @@ const escapeHtml = (text: string): string => {
 
 // Validation schema for gift data
 const giftSchema = z.object({
-  recipientName: z.string().max(100),
-  recipientEmail: z.string().email().max(255),
-  senderName: z.string().max(100),
-  senderEmail: z.string().email().max(255),
-  basketName: z.string().max(200),
-  basketImage: z.string().url().optional(),
-  orderId: z.string().uuid(),
-  totalAmount: z.number(),
+  recipientName: z.string().min(1, "Recipient name is required").max(100),
+  recipientEmail: z.string().email("Invalid recipient email").max(255),
+  senderName: z.string().min(1, "Sender name is required").max(100),
+  senderEmail: z.string().email("Invalid sender email").max(255),
+  basketName: z.string().min(1, "Basket name is required").max(255),
+  basketImage: z.string().url("Invalid image URL").optional(),
+  orderId: z.string().uuid("Invalid order ID").optional(),
+  totalAmount: z.number().positive("Total amount must be positive").optional()
 });
 
 serve(async (req) => {
@@ -39,255 +39,143 @@ serve(async (req) => {
 
   try {
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    const giftData = await req.json();
-
-    // Validate and sanitize gift data
-    const validatedData = giftSchema.parse(giftData);
     
-    console.log('Sending gift email for order:', validatedData.orderId);
+    // Parse and validate request body
+    const rawData = await req.json();
+    const validatedData = giftSchema.parse(rawData);
+    
+    console.log('Sending gift notification email to recipient:', validatedData.recipientEmail);
 
-    // Create HTML email content with image
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-            }
-            .header {
-              text-align: center;
-              padding: 30px 0;
-              background: linear-gradient(135deg, #1a0033 0%, #4a0080 100%);
-              color: white;
-              border-radius: 10px 10px 0 0;
-            }
-            .gift-icon {
-              font-size: 60px;
-              margin-bottom: 10px;
-            }
-            .content {
-              background: #ffffff;
-              padding: 30px;
-              border: 2px solid #daa520;
-            }
-            .basket-image {
-              width: 100%;
-              max-width: 400px;
-              height: auto;
-              margin: 20px auto;
-              display: block;
-              border-radius: 8px;
-              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            }
-            .basket-name {
-              font-size: 24px;
-              font-weight: bold;
-              color: #1a0033;
-              text-align: center;
-              margin: 20px 0;
-            }
-            .message {
-              background: #f9f9f9;
-              padding: 20px;
-              border-left: 4px solid #daa520;
-              margin: 20px 0;
-              font-style: italic;
-            }
-            .footer {
-              text-align: center;
-              padding: 20px;
-              color: #666;
-              font-size: 14px;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="gift-icon">🎁</div>
-            <h1>¡Has recibido un regalo especial!</h1>
-          </div>
-          <div class="content">
-            <p>Hola <strong>${escapeHtml(validatedData.recipientName)}</strong>,</p>
-            
-            <div class="message">
-              <p><strong>${escapeHtml(validatedData.senderName)}</strong> te ha regalado una experiencia única, personalizada e inolvidable.</p>
-              <p style="margin-top: 20px;">
-                <strong>Para recibir tu regalo, sigue estos pasos:</strong><br/>
-                1. Entra en <a href="https://experienciaselecta.com" style="color: #daa520; text-decoration: underline; font-weight: bold;">experienciaselecta.com</a><br/>
-                2. Regístrate o inicia sesión con este mismo correo: <strong>${escapeHtml(validatedData.recipientEmail)}</strong><br/>
-                3. Verás un emoticono de regalo 🎁 en la página principal<br/>
-                4. Haz clic en él para completar los datos de envío de tu regalo
-              </p>
-            </div>
-
-            <div class="basket-name">
-              ${escapeHtml(validatedData.basketName)}
-            </div>
-
-            ${validatedData.basketImage ? `
-              <img src="${escapeHtml(validatedData.basketImage)}" alt="${escapeHtml(validatedData.basketName)}" class="basket-image" />
-            ` : ''}
-
-            <p>Esta cesta ha sido cuidadosamente seleccionada para ti y será preparada con todo nuestro cariño.</p>
-            
-            <p><strong>¡No olvides completar los datos de envío en la web para recibir tu regalo!</strong></p>
-
-            <p style="margin-top: 30px;">¡Disfruta de esta experiencia gastronómica única!</p>
-          </div>
-          <div class="footer">
-            <p>Experiencia Selecta<br/>
-            La mejor selección de productos ibéricos</p>
-            <p style="font-size: 12px; color: #999;">
-              Este es un correo automático, por favor no respondas a este mensaje.
-            </p>
-          </div>
-        </body>
-      </html>
-    `;
-
-    // Plain text version
-    const textContent = `
-¡Hola ${escapeHtml(validatedData.recipientName)}!
-
-${escapeHtml(validatedData.senderName)} te ha regalado una experiencia única, personalizada e inolvidable.
-
-🎁 ${escapeHtml(validatedData.basketName)}
-
-Esta cesta ha sido cuidadosamente seleccionada para ti y será preparada con todo nuestro cariño.
-
-Pronto recibirás tu regalo en la dirección indicada.
-
-¡Disfruta de esta experiencia gastronómica única!
-
-Saludos,
-El equipo de Experiencia Selecta
-    `;
-
-    // Send email to recipient
-    await resend.emails.send({
-      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
+    // Send email to recipient with gift details
+    const recipientEmailResponse = await resend.emails.send({
+      from: 'Experiencias Selecta <onboarding@resend.dev>',
       to: [validatedData.recipientEmail],
-      subject: `🎁 ${validatedData.senderName} te ha regalado una Experiencia Selecta`,
-      html: htmlContent,
-      text: textContent,
+      subject: '🎁 ¡Te han regalado una experiencia única e inolvidable!',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>¡Te han regalado una experiencia!</title>
+          </head>
+          <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
+            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td align="center" style="padding: 40px 0;">
+                  <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <!-- Header -->
+                    <tr>
+                      <td style="padding: 40px 30px; text-align: center; background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%);">
+                        <h1 style="margin: 0; color: #1a1a1a; font-size: 32px; font-weight: bold;">
+                          🎁 ¡Te han regalado una experiencia única e inolvidable!
+                        </h1>
+                      </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                      <td style="padding: 40px 30px;">
+                        <p style="margin: 0 0 20px; font-size: 18px; line-height: 1.6; color: #333333;">
+                          Hola <strong>${escapeHtml(validatedData.recipientName)}</strong>,
+                        </p>
+                        
+                        <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #666666;">
+                          <strong>${escapeHtml(validatedData.senderName)}</strong> (${escapeHtml(validatedData.senderEmail)}) 
+                          te ha regalado una experiencia gastronómica única:
+                        </p>
+                        
+                        <!-- Gift Box -->
+                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0; background-color: #FFF9E6; border: 2px solid #D4AF37; border-radius: 8px;">
+                          <tr>
+                            <td style="padding: 25px; text-align: center;">
+                              <h2 style="margin: 0 0 15px; color: #D4AF37; font-size: 24px; font-weight: bold;">
+                                ${escapeHtml(validatedData.basketName)}
+                              </h2>
+                              <p style="margin: 0; font-size: 16px; color: #666666;">
+                                Una selección cuidadosa de productos ibéricos premium para disfrutar en buena compañía.
+                              </p>
+                            </td>
+                          </tr>
+                        </table>
+                        
+                        <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #666666;">
+                          <strong>¿Qué tienes que hacer ahora?</strong>
+                        </p>
+                        
+                        <ol style="margin: 0 0 20px; padding-left: 20px; font-size: 16px; line-height: 1.8; color: #666666;">
+                          <li>Regístrate en nuestra web con este mismo correo electrónico (${escapeHtml(validatedData.recipientEmail)})</li>
+                          <li>Ve al icono de regalos 🎁 en la página principal</li>
+                          <li>Completa los datos de envío para que podamos enviarte tu cesta</li>
+                        </ol>
+                        
+                        <!-- CTA Button -->
+                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
+                          <tr>
+                            <td align="center">
+                              <a href="https://experienciaselecta.com" 
+                                 style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%); color: #1a1a1a; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);">
+                                Ir a la web y completar datos
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                        
+                        <p style="margin: 20px 0 0; font-size: 14px; line-height: 1.6; color: #999999; text-align: center;">
+                          Si tienes alguna pregunta, no dudes en contactarnos.
+                        </p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                      <td style="padding: 30px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+                        <p style="margin: 0 0 10px; font-size: 14px; color: #999999;">
+                          Experiencias Selecta - Regalos gastronómicos únicos
+                        </p>
+                        <p style="margin: 0; font-size: 12px; color: #cccccc;">
+                          <a href="https://experienciaselecta.com" style="color: #D4AF37; text-decoration: none;">experienciaselecta.com</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>
+      `,
+      text: `
+¡Te han regalado una experiencia única e inolvidable!
+
+Hola ${validatedData.recipientName},
+
+${validatedData.senderName} (${validatedData.senderEmail}) te ha regalado una experiencia gastronómica única:
+
+🎁 ${validatedData.basketName}
+
+¿Qué tienes que hacer ahora?
+
+1. Regístrate en nuestra web con este mismo correo electrónico (${validatedData.recipientEmail})
+2. Ve al icono de regalos 🎁 en la página principal
+3. Completa los datos de envío para que podamos enviarte tu cesta
+
+Visita: https://experienciaselecta.com
+
+Si tienes alguna pregunta, no dudes en contactarnos.
+
+Experiencias Selecta - Regalos gastronómicos únicos
+https://experienciaselecta.com
+      `
     });
 
-    console.log('Gift email sent successfully to:', validatedData.recipientEmail);
-
-    // Create confirmation email for sender
-    const senderHtmlContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-            }
-            .header {
-              text-align: center;
-              padding: 30px 0;
-              background: linear-gradient(135deg, #1a0033 0%, #4a0080 100%);
-              color: white;
-              border-radius: 10px 10px 0 0;
-            }
-            .content {
-              background: #ffffff;
-              padding: 30px;
-              border: 2px solid #daa520;
-            }
-            .success-icon {
-              font-size: 60px;
-              margin-bottom: 10px;
-            }
-            .message {
-              background: #f0f8ff;
-              padding: 20px;
-              border-left: 4px solid #daa520;
-              margin: 20px 0;
-            }
-            .basket-name {
-              font-size: 20px;
-              font-weight: bold;
-              color: #1a0033;
-              text-align: center;
-              margin: 20px 0;
-            }
-            .footer {
-              text-align: center;
-              padding: 20px;
-              color: #666;
-              font-size: 14px;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div class="success-icon">✅</div>
-            <h1>¡Pago completado con éxito!</h1>
-          </div>
-          <div class="content">
-            <p>Hola <strong>${escapeHtml(validatedData.senderName)}</strong>,</p>
-            
-            <div class="message">
-              <p>Tu pago ha sido procesado correctamente. El regalo para <strong>${escapeHtml(validatedData.recipientName)}</strong> ha sido enviado.</p>
-            </div>
-
-            <div class="basket-name">
-              ${escapeHtml(validatedData.basketName)}
-            </div>
-
-            ${validatedData.basketImage ? `
-              <img src="${escapeHtml(validatedData.basketImage)}" alt="${escapeHtml(validatedData.basketName)}" style="width: 100%; max-width: 400px; height: auto; margin: 20px auto; display: block; border-radius: 8px;" />
-            ` : ''}
-
-            <p><strong>Detalles del pago:</strong></p>
-            <ul>
-              <li>Destinatario: ${escapeHtml(validatedData.recipientName)}</li>
-              <li>Email: ${escapeHtml(validatedData.recipientEmail)}</li>
-              <li>Cesta: ${escapeHtml(validatedData.basketName)}</li>
-              <li>Total pagado: ${validatedData.totalAmount.toFixed(2)}€</li>
-            </ul>
-
-            <p style="margin-top: 20px;">
-              Hemos enviado un correo a <strong>${escapeHtml(validatedData.recipientEmail)}</strong> con las instrucciones para reclamar el regalo.
-            </p>
-
-            <p style="margin-top: 30px;">¡Gracias por compartir momentos especiales con Experiencia Selecta!</p>
-          </div>
-          <div class="footer">
-            <p>Experiencia Selecta<br/>
-            La mejor selección de productos ibéricos</p>
-            <p style="font-size: 12px; color: #999;">
-              Este es un correo automático, por favor no respondas a este mensaje.
-            </p>
-          </div>
-        </body>
-      </html>
-    `;
-
-    // Send confirmation email to sender
-    await resend.emails.send({
-      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
-      to: [validatedData.senderEmail],
-      subject: `✅ Pago completado - Regalo para ${validatedData.recipientName}`,
-      html: senderHtmlContent,
-    });
-
-    console.log('Confirmation email sent successfully to sender:', validatedData.senderEmail);
+    console.log('Recipient gift email sent successfully:', recipientEmailResponse);
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ 
+        success: true,
+        recipientEmailId: recipientEmailResponse.data?.id
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -295,9 +183,9 @@ El equipo de Experiencia Selecta
     );
 
   } catch (error: any) {
-    console.error('Error sending gift email:', error);
+    console.error('Error in send-gift-email:', error);
     
-    // Handle validation errors specifically
+    // Handle validation errors
     if (error instanceof z.ZodError) {
       console.error('Validation error:', error.errors);
       return new Response(

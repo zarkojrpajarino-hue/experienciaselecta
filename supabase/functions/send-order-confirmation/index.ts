@@ -51,7 +51,7 @@ serve(async (req) => {
 
   try {
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    const { order: rawOrder } = await req.json();
+    const { order: rawOrder, isGift } = await req.json();
 
     // Validate and sanitize order data
     const order = orderSchema.parse(rawOrder);
@@ -66,9 +66,14 @@ serve(async (req) => {
     const customerEmailContent = `
 ¡Hola ${escapeHtml(order.customers.name)}!
 
-✅ Tu cesta ha sido pagada con éxito.
+${isGift ? '✅ Tu regalo ha sido pagado con éxito.' : '✅ Tu cesta ha sido pagada con éxito.'}
 
-Puedes verla en la sección "Mis Pedidos" en tu perfil en la web: https://experienciaselecta.com/perfil
+${isGift 
+  ? 'La persona a la que se lo regalaste recibirá un correo para completar los datos de envío.'
+  : 'Tu cesta será preparada con cariño y enviada a la dirección indicada.'
+}
+
+Puedes verla en la sección "Mis Pedidos" en tu perfil en la web: https://experienciaselecta.com
 
 📦 DETALLES DEL PEDIDO
 Número de pedido: ${escapeHtml(order.id)}
@@ -114,20 +119,26 @@ Fecha del pedido: ${new Date(order.created_at).toLocaleString('es-ES')}
 `;
 
     // Send email to customer
+    const subject = isGift 
+      ? '✅ Confirmación de pago - Regalo enviado - Experiencia Selecta'
+      : '✅ Confirmación de tu pedido - Experiencia Selecta';
+    
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [order.customers.email],
-      subject: '✅ Confirmación de tu pedido - Experiencia Selecta',
+      subject: subject,
       text: customerEmailContent,
     });
 
-    // Send email to admin
-    await resend.emails.send({
-      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
-      to: ['selectaexperiencia@gmail.com'],
-      subject: `🛒 Nuevo pedido confirmado - ${order.id}`,
-      text: adminEmailContent,
-    });
+    // Send email to admin (only if not a gift, or after recipient completes address)
+    if (!isGift) {
+      await resend.emails.send({
+        from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
+        to: ['selectaexperiencia@gmail.com'],
+        subject: `🛒 Nuevo pedido confirmado - ${order.id}`,
+        text: adminEmailContent,
+      });
+    }
 
     console.log('Order confirmation emails sent successfully');
 
