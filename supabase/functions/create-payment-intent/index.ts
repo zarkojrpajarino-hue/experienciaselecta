@@ -286,6 +286,7 @@ serve(async (req) => {
             .insert({
               order_id: order.id,
               sender_name: giftData.senderName,
+              sender_email: giftData.senderEmail,
               recipient_name: recipient.recipientName,
               recipient_email: recipient.recipientEmail,
               basket_name: basket.name,

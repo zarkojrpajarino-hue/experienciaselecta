@@ -182,6 +182,7 @@ export type Database = {
           recipient_name: string
           recipient_user_id: string | null
           reminder_sent_at: string | null
+          sender_email: string | null
           sender_name: string
           shipping_address_line1: string | null
           shipping_address_line2: string | null
@@ -206,6 +207,7 @@ export type Database = {
           recipient_name: string
           recipient_user_id?: string | null
           reminder_sent_at?: string | null
+          sender_email?: string | null
           sender_name: string
           shipping_address_line1?: string | null
           shipping_address_line2?: string | null
@@ -230,6 +232,7 @@ export type Database = {
           recipient_name?: string
           recipient_user_id?: string | null
           reminder_sent_at?: string | null
+          sender_email?: string | null
           sender_name?: string
           shipping_address_line1?: string | null
           shipping_address_line2?: string | null
