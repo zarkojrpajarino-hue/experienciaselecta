@@ -93,13 +93,11 @@ ${escapeHtml(order.shipping_country)}
 Tu cesta será preparada con cariño y enviada a la dirección indicada.
 `}
 
-🌟 ACCESO EXCLUSIVO A LA WEB PRIVADA
-
 Al haber comprado una cesta en nuestra web, no solo tienes acceso a los productos de alta calidad que esta trae, también a la web paragenteselecta.com
 
-En esta web están todas las dinámicas para llevar a cabo la experiencia.
+En esta web están todas las dinámicas para llevar a cabo toda la experiencia.
 
-⚠️ IMPORTANTE: UNA VEZ ABIERTA LA WEB SOLO TENDRÁS 24 HORAS DE ACCESO A ESTA. ES UNA WEB PRIVADA Y ÚNICA, PARA EXPERIENCIAS.
+⚠️ IMPORTANTE: UNA VEZ ABIERTA LA WEB SOLO TENDRÁS 24 HORAS DE ACCESO A ESTA. ES UNA WEB PRIVADA Y ÚNICA, PARA NUESTROS CLIENTES Y EXPERIENCIAS.
 
 ¡Esperamos que disfrutes de esta experiencia gastronómica única!
 
