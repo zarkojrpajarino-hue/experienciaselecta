@@ -13,33 +13,36 @@ serve(async (req) => {
   }
 
   try {
+    // Verify cron secret
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || authHeader !== `Bearer ${Deno.env.get('CRON_SECRET')}`) {
+      console.error('Unauthorized request');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401 
+        }
+      );
+    }
+
     console.log('Starting scheduled marketing email job...');
 
-    // Initialize Supabase client with service role key
-    const supabaseAdmin = createClient(
+    // Initialize Supabase client with service role
+    const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Calculate timestamp for 24 hours ago
+    // Get consents from 24+ hours ago that haven't received email yet
     const twentyFourHoursAgo = new Date();
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
-    console.log('Looking for consents older than:', twentyFourHoursAgo.toISOString());
-
-    // Find users who consented more than 24 hours ago and haven't received the email
-    const { data: pendingConsents, error: fetchError } = await supabaseAdmin
+    const { data: pendingConsents, error: fetchError } = await supabase
       .from('cookie_consents')
-      .select('id, user_id, email')
+      .select('id, email, user_id')
       .eq('marketing_email_sent', false)
-      .lt('consented_at', twentyFourHoursAgo.toISOString())
-      .limit(100); // Process max 100 at a time
+      .lte('consented_at', twentyFourHoursAgo.toISOString());
 
     if (fetchError) {
       console.error('Error fetching pending consents:', fetchError);
@@ -47,27 +50,27 @@ serve(async (req) => {
     }
 
     if (!pendingConsents || pendingConsents.length === 0) {
-      console.log('No pending marketing emails to send');
+      console.log('No pending emails to send');
       return new Response(
-        JSON.stringify({ success: true, message: 'No pending emails', count: 0 }),
-        {
+        JSON.stringify({ success: true, message: 'No pending emails' }),
+        { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
+          status: 200 
         }
       );
     }
 
-    console.log(`Found ${pendingConsents.length} users to send marketing emails to`);
+    console.log(`Found ${pendingConsents.length} pending emails to send`);
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    let successCount = 0;
+    let sentCount = 0;
     let errorCount = 0;
 
-    // Send emails to each user
+    // Send emails
     for (const consent of pendingConsents) {
       try {
-        // Get user name from profile
-        const { data: profile } = await supabaseAdmin
+        // Get user profile for name
+        const { data: profile } = await supabase
           .from('profiles')
           .select('name')
           .eq('user_id', consent.user_id)
@@ -170,31 +173,31 @@ El equipo de Experiencia Selecta
           html: htmlContent,
         });
 
-        // Mark as sent in database
-        await supabaseAdmin
+        // Mark as sent
+        await supabase
           .from('cookie_consents')
           .update({
             marketing_email_sent: true,
-            marketing_email_sent_at: new Date().toISOString()
+            marketing_email_sent_at: new Date().toISOString(),
           })
           .eq('id', consent.id);
 
-        console.log(`Marketing email sent successfully to: ${consent.email}`);
-        successCount++;
+        console.log(`Email sent successfully to: ${consent.email}`);
+        sentCount++;
+
       } catch (error: any) {
         console.error(`Error sending email to ${consent.email}:`, error);
         errorCount++;
       }
     }
 
-    console.log(`Job complete. Success: ${successCount}, Errors: ${errorCount}`);
+    console.log(`Job completed. Sent: ${sentCount}, Errors: ${errorCount}`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        sent: successCount, 
-        errors: errorCount,
-        total: pendingConsents.length 
+        sent: sentCount,
+        errors: errorCount 
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -207,7 +210,7 @@ El equipo de Experiencia Selecta
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
+        status: 400,
       }
     );
   }
