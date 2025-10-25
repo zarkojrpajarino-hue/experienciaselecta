@@ -1345,6 +1345,34 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                 }
                               </div>
                             </div>
+                            
+                            {/* ACCESO A EXPERIENCIA ÚNICA */}
+                            <div className="col-span-2 flex flex-col items-center justify-center mt-4 mb-2">
+                              <p className={`text-center ${colorCombo.important} font-bungee text-xs sm:text-sm tracking-[0.15em] mb-2`}>
+                                ACCESO A EXPERIENCIA ÚNICA
+                              </p>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm" className="text-xs">
+                                    ℹ️ Info
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl">
+                                  <DialogTitle>¿Por qué no vendemos cestas?</DialogTitle>
+                                  <DialogDescription className="text-base leading-relaxed">
+                                    <p className="mb-4">
+                                      En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
+                                    </p>
+                                    <p className="mb-4">
+                                      Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
+                                    </p>
+                                    <p>
+                                      Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold text-gold">acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
+                                    </p>
+                                  </DialogDescription>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
                           </div>
                         )}
                       </div>

@@ -24,6 +24,34 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setIndex((p) => (p + 1) % slides.length);
+    } else if (isRightSwipe) {
+      setIndex((p) => (p - 1 + slides.length) % slides.length);
+    }
+  };
 
   useEffect(() => {
     if (!autoPlay || paused) return;
@@ -100,7 +128,12 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         </div>
 
         {/* Image */}
-        <div className="w-full max-w-2xl md:max-w-3xl mx-auto h-[25vh] md:h-[30vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden">
+        <div 
+          className="w-full max-w-2xl md:max-w-3xl mx-auto h-[25vh] md:h-[30vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {slides.map((s, i) => (
             <motion.div
               key={i}
