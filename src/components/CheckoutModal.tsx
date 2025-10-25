@@ -147,7 +147,10 @@ const PaymentForm: React.FC<{
         {
           body: {
             customerData,
-            basketItems: itemsToProcess,
+            basketItems: itemsToProcess.map(item => ({
+              ...item,
+              image: item.imagen // Map 'imagen' to 'image' for backend
+            })),
             totalAmount: calculatedTotal,
             isGiftMode,
             giftData: processedGiftData

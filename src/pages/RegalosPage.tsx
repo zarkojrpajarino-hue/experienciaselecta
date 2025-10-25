@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Gift, X } from 'lucide-react';
+import { Gift, X, Home } from 'lucide-react';
 
 interface PendingGift {
   id: string;
@@ -22,6 +23,7 @@ interface PendingGift {
 }
 
 const RegalosPage = () => {
+  const navigate = useNavigate();
   const [pendingGifts, setPendingGifts] = useState<PendingGift[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
@@ -225,9 +227,18 @@ const RegalosPage = () => {
                         </p>
                       </div>
                     )}
-                    <p className="text-lg sm:text-xl font-bold text-center uppercase tracking-[0.2em] font-bungee mt-4">
-                      Rellena la información para que podamos enviártelo
+                    <p className="text-sm sm:text-lg font-bold text-center uppercase tracking-wide sm:tracking-[0.2em] font-bungee mt-4">
+                      Completa tu información de envío
                     </p>
+                    <Button
+                      onClick={() => navigate('/')}
+                      variant="outline"
+                      className="mt-4 w-full sm:w-auto"
+                      size="sm"
+                    >
+                      <Home className="w-4 h-4 mr-2" />
+                      Volver al inicio
+                    </Button>
                   </div>
                 </div>
 
