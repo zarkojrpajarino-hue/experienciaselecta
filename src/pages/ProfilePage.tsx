@@ -30,8 +30,8 @@ const basketData: Record<string, { imagen: string; precio: number }> = {
   "Pareja Inicial": { imagen: parejaInicialImg, precio: 35 },
   "Conversación Natural (sin alcohol)": { imagen: conversacionNaturalImg, precio: 45 },
   "Pareja Gourmet": { imagen: parejaGourmetImg, precio: 55 },
-  "Trio ibérico": { imagen: trioIbericoImg, precio: 45 },
-  "Trio Ibérico": { imagen: trioIbericoImg, precio: 45 },
+  "Trio ibérico": { imagen: trioIbericoImg, precio: 65 },
+  "Trio Ibérico": { imagen: trioIbericoImg, precio: 65 },
   "Mesa Abierta (sin alcohol)": { imagen: mesaAbiertaImg, precio: 55 },
   "Ibéricos Selectos": { imagen: ibericosSelectosImg, precio: 65 },
   "Familiar clásica": { imagen: familiarClasicaImg, precio: 60 },
@@ -474,15 +474,15 @@ const ProfilePage = () => {
       <Navbar />
       <div 
         className="min-h-screen pt-24 pb-12 px-4 relative"
-        style={{
-          backgroundImage: `url(${activeTab === 'reviews' ? valoracionesBgImg : profileBgImg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 40%',
-          // backgroundAttachment: 'fixed', // removed for mobile compatibility
-          backgroundColor: 'hsl(var(--petroleo))'
-        }}
       >
-        <img src={activeTab === 'reviews' ? valoracionesBgImg : profileBgImg} alt="Fondo de la página de perfil" className="absolute inset-0 w-full h-full object-cover z-0" loading="lazy" style={{ objectPosition: 'center 40%' }} />
+        <img 
+          key={activeTab}
+          src={activeTab === 'reviews' ? valoracionesBgImg : profileBgImg} 
+          alt="Fondo de la página de perfil" 
+          className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-500" 
+          loading="lazy" 
+          style={{ objectPosition: 'center 40%' }} 
+        />
         {/* Overlay oscuro para mejorar legibilidad */}
         <div className="absolute inset-0 bg-black/40 z-[1]" />
         <div className="container mx-auto max-w-6xl relative z-[2]">
