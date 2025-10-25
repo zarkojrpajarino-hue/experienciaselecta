@@ -50,7 +50,7 @@ const FAQHorizontalSection = () => {
       question: <>
         ¿Calidad de productos?
       </>,
-      answer: "Certificada.",
+      answer: "Producto nacional certificado.",
       image: faqGarantiaSatisfaccion
     },
   ];

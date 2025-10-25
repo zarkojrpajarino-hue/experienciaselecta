@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* REUSEED Brand Colors */
-    --background: 0 0% 100%; /* Blanco #FFFFFF */
+    --background: 43 15% 92%; /* Crema (blanco más oscuro) */
     --foreground: 271 100% 20%; /* Petroleo #2f0164 */
     
     /* Nuevos colores para esquemas de secciones */

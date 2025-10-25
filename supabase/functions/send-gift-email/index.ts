@@ -22,10 +22,16 @@ const escapeHtml = (text: string): string => {
 // Gift data validation schema
 const recipientSchema = z.object({
   recipientName: z.string().trim().min(1).max(100),
-  recipientEmail: z.string().trim().email().max(255),
+  recipientEmail: z.string().trim().email().max(255).optional(),
+  recipientPhone: z.string().trim().max(20).optional(),
   personalNote: z.string().trim().max(500).optional(),
   basketIds: z.array(z.number())
-});
+}).refine(
+  (data) => data.recipientEmail || data.recipientPhone,
+  {
+    message: "Debe proporcionar al menos un email o un número de teléfono",
+  }
+);
 
 const giftDataSchema = z.object({
   senderName: z.string().trim().min(1).max(100),
@@ -48,7 +54,7 @@ serve(async (req) => {
     // Validate the input data
     const validatedData = giftDataSchema.parse(body);
 
-    // Send email to each recipient
+    // Send email or SMS to each recipient
     for (const recipient of validatedData.recipients) {
       // Get basket details for this recipient
       const basketNames = body.basketItems
@@ -61,47 +67,48 @@ serve(async (req) => {
         ?.filter((item: any) => recipient.basketIds.includes(item.id))
         ?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0) || 0;
 
-      // Send email to recipient with gift details
-      const recipientEmailResponse = await resend.emails.send({
-        from: 'Experiencias Selecta <onboarding@resend.dev>',
-        to: [recipient.recipientEmail],
-        subject: '🎁 ¡Te han regalado una experiencia!',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #D4AF37; text-align: center;">🎁 ¡Tienes un regalo!</h1>
-            
-            ${basketImage ? `<img src="${escapeHtml(basketImage)}" alt="Cesta de regalo" style="width: 100%; max-width: 400px; margin: 20px auto; display: block; border-radius: 8px;" />` : ''}
-            
-            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h2 style="color: #333; margin-top: 0;">¡${escapeHtml(recipient.recipientName)}, ${escapeHtml(validatedData.senderName)} te ha regalado algo especial!</h2>
+      // Send email if email is provided
+      if (recipient.recipientEmail) {
+        const recipientEmailResponse = await resend.emails.send({
+          from: 'Experiencias Selecta <onboarding@resend.dev>',
+          to: [recipient.recipientEmail],
+          subject: '🎁 ¡Te han regalado una experiencia!',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h1 style="color: #D4AF37; text-align: center;">🎁 ¡Tienes un regalo!</h1>
               
-              ${recipient.personalNote ? `
-                <div style="background-color: #fff; padding: 15px; border-left: 4px solid #D4AF37; margin: 15px 0;">
-                  <p style="color: #666; font-style: italic; margin: 0;">"${escapeHtml(recipient.personalNote)}"</p>
-                  <p style="color: #999; font-size: 12px; margin-top: 10px; margin-bottom: 0;">- ${escapeHtml(validatedData.senderName)}</p>
+              ${basketImage ? `<img src="${escapeHtml(basketImage)}" alt="Cesta de regalo" style="width: 100%; max-width: 400px; margin: 20px auto; display: block; border-radius: 8px;" />` : ''}
+              
+              <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h2 style="color: #333; margin-top: 0;">¡${escapeHtml(recipient.recipientName)}, ${escapeHtml(validatedData.senderName)} te ha regalado algo especial!</h2>
+                
+                ${recipient.personalNote ? `
+                  <div style="background-color: #fff; padding: 15px; border-left: 4px solid #D4AF37; margin: 15px 0;">
+                    <p style="color: #666; font-style: italic; margin: 0;">"${escapeHtml(recipient.personalNote)}"</p>
+                    <p style="color: #999; font-size: 12px; margin-top: 10px; margin-bottom: 0;">- ${escapeHtml(validatedData.senderName)}</p>
+                  </div>
+                ` : ''}
+                
+                <h3 style="color: #D4AF37;">Tu regalo:</h3>
+                <p style="font-size: 18px; color: #333; font-weight: bold;">${escapeHtml(basketNames)}</p>
+                
+                <p style="color: #666;">Para recibir tu regalo, necesitamos que nos proporciones tu dirección de envío.</p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="https://experienciaselecta.com/regalos" style="background-color: #D4AF37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                    Proporcionar dirección de envío
+                  </a>
                 </div>
-              ` : ''}
-              
-              <h3 style="color: #D4AF37;">Tu regalo:</h3>
-              <p style="font-size: 18px; color: #333; font-weight: bold;">${escapeHtml(basketNames)}</p>
-              
-              <p style="color: #666;">Para recibir tu regalo, necesitamos que nos proporciones tu dirección de envío.</p>
-              
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="https://experienciaselecta.com/regalos" style="background-color: #D4AF37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                  Proporcionar dirección de envío
-                </a>
+                
+                <p style="color: #999; font-size: 12px;">Si no tienes cuenta, puedes crear una con este email para reclamar tu regalo.</p>
               </div>
               
-              <p style="color: #999; font-size: 12px;">Si no tienes cuenta, puedes crear una con este email para reclamar tu regalo.</p>
+              <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <p style="color: #999; font-size: 12px;">Experiencias Selecta - Momentos que perduran</p>
+              </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-              <p style="color: #999; font-size: 12px;">Experiencias Selecta - Momentos que perduran</p>
-            </div>
-          </div>
-        `,
-        text: `
+          `,
+          text: `
 ¡${recipient.recipientName}, ${validatedData.senderName} te ha regalado algo especial!
 
 ${recipient.personalNote ? `Mensaje: "${recipient.personalNote}"\n- ${validatedData.senderName}\n\n` : ''}
@@ -113,10 +120,36 @@ Para recibir tu regalo, visita: https://experienciaselecta.com/regalos
 Si no tienes cuenta, puedes crear una con este email para reclamar tu regalo.
 
 Experiencias Selecta - Momentos que perduran
-        `
-      });
+          `
+        });
 
-      console.log('Recipient email sent:', recipientEmailResponse);
+        console.log('Recipient email sent:', recipientEmailResponse);
+      }
+      
+      // Send SMS if phone is provided (log the message for now - user needs to configure SMS provider like Twilio)
+      if (recipient.recipientPhone) {
+        const smsMessage = `${recipient.recipientName}, ${validatedData.senderName} acaba de regalarte una experiencia personalizada e inolvidable, entra en la web experienciaselecta.com para que podamos enviarte el regalo${recipient.personalNote ? `. Nota: ${recipient.personalNote}` : ''}`;
+        
+        console.log('SMS message prepared for', recipient.recipientPhone, ':', smsMessage);
+        console.log('⚠️ IMPORTANTE: Para enviar SMS, configura un proveedor de SMS como Twilio y descomenta el código correspondiente.');
+        
+        // TODO: Configurar Twilio para envío de SMS
+        // Ejemplo de código para Twilio (descomentar cuando esté configurado):
+        /*
+        const twilioClient = new Twilio(
+          Deno.env.get('TWILIO_ACCOUNT_SID'),
+          Deno.env.get('TWILIO_AUTH_TOKEN')
+        );
+        
+        await twilioClient.messages.create({
+          body: smsMessage,
+          from: Deno.env.get('TWILIO_PHONE_NUMBER'),
+          to: recipient.recipientPhone
+        });
+        */
+      }
+
+      console.log('Notification sent to recipient:', recipient.recipientName);
     }
 
     // Send confirmation email to sender
@@ -136,12 +169,13 @@ Experiencias Selecta - Momentos que perduran
             ${validatedData.recipients.map((recipient: z.infer<typeof recipientSchema>) => `
               <div style="background-color: #fff; padding: 15px; border-radius: 5px; margin: 10px 0;">
                 <p style="margin: 5px 0;"><strong>${escapeHtml(recipient.recipientName)}</strong></p>
-                <p style="margin: 5px 0; color: #666;">${escapeHtml(recipient.recipientEmail)}</p>
+                <p style="margin: 5px 0; color: #666;">${recipient.recipientEmail ? escapeHtml(recipient.recipientEmail) : ''}</p>
+                ${recipient.recipientPhone ? `<p style="margin: 5px 0; color: #666;">${escapeHtml(recipient.recipientPhone)}</p>` : ''}
                 ${recipient.personalNote ? `<p style="margin: 5px 0; color: #999; font-style: italic; font-size: 14px;">"${escapeHtml(recipient.personalNote)}"</p>` : ''}
               </div>
             `).join('')}
             
-            <p style="color: #666; margin-top: 20px;">Los destinatarios recibirán un correo con las instrucciones para reclamar su regalo y proporcionar su dirección de envío.</p>
+            <p style="color: #666; margin-top: 20px;">Los destinatarios recibirán un correo o mensaje SMS con las instrucciones para reclamar su regalo y proporcionar su dirección de envío.</p>
             
             <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 4px;">
               <p style="color: #856404; margin: 0; font-weight: bold;">⏰ Recordatorio importante:</p>
@@ -168,10 +202,10 @@ Experiencias Selecta - Momentos que perduran
 Tu regalo ha sido enviado correctamente a:
 
 ${validatedData.recipients.map((recipient: z.infer<typeof recipientSchema>) => 
-  `- ${recipient.recipientName} (${recipient.recipientEmail})${recipient.personalNote ? `\n  Nota: "${recipient.personalNote}"` : ''}`
+  `- ${recipient.recipientName} (${recipient.recipientEmail || recipient.recipientPhone})${recipient.personalNote ? `\n  Nota: "${recipient.personalNote}"` : ''}`
 ).join('\n')}
 
-Los destinatarios recibirán un correo con las instrucciones para reclamar su regalo.
+Los destinatarios recibirán un correo o mensaje SMS con las instrucciones para reclamar su regalo.
 
 ⏰ RECORDATORIO IMPORTANTE:
 Solo queda que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')} 

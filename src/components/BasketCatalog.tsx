@@ -1491,7 +1491,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                 </CollapsibleTrigger>
                                 <CollapsibleContent className="mt-2 animate-accordion-down">
                                   <div className="rounded-lg p-3 space-y-2">
-                                    {basket.productos.map((producto, idx) => (
+                                     {basket.productos.map((producto, idx) => (
                                       <motion.p 
                                         key={idx} 
                                         initial={{ opacity: 0.3 }}
@@ -1506,6 +1506,57 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                         • {producto}
                                       </motion.p>
                                     ))}
+                                    
+                                    {/* ACCESO A EXPERIENCIA ÚNICA */}
+                                    <div className="flex flex-col items-center mt-4 gap-2">
+                                      <p 
+                                        className={`${colorCombo.important} font-bold text-sm tracking-[0.15em] uppercase`}
+                                        style={{ fontFamily: 'Boulder, sans-serif' }}
+                                      >
+                                        ACCESO A EXPERIENCIA ÚNICA
+                                      </p>
+                                      <Dialog>
+                                        <DialogTrigger asChild>
+                                          <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                                          >
+                                            <span className="sr-only">Información sobre experiencia única</span>
+                                            <svg 
+                                              xmlns="http://www.w3.org/2000/svg" 
+                                              viewBox="0 0 24 24" 
+                                              fill="none" 
+                                              stroke="currentColor" 
+                                              strokeWidth="2" 
+                                              strokeLinecap="round" 
+                                              strokeLinejoin="round" 
+                                              className={`h-5 w-5 ${colorCombo.important}`}
+                                            >
+                                              <circle cx="12" cy="12" r="10"/>
+                                              <path d="M12 16v-4"/>
+                                              <path d="M12 8h.01"/>
+                                            </svg>
+                                          </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-2xl">
+                                          <DialogTitle>¿Por qué no vendemos cestas?</DialogTitle>
+                                          <DialogDescription asChild>
+                                            <div className="space-y-4 text-base">
+                                              <p>
+                                                En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
+                                              </p>
+                                              <p>
+                                                Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.
+                                              </p>
+                                              <p>
+                                                Es una forma diferente de disfrutar, compartir y crear recuerdos que van más allá de una simple comida.
+                                              </p>
+                                            </div>
+                                          </DialogDescription>
+                                        </DialogContent>
+                                      </Dialog>
+                                    </div>
                                   </div>
                                 </CollapsibleContent>
                               </Collapsible>

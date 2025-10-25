@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +53,7 @@ interface CustomerData {
 interface RecipientData {
   recipientName: string;
   recipientEmail: string;
+  recipientPhone?: string;
   personalNote: string;
   basketIds: string[]; // Unique IDs of baskets assigned to this recipient
 }
@@ -66,6 +67,7 @@ interface GiftData {
 interface BackendRecipientData {
   recipientName: string;
   recipientEmail: string;
+  recipientPhone?: string;
   personalNote: string;
   basketIds: number[]; // Original IDs for backend
 }
@@ -368,10 +370,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const recipientSchema = z.object({
     recipientName: z.string().trim().min(1, "El nombre del destinatario es requerido").max(100),
-    recipientEmail: z.string().trim().email("Email inválido").max(255),
+    recipientEmail: z.string().trim().email("Email inválido").max(255).optional().or(z.literal('')),
+    recipientPhone: z.string().trim().max(20).optional().or(z.literal('')),
     personalNote: z.string().trim().max(500, "La nota debe tener menos de 500 caracteres").optional(),
     basketIds: z.array(z.string())
-  });
+  }).refine(
+    (data) => data.recipientEmail || data.recipientPhone,
+    {
+      message: "Debe proporcionar al menos un email o un número de teléfono para el destinatario",
+      path: ["recipientEmail"],
+    }
+  );
 
   const giftSchema = z.object({
     senderName: z.string().trim().min(1, "Tu nombre es requerido").max(100),
@@ -521,7 +530,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setGiftData({
       senderName: '',
       senderEmail: '',
-      recipients: [{ recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
+      recipients: [{ recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
     });
     onClose();
   };
@@ -691,20 +700,94 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           required
                         />
                       </div>
-                      <div>
-                        <Label htmlFor={`recipientEmail-${index}`}>Email del destinatario *</Label>
-                        <Input
-                          id={`recipientEmail-${index}`}
-                          type="email"
-                          value={recipient.recipientEmail}
-                          onChange={(e) => {
-                            const newRecipients = [...giftData.recipients];
-                            newRecipients[index].recipientEmail = e.target.value;
-                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                          }}
-                          placeholder="email@ejemplo.com"
-                          required
-                        />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label>Email del destinatario *</Label>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              type="button"
+                              variant="ghost" 
+                              size="sm"
+                              className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                            >
+                              <span className="sr-only">Información sobre el proceso de regalo</span>
+                              <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="2" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                className="h-4 w-4"
+                              >
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4"/>
+                                <path d="M12 8h.01"/>
+                              </svg>
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
+                            <DialogDescription asChild>
+                              <div className="space-y-4 text-sm">
+                                <p className="font-bold">Puedes elegir entre email o móvil:</p>
+                                <ul className="space-y-3 list-disc pl-5">
+                                  <li>
+                                    <span className="font-bold">Por email:</span> El destinatario recibirá un correo con la información del regalo y un enlace para proporcionar su dirección de envío.
+                                  </li>
+                                  <li>
+                                    <span className="font-bold">Por móvil:</span> El destinatario recibirá un mensaje SMS con un enlace a la web donde podrá dejar su dirección de envío.
+                                  </li>
+                                </ul>
+                                <p className="font-bold">¿Qué tiene que hacer el destinatario?</p>
+                                <ol className="space-y-2 list-decimal pl-5">
+                                  <li>Recibir el mensaje (email o SMS)</li>
+                                  <li>Hacer clic en el enlace proporcionado</li>
+                  <li>Completar sus datos de envío (nombre, dirección, ciudad, código postal)</li>
+                                  <li>Confirmar la información</li>
+                                </ol>
+                                <p className="text-muted-foreground">
+                                  Una vez recibida la información, procesaremos el envío del regalo en un plazo de 2-3 días laborables.
+                                </p>
+                              </div>
+                            </DialogDescription>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Input
+                            id={`recipientEmail-${index}`}
+                            type="email"
+                            value={recipient.recipientEmail}
+                            onChange={(e) => {
+                              const newRecipients = [...giftData.recipients];
+                              newRecipients[index].recipientEmail = e.target.value;
+                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                            }}
+                            placeholder="email@ejemplo.com"
+                            required={!recipient.recipientPhone}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor={`recipientPhone-${index}`}>o Número del destinatario</Label>
+                          <Input
+                            id={`recipientPhone-${index}`}
+                            type="tel"
+                            value={recipient.recipientPhone || ''}
+                            onChange={(e) => {
+                              const newRecipients = [...giftData.recipients];
+                              newRecipients[index].recipientPhone = e.target.value;
+                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                            }}
+                            placeholder="+34 600 000 000"
+                            required={!recipient.recipientEmail}
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -780,7 +863,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       }
                       setGiftData(prev => ({
                         ...prev,
-                        recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
+                        recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
                       }));
                     }}
                     disabled={giftData.recipients.length >= expandedBasketItems.length}
@@ -917,12 +1000,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <p><strong>De:</strong> {giftData.senderName} ({giftData.senderEmail})</p>
                     <div className="space-y-1">
                       <p><strong>Para:</strong></p>
-                      {giftData.recipients.map((recipient, index) => (
-                        <div key={index} className="ml-4">
-                          <p>• {recipient.recipientName} ({recipient.recipientEmail})</p>
-                          {recipient.personalNote && (
-                            <p className="text-xs italic ml-2">Nota: "{recipient.personalNote.substring(0, 50)}{recipient.personalNote.length > 50 ? '...' : ''}"</p>
-                          )}
+                        {giftData.recipients.map((recipient, index) => (
+                          <div key={index} className="ml-4">
+                            <p>• {recipient.recipientName} ({recipient.recipientEmail || recipient.recipientPhone})</p>
+                            {recipient.personalNote && (
+                              <p className="text-xs italic ml-2">Nota: "{recipient.personalNote.substring(0, 50)}{recipient.personalNote.length > 50 ? '...' : ''}"</p>
+                            )}
                         </div>
                       ))}
                     </div>
