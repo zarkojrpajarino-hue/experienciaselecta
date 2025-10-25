@@ -234,8 +234,8 @@ const RegalosPage = () => {
                   {/* Botón volver al inicio - fuera de la tarjeta */}
                   <Button
                     onClick={() => navigate('/')}
-                    variant="outline"
-                    className="absolute -top-12 left-0 z-10"
+                    variant="ghost"
+                    className="absolute -top-12 left-0 z-10 bg-white/90 hover:bg-white text-foreground shadow-md"
                     size="sm"
                   >
                     <Home className="w-4 h-4 mr-2" />
@@ -256,7 +256,7 @@ const RegalosPage = () => {
                       </div>
                       <div className="flex-1">
                         <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
-                          🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
+                          🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_name}
                         </h2>
                         <p className="text-sm sm:text-base text-muted-foreground mb-2">
                           Te ha regalado: <strong>{gift.basket_name}</strong>
@@ -271,7 +271,7 @@ const RegalosPage = () => {
                             </p>
                           </div>
                         )}
-                        <p className="text-xs sm:text-base font-bold text-center uppercase tracking-tight sm:tracking-[0.15em] font-bungee mt-4">
+                        <p className="text-[0.65rem] sm:text-sm md:text-base font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] font-bungee mt-4 leading-tight">
                           Rellena la información para que podamos enviártelo
                         </p>
                       </div>
