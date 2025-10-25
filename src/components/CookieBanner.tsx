@@ -24,20 +24,26 @@ const CookieBanner = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user?.email) {
+        console.log('Usuario autenticado, guardando consentimiento para email marketing...');
+        
         // Record consent in database - email will be sent 24h later via cron job
-        await supabase
+        const { error } = await supabase
           .from('cookie_consents')
           .insert({
             user_id: user.id,
             email: user.email,
-            consented_at: new Date().toISOString()
           });
 
-        console.log('Cookie consent saved for scheduled marketing email');
+        if (error) {
+          console.error('Error guardando consentimiento de cookies:', error);
+        } else {
+          console.log('✓ Consentimiento guardado - email se enviará en 24 horas');
+        }
+      } else {
+        console.log('Usuario no autenticado - no se enviará email de marketing');
       }
     } catch (error) {
-      console.error('Error saving cookie consent:', error);
-      // Don't show error to user, just log it
+      console.error('Error al procesar consentimiento de cookies:', error);
     }
   };
 
