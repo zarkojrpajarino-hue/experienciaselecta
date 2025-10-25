@@ -19,30 +19,24 @@ const CookieBanner = () => {
     sessionStorage.setItem("cookieConsent", "accepted");
     setIsVisible(false);
 
-    // Check if user is authenticated and send marketing email
+    // Save consent to database for scheduled marketing email (24h later)
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user?.email) {
-        // Get user profile for name
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('name')
-          .eq('user_id', user.id)
-          .single();
+        // Record consent in database - email will be sent 24h later via cron job
+        await supabase
+          .from('cookie_consents')
+          .insert({
+            user_id: user.id,
+            email: user.email,
+            consented_at: new Date().toISOString()
+          });
 
-        // Send marketing email
-        await supabase.functions.invoke('send-marketing-email', {
-          body: {
-            userEmail: user.email,
-            userName: profile?.name || '',
-          },
-        });
-
-        console.log('Marketing email sent successfully');
+        console.log('Cookie consent saved for scheduled marketing email');
       }
     } catch (error) {
-      console.error('Error sending marketing email:', error);
+      console.error('Error saving cookie consent:', error);
       // Don't show error to user, just log it
     }
   };

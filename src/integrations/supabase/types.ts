@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      cookie_consents: {
+        Row: {
+          consented_at: string
+          created_at: string
+          email: string
+          id: string
+          marketing_email_sent: boolean
+          marketing_email_sent_at: string | null
+          user_id: string
+        }
+        Insert: {
+          consented_at?: string
+          created_at?: string
+          email: string
+          id?: string
+          marketing_email_sent?: boolean
+          marketing_email_sent_at?: string | null
+          user_id: string
+        }
+        Update: {
+          consented_at?: string
+          created_at?: string
+          email?: string
+          id?: string
+          marketing_email_sent?: boolean
+          marketing_email_sent_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address_line1: string
