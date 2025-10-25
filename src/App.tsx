@@ -21,6 +21,7 @@ const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPa
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CookieBanner = lazy(() => import("./components/CookieBanner"));
+const AutoUpdater = lazy(() => import("./components/AutoUpdater"));
 
 // Loading component
 const PageLoader = () => (
@@ -44,6 +45,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <AutoUpdater />
         <BrowserRouter>
           <Suspense fallback={<PageLoader />}>
             <Routes>
