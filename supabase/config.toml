@@ -1,17 +1,5 @@
 project_id = "tyorpbzvjnasyaqbggcp"
 
-[functions.verify-customer-access]
-verify_jwt = false
-
-[functions.auto-login]
-verify_jwt = false
-
-[functions.test-purchase-flow]
-verify_jwt = false
-
-[functions.create-test-gift]
-verify_jwt = false
-
 [functions.send-marketing-email]
 verify_jwt = false
 
@@ -27,14 +15,8 @@ verify_jwt = false
 [functions.send-review-request]
 verify_jwt = false
 
-[functions.send-contact-email]
-verify_jwt = false
-
 [functions.check-completed-orders]
 verify_jwt = false
 
 [functions.resend-gift-reminders]
-verify_jwt = false
-
-[functions.simulate-purchase-and-gift]
 verify_jwt = false
