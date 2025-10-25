@@ -6,6 +6,36 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Gift, X, Home } from 'lucide-react';
 
+// Import basket images
+import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
+import conversacionNaturalImg from "@/assets/pareja-natural-nueva-clean.jpg";
+import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
+import trioIbericoImg from "@/assets/trio-iberico-nuevo-clean.jpg";
+import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo-clean.jpg";
+import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo-clean.jpg";
+import familiarClasicaImg from "@/assets/familiar-clasica-nuevo-clean.jpg";
+import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-clean.jpg";
+import granTertuliaImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
+import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
+import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
+
+// Mapeo de cestas a imágenes locales
+const basketImages: Record<string, string> = {
+  "Pareja Inicial": parejaInicialImg,
+  "Conversación Natural (sin alcohol)": conversacionNaturalImg,
+  "Pareja Gourmet": parejaGourmetImg,
+  "Trio ibérico": trioIbericoImg,
+  "Trio Ibérico": trioIbericoImg,
+  "Mesa Abierta (sin alcohol)": mesaAbiertaImg,
+  "Ibéricos Selectos": ibericosSelectosImg,
+  "Familiar clásica": familiarClasicaImg,
+  "Experiencia Gastronómica (sin alcohol)": experienciaGastronomicaImg,
+  "Gran Tertulia": granTertuliaImg,
+  "Celebración Ibérica": celebracionIbericaImg,
+  "Festín Selecto": festinSelectoImg,
+  "Cesta Trío Ibérico": trioIbericoImg,
+};
+
 interface PendingGift {
   id: string;
   sender_name: string;
@@ -184,7 +214,7 @@ const RegalosPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 pt-24 px-4 pb-12">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <Gift className="w-16 h-16 mx-auto mb-4 text-primary" />
           <h1 className="text-4xl font-bold mb-4">Tus Regalos</h1>
         </div>
@@ -195,52 +225,57 @@ const RegalosPage = () => {
           </div>
         ) : (
           <div className="space-y-8">
-            {pendingGifts.map((gift) => (
-              <div key={gift.id} className="bg-card rounded-lg p-6 border border-border shadow-lg">
-                <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
-                  {gift.basket_image && (
-                    <div 
-                      className="w-32 h-32 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
-                      onClick={() => setZoomedImage(gift.basket_image)}
-                    >
-                      <img
-                        src={gift.basket_image}
-                        alt={gift.basket_name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
-                      🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
-                    </h2>
-                    <p className="text-sm sm:text-base text-muted-foreground mb-2">
-                      Te ha regalado: <strong>{gift.basket_name}</strong>
-                    </p>
-                    {gift.personal_note && (
-                      <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-md my-3">
-                        <p className="text-sm italic text-foreground">
-                          "{gift.personal_note}"
+            {pendingGifts.map((gift) => {
+              // Get correct image for basket
+              const basketImg = basketImages[gift.basket_name] || gift.basket_image || parejaInicialImg;
+              
+              return (
+                <div key={gift.id} className="relative">
+                  {/* Botón volver al inicio - fuera de la tarjeta */}
+                  <Button
+                    onClick={() => navigate('/')}
+                    variant="outline"
+                    className="absolute -top-12 left-0 z-10"
+                    size="sm"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Volver al inicio
+                  </Button>
+                  
+                  <div className="bg-card rounded-lg p-6 border border-border shadow-lg">
+                    <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
+                      <div 
+                        className="w-32 h-32 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
+                        onClick={() => setZoomedImage(basketImg)}
+                      >
+                        <img
+                          src={basketImg}
+                          alt={gift.basket_name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
+                          🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted-foreground mb-2">
+                          Te ha regalado: <strong>{gift.basket_name}</strong>
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          - {gift.sender_name}
+                        {gift.personal_note && (
+                          <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-md my-3">
+                            <p className="text-sm italic text-foreground">
+                              "{gift.personal_note}"
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              - {gift.sender_name}
+                            </p>
+                          </div>
+                        )}
+                        <p className="text-xs sm:text-base font-bold text-center uppercase tracking-tight sm:tracking-[0.15em] font-bungee mt-4">
+                          Rellena la información para que podamos enviártelo
                         </p>
                       </div>
-                    )}
-                    <p className="text-sm sm:text-lg font-bold text-center uppercase tracking-wide sm:tracking-[0.2em] font-bungee mt-4">
-                      Completa tu información de envío
-                    </p>
-                    <Button
-                      onClick={() => navigate('/')}
-                      variant="outline"
-                      className="mt-4 w-full sm:w-auto"
-                      size="sm"
-                    >
-                      <Home className="w-4 h-4 mr-2" />
-                      Volver al inicio
-                    </Button>
-                  </div>
-                </div>
+                    </div>
 
                 <div className="space-y-4">
                   <div>
@@ -318,9 +353,11 @@ const RegalosPage = () => {
                   </p>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          );
+        })}
+      </div>
+    )}
 
         {/* Image Zoom Modal */}
         {zoomedImage && (
