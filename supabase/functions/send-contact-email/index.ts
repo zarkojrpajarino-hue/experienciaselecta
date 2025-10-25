@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -14,6 +15,13 @@ interface ContactRequest {
   email: string;
   message: string;
 }
+
+// Input validation schema
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000, "Message must be less than 2000 characters")
+});
 
 // HTML escape function to prevent XSS attacks
 const escapeHtml = (text: string): string => {
@@ -34,7 +42,25 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("Processing contact form submission");
     
-    const { name, email, message }: ContactRequest = await req.json();
+    const requestData = await req.json();
+    
+    // Validate input data
+    const validationResult = contactSchema.safeParse(requestData);
+    if (!validationResult.success) {
+      console.error("Validation failed:", validationResult.error.issues);
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid input data",
+          details: validationResult.error.issues[0].message
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+    
+    const { name, email, message } = validationResult.data;
 
     // Check if API key is configured
     const apiKey = Deno.env.get("RESEND_API_KEY");
