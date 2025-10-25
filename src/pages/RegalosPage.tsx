@@ -52,6 +52,13 @@ interface PendingGift {
   personal_note: string | null;
 }
 
+// Category color mapping
+const categoryColors: Record<string, string> = {
+  'Parejas': '#782C23',
+  'Amigos': '#44667D', 
+  'Familias': '#4A7050',
+};
+
 const RegalosPage = () => {
   const navigate = useNavigate();
   const [pendingGifts, setPendingGifts] = useState<PendingGift[]>([]);
@@ -228,6 +235,8 @@ const RegalosPage = () => {
             {pendingGifts.map((gift) => {
               // Get correct image for basket
               const basketImg = basketImages[gift.basket_name] || gift.basket_image || parejaInicialImg;
+              // Get category color
+              const categoryColor = categoryColors[gift.basket_category] || '#4A7050';
               
               return (
                 <div key={gift.id} className="relative">
@@ -243,6 +252,39 @@ const RegalosPage = () => {
                   </Button>
                   
                   <div className="bg-card rounded-lg p-6 border border-border shadow-lg">
+                    {/* Gift card with category styling - 1080x1080 square */}
+                    <div 
+                      className="w-full aspect-square mb-6 rounded-lg overflow-hidden shadow-xl flex flex-col items-center justify-between p-8 relative"
+                      style={{ 
+                        backgroundColor: categoryColor,
+                        backgroundImage: 'linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.2))',
+                        maxWidth: '1080px',
+                        margin: '0 auto 1.5rem'
+                      }}
+                    >
+                      {/* Top section with message */}
+                      <div className="flex-1 flex items-center justify-center text-center px-4">
+                        <p className="text-white font-playfair text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-relaxed tracking-wide">
+                          {gift.basket_name}
+                        </p>
+                      </div>
+                      
+                      {/* Bottom logo */}
+                      <div className="text-center">
+                        <p 
+                          className="text-white font-playfair uppercase tracking-[0.5em] font-normal"
+                          style={{ 
+                            fontSize: '25px',
+                            lineHeight: '1.4',
+                            letterSpacing: '50px',
+                            paddingLeft: '50px' // Compensate for letter-spacing
+                          }}
+                        >
+                          EXPERIENCIA SELECTA
+                        </p>
+                      </div>
+                    </div>
+
                     <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
                       <div 
                         className="w-32 h-32 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
