@@ -12,12 +12,23 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
 
 interface UserProfileDropdownProps {
   user: any;
   profile: any;
   onProfileUpdate: () => void;
 }
+
+const profileSchema = z.object({
+  name: z.string().trim().max(100, "El nombre debe tener menos de 100 caracteres"),
+  phone: z.string().trim().max(20, "El teléfono debe tener menos de 20 caracteres").regex(/^[+\d\s()-]*$/, "Formato de teléfono inválido").optional().or(z.literal('')),
+  address_line1: z.string().trim().max(255, "La dirección debe tener menos de 255 caracteres"),
+  address_line2: z.string().trim().max(255, "La dirección debe tener menos de 255 caracteres").optional().or(z.literal('')),
+  city: z.string().trim().max(100, "El nombre de la ciudad debe tener menos de 100 caracteres"),
+  postal_code: z.string().trim().max(20, "El código postal debe tener menos de 20 caracteres"),
+  country: z.string().trim().max(100, "El nombre del país debe tener menos de 100 caracteres")
+});
 
 export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProfileDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,9 +60,21 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
 
   const handleSave = async () => {
     try {
+      // Validate input before sending to database
+      const validationResult = profileSchema.safeParse(editedProfile);
+      
+      if (!validationResult.success) {
+        toast({
+          title: "Error de validación",
+          description: validationResult.error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from("profiles")
-        .update(editedProfile)
+        .update(validationResult.data)
         .eq("user_id", user.id);
 
       if (error) throw error;
