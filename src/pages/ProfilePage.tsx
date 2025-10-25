@@ -26,22 +26,25 @@ import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
 import profileBgImg from "@/assets/amigos-celebracion.png";
 import valoracionesBgImg from "@/assets/familia-terraza-nueva.png";
 
-// Mapeo de cestas a imágenes y precios reales (actualizados del catálogo)
+// Mapeo de cestas a imágenes y precios correctos del catálogo actual
 const basketData: Record<string, { imagen: string; precio: number }> = {
+  // Pareja (2 personas)
   "Pareja Inicial": { imagen: parejaInicialImg, precio: 30 },
   "Pareja Natural (sin alcohol)": { imagen: conversacionNaturalImg, precio: 40 },
-  "Conversación Natural (sin alcohol)": { imagen: conversacionNaturalImg, precio: 40 },
   "Pareja Gourmet": { imagen: parejaGourmetImg, precio: 50 },
+  
+  // Grupos 3-4 personas
   "Trio ibérico": { imagen: trioIbericoImg, precio: 45 },
-  "Trio Ibérico": { imagen: trioIbericoImg, precio: 45 },
   "Mesa Abierta (sin alcohol)": { imagen: mesaAbiertaImg, precio: 55 },
   "Ibéricos Selectos": { imagen: ibericosSelectosImg, precio: 65 },
-  "Familiar clásica": { imagen: familiarClasicaImg, precio: 65 },
+  
+  // Grupos 5-6 personas
   "Familiar Clásica": { imagen: familiarClasicaImg, precio: 65 },
   "Experiencia Gastronómica (sin alcohol)": { imagen: experienciaGastronomicaImg, precio: 70 },
   "Gran Tertulia": { imagen: granTertuliaImg, precio: 80 },
+  
+  // Grupos 7-8 personas
   "Celebración Ibérica": { imagen: celebracionIbericaImg, precio: 85 },
-  "Festín Selecto": { imagen: festinSelectoImg, precio: 90 },
   "Festín Selecto (sin alcohol)": { imagen: festinSelectoImg, precio: 90 },
   "Experiencia Selecta": { imagen: experienciaGastronomicaImg, precio: 100 },
 };
