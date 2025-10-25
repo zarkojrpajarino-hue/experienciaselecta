@@ -23,7 +23,7 @@ import granTertuliaImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
 import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
 import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
 import profileBgImg from "@/assets/pareja-chimenea.png";
-import valoracionesBgImg from "@/assets/familia-terraza.png";
+import valoracionesBgImg from "@/assets/experiencia-gastronomica-clean.jpg";
 
 // Mapeo de cestas a imágenes y precios reales
 const basketData: Record<string, { imagen: string; precio: number }> = {

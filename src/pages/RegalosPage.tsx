@@ -256,21 +256,11 @@ const RegalosPage = () => {
                       </div>
                       <div className="flex-1">
                         <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
-                          🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_name}
+                          🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
                         </h2>
                         <p className="text-sm sm:text-base text-muted-foreground mb-2">
                           Te ha regalado: <strong>{gift.basket_name}</strong>
                         </p>
-                        {gift.personal_note && (
-                          <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-md my-3">
-                            <p className="text-sm italic text-foreground">
-                              "{gift.personal_note}"
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              - {gift.sender_name}
-                            </p>
-                          </div>
-                        )}
                         <p className="text-[0.65rem] sm:text-sm md:text-base font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] font-bungee mt-4 leading-tight">
                           Rellena la información para que podamos enviártelo
                         </p>
