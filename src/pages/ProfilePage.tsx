@@ -111,6 +111,63 @@ const ProfilePage = () => {
     checkAuthAndLoadData();
   }, []);
 
+  // Real-time subscriptions
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const ordersChannel = supabase
+      .channel('orders-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'orders'
+        },
+        () => {
+          loadUserData(user.id);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'order_items'
+        },
+        () => {
+          loadUserData(user.id);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'reviews'
+        },
+        () => {
+          loadUserData(user.id);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'pending_gifts'
+        },
+        () => {
+          loadUserData(user.id);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ordersChannel);
+    };
+  }, [user?.id]);
+
   const checkAuthAndLoadData = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     

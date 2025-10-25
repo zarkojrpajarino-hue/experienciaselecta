@@ -38,6 +38,28 @@ const RegalosPage = () => {
     loadPendingGifts();
   }, []);
 
+  // Real-time subscription for pending gifts
+  useEffect(() => {
+    const channel = supabase
+      .channel('pending-gifts-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'pending_gifts'
+        },
+        () => {
+          loadPendingGifts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const loadPendingGifts = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
