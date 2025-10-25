@@ -25,20 +25,24 @@ import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
 import profileBgImg from "@/assets/amigos-celebracion.png";
 import valoracionesBgImg from "@/assets/familia-terraza-nueva.png";
 
-// Mapeo de cestas a imágenes y precios reales
+// Mapeo de cestas a imágenes y precios reales (actualizados del catálogo)
 const basketData: Record<string, { imagen: string; precio: number }> = {
-  "Pareja Inicial": { imagen: parejaInicialImg, precio: 35 },
-  "Conversación Natural (sin alcohol)": { imagen: conversacionNaturalImg, precio: 45 },
-  "Pareja Gourmet": { imagen: parejaGourmetImg, precio: 55 },
-  "Trio ibérico": { imagen: trioIbericoImg, precio: 65 },
-  "Trio Ibérico": { imagen: trioIbericoImg, precio: 65 },
+  "Pareja Inicial": { imagen: parejaInicialImg, precio: 30 },
+  "Pareja Natural (sin alcohol)": { imagen: conversacionNaturalImg, precio: 40 },
+  "Conversación Natural (sin alcohol)": { imagen: conversacionNaturalImg, precio: 40 },
+  "Pareja Gourmet": { imagen: parejaGourmetImg, precio: 50 },
+  "Trio ibérico": { imagen: trioIbericoImg, precio: 45 },
+  "Trio Ibérico": { imagen: trioIbericoImg, precio: 45 },
   "Mesa Abierta (sin alcohol)": { imagen: mesaAbiertaImg, precio: 55 },
   "Ibéricos Selectos": { imagen: ibericosSelectosImg, precio: 65 },
-  "Familiar clásica": { imagen: familiarClasicaImg, precio: 60 },
+  "Familiar clásica": { imagen: familiarClasicaImg, precio: 65 },
+  "Familiar Clásica": { imagen: familiarClasicaImg, precio: 65 },
   "Experiencia Gastronómica (sin alcohol)": { imagen: experienciaGastronomicaImg, precio: 70 },
-  "Gran Tertulia": { imagen: granTertuliaImg, precio: 85 },
-  "Celebración Ibérica": { imagen: celebracionIbericaImg, precio: 110 },
-  "Festín Selecto": { imagen: festinSelectoImg, precio: 140 },
+  "Gran Tertulia": { imagen: granTertuliaImg, precio: 80 },
+  "Celebración Ibérica": { imagen: celebracionIbericaImg, precio: 85 },
+  "Festín Selecto": { imagen: festinSelectoImg, precio: 90 },
+  "Festín Selecto (sin alcohol)": { imagen: festinSelectoImg, precio: 90 },
+  "Experiencia Selecta": { imagen: experienciaGastronomicaImg, precio: 100 },
 };
 
 // Fallback por categoría si no encontramos la cesta exacta
@@ -473,16 +477,33 @@ const ProfilePage = () => {
     <>
       <Navbar />
       <div 
-        className="min-h-screen pt-24 pb-12 px-4 relative"
+        className="min-h-screen pt-24 pb-12 px-4 relative overflow-hidden"
       >
-        <img 
-          key={activeTab}
-          src={activeTab === 'reviews' ? valoracionesBgImg : profileBgImg} 
-          alt="Fondo de la página de perfil" 
-          className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-500" 
-          loading="lazy" 
-          style={{ objectPosition: 'center 40%' }} 
-        />
+        {/* Background images with smooth transitions */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={profileBgImg} 
+            alt="Fondo mis pedidos" 
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+            style={{ 
+              objectPosition: 'center 40%',
+              opacity: activeTab === 'orders' ? 1 : 0,
+              pointerEvents: activeTab === 'orders' ? 'auto' : 'none'
+            }} 
+            loading="eager"
+          />
+          <img 
+            src={valoracionesBgImg} 
+            alt="Fondo mis valoraciones" 
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+            style={{ 
+              objectPosition: 'center 40%',
+              opacity: activeTab === 'reviews' ? 1 : 0,
+              pointerEvents: activeTab === 'reviews' ? 'auto' : 'none'
+            }} 
+            loading="eager"
+          />
+        </div>
         {/* Overlay oscuro para mejorar legibilidad */}
         <div className="absolute inset-0 bg-black/40 z-[1]" />
         <div className="container mx-auto max-w-6xl relative z-[2]">
@@ -520,7 +541,7 @@ const ProfilePage = () => {
             </TabsList>
 
             {/* Orders Tab */}
-            <TabsContent value="orders" className="space-y-6 animate-slide-in-left">
+            <TabsContent value="orders" className="space-y-6 animate-fade-in">
               {/* Active/Paid Orders Only */}
               {orders.filter(o => o.status !== 'completed').length === 0 ? (
                 <Card className="bg-transparent border-none">
@@ -659,44 +680,48 @@ const ProfilePage = () => {
             </TabsContent>
 
             {/* Reviews Tab */}
-            <TabsContent value="reviews" className="space-y-6 animate-slide-in-right">
+            <TabsContent value="reviews" className="space-y-6 animate-fade-in">
               {/* Orders ready for review (older than 10 days without review) */}
               {orders.filter(o => o.status === 'completed' && !o.hasReview).length > 0 && (
                 <div className="mb-8">
                   <h2 className="text-2xl font-bungee text-[hsl(45,100%,65%)] mb-4 tracking-wider">Experiencias por valorar.</h2>
-                  {orders.filter(o => o.status === 'completed' && !o.hasReview).map((order) => (
-                    <Card key={order.id + order.items[0].basket_name} className="mb-6 bg-transparent border-none shadow-lg">
-                      <CardHeader className="p-6">
-                        <div className="space-y-4">
-                          <div className="flex justify-between items-start px-4">
-                            <div className="flex-1 text-left pr-4">
-                              <h3 className="text-xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
-                                {order.items[0].basket_name}.
-                              </h3>
-                              <p className="text-sm text-white font-poppins font-bold">
-                                📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                })}.
-                              </p>
-                            </div>
-                            <div className="flex-1 text-center">
-                              {order.items[0] && (() => {
-                                const item = order.items[0];
-                                const byName = basketData[item.basket_name]?.imagen;
-                                const cat = (item.basket_category || '').toLowerCase();
-                                const byCategory = cat.includes('pareja')
-                                  ? categoryFallbackImage.Pareja
-                                  : cat.includes('familia')
-                                    ? categoryFallbackImage.Familia
-                                    : cat.includes('amig')
-                                      ? categoryFallbackImage.Amigos
-                                      : undefined;
-                                const imgSrc = byName || byCategory || parejaInicialImg;
-                                return (
+                  <div className="space-y-6">
+                    {orders.filter(o => o.status === 'completed' && !o.hasReview).map((order) => {
+                      const item = order.items[0];
+                      const byName = basketData[item.basket_name]?.imagen;
+                      const cat = (item.basket_category || '').toLowerCase();
+                      const byCategory = cat.includes('pareja')
+                        ? categoryFallbackImage.Pareja
+                        : cat.includes('familia')
+                          ? categoryFallbackImage.Familia
+                          : cat.includes('amig')
+                            ? categoryFallbackImage.Amigos
+                            : undefined;
+                      const imgSrc = byName || byCategory || parejaInicialImg;
+                      
+                      return (
+                        <Card key={order.id + item.basket_name} className="overflow-hidden bg-transparent border-none shadow-lg">
+                          <CardHeader className="p-6">
+                            <div className="space-y-4">
+                              <div className="flex justify-between items-start px-4">
+                                <div className="flex-1 text-left pr-4">
+                                  <h3 className="text-xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
+                                    {item.basket_name}.
+                                  </h3>
+                                  <p className="text-sm text-white font-poppins font-bold">
+                                    📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                    })}.
+                                  </p>
+                                  <p className="font-poppins font-bold text-white text-lg mt-2">
+                                    {( (basketData[item.basket_name]?.precio ?? (item.price_per_item / 100)) * item.quantity ).toFixed(2)}€.
+                                  </p>
+                                </div>
+                                <div className="flex-1 text-center">
                                   <div 
-                                    className="w-24 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg inline-block"
+                                    className="w-28 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg inline-block"
                                     onClick={() => setZoomedImage(imgSrc)}
                                   >
                                     <img 
@@ -705,21 +730,21 @@ const ProfilePage = () => {
                                       className="w-full h-auto object-cover"
                                     />
                                   </div>
-                                );
-                              })()}
-                            </div>
-                          </div>
+                                </div>
+                              </div>
 
-                          <Button
-                            onClick={() => startReview(order.id, order.items[0]?.basket_name)}
-                            className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
-                          >
-                            ⭐ Valorar esta experiencia.
-                          </Button>
-                        </div>
-                      </CardHeader>
-                    </Card>
-                  ))}
+                              <Button
+                                onClick={() => startReview(order.id, item.basket_name)}
+                                className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
+                              >
+                                ⭐ Dejar valoración.
+                              </Button>
+                            </div>
+                          </CardHeader>
+                        </Card>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
