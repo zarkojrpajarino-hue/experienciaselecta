@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp, X, ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 
 // Import images
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -505,9 +506,9 @@ const ProfilePage = () => {
           />
         </div>
         {/* Overlay oscuro para mejorar legibilidad */}
-        <div className="absolute inset-0 bg-black/40 z-[1]" />
+        <div className="absolute inset-0 bg-black/65 z-[1]" />
         <div className="container mx-auto max-w-6xl relative z-[2]">
-          {/* Header with Back and Logout buttons */}
+          {/* Header with Avatar, Back and Logout buttons */}
           <div className="mb-8 flex justify-between items-center">
             <Button
               onClick={() => navigate('/')}
@@ -517,6 +518,14 @@ const ProfilePage = () => {
               <ArrowLeft className="w-4 h-4" />
               Volver
             </Button>
+            
+            {/* User Profile Avatar */}
+            <UserProfileDropdown 
+              user={user} 
+              profile={profile} 
+              onProfileUpdate={() => loadUserData(user.id)}
+            />
+            
             <Button
               onClick={handleLogout}
               variant="ghost"
