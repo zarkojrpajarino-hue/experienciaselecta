@@ -8,7 +8,9 @@ import { Gift, X } from 'lucide-react';
 interface PendingGift {
   id: string;
   sender_name: string;
+  sender_email?: string;
   recipient_name: string;
+  recipient_email: string;
   basket_name: string;
   basket_image: string;
   basket_category: string;
@@ -207,10 +209,10 @@ const RegalosPage = () => {
                     </div>
                   )}
                   <div className="flex-1">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">
-                      🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_name}
+                    <h2 className="text-sm sm:text-base md:text-lg font-bold mb-2 leading-tight">
+                      🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email || gift.recipient_email}
                     </h2>
-                    <p className="text-base sm:text-lg text-muted-foreground mb-2">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-2">
                       Te ha regalado: <strong>{gift.basket_name}</strong>
                     </p>
                     {gift.personal_note && (
