@@ -56,7 +56,7 @@ const CestasPage = () => {
       }
     }, 500);
   }, []);
-  return <div className="min-h-screen font-work-sans bg-cream">
+  return <div className="min-h-screen font-work-sans bg-background">
       {/* Add Navbar */}
       <Navbar />
       

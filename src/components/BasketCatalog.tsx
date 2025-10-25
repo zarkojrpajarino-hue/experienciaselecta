@@ -1116,7 +1116,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     if (categoria === "Pareja") {
       // Pareja: texto negro, importantes rosa
       return { 
-        bg: 'bg-white', 
+        bg: 'bg-background', 
         text: 'text-black', 
         important: 'text-[#ff1493]',
         button: 'bg-gray-500 hover:bg-gray-600 text-white border-0',
@@ -1127,7 +1127,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     } else if (categoria === "Amigos") {
       // Amigos: texto negro, importantes azul
       return { 
-        bg: 'bg-white', 
+        bg: 'bg-background', 
         text: 'text-black', 
         important: 'text-[#00BFFF]',
         button: 'bg-blue-500 hover:bg-blue-600 text-white border-0',
@@ -1138,7 +1138,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     } else if (categoria === "Familia") {
       // Familia: texto negro, importantes dorado
       return { 
-        bg: 'bg-white', 
+        bg: 'bg-background', 
         text: 'text-black', 
         important: 'text-[#FFD700]',
         button: 'bg-yellow-500 hover:bg-yellow-600 text-white border-0',
@@ -1149,7 +1149,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     }
     // Default
     return { 
-      bg: 'bg-white', 
+      bg: 'bg-background', 
       text: 'text-black', 
       important: 'text-[#FFD700]',
       button: 'bg-gray-500 hover:bg-gray-600 text-white border-0',
@@ -1353,7 +1353,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                               </p>
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button variant="outline" size="sm" className="text-xs">
+                                  <Button variant="ghost" size="sm" className="text-xs bg-transparent text-foreground hover:bg-foreground/5">
                                     ℹ️ Info
                                   </Button>
                                 </DialogTrigger>
@@ -1464,7 +1464,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
                   {/* DIV Contenido - Ajustado para móvil */}
                   <div className={`flex-1 ${index % 2 === 1 ? 'md:col-start-1 md:row-start-1' : ''}`}>
-                    <div className="rounded-lg shadow-none p-3 md:p-6 bg-white border-2 border-white">
+                    <div className="rounded-lg shadow-none p-3 md:p-6 bg-card border-2 border-border">
                       <div className={`flex-1 space-y-2 md:space-y-3 ${!isCardOpen ? 'md:flex md:items-center md:min-h-[16rem]' : ''}`}>
                         {/* Title - clickeable con hover que expande flecha */}
                         {/* Título clickeable */}
@@ -1615,7 +1615,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                               </div>
                             )}
 
-                            <Separator className={colorCombo.bg === 'bg-white' ? 'bg-black/20' : 'bg-white/20'} />
+                            <Separator className="bg-border" />
 
                             {/* Coste por persona */}
                             {basket.costePersona && (
