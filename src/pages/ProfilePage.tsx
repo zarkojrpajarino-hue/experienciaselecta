@@ -200,6 +200,10 @@ const ProfilePage = () => {
         .single();
 
       if (customerData) {
+        // Calculate date 10 days ago
+        const tenDaysAgo = new Date();
+        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
         // Load orders with items and shipping info
         const { data: ordersData, error: ordersError } = await supabase
           .from("orders")
@@ -234,6 +238,10 @@ const ProfilePage = () => {
           // Skip orders that were entirely gifts
           if (giftedOrderIds.has(order.id)) continue;
 
+          // Check if order is older than 10 days
+          const orderDate = new Date(order.created_at);
+          const isOlderThan10Days = orderDate < tenDaysAgo;
+
           const { data: items } = await supabase
             .from("order_items")
             .select("basket_name, basket_category, quantity, price_per_item")
@@ -249,10 +257,16 @@ const ProfilePage = () => {
               .eq("basket_name", item.basket_name)
               .eq("user_id", userId);
 
+            const hasReview = (reviewData?.length || 0) > 0;
+
+            // If order is older than 10 days, mark as completed for review section
+            const orderStatus = isOlderThan10Days ? 'completed' : order.status;
+
             expandedOrders.push({
               ...order,
+              status: orderStatus,
               items: [item], // Single item per order
-              hasReview: (reviewData?.length || 0) > 0,
+              hasReview: hasReview,
             });
           }
         }
@@ -265,6 +279,9 @@ const ProfilePage = () => {
           .eq("shipping_completed", true);
 
         for (const gift of receivedGifts || []) {
+          const giftDate = new Date(gift.created_at);
+          const isOlderThan10Days = giftDate < tenDaysAgo;
+
           const { data: reviewData } = await supabase
             .from("reviews")
             .select("id")
@@ -276,7 +293,7 @@ const ProfilePage = () => {
             id: gift.order_id,
             created_at: gift.created_at,
             total_amount: gift.price * gift.quantity,
-            status: "completed",
+            status: isOlderThan10Days ? "completed" : "pending",
             shipping_address_line1: gift.shipping_address_line1 || "",
             shipping_address_line2: gift.shipping_address_line2,
             shipping_city: gift.shipping_city || "",
@@ -504,15 +521,15 @@ const ProfilePage = () => {
 
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6 animate-slide-in-left">
-              {/* Active Orders */}
-              {orders.filter(o => o.status !== 'completed').slice(0, 1).length === 0 ? (
+              {/* Active/Paid Orders Only */}
+              {orders.filter(o => o.status !== 'completed').length === 0 ? (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
                     No tienes pedidos activos.
                   </CardContent>
                 </Card>
               ) : (
-                orders.filter(o => o.status !== 'completed').slice(0, 1).map((order) => (
+                orders.filter(o => o.status !== 'completed').map((order) => (
                   <Card key={order.id} className="overflow-hidden bg-transparent border-none shadow-lg">
                     <CardHeader className="p-6">
                       <Collapsible
@@ -639,109 +656,73 @@ const ProfilePage = () => {
                   </Card>
                 ))
               )}
+            </TabsContent>
 
-              {/* Completed Orders */}
-              {orders.filter(o => o.status === 'completed').length > 0 && (
-                <div className="mt-8">
-                  <h2 className="text-2xl font-bungee text-[hsl(45,100%,65%)] mb-4 tracking-wider">Pedidos completados.</h2>
-                  {orders.filter(o => o.status === 'completed').map((order) => (
+            {/* Reviews Tab */}
+            <TabsContent value="reviews" className="space-y-6 animate-slide-in-right">
+              {/* Orders ready for review (older than 10 days without review) */}
+              {orders.filter(o => o.status === 'completed' && !o.hasReview).length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bungee text-[hsl(45,100%,65%)] mb-4 tracking-wider">Experiencias por valorar.</h2>
+                  {orders.filter(o => o.status === 'completed' && !o.hasReview).map((order) => (
                     <Card key={order.id + order.items[0].basket_name} className="mb-6 bg-transparent border-none shadow-lg">
                       <CardHeader className="p-6">
-                        <Collapsible
-                          open={openOrders[order.id + order.items[0].basket_name]}
-                          onOpenChange={() => setOpenOrders(prev => ({ ...prev, [order.id + order.items[0].basket_name]: !prev[order.id + order.items[0].basket_name] }))}
-                        >
-                          <div className="space-y-4">
-                            <div className="flex justify-between items-start px-4">
-                              <div className="flex-1 text-left pr-4">
-                                <h3 className="text-xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
-                                  {order.items[0].basket_name}.
-                                </h3>
-                                <p className="text-sm text-white font-poppins font-bold">
-                                  📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  })}.
-                                </p>
-                              </div>
-                              <div className="flex-1 text-center">
-                                {order.items[0] && (() => {
-                                  const item = order.items[0];
-                                  const byName = basketData[item.basket_name]?.imagen;
-                                  const cat = (item.basket_category || '').toLowerCase();
-                                  const byCategory = cat.includes('pareja')
-                                    ? categoryFallbackImage.Pareja
-                                    : cat.includes('familia')
-                                      ? categoryFallbackImage.Familia
-                                      : cat.includes('amig')
-                                        ? categoryFallbackImage.Amigos
-                                        : undefined;
-                                  const imgSrc = byName || byCategory || parejaInicialImg;
-                                  return (
-                                    <div 
-                                      className="w-24 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg inline-block"
-                                      onClick={() => setZoomedImage(imgSrc)}
-                                    >
-                                      <img 
-                                        src={imgSrc} 
-                                        alt={item.basket_name}
-                                        className="w-full h-auto object-cover"
-                                      />
-                                    </div>
-                                  );
-                                })()}
-                              </div>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-start px-4">
+                            <div className="flex-1 text-left pr-4">
+                              <h3 className="text-xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
+                                {order.items[0].basket_name}.
+                              </h3>
+                              <p className="text-sm text-white font-poppins font-bold">
+                                📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}.
+                              </p>
                             </div>
-
-                            <CollapsibleTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                className="w-full flex items-center justify-center gap-2 text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold transition-colors"
-                              >
-                                {openOrders[order.id + order.items[0].basket_name] ? (
-                                  <>
-                                    <ChevronUp className="w-4 h-4" />
-                                    Ocultar detalles.
-                                  </>
-                                ) : (
-                                  <>
-                                    <ChevronDown className="w-4 h-4" />
-                                    Ver detalles.
-                                  </>
-                                )}
-                              </Button>
-                            </CollapsibleTrigger>
+                            <div className="flex-1 text-center">
+                              {order.items[0] && (() => {
+                                const item = order.items[0];
+                                const byName = basketData[item.basket_name]?.imagen;
+                                const cat = (item.basket_category || '').toLowerCase();
+                                const byCategory = cat.includes('pareja')
+                                  ? categoryFallbackImage.Pareja
+                                  : cat.includes('familia')
+                                    ? categoryFallbackImage.Familia
+                                    : cat.includes('amig')
+                                      ? categoryFallbackImage.Amigos
+                                      : undefined;
+                                const imgSrc = byName || byCategory || parejaInicialImg;
+                                return (
+                                  <div 
+                                    className="w-24 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg inline-block"
+                                    onClick={() => setZoomedImage(imgSrc)}
+                                  >
+                                    <img 
+                                      src={imgSrc} 
+                                      alt={item.basket_name}
+                                      className="w-full h-auto object-cover"
+                                    />
+                                  </div>
+                                );
+                              })()}
+                            </div>
                           </div>
 
-                          <CollapsibleContent className="mt-6 px-4 space-y-4">
-                            <div className="text-white font-poppins font-bold space-y-2">
-                              <p><strong>Dirección de envío:</strong></p>
-                              <p>{order.shipping_address_line1}.</p>
-                              {order.shipping_address_line2 && <p>{order.shipping_address_line2}.</p>}
-                              <p>{order.shipping_city}, {order.shipping_postal_code}.</p>
-                              <p>{order.shipping_country}.</p>
-                            </div>
-                            
-                            {!order.hasReview && (
-                              <Button
-                                onClick={() => startReview(order.id, order.items[0]?.basket_name)}
-                                className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
-                              >
-                                ⭐ Valorar esta cesta.
-                              </Button>
-                            )}
-                          </CollapsibleContent>
-                        </Collapsible>
+                          <Button
+                            onClick={() => startReview(order.id, order.items[0]?.basket_name)}
+                            className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
+                          >
+                            ⭐ Valorar esta experiencia.
+                          </Button>
+                        </div>
                       </CardHeader>
                     </Card>
                   ))}
                 </div>
               )}
-            </TabsContent>
 
-            {/* Reviews Tab */}
-            <TabsContent value="reviews" className="space-y-6 animate-slide-in-right">
               {/* Formulario para nueva valoración */}
               <Card className="bg-transparent border-none shadow-lg">
                 <CardContent className="space-y-4 pt-6">

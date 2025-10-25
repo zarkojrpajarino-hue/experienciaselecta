@@ -19,6 +19,7 @@ const Navbar = () => {
   const [user, setUser] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
+  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, getTotalItems, getTotalAmount, removeFromCart } = useCart();
@@ -32,6 +33,7 @@ const Navbar = () => {
       setUser(session?.user ?? null);
       if (session?.user) {
         checkPendingGifts(session.user.email!);
+        checkPendingReviews(session.user.id);
       }
     });
 
@@ -41,6 +43,7 @@ const Navbar = () => {
       setUser(session?.user ?? null);
       if (session?.user) {
         checkPendingGifts(session.user.email!);
+        checkPendingReviews(session.user.id);
       }
     });
 
@@ -62,6 +65,53 @@ const Navbar = () => {
       }
     } catch (error) {
       console.error('Error checking pending gifts:', error);
+    }
+  };
+
+  const checkPendingReviews = async (userId: string) => {
+    try {
+      // Get customer ID
+      const { data: customerData } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('user_id', userId)
+        .single();
+
+      if (!customerData) return;
+
+      // Get orders older than 10 days
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+      const { data: ordersData } = await supabase
+        .from('orders')
+        .select('id, created_at')
+        .eq('customer_id', customerData.id)
+        .eq('status', 'completed')
+        .lt('created_at', tenDaysAgo.toISOString());
+
+      if (!ordersData || ordersData.length === 0) {
+        setPendingReviewsCount(0);
+        return;
+      }
+
+      // Check which orders don't have reviews
+      let pendingCount = 0;
+      for (const order of ordersData) {
+        const { data: reviewData } = await supabase
+          .from('reviews')
+          .select('id')
+          .eq('order_id', order.id)
+          .eq('user_id', userId);
+
+        if (!reviewData || reviewData.length === 0) {
+          pendingCount++;
+        }
+      }
+
+      setPendingReviewsCount(pendingCount);
+    } catch (error) {
+      console.error('Error checking pending reviews:', error);
     }
   };
 
@@ -194,17 +244,33 @@ const Navbar = () => {
 
           {/* Right: User, Gift, Cart and Menu */}
           <div className="flex items-center gap-2">
-            {/* User Button */}
+            {/* User Button with Badge */}
             {user ? (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/perfil")}
-                className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
-                aria-label="Mi perfil"
-              >
-                <User size={20} />
-              </motion.button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate("/perfil")}
+                    className="relative p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
+                    aria-label="Mi perfil"
+                  >
+                    <User size={20} />
+                    {pendingReviewsCount > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                      >
+                        {pendingReviewsCount}
+                      </motion.span>
+                    )}
+                  </motion.button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{pendingReviewsCount > 0 ? 'Experiencias por valorar' : 'Mi perfil'}</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
               <motion.button
                 whileHover={{ scale: 1.05 }}
