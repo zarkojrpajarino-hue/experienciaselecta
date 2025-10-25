@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 
 interface SlideItem {
   image: string;
-  title: string;
-  text?: string;
+  title: string | React.ReactNode;
+  text?: string | React.ReactNode;
   alt?: string;
   navigationColor?: string;
 }
@@ -48,16 +48,16 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {/* Text */}
         <div className="w-full flex flex-col items-center justify-center py-1">
           <div className="px-4 max-w-2xl mb-1 text-center">
-            <h3
+            <div
               className={`text-sm sm:text-base md:text-base lg:text-lg xl:text-xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
               style={{ textTransform: "none" }}
             >
               {current.title}
-            </h3>
+            </div>
             {current.text && (
-              <p className="mt-1 text-xs md:text-sm font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }}>
+              <div className="mt-1 text-xs md:text-sm font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }}>
                 {current.text}
-              </p>
+              </div>
             )}
           </div>
 
@@ -113,7 +113,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
             >
               <img
                 src={s.image}
-                alt={s.alt || s.title}
+                alt={s.alt || (typeof s.title === 'string' ? s.title : 'Imagen del carrusel')}
                 className="w-full h-full object-cover rounded-[2rem]"
               />
             </motion.div>
@@ -136,7 +136,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           <div className="rounded-[2rem] overflow-hidden">
             <img
               src={current.image}
-              alt={current.alt || current.title}
+              alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
               className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]"
             />
           </div>
