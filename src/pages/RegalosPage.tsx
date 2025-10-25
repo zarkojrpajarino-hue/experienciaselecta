@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Gift } from 'lucide-react';
+import { Gift, X } from 'lucide-react';
 
 interface PendingGift {
   id: string;
@@ -23,6 +23,7 @@ const RegalosPage = () => {
   const [pendingGifts, setPendingGifts] = useState<PendingGift[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [shippingData, setShippingData] = useState({
     name: '',
     email: '',
@@ -170,20 +171,25 @@ const RegalosPage = () => {
           <div className="space-y-8">
             {pendingGifts.map((gift) => (
               <div key={gift.id} className="bg-card rounded-lg p-6 border border-border shadow-lg">
-                <div className="flex items-start gap-6 mb-6">
+                <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
                   {gift.basket_image && (
-                    <img
-                      src={gift.basket_image}
-                      alt={gift.basket_name}
-                      className="w-32 h-32 object-cover rounded-lg"
-                    />
+                    <div 
+                      className="w-32 h-32 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
+                      onClick={() => setZoomedImage(gift.basket_image)}
+                    >
+                      <img
+                        src={gift.basket_image}
+                        alt={gift.basket_name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   )}
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2">
-                      {userName || gift.recipient_name}, tienes un regalo pendiente
+                  <div className="flex-1">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">
+                      🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_name}
                     </h2>
-                    <p className="text-lg text-muted-foreground mb-2">
-                      {gift.sender_name} te ha regalado: <strong>{gift.basket_name}</strong>
+                    <p className="text-base sm:text-lg text-muted-foreground mb-2">
+                      Te ha regalado: <strong>{gift.basket_name}</strong>
                     </p>
                     {gift.personal_note && (
                       <div className="bg-primary/10 border-l-4 border-primary p-3 rounded-r-md my-3">
@@ -278,6 +284,29 @@ const RegalosPage = () => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Image Zoom Modal */}
+        {zoomedImage && (
+          <div 
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setZoomedImage(null);
+            }}
+          >
+            <Button 
+              onClick={() => setZoomedImage(null)} 
+              className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              size="icon"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+            <img 
+              src={zoomedImage} 
+              alt="Cesta ampliada"
+              className="max-w-full max-h-full object-contain rounded-lg"
+            />
           </div>
         )}
       </div>

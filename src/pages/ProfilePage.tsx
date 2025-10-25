@@ -162,36 +162,86 @@ const ProfilePage = () => {
 
         if (ordersError) throw ordersError;
 
-        // Load order items for each order
-        const ordersWithItems = await Promise.all(
-          (ordersData || []).map(async (order) => {
-            const { data: items } = await supabase
-              .from("order_items")
-              .select("basket_name, basket_category, quantity, price_per_item")
-              .eq("order_id", order.id);
+        // Get all gift order IDs for this user (items they gifted to others)
+        const { data: giftedItems } = await supabase
+          .from("pending_gifts")
+          .select("order_id")
+          .in("order_id", ordersData?.map(o => o.id) || []);
 
-            // Check if order has reviews
+        const giftedOrderIds = new Set(giftedItems?.map(g => g.order_id) || []);
+
+        // Load order items for each order, expanding items individually
+        const expandedOrders: Order[] = [];
+        
+        for (const order of ordersData || []) {
+          // Skip orders that were entirely gifts
+          if (giftedOrderIds.has(order.id)) continue;
+
+          const { data: items } = await supabase
+            .from("order_items")
+            .select("basket_name, basket_category, quantity, price_per_item")
+            .eq("order_id", order.id);
+
+          // Create a separate order entry for each item (no grouping)
+          for (const item of items || []) {
+            // Check if this specific item has a review
             const { data: reviewData } = await supabase
               .from("reviews")
               .select("id")
               .eq("order_id", order.id)
+              .eq("basket_name", item.basket_name)
               .eq("user_id", userId);
 
-            return {
+            expandedOrders.push({
               ...order,
-              items: items || [],
+              items: [item], // Single item per order
               hasReview: (reviewData?.length || 0) > 0,
-            };
-          })
-        );
+            });
+          }
+        }
 
-        setOrders(ordersWithItems);
+        // Load received gifts as additional orders
+        const { data: receivedGifts } = await supabase
+          .from("pending_gifts")
+          .select("*")
+          .eq("recipient_user_id", userId)
+          .eq("shipping_completed", true);
+
+        for (const gift of receivedGifts || []) {
+          const { data: reviewData } = await supabase
+            .from("reviews")
+            .select("id")
+            .eq("order_id", gift.order_id)
+            .eq("basket_name", gift.basket_name)
+            .eq("user_id", userId);
+
+          expandedOrders.push({
+            id: gift.order_id,
+            created_at: gift.created_at,
+            total_amount: gift.price * gift.quantity,
+            status: "completed",
+            shipping_address_line1: gift.shipping_address_line1 || "",
+            shipping_address_line2: gift.shipping_address_line2,
+            shipping_city: gift.shipping_city || "",
+            shipping_postal_code: gift.shipping_postal_code || "",
+            shipping_country: gift.shipping_country || "España",
+            items: [{
+              basket_name: gift.basket_name,
+              basket_category: gift.basket_category,
+              quantity: gift.quantity,
+              price_per_item: gift.price,
+            }],
+            hasReview: (reviewData?.length || 0) > 0,
+          });
+        }
+
+        setOrders(expandedOrders);
         
         // Set default basket name from first order item
-        if (ordersWithItems.length > 0 && ordersWithItems[0].items.length > 0) {
+        if (expandedOrders.length > 0 && expandedOrders[0].items.length > 0) {
           setNewReview(prev => ({
             ...prev,
-            basketName: ordersWithItems[0].items[0].basket_name
+            basketName: expandedOrders[0].items[0].basket_name
           }));
         }
       }
@@ -397,6 +447,7 @@ const ProfilePage = () => {
 
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6 animate-slide-in-left">
+              {/* Active Orders */}
               {orders.filter(o => o.status !== 'completed').slice(0, 1).length === 0 ? (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
@@ -531,6 +582,105 @@ const ProfilePage = () => {
                   </Card>
                 ))
               )}
+
+              {/* Completed Orders */}
+              {orders.filter(o => o.status === 'completed').length > 0 && (
+                <div className="mt-8">
+                  <h2 className="text-2xl font-bungee text-[hsl(45,100%,65%)] mb-4 tracking-wider">Pedidos completados.</h2>
+                  {orders.filter(o => o.status === 'completed').map((order) => (
+                    <Card key={order.id + order.items[0].basket_name} className="mb-6 bg-transparent border-none shadow-lg">
+                      <CardHeader className="p-6">
+                        <Collapsible
+                          open={openOrders[order.id + order.items[0].basket_name]}
+                          onOpenChange={() => setOpenOrders(prev => ({ ...prev, [order.id + order.items[0].basket_name]: !prev[order.id + order.items[0].basket_name] }))}
+                        >
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-start px-4">
+                              <div className="flex-1 text-left pr-4">
+                                <h3 className="text-xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
+                                  {order.items[0].basket_name}.
+                                </h3>
+                                <p className="text-sm text-white font-poppins font-bold">
+                                  📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}.
+                                </p>
+                              </div>
+                              <div className="flex-1 text-center">
+                                {order.items[0] && (() => {
+                                  const item = order.items[0];
+                                  const byName = basketData[item.basket_name]?.imagen;
+                                  const cat = (item.basket_category || '').toLowerCase();
+                                  const byCategory = cat.includes('pareja')
+                                    ? categoryFallbackImage.Pareja
+                                    : cat.includes('familia')
+                                      ? categoryFallbackImage.Familia
+                                      : cat.includes('amig')
+                                        ? categoryFallbackImage.Amigos
+                                        : undefined;
+                                  const imgSrc = byName || byCategory || parejaInicialImg;
+                                  return (
+                                    <div 
+                                      className="w-24 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg inline-block"
+                                      onClick={() => setZoomedImage(imgSrc)}
+                                    >
+                                      <img 
+                                        src={imgSrc} 
+                                        alt={item.basket_name}
+                                        className="w-full h-auto object-cover"
+                                      />
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+
+                            <CollapsibleTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                className="w-full flex items-center justify-center gap-2 text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold transition-colors"
+                              >
+                                {openOrders[order.id + order.items[0].basket_name] ? (
+                                  <>
+                                    <ChevronUp className="w-4 h-4" />
+                                    Ocultar detalles.
+                                  </>
+                                ) : (
+                                  <>
+                                    <ChevronDown className="w-4 h-4" />
+                                    Ver detalles.
+                                  </>
+                                )}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </div>
+
+                          <CollapsibleContent className="mt-6 px-4 space-y-4">
+                            <div className="text-white font-poppins font-bold space-y-2">
+                              <p><strong>Dirección de envío:</strong></p>
+                              <p>{order.shipping_address_line1}.</p>
+                              {order.shipping_address_line2 && <p>{order.shipping_address_line2}.</p>}
+                              <p>{order.shipping_city}, {order.shipping_postal_code}.</p>
+                              <p>{order.shipping_country}.</p>
+                            </div>
+                            
+                            {!order.hasReview && (
+                              <Button
+                                onClick={() => startReview(order.id, order.items[0]?.basket_name)}
+                                className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
+                              >
+                                ⭐ Valorar esta cesta.
+                              </Button>
+                            )}
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </TabsContent>
 
             {/* Reviews Tab */}
@@ -548,8 +698,8 @@ const ProfilePage = () => {
                       {orders.length === 0 ? (
                         <option value="" className="font-poppins font-bold bg-white text-black">No hay pedidos disponibles.</option>
                       ) : (
-                        Array.from(new Set(orders.flatMap(o => o.items.map(i => i.basket_name)))).map((basketName) => (
-                          <option key={basketName} value={basketName} className="font-poppins font-bold bg-white text-black">
+                        orders.flatMap(o => o.items.map(i => i.basket_name)).map((basketName, idx) => (
+                          <option key={`${basketName}-${idx}`} value={basketName} className="font-poppins font-bold bg-white text-black">
                             {basketName}.
                           </option>
                         ))
