@@ -209,8 +209,8 @@ const RegalosPage = () => {
                     </div>
                   )}
                   <div className="flex-1">
-                    <h2 className="text-sm sm:text-base md:text-lg font-bold mb-2 leading-tight">
-                      🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email || gift.recipient_email}
+                    <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
+                      🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email || 'info@lapajareria.com'}
                     </h2>
                     <p className="text-sm sm:text-base text-muted-foreground mb-2">
                       Te ha regalado: <strong>{gift.basket_name}</strong>
