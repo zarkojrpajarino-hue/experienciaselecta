@@ -87,10 +87,10 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/10 transition-all duration-300"
+        className="flex items-center gap-2 p-2 rounded-lg hover:bg-transparent transition-all duration-300"
       >
-        <Avatar className="w-10 h-10 border-2 border-[hsl(45,100%,65%)]">
-          <AvatarFallback className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] font-bold">
+        <Avatar className="w-10 h-10 border-2 border-white">
+          <AvatarFallback className="bg-transparent text-white font-bold">
             {getUserInitials()}
           </AvatarFallback>
         </Avatar>

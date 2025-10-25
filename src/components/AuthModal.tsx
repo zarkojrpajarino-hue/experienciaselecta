@@ -17,37 +17,70 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [showCodeInput, setShowCodeInput] = useState(false);
   const { toast } = useToast();
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: redirectUrl,
+          shouldCreateUser: true,
         }
       });
 
       if (error) throw error;
 
+      setShowCodeInput(true);
       toast({
-        title: "¡Enlace enviado!",
-        description: "Revisa tu correo para iniciar sesión.",
+        title: "¡Código enviado!",
+        description: "Revisa tu correo e introduce el código de verificación.",
+      });
+    } catch (error: any) {
+      console.error('Send code error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error al enviar el código",
+        description: error.message || "No se pudo enviar el código de verificación.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: verificationCode,
+        type: 'email'
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "¡Acceso correcto!",
+        description: "Has iniciado sesión correctamente.",
       });
 
       setEmail("");
+      setVerificationCode("");
+      setShowCodeInput(false);
+      onSuccess();
       onClose();
     } catch (error: any) {
-      console.error('Sign in error:', error);
+      console.error('Verification error:', error);
       toast({
         variant: "destructive",
-        title: "Error al enviar el enlace",
-        description: error.message || "No se pudo enviar el enlace de acceso.",
+        title: "Código incorrecto",
+        description: error.message || "El código de verificación no es válido.",
       });
     } finally {
       setIsLoading(false);
@@ -83,6 +116,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   const handleClose = () => {
     setEmail("");
+    setVerificationCode("");
+    setShowCodeInput(false);
     onClose();
   };
 
@@ -99,7 +134,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
           <CardHeader className="space-y-1">
             <CardTitle className="text-lg">Inicia sesión</CardTitle>
             <CardDescription>
-              Te enviaremos un enlace de acceso a tu email
+              {showCodeInput ? "Introduce el código que te enviamos" : "Te enviaremos un código de verificación a tu email"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -125,37 +160,78 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
               </div>
             </div>
 
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            {!showCodeInput ? (
+              <form onSubmit={handleSendCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="tu@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-9"
+                      autoComplete="off"
+                      required
+                    />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
+                      Enviando código...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight className="w-4 h-4 mr-2" />
+                      Enviar código
+                    </>
+                  )}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="code">Código de verificación</Label>
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="tu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-9"
+                    id="code"
+                    type="text"
+                    placeholder="123456"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
                     autoComplete="off"
                     required
                   />
                 </div>
-              </div>
-              <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
-                    Enviando enlace...
-                  </>
-                ) : (
-                  <>
-                    <ArrowRight className="w-4 h-4 mr-2" />
-                    Enviar enlace de acceso
-                  </>
-                )}
-              </Button>
-            </form>
+                <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
+                      Verificando...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight className="w-4 h-4 mr-2" />
+                      Verificar código
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="ghost"
+                  onClick={() => {
+                    setShowCodeInput(false);
+                    setVerificationCode("");
+                  }}
+                  className="w-full text-sm"
+                >
+                  Volver a introducir email
+                </Button>
+              </form>
+            )}
           </CardContent>
         </Card>
       </DialogContent>

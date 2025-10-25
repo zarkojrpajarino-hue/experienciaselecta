@@ -508,7 +508,16 @@ const ProfilePage = () => {
         {/* Overlay oscuro para mejorar legibilidad */}
         <div className="absolute inset-0 bg-black/65 z-[1]" />
         <div className="container mx-auto max-w-6xl relative z-[2]">
-          {/* Header with Avatar, Back and Logout buttons */}
+          {/* User Profile Avatar - moved to top */}
+          <div className="mb-4 flex justify-center">
+            <UserProfileDropdown 
+              user={user} 
+              profile={profile} 
+              onProfileUpdate={() => loadUserData(user.id)}
+            />
+          </div>
+          
+          {/* Header with Back and Logout buttons */}
           <div className="mb-8 flex justify-between items-center">
             <Button
               onClick={() => navigate('/')}
@@ -518,13 +527,6 @@ const ProfilePage = () => {
               <ArrowLeft className="w-4 h-4" />
               Volver
             </Button>
-            
-            {/* User Profile Avatar */}
-            <UserProfileDropdown 
-              user={user} 
-              profile={profile} 
-              onProfileUpdate={() => loadUserData(user.id)}
-            />
             
             <Button
               onClick={handleLogout}
