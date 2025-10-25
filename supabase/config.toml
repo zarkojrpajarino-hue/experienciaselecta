@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.auto-login]
 verify_jwt = false
+
+[functions.test-purchase-flow]
+verify_jwt = false
