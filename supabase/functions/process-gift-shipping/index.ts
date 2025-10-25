@@ -47,10 +47,22 @@ serve(async (req) => {
     
     console.log('Processing gift shipping for:', validatedData.giftId);
 
-    // Get gift details to find the associated order
+    // Get gift details to find the associated order and sender email
     const { data: gift, error: giftError } = await supabase
       .from('pending_gifts')
-      .select('order_id, recipient_email, recipient_name, sender_name, basket_name')
+      .select(`
+        order_id, 
+        recipient_email, 
+        recipient_name, 
+        sender_name, 
+        basket_name,
+        orders!inner(
+          customer_id,
+          customers!inner(
+            email
+          )
+        )
+      `)
       .eq('id', validatedData.giftId)
       .single();
 
@@ -135,6 +147,35 @@ El equipo de Experiencia Selecta
       subject: '✅ ¡Tu pedido está de camino! - Experiencia Selecta',
       text: recipientEmailContent,
     });
+
+    // Email to sender (original buyer) confirming recipient completed shipping
+    const senderEmail = (gift as any).orders?.customers?.email;
+    if (senderEmail) {
+      const senderEmailContent = `
+¡Hola ${escapeHtml(validatedData.senderName)}!
+
+Te confirmamos que ${escapeHtml(validatedData.recipientName)} (${escapeHtml(gift.recipient_email)}) ya ha rellenado los datos de envío para recibir su regalo.
+
+🎁 Regalo: ${escapeHtml(validatedData.basketName)}
+
+El pedido ahora está de camino a la dirección proporcionada:
+${escapeHtml(validatedData.shippingAddress)}
+
+¡Gracias por regalar momentos especiales!
+
+Saludos,
+El equipo de Experiencia Selecta
+      `;
+
+      await resend.emails.send({
+        from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
+        to: [senderEmail],
+        subject: `✅ ${validatedData.recipientName} completó los datos - Tu regalo está de camino`,
+        text: senderEmailContent,
+      });
+
+      console.log('Sender notification email sent to:', senderEmail);
+    }
 
     console.log('Gift shipping emails sent successfully');
 

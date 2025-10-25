@@ -143,6 +143,17 @@ Experiencias Selecta - Momentos que perduran
             
             <p style="color: #666; margin-top: 20px;">Los destinatarios recibirán un correo con las instrucciones para reclamar su regalo y proporcionar su dirección de envío.</p>
             
+            <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 4px;">
+              <p style="color: #856404; margin: 0; font-weight: bold;">⏰ Recordatorio importante:</p>
+              <p style="color: #856404; margin: 10px 0 0 0;">
+                Solo queda que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => escapeHtml(r.recipientName)).join(', ')} 
+                ${validatedData.recipients.length === 1 ? 'entre' : 'entren'} en ${validatedData.recipients.length === 1 ? 'su correo, vea su regalo' : 'sus correos, vean sus regalos'} 
+                y nos ${validatedData.recipients.length === 1 ? 'diga' : 'digan'} dónde ${validatedData.recipients.length === 1 ? 'quiere' : 'quieren'} que ${validatedData.recipients.length === 1 ? 'entreguemos su pedido' : 'entreguemos sus pedidos'}.
+                <br><br>
+                <strong>Pasadas 72 horas, si aún no ${validatedData.recipients.length === 1 ? 'ha' : 'han'} entrado en ${validatedData.recipients.length === 1 ? 'el correo' : 'los correos'}, volveremos a enviarlo, pero este será el último que enviemos.</strong>
+              </p>
+            </div>
+            
             <p style="color: #666;">Una vez que proporcionen su dirección, prepararemos las cestas con cariño y las enviaremos.</p>
           </div>
           
@@ -161,6 +172,13 @@ ${validatedData.recipients.map((recipient: z.infer<typeof recipientSchema>) =>
 ).join('\n')}
 
 Los destinatarios recibirán un correo con las instrucciones para reclamar su regalo.
+
+⏰ RECORDATORIO IMPORTANTE:
+Solo queda que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')} 
+${validatedData.recipients.length === 1 ? 'entre' : 'entren'} en ${validatedData.recipients.length === 1 ? 'su correo, vea su regalo' : 'sus correos, vean sus regalos'} 
+y nos ${validatedData.recipients.length === 1 ? 'diga' : 'digan'} dónde ${validatedData.recipients.length === 1 ? 'quiere' : 'quieren'} que ${validatedData.recipients.length === 1 ? 'entreguemos su pedido' : 'entreguemos sus pedidos'}.
+
+Pasadas 72 horas, si aún no ${validatedData.recipients.length === 1 ? 'ha' : 'han'} entrado en ${validatedData.recipients.length === 1 ? 'el correo' : 'los correos'}, volveremos a enviarlo, pero este será el último que enviemos.
 
 Gracias por regalar momentos especiales con Experiencias Selecta
       `
