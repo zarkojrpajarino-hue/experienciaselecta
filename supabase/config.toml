@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.create-test-gift]
 verify_jwt = false
+
+[functions.send-marketing-email]
+verify_jwt = false

@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const CookieBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const cookieConsent = sessionStorage.getItem("cookieConsent");
@@ -12,9 +15,36 @@ const CookieBanner = () => {
     }
   }, []);
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
     sessionStorage.setItem("cookieConsent", "accepted");
     setIsVisible(false);
+
+    // Check if user is authenticated and send marketing email
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user?.email) {
+        // Get user profile for name
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('user_id', user.id)
+          .single();
+
+        // Send marketing email
+        await supabase.functions.invoke('send-marketing-email', {
+          body: {
+            userEmail: user.email,
+            userName: profile?.name || '',
+          },
+        });
+
+        console.log('Marketing email sent successfully');
+      }
+    } catch (error) {
+      console.error('Error sending marketing email:', error);
+      // Don't show error to user, just log it
+    }
   };
 
   const handleReject = () => {
