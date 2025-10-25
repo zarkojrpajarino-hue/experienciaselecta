@@ -1,187 +1,121 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { Resend } from 'https://esm.sh/resend@4.0.0'
-import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "https://esm.sh/resend@4.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-// HTML escape function to prevent XSS in emails
-const escapeHtml = (text: string): string => {
-  const map: { [key: string]: string } = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
-// Validation schema for order data
-const orderItemSchema = z.object({
-  basket_name: z.string().max(200),
-  basket_category: z.string().max(100),
-  price_per_item: z.number().int().positive(),
-});
+interface OrderConfirmationRequest {
+  email: string;
+  customerName: string;
+  orderId: string;
+  items: Array<{
+    basketName: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+}
 
-const orderSchema = z.object({
-  id: z.string().uuid(),
-  total_amount: z.number().int().positive(),
-  created_at: z.string(),
-  shipping_address_line1: z.string().max(200),
-  shipping_address_line2: z.string().max(200).optional().nullable(),
-  shipping_city: z.string().max(100),
-  shipping_postal_code: z.string().max(20),
-  shipping_country: z.string().max(100),
-  customers: z.object({
-    name: z.string().max(200),
-    email: z.string().email().max(255),
-    phone: z.string().max(50).optional().nullable(),
-  }),
-  order_items: z.array(orderItemSchema).min(1),
-});
-
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
+const handler = async (req: Request): Promise<Response> => {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    const { order: rawOrder, isGift } = await req.json();
+    const { email, customerName, orderId, items, totalAmount }: OrderConfirmationRequest = await req.json();
 
-    // Validate and sanitize order data
-    const order = orderSchema.parse(rawOrder);
-    
-    console.log('Sending order confirmation for:', order.id);
+    console.log("Enviando correo de confirmación de pedido a:", email);
 
-    // Format order items for email with HTML escaping
-    const itemsList = order.order_items.map((item) => 
-      `• ${escapeHtml(item.basket_name)} - ${escapeHtml(item.basket_category)} (${(item.price_per_item / 100).toFixed(2)}€)`
-    ).join('\n');
+    const itemsHtml = items.map(item => `
+      <tr>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.basketName}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">${(item.price / 100).toFixed(2)}€</td>
+      </tr>
+    `).join('');
 
-    const customerEmailContent = `
-¡Hola ${escapeHtml(order.customers.name)}!
+    const emailResponse = await resend.emails.send({
+      from: "Experiencia Selecta <onboarding@resend.dev>",
+      to: [email],
+      subject: "✅ Confirmación de tu pedido - Experiencia Selecta",
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+              .content { background: white; padding: 30px; border: 1px solid #eee; border-top: none; border-radius: 0 0 10px 10px; }
+              .order-summary { margin: 20px 0; }
+              table { width: 100%; border-collapse: collapse; }
+              .total { font-size: 1.2em; font-weight: bold; color: #4F46E5; margin-top: 20px; text-align: right; }
+              .footer { text-align: center; margin-top: 30px; color: #888; font-size: 0.9em; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>¡Gracias por tu compra!</h1>
+              </div>
+              <div class="content">
+                <p>Hola ${customerName},</p>
+                <p>Tu pedido ha sido confirmado y está siendo preparado con todo nuestro cariño.</p>
+                
+                <div class="order-summary">
+                  <h2>Resumen de tu pedido</h2>
+                  <p><strong>ID del pedido:</strong> ${orderId}</p>
+                  
+                  <table>
+                    <thead>
+                      <tr style="background: #f8f9fa;">
+                        <th style="padding: 10px; text-align: left;">Producto</th>
+                        <th style="padding: 10px; text-align: center;">Cantidad</th>
+                        <th style="padding: 10px; text-align: right;">Precio</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${itemsHtml}
+                    </tbody>
+                  </table>
+                  
+                  <p class="total">Total: ${(totalAmount / 100).toFixed(2)}€</p>
+                </div>
 
-${isGift ? '✅ Tu regalo ha sido pagado con éxito.' : '✅ Tu cesta ha sido pagada con éxito.'}
-
-${isGift 
-  ? 'La persona a la que se lo regalaste recibirá un correo para completar los datos de envío.'
-  : 'Tu cesta será preparada con cariño y enviada a la dirección indicada.'
-}
-
-Puedes verla en la sección "Mis Pedidos" en tu perfil en la web: https://experienciaselecta.com
-
-📦 DETALLES DEL PEDIDO
-Número de pedido: ${escapeHtml(order.id)}
-Total: ${(order.total_amount / 100).toFixed(2)}€
-
-🛍️ PRODUCTOS ADQUIRIDOS
-${itemsList}
-
-${isGift 
-? '' 
-: `📍 DIRECCIÓN DE ENVÍO
-${escapeHtml(order.customers.name)}
-${escapeHtml(order.shipping_address_line1)}
-${order.shipping_address_line2 ? escapeHtml(order.shipping_address_line2) + '\n' : ''}${escapeHtml(order.shipping_city)}, ${escapeHtml(order.shipping_postal_code)}
-${escapeHtml(order.shipping_country)}
-
-Tu cesta será preparada con cariño y enviada a la dirección indicada.
-`}
-
-Al haber comprado una cesta en nuestra web, no solo tienes acceso a los productos de alta calidad que esta trae, también a la web paragenteselecta.com
-
-En esta web están todas las dinámicas para llevar a cabo toda la experiencia.
-
-⚠️ IMPORTANTE: UNA VEZ ABIERTA LA WEB SOLO TENDRÁS 24 HORAS DE ACCESO A ESTA. ES UNA WEB PRIVADA Y ÚNICA, PARA NUESTROS CLIENTES Y EXPERIENCIAS.
-
-¡Esperamos que disfrutes de esta experiencia gastronómica única!
-
-Saludos,
-El equipo de Experiencia Selecta
-`;
-
-    const adminEmailContent = `
-NUEVO PEDIDO CONFIRMADO
-
-Número de pedido: ${escapeHtml(order.id)}
-Cliente: ${escapeHtml(order.customers.name)}
-Email: ${escapeHtml(order.customers.email)}
-Teléfono: ${order.customers.phone ? escapeHtml(order.customers.phone) : 'No proporcionado'}
-
-Productos:
-${itemsList}
-
-Total: ${(order.total_amount / 100).toFixed(2)}€
-
-Dirección de envío:
-${escapeHtml(order.customers.name)}
-${escapeHtml(order.shipping_address_line1)}
-${order.shipping_address_line2 ? escapeHtml(order.shipping_address_line2) + '\n' : ''}${escapeHtml(order.shipping_city)}, ${escapeHtml(order.shipping_postal_code)}
-${escapeHtml(order.shipping_country)}
-
-Fecha del pedido: ${new Date(order.created_at).toLocaleString('es-ES')}
-`;
-
-    // Send email to customer
-    const subject = isGift 
-      ? '✅ Confirmación de pago de tu regalo - Experiencia Selecta'
-      : '✅ Confirmación de tu pedido - Experiencia Selecta';
-    
-    await resend.emails.send({
-      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
-      to: [order.customers.email],
-      subject: subject,
-      text: customerEmailContent,
+                <p>Recibirás otro correo cuando tu pedido sea enviado.</p>
+                
+                <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+                
+                <p>Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
+              </div>
+              <div class="footer">
+                <p>Experiencia selecta, personas auténticas.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
     });
 
-    // Send email to admin (only if not a gift, or after recipient completes address)
-    if (!isGift) {
-      await resend.emails.send({
-        from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
-        to: ['selectaexperiencia@gmail.com'],
-        subject: `🛒 Nuevo pedido confirmado - ${order.id}`,
-        text: adminEmailContent,
-      });
-    } else {
-      console.log('Gift order: skipping admin email until recipient provides shipping address');
-    }
+    console.log("Correo de confirmación enviado:", emailResponse);
 
-    console.log('Order confirmation emails sent successfully');
-
-    return new Response(
-      JSON.stringify({ success: true }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    );
-
+    return new Response(JSON.stringify(emailResponse), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   } catch (error: any) {
-    console.error('Error sending order confirmation:', error);
-    
-    // Handle validation errors specifically
-    if (error instanceof z.ZodError) {
-      console.error('Validation error:', error.errors);
-      return new Response(
-        JSON.stringify({ error: 'Invalid order data', details: error.errors }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 400,
-        }
-      );
-    }
-    
-    return new Response(
-      JSON.stringify({ error: error?.message || 'Unknown error occurred' }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
-    );
+    console.error("Error enviando correo de confirmación:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
-});
+};
+
+serve(handler);
