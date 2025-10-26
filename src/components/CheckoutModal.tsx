@@ -543,16 +543,26 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     setStep('success');
     
-    // Show review modal immediately for non-gift purchases
-    if (!isGiftMode && user) {
-      console.log('Opening review modal (no delay)');
-      setShowReviewModal(true);
+    // Show review modal after a brief delay for non-gift purchases
+    // This ensures the checkout modal has time to close properly
+    if (!isGiftMode && user?.id) {
+      console.log('Scheduling review modal to open...');
+      setTimeout(() => {
+        console.log('Opening review modal now');
+        setShowReviewModal(true);
+      }, 500);
     } else {
-      console.log('Review modal NOT shown - isGiftMode:', isGiftMode, 'user:', !!user);
+      console.log('Review modal NOT shown - isGiftMode:', isGiftMode, 'user:', user?.id);
     }
   };
 
   const handleClose = () => {
+    // Si hay un pedido completado y el modal de revisión debería mostrarse, no cerrar aún
+    if (completedOrderId && !isGiftMode && user?.id && !showReviewModal) {
+      console.log('Preventing close - review modal should show');
+      return;
+    }
+    
     setStep('auth');
     setUser(null);
     setShowReviewModal(false);
@@ -572,11 +582,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       senderEmail: '',
       recipients: [{ recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
     });
+    localStorage.removeItem('pendingCheckout');
     onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -1105,8 +1117,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 : 'Tu cesta será preparada con cariño y enviada a la dirección indicada.'
               }
             </p>
-            <Button onClick={handleClose} className="w-full" size="lg">
-              Volver a Mis Pedidos
+            <Button 
+              onClick={() => {
+                // If review modal should show, close checkout and let review modal appear
+                if (!isGiftMode && user?.id && completedOrderId) {
+                  console.log('Closing checkout, review modal will show');
+                  onClose();
+                } else {
+                  handleClose();
+                }
+              }} 
+              className="w-full" 
+              size="lg"
+            >
+              Continuar
             </Button>
           </div>
         )}
@@ -1117,22 +1141,24 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           onSuccess={handleAuthSuccess}
         />
       </DialogContent>
-      
-      {/* Review Modal - Only show for non-gift purchases when user exists */}
-      {!isGiftMode && completedOrderId && user?.id && (
-        <ReviewModal
-          isOpen={showReviewModal}
-          onClose={() => {
-            console.log('Closing review modal');
-            setShowReviewModal(false);
-          }}
-          userName={customerData.name || user.email || ''}
-          basketName={basketItems[0]?.name || 'tu cesta'}
-          orderId={completedOrderId}
-          userId={user.id}
-        />
-      )}
     </Dialog>
+      
+    {/* Review Modal - Rendered OUTSIDE the checkout Dialog to prevent blocking */}
+    {!isGiftMode && completedOrderId && user?.id && showReviewModal && (
+      <ReviewModal
+        isOpen={showReviewModal}
+        onClose={() => {
+          console.log('Closing review modal');
+          setShowReviewModal(false);
+          setCompletedOrderId('');
+        }}
+        userName={customerData.name || user.email || ''}
+        basketName={basketItems[0]?.name || 'tu cesta'}
+        orderId={completedOrderId}
+        userId={user.id}
+      />
+    )}
+    </>
   );
 };
 

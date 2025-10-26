@@ -316,11 +316,12 @@ const Index = () => {
         setIsAuthenticated(!!session);
         if (session) {
           setShowAuthModal(false);
-          // Limpiar el flag si el usuario inicia sesión
+          // Limpiar TODOS los flags cuando el usuario inicia sesión exitosamente
           sessionStorage.removeItem('hasClosedAuthModal');
+          localStorage.removeItem('pendingCheckout');
           
           // Show welcome toast for new login (not on page load)
-          if (!wasAuthenticated && event === 'SIGNED_IN') {
+          if (!wasAuthenticated && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
             // Get user name from profile if available
             const { data: profile } = await supabase
               .from('profiles')
@@ -330,13 +331,18 @@ const Index = () => {
             
             const userName = profile?.name || session.user.email;
             
-            // Import toast
-            const { toast } = await import("sonner");
-            toast.success(`¡Bienvenido, ${userName}!`, {
-              position: "bottom-right",
-              duration: 4000,
-            });
+            // Import toast only if it's a new sign in
+            if (event === 'SIGNED_IN') {
+              const { toast } = await import("sonner");
+              toast.success(`¡Bienvenido, ${userName}!`, {
+                position: "bottom-right",
+                duration: 4000,
+              });
+            }
           }
+        } else {
+          // No hay sesión
+          setShowAuthModal(false);
         }
       }
     });
@@ -353,13 +359,17 @@ const Index = () => {
         // Usuario ya tiene sesión activa - NO mostrar modal
         setIsAuthenticated(true);
         setShowAuthModal(false);
+        // Limpiar flags
+        sessionStorage.removeItem('hasClosedAuthModal');
       } else {
         // Usuario NO tiene sesión
         setIsAuthenticated(false);
 
-        // Solo mostrar modal si no lo ha cerrado antes en esta sesión
+        // Solo mostrar modal si no lo ha cerrado antes en esta sesión Y no está en medio de OAuth
         const hasClosedAuthModal = sessionStorage.getItem('hasClosedAuthModal');
-        if (!hasClosedAuthModal) {
+        const isReturningFromOAuth = window.location.hash.includes('access_token') || window.location.search.includes('code=');
+        
+        if (!hasClosedAuthModal && !isReturningFromOAuth) {
           setTimeout(() => {
             if (mounted) {
               setShowAuthModal(true);
