@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowUp } from "lucide-react";
 import experiencia1 from "@/assets/experiencia-1-clean.png";
 import experiencia2 from "@/assets/experiencia-2-clean.png";
 import experiencia3 from "@/assets/experiencia-3-clean.png";
-import experiencia4 from "@/assets/experiencia-4-clean.png";
+import experiencia4 from "@/assets/proposito-pareja-cocinando.png";
 import experiencia5 from "@/assets/experiencia-5.png";
 
 // Import Selecta images

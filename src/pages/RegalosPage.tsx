@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Gift, X, Home } from 'lucide-react';
+import { Gift, X, Home, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 // Import basket images
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -282,6 +283,24 @@ const RegalosPage = () => {
                     </div>
 
                 <div className="space-y-4">
+                  {/* Texto informativo centrado con botón info */}
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <p className="text-center text-sm font-bold text-muted-foreground">
+                      (solo uno de los dos obligatorio)
+                    </p>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-0 bg-transparent border-0 transition-all duration-300"
+                      onClick={() => {
+                        const { toast } = require("sonner");
+                        toast.info("Solo necesitas completar el email O el teléfono, no ambos.");
+                      }}
+                    >
+                      <Info className="w-6 h-6 font-bold text-primary" strokeWidth={3} />
+                    </motion.button>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium mb-2">Nombre completo *</label>
                     <Input
@@ -293,7 +312,7 @@ const RegalosPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Email *</label>
+                    <label className="block text-sm font-medium mb-2">Mail de destinatario *</label>
                     <Input
                       type="email"
                       value={shippingData.email}
@@ -301,6 +320,14 @@ const RegalosPage = () => {
                       placeholder="tu@email.com"
                       required
                       readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Número del destinatario</label>
+                    <Input
+                      type="tel"
+                      placeholder="+34 600 000 000"
                     />
                   </div>
 

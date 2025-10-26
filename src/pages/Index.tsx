@@ -18,6 +18,7 @@ import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
 import VisualHeader from "@/components/VisualHeader";
+import ScrollToHeaderArrow from "@/components/ScrollToHeaderArrow";
 import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
 import aboutBackgroundImg from "@/assets/sobre-nosotros-hero-final.jpg";
 import jamonPinzasImg from "@/assets/jamon-pinzas-primera.png";
@@ -310,13 +311,33 @@ const Index = () => {
       data: {
         subscription
       }
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (mounted) {
+        const wasAuthenticated = isAuthenticated;
         setIsAuthenticated(!!session);
         if (session) {
           setShowAuthModal(false);
           // Limpiar el flag si el usuario inicia sesión
           sessionStorage.removeItem('hasClosedAuthModal');
+          
+          // Show welcome toast for new login (not on page load)
+          if (!wasAuthenticated && event === 'SIGNED_IN') {
+            // Get user name from profile if available
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('name')
+              .eq('user_id', session.user.id)
+              .single();
+            
+            const userName = profile?.name || session.user.email;
+            
+            // Import toast
+            const { toast } = await import("sonner");
+            toast.success(`¡Bienvenido, ${userName}!`, {
+              position: "bottom-right",
+              duration: 4000,
+            });
+          }
         }
       }
     });
@@ -425,7 +446,9 @@ const Index = () => {
       {/* Espaciado blanco */}
       <div className="bg-white py-8"></div>
       
-      <RoundedImageCarousel slides={processSlides} titleBold={false} />
+      <div id="porque-no-vendemos-cestas">
+        <RoundedImageCarousel slides={processSlides} titleBold={false} />
+      </div>
       
       {/* Espaciado blanco antes de categorías */}
       <div className="bg-white py-8"></div>
@@ -434,6 +457,9 @@ const Index = () => {
       <div>
         <BasketCategories />
       </div>
+
+      {/* Floating arrow to scroll to header and open menu */}
+      <ScrollToHeaderArrow />
 
       {/* Image Modal for cesta */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>

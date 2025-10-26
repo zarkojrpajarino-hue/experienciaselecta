@@ -101,7 +101,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
       <div className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
-          className="relative w-full h-[180px] md:h-[240px] flex items-center justify-center mx-auto mb-6" 
+          className="relative w-full h-[180px] md:h-[240px] flex items-center justify-center mx-auto mb-12" 
           style={{ perspective: '1800px' }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
@@ -143,7 +143,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         </div>
 
         {/* Navigation Buttons Below Images */}
-        <div className="flex justify-center items-center gap-8 my-6">
+        <div className="flex justify-center items-center gap-8 my-8 mt-4">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
