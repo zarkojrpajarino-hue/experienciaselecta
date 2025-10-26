@@ -32,12 +32,12 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
 
-  // Auto-show tooltip for arrow every 5 seconds
+  // Auto-show tooltip for arrow every 12 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setArrowTooltipOpen(true);
       setTimeout(() => setArrowTooltipOpen(false), 2000);
-    }, 5000);
+    }, 12000);
 
     return () => clearInterval(interval);
   }, []);
