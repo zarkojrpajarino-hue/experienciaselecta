@@ -8,7 +8,6 @@ import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import AuthModal from "./AuthModal";
-import FeedbackModal from "./FeedbackModal";
 import logo from "@/assets/logo-experiencia-selecta.png";
 import headerBg from "@/assets/iberian-products-background.jpg";
 import dropdownBg from "@/assets/jamon-iberico-traditional.jpg";
@@ -17,7 +16,6 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCartPreview, setShowCartPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
@@ -530,7 +528,7 @@ const Navbar = () => {
                     }} 
                     onClick={() => {
                       setIsMobileMenuOpen(false);
-                      setShowFeedbackModal(true);
+                      navigate('/feedback');
                     }}
                     className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-[hsl(45,100%,50%)] hover:text-[hsl(45,100%,60%)] transition-all duration-300 overflow-hidden flex items-center justify-center whitespace-nowrap"
                   >
@@ -551,14 +549,6 @@ const Navbar = () => {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onSuccess={() => setShowAuthModal(false)}
-      />
-
-      {/* Feedback Modal */}
-      <FeedbackModal
-        isOpen={showFeedbackModal}
-        onClose={() => setShowFeedbackModal(false)}
-        userName={user?.email?.split('@')[0] || undefined}
-        showPurchaseQuestion={false}
       />
     </motion.nav>;
 };

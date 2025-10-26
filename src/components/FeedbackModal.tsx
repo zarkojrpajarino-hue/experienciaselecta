@@ -310,7 +310,7 @@ const FeedbackModal = ({
                 className="flex-1 bg-transparent border-crema/30 text-crema hover:bg-crema/10 font-poppins"
                 disabled={isSubmitting}
               >
-                <span className="capitalize">a</span>hora no
+                <span className="capitalize">a</span>hora no.
               </Button>
               <Button
                 type="submit"
