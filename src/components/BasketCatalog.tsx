@@ -1140,10 +1140,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       return { 
         bg: 'bg-background', 
         text: 'text-black', 
-        important: 'text-[#FFD700]',
+        important: 'text-[hsl(45,100%,65%)]',
         button: 'bg-yellow-500 hover:bg-yellow-600 text-white border-0',
         navText: 'text-black',
-        navImportant: 'text-[#FFD700]',
+        navImportant: 'text-[hsl(45,100%,65%)]',
         border: 'border-black'
       };
     }
@@ -1151,10 +1151,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     return { 
       bg: 'bg-background', 
       text: 'text-black', 
-      important: 'text-[#FFD700]',
+      important: 'text-[hsl(45,100%,65%)]',
       button: 'bg-gray-500 hover:bg-gray-600 text-white border-0',
       navText: 'text-black',
-      navImportant: 'text-[#FFD700]',
+      navImportant: 'text-[hsl(45,100%,65%)]',
       border: 'border-black'
     };
   };
@@ -1425,7 +1425,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                   if (part.match(/\([^)]+\)/)) {
                                     return <span key={index} className="text-black">{part}</span>;
                                   } else if (part.trim()) {
-                                    return <span key={index} style={{ color: '#FFD700' }} className="font-bold text-base sm:text-lg">{part}</span>;
+                                    return <span key={index} style={{ color: 'hsl(45 100% 65%)' }} className="font-bold text-base sm:text-lg">{part}</span>;
                                   }
                                   return null;
                                 })}

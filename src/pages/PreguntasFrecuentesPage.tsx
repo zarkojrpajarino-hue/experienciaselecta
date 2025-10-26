@@ -110,10 +110,10 @@ const PreguntasFrecuentesPage = () => {
       </section>
       
       {/* Espacio superior para centrar */}
-      <div className="pt-4 md:pt-8"></div>
+      <div className="pt-8 md:pt-12"></div>
 
       {/* Botón Contáctanos */}
-      <div className="py-4 md:py-6 flex justify-center bg-white">
+      <div className="py-6 md:py-8 flex justify-center bg-white">
         <ContactModal>
           <div className="flex flex-col items-center gap-2 cursor-pointer">
             <p className="text-black hover:text-gray-600 font-work-sans font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300" style={{ textTransform: "none" }}>

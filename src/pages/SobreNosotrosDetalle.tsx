@@ -174,7 +174,7 @@ const SobreNosotrosDetalle = () => {
       </section>
 
       {/* Botón Ver Más Sobre Nosotros */}
-      <div className="pt-12 pb-8 flex justify-center">
+      <div className="pt-16 pb-8 flex justify-center">
         <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
           const element = document.getElementById('carousel-section');
           if (element) {
