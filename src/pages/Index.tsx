@@ -18,7 +18,7 @@ import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
 import VisualHeader from "@/components/VisualHeader";
-import ScrollToHeaderArrow from "@/components/ScrollToHeaderArrow";
+import HeaderMenuArrow from "@/components/HeaderMenuArrow";
 import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
 import aboutBackgroundImg from "@/assets/sobre-nosotros-hero-final.jpg";
 import jamonPinzasImg from "@/assets/jamon-pinzas-primera.png";
@@ -446,8 +446,9 @@ const Index = () => {
       {/* Espaciado blanco */}
       <div className="bg-white py-8"></div>
       
-      <div id="porque-no-vendemos-cestas">
+      <div id="porque-no-vendemos-cestas" className="bg-white">
         <RoundedImageCarousel slides={processSlides} titleBold={false} />
+        <HeaderMenuArrow />
       </div>
       
       {/* Espaciado blanco antes de categorías */}
@@ -457,9 +458,6 @@ const Index = () => {
       <div>
         <BasketCategories />
       </div>
-
-      {/* Floating arrow to scroll to header and open menu */}
-      <ScrollToHeaderArrow />
 
       {/* Image Modal for cesta */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>

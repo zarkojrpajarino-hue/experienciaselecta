@@ -67,7 +67,7 @@ const VisualHeader = () => {
                 element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}
             >
-              Conócenos
+              Conócenos. <ChevronDown className="inline-block ml-2 w-5 h-5 md:w-6 md:h-6" />
             </motion.button>
           </div>
         </motion.div>
