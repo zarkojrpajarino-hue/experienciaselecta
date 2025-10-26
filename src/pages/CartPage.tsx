@@ -62,15 +62,6 @@ const CartPage = () => {
         <Navbar />
         <div className="min-h-screen pt-24 pb-12 px-4 bg-white">
           <div className="container mx-auto max-w-4xl">
-            <Button
-              onClick={() => navigate('/#categoria-cestas')}
-              variant="ghost"
-              className="mb-6 text-black hover:text-gold"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver a cestas
-            </Button>
-            
             <Card className="text-center py-16">
               <CardContent>
                 <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-gray-300" />

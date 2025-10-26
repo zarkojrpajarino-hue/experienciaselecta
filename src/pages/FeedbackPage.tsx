@@ -92,7 +92,7 @@ const FeedbackPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-petroleo py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -100,20 +100,11 @@ const FeedbackPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-8"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="w-20 h-20 bg-gradient-to-br from-mango/20 to-gold/20 rounded-full flex items-center justify-center mx-auto mb-6"
-          >
-            <span className="text-5xl">💬</span>
-          </motion.div>
-          
-          <h1 className="text-3xl sm:text-4xl font-poppins font-bold text-crema mb-3">
+          <h1 className="text-3xl sm:text-4xl font-poppins font-bold text-white mb-3">
             <span className="capitalize">t</span>u opinión nos importa.
           </h1>
           
-          <p className="text-crema/80 font-poppins text-base sm:text-lg max-w-xl mx-auto">
+          <p className="text-white/80 font-poppins text-base sm:text-lg max-w-xl mx-auto">
             <span className="capitalize">a</span>yúdanos a <span className="font-bold">mejorar</span> tu experiencia en nuestra web.
           </p>
         </motion.div>
@@ -122,12 +113,12 @@ const FeedbackPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-petroleo/50 backdrop-blur-sm border-2 border-crema/20 rounded-2xl p-6 sm:p-8"
+          className="bg-black/50 backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 sm:p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* General Rating */}
             <div className="space-y-4">
-              <label className="text-base sm:text-lg font-poppins font-medium text-crema block">
+              <label className="text-base sm:text-lg font-poppins font-medium text-white block">
                 <span className="capitalize">v</span>aloración <span className="font-bold">general</span> de la web.
               </label>
               <div className="flex justify-center gap-2 sm:gap-3">
@@ -156,7 +147,7 @@ const FeedbackPage = () => {
                 <motion.p
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-sm sm:text-base text-crema/70 text-center font-poppins"
+                  className="text-sm sm:text-base text-white/70 text-center font-poppins"
                 >
                   {getRatingText(generalRating)}
                 </motion.p>
@@ -165,7 +156,7 @@ const FeedbackPage = () => {
 
             {/* Understood Purpose */}
             <div className="space-y-3">
-              <label className="text-base sm:text-lg font-poppins font-medium text-crema block">
+              <label className="text-base sm:text-lg font-poppins font-medium text-white block">
                 ¿<span className="capitalize">h</span>as entendido nuestro <span className="font-bold">propósito-mensaje</span>?
               </label>
               <div className="flex gap-3">
@@ -174,8 +165,8 @@ const FeedbackPage = () => {
                   onClick={() => setUnderstoodPurpose(true)}
                   className={`flex-1 font-poppins text-base ${
                     understoodPurpose === true 
-                      ? 'bg-mango hover:bg-mango/90 text-crema' 
-                      : 'bg-transparent border-2 border-crema/30 text-crema hover:bg-crema/10'
+                      ? 'bg-gold hover:bg-gold/90 text-black' 
+                      : 'bg-transparent border-2 border-white/30 text-white hover:bg-white/10'
                   }`}
                 >
                   <span className="capitalize">s</span>í.
@@ -185,8 +176,8 @@ const FeedbackPage = () => {
                   onClick={() => setUnderstoodPurpose(false)}
                   className={`flex-1 font-poppins text-base ${
                     understoodPurpose === false 
-                      ? 'bg-mango hover:bg-mango/90 text-crema' 
-                      : 'bg-transparent border-2 border-crema/30 text-crema hover:bg-crema/10'
+                      ? 'bg-gold hover:bg-gold/90 text-black' 
+                      : 'bg-transparent border-2 border-white/30 text-white hover:bg-white/10'
                   }`}
                 >
                   <span className="capitalize">n</span>o.
@@ -196,7 +187,7 @@ const FeedbackPage = () => {
 
             {/* Intuitive Comment */}
             <div className="space-y-3">
-              <label className="text-base sm:text-lg font-poppins font-medium text-crema block">
+              <label className="text-base sm:text-lg font-poppins font-medium text-white block">
                 ¿<span className="capitalize">t</span>e ha parecido <span className="font-bold">intuitiva</span> la web?
               </label>
               <Textarea
@@ -205,16 +196,16 @@ const FeedbackPage = () => {
                 placeholder="Cuéntanos tu experiencia..."
                 rows={4}
                 maxLength={500}
-                className="bg-crema/10 border-2 border-crema/30 focus:border-mango resize-none text-crema placeholder:text-crema/50 font-poppins text-base"
+                className="bg-white/10 border-2 border-white/30 focus:border-gold resize-none text-white placeholder:text-white/50 font-poppins text-base"
               />
-              <p className="text-xs sm:text-sm text-crema/50 text-right font-poppins">
+              <p className="text-xs sm:text-sm text-white/50 text-right font-poppins">
                 {intuitiveComment.length}/500
               </p>
             </div>
 
             {/* Suggestion */}
             <div className="space-y-3">
-              <label className="text-base sm:text-lg font-poppins font-medium text-crema block">
+              <label className="text-base sm:text-lg font-poppins font-medium text-white block">
                 ¿<span className="capitalize">a</span>lguna <span className="font-bold">sugerencia concreta</span> - algo que cambiarías o añadirías?
               </label>
               <Textarea
@@ -223,9 +214,9 @@ const FeedbackPage = () => {
                 placeholder="Tus ideas son valiosas..."
                 rows={4}
                 maxLength={500}
-                className="bg-crema/10 border-2 border-crema/30 focus:border-mango resize-none text-crema placeholder:text-crema/50 font-poppins text-base"
+                className="bg-white/10 border-2 border-white/30 focus:border-gold resize-none text-white placeholder:text-white/50 font-poppins text-base"
               />
-              <p className="text-xs sm:text-sm text-crema/50 text-right font-poppins">
+              <p className="text-xs sm:text-sm text-white/50 text-right font-poppins">
                 {suggestion.length}/500
               </p>
             </div>
@@ -235,7 +226,7 @@ const FeedbackPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate('/')}
-                className="flex-1 bg-transparent border-2 border-crema/30 text-crema hover:bg-crema/10 font-poppins text-base order-2 sm:order-1"
+                className="flex-1 bg-transparent border-2 border-white/30 text-white hover:bg-white/10 font-poppins text-base order-2 sm:order-1"
                 disabled={isSubmitting}
               >
                 <span className="capitalize">v</span>olver.
@@ -243,7 +234,7 @@ const FeedbackPage = () => {
               <Button
                 type="submit"
                 disabled={generalRating === 0 || understoodPurpose === null || isSubmitting}
-                className="flex-1 bg-mango hover:bg-mango/90 text-crema font-poppins font-bold text-base order-1 sm:order-2"
+                className="flex-1 bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base order-1 sm:order-2"
               >
                 <motion.div
                   animate={isSubmitting ? { rotate: 360 } : { rotate: 0 }}
@@ -270,7 +261,7 @@ const FeedbackPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center text-crema/60 font-poppins text-sm mt-8"
+          className="text-center text-white/60 font-poppins text-sm mt-8"
         >
           <span className="capitalize">g</span>racias por ayudarnos a <span className="font-bold">mejorar</span> cada día.
         </motion.p>
