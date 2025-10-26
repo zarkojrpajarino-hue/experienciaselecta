@@ -175,8 +175,8 @@ const SobreNosotrosDetalle = () => {
         <CarouselSection slides={benefitsSlides} position="right" imageHeightClasses="h-[180px] md:h-[220px]" />
       </section>
 
-      {/* CTA sin fondo */}
-      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8">
+      {/* CTA con fondo crema */}
+      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem' }}>
         {/* Botón Ver Más Sobre Nosotros */}
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
