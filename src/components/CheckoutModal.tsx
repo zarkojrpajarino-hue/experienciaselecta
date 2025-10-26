@@ -549,12 +549,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     if (!isGiftMode) {
       const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
       if (!generalFeedbackGiven) {
-        console.log('Scheduling feedback modal to open... orderId:', orderId);
+        console.log('Opening feedback modal immediately... orderId:', orderId);
         setLastOrderUserName(customerData.name || user?.email || 'Usuario');
-        setTimeout(() => {
-          console.log('Opening feedback modal now');
-          setShowFeedbackModal(true);
-        }, 500);
+        setShowFeedbackModal(true);
       } else {
         console.log('Feedback already given in this session, not showing modal');
       }
@@ -1130,11 +1127,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </p>
             <Button 
               onClick={() => {
-                // If feedback modal should show, close checkout and let feedback modal appear
                 const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
                 if (!isGiftMode && completedOrderId && !generalFeedbackGiven) {
-                  console.log('Closing checkout, feedback modal will show');
-                  onClose();
+                  console.log('Showing feedback modal and hiding checkout dialog');
+                  setShowFeedbackModal(true);
                 } else {
                   handleClose();
                 }
