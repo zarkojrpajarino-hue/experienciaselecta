@@ -546,11 +546,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     // Show feedback modal for non-gift purchases
     // Only show if user hasn't given general feedback in this session
-    if (!isGiftMode && user?.id) {
+    if (!isGiftMode) {
       const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
       if (!generalFeedbackGiven) {
         console.log('Scheduling feedback modal to open... orderId:', orderId);
-        setLastOrderUserName(customerData.name || user.email || 'Usuario');
+        setLastOrderUserName(customerData.name || user?.email || 'Usuario');
         setTimeout(() => {
           console.log('Opening feedback modal now');
           setShowFeedbackModal(true);
@@ -559,13 +559,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         console.log('Feedback already given in this session, not showing modal');
       }
     } else {
-      console.log('Feedback modal NOT shown - isGiftMode:', isGiftMode, 'user:', user?.id);
+      console.log('Feedback modal NOT shown - isGiftMode:', isGiftMode);
     }
   };
 
   const handleClose = () => {
     // Si hay un pedido completado y el modal de feedback debería mostrarse, no cerrar aún
-    if (completedOrderId && !isGiftMode && user?.id && !showFeedbackModal) {
+    if (completedOrderId && !isGiftMode && !showFeedbackModal) {
       const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
       if (!generalFeedbackGiven) {
         console.log('Preventing close - feedback modal should show');
@@ -1132,7 +1132,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               onClick={() => {
                 // If feedback modal should show, close checkout and let feedback modal appear
                 const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
-                if (!isGiftMode && user?.id && completedOrderId && !generalFeedbackGiven) {
+                if (!isGiftMode && completedOrderId && !generalFeedbackGiven) {
                   console.log('Closing checkout, feedback modal will show');
                   onClose();
                 } else {
@@ -1156,7 +1156,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     </Dialog>
       
     {/* Feedback Modal - Rendered OUTSIDE the checkout Dialog to prevent blocking */}
-    {!isGiftMode && completedOrderId && user?.id && showFeedbackModal && (
+    {!isGiftMode && completedOrderId && showFeedbackModal && (
       <FeedbackModal
         isOpen={showFeedbackModal}
         onClose={() => {
