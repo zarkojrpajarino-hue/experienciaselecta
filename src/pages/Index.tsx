@@ -130,19 +130,19 @@ const Index = () => {
     },
     { 
       image: nuevaSeccion03Img, 
-      title: <span style={{color: 'black'}}>Compra o regala cestas que guían hacia una <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>experiencia única</span> y <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>personalizada</span>, para explorar <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>emociones</span> que no conocías y hacer un <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>regalo original</span> e <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>inolvidable</span> de forma <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>asequible</span>.</span>
+      title: <span style={{color: "black"}}>Compra o regala cestas que guían hacia una <span style={{color: "#D4AF37", fontWeight: "bold"}}>experiencia única</span> y <span style={{color: "#D4AF37", fontWeight: "bold"}}>personalizada</span>, para explorar <span style={{color: "#D4AF37", fontWeight: "bold"}}>emociones</span> que no conocías y hacer un <span style={{color: "#D4AF37", fontWeight: "bold"}}>regalo original</span> e <span style={{color: "#D4AF37", fontWeight: "bold"}}>inolvidable</span> de forma <span style={{color: "#D4AF37", fontWeight: "bold"}}>asequible</span>.</span>
     },
     { 
       image: nuevaSeccion04Img, 
-      title: <span style={{color: 'black'}}>Estas actividades fomentan <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>conversaciones reales</span>, <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>vínculos profundos</span>, y el valor de mostrarse <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>vulnerable</span>.</span>
+      title: <span style={{color: "black"}}>Estas actividades fomentan <span style={{color: "#D4AF37", fontWeight: "bold"}}>conversaciones reales</span>, <span style={{color: "#D4AF37", fontWeight: "bold"}}>vínculos profundos</span>, y el valor de mostrarse <span style={{color: "#D4AF37", fontWeight: "bold"}}>vulnerable</span>.</span>
     },
     { 
       image: nuevaSeccion05Img, 
-      title: <span style={{color: 'black'}}>Convertimos una comida excepcional en una <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>experiencia emocional</span>, <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>memorable</span>.</span>
+      title: <span style={{color: "black"}}>Convertimos una comida excepcional en una <span style={{color: "#D4AF37", fontWeight: "bold"}}>experiencia emocional</span>, <span style={{color: "#D4AF37", fontWeight: "bold"}}>memorable</span>.</span>
     },
     { 
       image: nuevaSeccion06Img, 
-      title: <span style={{color: 'black'}}>Hacemos posible un <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>ocio distinto</span>, rompemos la <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>monotonía</span>, y devolvemos <span style={{color: 'hsl(45 100% 65%)', fontWeight: 'bold'}}>sentido</span> a compartir.</span>
+      title: <span style={{color: "black"}}>Hacemos posible un <span style={{color: "#D4AF37", fontWeight: "bold"}}>ocio distinto</span>, rompemos la <span style={{color: "#D4AF37", fontWeight: "bold"}}>monotonía</span>, y devolvemos <span style={{color: "#D4AF37", fontWeight: "bold"}}>sentido</span> a compartir.</span>
     }
   ];
   const benefitsSlides = [{
