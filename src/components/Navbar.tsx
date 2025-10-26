@@ -312,24 +312,6 @@ const Navbar = () => {
               </Tooltip>
             )}
 
-            {/* Gift Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/cestas')}
-                  className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300 text-xl"
-                  aria-label="Regalar una cesta"
-                >
-                  🎁
-                </motion.button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Regalar</p>
-              </TooltipContent>
-            </Tooltip>
-
             {/* Cart Button - Only show if cart has items */}
             {getTotalItems() > 0 && (
               <motion.button
@@ -488,6 +470,33 @@ const Navbar = () => {
             boxShadow: '0 10px 40px rgba(0,0,0,0.2), 0 0 20px rgba(218,165,32,0.3)'
           }}>
                 <div className="py-2">
+                  {/* Botón Regalar con emoji */}
+                  <motion.button 
+                    initial={{
+                      opacity: 0,
+                      x: -20
+                    }} 
+                    animate={{
+                      opacity: 1,
+                      x: 0
+                    }} 
+                    transition={{
+                      delay: 0
+                    }} 
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      navigate('/cestas');
+                    }}
+                    className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-black hover:text-[hsl(45,100%,50%)] transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 whitespace-nowrap"
+                  >
+                    <span className="text-xl">🎁</span>
+                    <span className="relative z-10">Regalar</span>
+                    <motion.div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[hsl(45,100%,50%)] to-transparent origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" style={{
+                      boxShadow: '0 0 10px hsl(45 100% 50%)'
+                    }} />
+                    <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(45,100%,70%)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.button>
+
                   {navItems.map((item, index) => <motion.button key={item.id} initial={{
                 opacity: 0,
                 x: -20
@@ -495,7 +504,7 @@ const Navbar = () => {
                 opacity: 1,
                 x: 0
               }} transition={{
-                delay: index * 0.05
+                delay: (index + 1) * 0.05
               }} onClick={() => handleNavigation(item)} className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-black hover:text-[hsl(45,100%,50%)] transition-all duration-300 overflow-hidden flex items-center justify-center whitespace-nowrap">
                       <span className="relative z-10">{item.label}</span>
                       <motion.div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[hsl(45,100%,50%)] to-transparent origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" style={{

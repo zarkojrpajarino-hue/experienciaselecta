@@ -775,9 +775,10 @@ const ProfilePage = () => {
                       {orders.length === 0 ? (
                         <option value="" className="font-poppins font-bold bg-white text-black">No hay pedidos disponibles.</option>
                       ) : (
-                        orders.flatMap(o => o.items.map(i => i.basket_name)).map((basketName, idx) => (
+                        // Crear un Set para evitar duplicados
+                        Array.from(new Set(orders.flatMap(o => o.items.map(i => i.basket_name)))).map((basketName, idx) => (
                           <option key={`${basketName}-${idx}`} value={basketName} className="font-poppins font-bold bg-white text-black">
-                            {basketName}.
+                            {basketName} - {basketData[basketName]?.precio || "N/A"}€
                           </option>
                         ))
                       )}
