@@ -75,12 +75,8 @@ const FeedbackModal = ({
 
       if (error) throw error;
 
-      // Mark feedback as given - different keys for purchase vs general feedback
-      if (showPurchaseQuestion && orderId) {
-        sessionStorage.setItem(`purchaseFeedback_${orderId}`, 'true');
-      } else {
-        sessionStorage.setItem('feedbackGiven', 'true');
-      }
+      // Mark feedback as given in this session (same key for both types)
+      sessionStorage.setItem('feedbackGiven', 'true');
 
       toast.success('¡Gracias por tu feedback!', {
         description: 'Tu opinión nos ayuda a mejorar.',
