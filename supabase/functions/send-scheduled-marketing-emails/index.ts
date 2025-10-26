@@ -1,11 +1,24 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { Resend } from 'https://esm.sh/resend@4.0.0';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Validation schema for consent records
+const consentRecordSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().trim().email().max(255),
+  user_id: z.string().uuid(),
+});
+
+// Validation schema for profile data
+const profileSchema = z.object({
+  name: z.string().trim().max(200).nullable(),
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -69,6 +82,14 @@ serve(async (req) => {
     // Send emails
     for (const consent of pendingConsents) {
       try {
+        // Validate consent record
+        const consentValidation = consentRecordSchema.safeParse(consent);
+        if (!consentValidation.success) {
+          console.error(`Invalid consent record for ${consent.id}:`, consentValidation.error.issues);
+          errorCount++;
+          continue;
+        }
+
         // Get user profile for name
         const { data: profile } = await supabase
           .from('profiles')
@@ -76,7 +97,15 @@ serve(async (req) => {
           .eq('user_id', consent.user_id)
           .single();
 
-        const userName = profile?.name || '';
+        // Validate profile data
+        const profileValidation = profileSchema.safeParse(profile);
+        if (!profileValidation.success) {
+          console.error(`Invalid profile data for user ${consent.user_id}:`, profileValidation.error.issues);
+          errorCount++;
+          continue;
+        }
+
+        const userName = profileValidation.data?.name || '';
 
         const emailContent = `
 ¡Hola ${userName || 'amigo/a'}!

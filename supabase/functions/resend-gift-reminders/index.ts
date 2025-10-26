@@ -1,11 +1,26 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { Resend } from 'https://esm.sh/resend@4.0.0'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// Validation schema for gift records
+const giftRecordSchema = z.object({
+  id: z.string().uuid(),
+  order_id: z.string().uuid(),
+  recipient_email: z.string().trim().email().max(255),
+  recipient_name: z.string().trim().max(200),
+  sender_name: z.string().trim().max(200),
+  basket_name: z.string().trim().max(200),
+  basket_category: z.string().trim().max(100),
+  personal_note: z.string().max(1000).nullable(),
+  created_at: z.string(),
+  shipping_completed: z.boolean(),
+});
 
 // HTML escape function
 const escapeHtml = (text: string): string => {
@@ -84,8 +99,18 @@ serve(async (req) => {
 
     // Send reminder email to each recipient
     let sentCount = 0;
+    let errorCount = 0;
+
     for (const gift of pendingGifts) {
       try {
+        // Validate gift record
+        const giftValidation = giftRecordSchema.safeParse(gift);
+        if (!giftValidation.success) {
+          console.error(`Invalid gift record for ${gift.id}:`, giftValidation.error.issues);
+          errorCount++;
+          continue;
+        }
+
         const emailContent = `
 ¡Hola ${escapeHtml(gift.recipient_name)}!
 
@@ -127,16 +152,18 @@ El equipo de Experiencia Selecta
 
       } catch (emailError) {
         console.error(`Error sending reminder for gift ${gift.id}:`, emailError);
+        errorCount++;
       }
     }
 
-    console.log(`Successfully sent ${sentCount} reminders out of ${pendingGifts.length}`);
+    console.log(`Successfully sent ${sentCount} reminders out of ${pendingGifts.length} (${errorCount} errors)`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Sent ${sentCount} reminders`,
-        count: sentCount 
+        message: `Sent ${sentCount} reminders (${errorCount} validation errors)`,
+        count: sentCount,
+        errors: errorCount
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
