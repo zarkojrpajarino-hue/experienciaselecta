@@ -99,34 +99,9 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     <>
       {/* Carousel */}
       <div className="relative max-w-6xl mx-auto">
-        {/* Navigation Buttons */}
-        <div className="flex justify-center items-center gap-8 mb-6">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={prevSlide}
-            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
-          >
-            <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
-          </motion.button>
-
-          <span className="text-black font-poppins font-bold text-base md:text-lg">
-            {currentIndex + 1} / {slides.length}
-          </span>
-
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={nextSlide}
-            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
-          >
-            <ChevronRight className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
-          </motion.button>
-        </div>
-
         {/* 3D Carousel Container */}
         <div 
-          className="relative w-full h-[300px] md:h-[450px] flex items-center justify-center mx-auto mb-8" 
+          className="relative w-full h-[250px] md:h-[320px] flex items-center justify-center mx-auto mb-6" 
           style={{ perspective: '1800px' }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
@@ -167,7 +142,32 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
           </div>
         </div>
 
-        {/* Text Below Carousel */}
+        {/* Navigation Buttons Below Images */}
+        <div className="flex justify-center items-center gap-8 my-6">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={prevSlide}
+            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
+          >
+            <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
+          </motion.button>
+
+          <span className="text-black font-poppins font-bold text-base md:text-lg">
+            {currentIndex + 1} / {slides.length}
+          </span>
+
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={nextSlide}
+            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
+          >
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
+          </motion.button>
+        </div>
+
+        {/* Text Below Navigation */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -186,7 +186,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
 
       {/* Modal for enlarged image */}
       <Dialog open={selectedImage !== null} onOpenChange={closeImage}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 bg-transparent border-none">
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 bg-transparent border-none" hideClose>
           <AnimatePresence mode="wait">
             {selectedImage !== null && (
               <motion.div
@@ -197,34 +197,6 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
                 transition={{ duration: 0.3 }}
                 className="relative"
               >
-                {/* Close button */}
-                <button
-                  onClick={closeImage}
-                  className="absolute -top-12 right-0 z-50 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full shadow-lg transition-all duration-300"
-                >
-                  <X className="w-6 h-6 text-black" />
-                </button>
-
-                {/* Navigation buttons */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    prevImageModal();
-                  }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 flex items-center justify-center bg-white/90 hover:bg-white rounded-full shadow-lg transition-all duration-300"
-                >
-                  <ChevronLeft className="w-6 h-6 text-black" />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    nextImageModal();
-                  }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 flex items-center justify-center bg-white/90 hover:bg-white rounded-full shadow-lg transition-all duration-300"
-                >
-                  <ChevronRight className="w-6 h-6 text-black" />
-                </button>
-
                 {/* Image */}
                 <img
                   src={slides[selectedImage].image}

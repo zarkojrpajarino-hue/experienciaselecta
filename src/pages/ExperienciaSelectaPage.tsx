@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowUp } from "lucide-react";
 
 // Import Experiencia images
-import experiencia1 from "@/assets/experiencia-1.png";
-import experiencia2 from "@/assets/experiencia-2.png";
+import experiencia1 from "@/assets/experiencia-1-clean.png";
+import experiencia2 from "@/assets/experiencia-2-clean.png";
 import experiencia3 from "@/assets/experiencia-3-clean.png";
 import experiencia4 from "@/assets/experiencia-4-clean.png";
 import experiencia5 from "@/assets/experiencia-5.png";
 
 // Import Selecta images
 import selecta1 from "@/assets/selecta-1-clean.png";
-import selecta2 from "@/assets/selecta-2.png";
-import selecta3 from "@/assets/selecta-3.png";
-import selecta4 from "@/assets/selecta-4.png";
+import selecta2 from "@/assets/selecta-2-clean.png";
+import selecta3 from "@/assets/selecta-3-clean.png";
+import selecta4 from "@/assets/selecta-4-clean.png";
 import selecta5 from "@/assets/selecta-5-clean.png";
 
 const ExperienciaSelectaPage = () => {
