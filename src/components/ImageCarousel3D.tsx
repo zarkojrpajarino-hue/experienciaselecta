@@ -101,7 +101,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
       <div className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
-          className="relative w-full h-[125px] md:h-[160px] flex items-center justify-center mx-auto mb-6" 
+          className="relative w-full h-[180px] md:h-[240px] flex items-center justify-center mx-auto mb-6" 
           style={{ perspective: '1800px' }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
@@ -112,7 +112,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
               return (
                 <div
                   key={index}
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] md:w-[50%] max-w-lg"
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[35%] md:w-[25%] max-w-xs"
                   style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
                   onClick={() => isActive && openImage(index)}
                 >
@@ -186,7 +186,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
 
       {/* Modal for enlarged image */}
       <Dialog open={selectedImage !== null} onOpenChange={closeImage}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 bg-transparent border-none" hideClose>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 bg-transparent border-none">
           <AnimatePresence mode="wait">
             {selectedImage !== null && (
               <motion.div
