@@ -8,16 +8,16 @@ import { ArrowLeft, ArrowUp } from "lucide-react";
 // Import Experiencia images
 import experiencia1 from "@/assets/experiencia-1.png";
 import experiencia2 from "@/assets/experiencia-2.png";
-import experiencia3 from "@/assets/experiencia-3.png";
-import experiencia4 from "@/assets/experiencia-4.png";
+import experiencia3 from "@/assets/experiencia-3-clean.png";
+import experiencia4 from "@/assets/experiencia-4-clean.png";
 import experiencia5 from "@/assets/experiencia-5.png";
 
 // Import Selecta images
-import selecta1 from "@/assets/selecta-1.png";
+import selecta1 from "@/assets/selecta-1-clean.png";
 import selecta2 from "@/assets/selecta-2.png";
 import selecta3 from "@/assets/selecta-3.png";
 import selecta4 from "@/assets/selecta-4.png";
-import selecta5 from "@/assets/selecta-5.png";
+import selecta5 from "@/assets/selecta-5-clean.png";
 
 const ExperienciaSelectaPage = () => {
   const navigate = useNavigate();
@@ -141,30 +141,22 @@ const ExperienciaSelectaPage = () => {
           >
             <div className="p-8 md:p-12 rounded-3xl transition-all duration-500" style={{ backgroundColor: '#FFFFFF' }}>
               <div className="flex items-center gap-4 mb-8">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-poppins font-bold leading-relaxed" style={{ color: '#000000' }}>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-relaxed" style={{ color: '#000000' }}>
                   Experiencia
                 </h2>
               </div>
               
-              <div className="space-y-6 font-poppins text-base md:text-lg leading-relaxed font-bold" style={{ color: '#000000' }}>
-                <p>
-                  Experiencia Selecta no es para todo el mundo.
+              <div className="space-y-6 font-lora text-lg leading-relaxed text-center font-bold" style={{ color: '#000000' }}>
+                <p className="normal-case first-letter:uppercase lowercase">
+                  nos enseñaron a desconectar. nosotros preferimos <span style={{ color: '#D4AF37' }}>reconectar</span>.
                 </p>
                 
-                <p>
-                  Las dinámicas que acompañan cada cesta, son preguntas que invitan a pensar, a dialogar, a abrirse, a mostrar quiénes somos realmente.
+                <p className="normal-case first-letter:uppercase lowercase">
+                  creamos espacios donde la <span style={{ color: '#D4AF37' }}>conversación importa</span> y <span style={{ color: '#D4AF37' }}>mirar a los ojos</span> no da miedo.
                 </p>
 
-                <p>
-                  No son las preguntas que haces cada día, sino las que despiertan algo, las que te hacen mirar hacia dentro y compartir lo que normalmente no se dice.
-                </p>
-
-                <p>
-                  Nuestro propósito es que las personas puedan manifestar realmente que piensan, quien son, que tú conozcas a las personas que te rodean. En una sociedad en la que cada vez hay menos cosas reales desgraciadamente.
-                </p>
-
-                <p>
-                  Porque la cesta es solo la excusa: lo que ofrecemos es una experiencia humana, íntima y única, una oportunidad para descubrir personas… y a uno mismo.
+                <p className="normal-case first-letter:uppercase lowercase">
+                  porque conocer es <span style={{ color: '#D4AF37' }}>escuchar y compartir</span>. ahí empieza lo auténtico.
                 </p>
               </div>
             </div>
@@ -224,34 +216,22 @@ const ExperienciaSelectaPage = () => {
 
             <div className="p-8 md:p-12 transition-all duration-500">
               <div className="flex items-center gap-4 mb-8">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-poppins font-bold leading-relaxed" style={{ color: '#000000' }}>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-relaxed" style={{ color: '#000000' }}>
                   Selecta
                 </h2>
               </div>
 
-              <div className="space-y-6 font-poppins text-base md:text-lg leading-relaxed font-bold" style={{ color: '#000000' }}>
-                <p>
-                  En Selecta celebramos lo nuestro.
+              <div className="space-y-6 font-lora text-lg leading-relaxed text-center font-bold" style={{ color: '#000000' }}>
+                <p className="normal-case first-letter:uppercase lowercase">
+                  trabajamos con <span style={{ color: '#D4AF37' }}>productores españoles</span>. personas reales, <span style={{ color: '#D4AF37' }}>productos excepcionales</span>.
                 </p>
 
-                <p>
-                  Cada producto que elegimos tiene sello nacional, elaborado por manos que cuidan la tradición, la calidad y la sostenibilidad.
+                <p className="normal-case first-letter:uppercase lowercase">
+                  priorizamos <span style={{ color: '#D4AF37' }}>calidad sobre cantidad</span>. en productos, momentos y relaciones.
                 </p>
 
-                <p>
-                  Apoyamos el comercio nacional, trabajamos directamente con productores, con personas que viven de lo que hacen, y apostamos por que el valor se quede aquí, en nuestra tierra.
-                </p>
-
-                <p>
-                  Creemos que los productos de nuestra tierra no deberían reservarse solo para ocasiones especiales: hacemos accesible lo excepcional, llevando lo mejor de nuestra gastronomía a todos los hogares.
-                </p>
-
-                <p>
-                  En cada cesta hay compromiso, cercanía y respeto por lo que somos.
-                </p>
-
-                <p>
-                  Porque para crear algo memorable y único, hace falta un acompañamiento a la altura, apoyar lo nuestro y compartirlo con quienes más queremos.
+                <p className="normal-case first-letter:uppercase lowercase">
+                  <span style={{ color: '#D4AF37' }}>sostenibilidad</span> y <span style={{ color: '#D4AF37' }}>compromiso local</span> son nuestra esencia.
                 </p>
               </div>
             </div>

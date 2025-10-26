@@ -104,7 +104,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
                 <img
                   src={slides[currentIndex].image}
                   alt={`${title} ${currentIndex + 1}`}
-                  className="w-full h-[400px] md:h-[500px] object-cover"
+                  className="w-full h-[200px] md:h-[250px] object-cover"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
               </div>
