@@ -21,13 +21,15 @@ interface FeedbackModalProps {
   onClose: () => void;
   userName?: string;
   showPurchaseQuestion?: boolean; // true para post-compra, false para menú
+  orderId?: string; // ID del pedido para feedback post-compra
 }
 
 const FeedbackModal = ({ 
   isOpen, 
   onClose, 
   userName, 
-  showPurchaseQuestion = false 
+  showPurchaseQuestion = false,
+  orderId 
 }: FeedbackModalProps) => {
   const [generalRating, setGeneralRating] = useState(0);
   const [hoveredGeneralRating, setHoveredGeneralRating] = useState(0);
@@ -73,8 +75,12 @@ const FeedbackModal = ({
 
       if (error) throw error;
 
-      // Mark feedback as given in this session
-      sessionStorage.setItem('feedbackGiven', 'true');
+      // Mark feedback as given - different keys for purchase vs general feedback
+      if (showPurchaseQuestion && orderId) {
+        sessionStorage.setItem(`purchaseFeedback_${orderId}`, 'true');
+      } else {
+        sessionStorage.setItem('feedbackGiven', 'true');
+      }
 
       toast.success('¡Gracias por tu feedback!', {
         description: 'Tu opinión nos ayuda a mejorar.',

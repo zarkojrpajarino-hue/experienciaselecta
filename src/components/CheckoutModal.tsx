@@ -544,10 +544,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     setStep('success');
     
-    // Show feedback modal for non-gift purchases only if not given in this session
+    // Show feedback modal for non-gift purchases always (purchase feedback is different from general feedback)
     if (!isGiftMode && user?.id) {
-      const feedbackGiven = sessionStorage.getItem('feedbackGiven');
-      if (!feedbackGiven) {
+      const purchaseFeedbackGiven = sessionStorage.getItem(`purchaseFeedback_${orderId}`);
+      if (!purchaseFeedbackGiven) {
         console.log('Scheduling feedback modal to open...');
         setLastOrderUserName(customerData.name || user.email || 'Usuario');
         setTimeout(() => {
@@ -555,7 +555,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           setShowFeedbackModal(true);
         }, 500);
       } else {
-        console.log('Feedback already given in this session');
+        console.log('Purchase feedback already given for this order');
       }
     } else {
       console.log('Feedback modal NOT shown - isGiftMode:', isGiftMode, 'user:', user?.id);
@@ -565,8 +565,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleClose = () => {
     // Si hay un pedido completado y el modal de feedback debería mostrarse, no cerrar aún
     if (completedOrderId && !isGiftMode && user?.id && !showFeedbackModal) {
-      const feedbackGiven = sessionStorage.getItem('feedbackGiven');
-      if (!feedbackGiven) {
+      const purchaseFeedbackGiven = sessionStorage.getItem(`purchaseFeedback_${completedOrderId}`);
+      if (!purchaseFeedbackGiven) {
         console.log('Preventing close - feedback modal should show');
         return;
       }
@@ -1130,8 +1130,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <Button 
               onClick={() => {
                 // If feedback modal should show, close checkout and let feedback modal appear
-                const feedbackGiven = sessionStorage.getItem('feedbackGiven');
-                if (!isGiftMode && user?.id && completedOrderId && !feedbackGiven) {
+                const purchaseFeedbackGiven = sessionStorage.getItem(`purchaseFeedback_${completedOrderId}`);
+                if (!isGiftMode && user?.id && completedOrderId && !purchaseFeedbackGiven) {
                   console.log('Closing checkout, feedback modal will show');
                   onClose();
                 } else {
@@ -1163,9 +1163,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           setShowFeedbackModal(false);
           setLastOrderUserName('');
           setCompletedOrderId('');
+          // Mark this specific purchase feedback as given
+          sessionStorage.setItem(`purchaseFeedback_${completedOrderId}`, 'true');
         }}
         userName={lastOrderUserName}
         showPurchaseQuestion={true}
+        orderId={completedOrderId}
       />
     )}
     </>
