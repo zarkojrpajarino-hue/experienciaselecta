@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.resend-gift-reminders]
 verify_jwt = false
+
+[functions.send-sms]
+verify_jwt = true
