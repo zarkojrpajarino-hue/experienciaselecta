@@ -534,6 +534,8 @@ const ProfilePage = () => {
                           const displayName = matchKey || review.basket_name;
                           const precio = matchKey ? basketData[matchKey].precio : undefined;
 
+                          const imgSrc = matchKey ? basketData[matchKey].imagen : parejaGourmetImg;
+
                           return (
                           <Card key={review.id} className="bg-white/10 border-none shadow-lg">
                             <CardHeader>
@@ -565,7 +567,19 @@ const ProfilePage = () => {
                                 })}.
                               </p>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="space-y-4">
+                              <div className="flex justify-center">
+                                <div 
+                                  className="w-32 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
+                                  onClick={() => setZoomedImage(imgSrc)}
+                                >
+                                  <img 
+                                    src={imgSrc} 
+                                    alt={displayName}
+                                    className="w-full h-auto object-cover"
+                                  />
+                                </div>
+                              </div>
                               <p className="text-white font-poppins font-bold">{review.comment}.</p>
                             </CardContent>
                           </Card>
