@@ -398,7 +398,25 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       checkAuthStatus();
+      // Set flag to reopen checkout after OAuth redirect
+      localStorage.setItem('pendingCheckout', 'true');
     }
+  }, [isOpen]);
+
+  // Reopen checkout after OAuth redirect
+  useEffect(() => {
+    const checkPendingCheckout = async () => {
+      const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+      if (hasPendingCheckout && !isOpen) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          localStorage.removeItem('pendingCheckout');
+          // Don't automatically reopen - let the parent component handle this
+          // The user will see their cart is still there
+        }
+      }
+    };
+    checkPendingCheckout();
   }, [isOpen]);
 
   const checkAuthStatus = async () => {
@@ -436,6 +454,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
+    // Clear the checkout flag from localStorage after successful auth
+    localStorage.removeItem('pendingCheckout');
     checkAuthStatus();
   };
 
@@ -1098,18 +1118,18 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         />
       </DialogContent>
       
-      {/* Review Modal - Only show for non-gift purchases */}
-      {!isGiftMode && completedOrderId && (
+      {/* Review Modal - Only show for non-gift purchases when user exists */}
+      {!isGiftMode && completedOrderId && user?.id && (
         <ReviewModal
           isOpen={showReviewModal}
           onClose={() => {
             console.log('Closing review modal');
             setShowReviewModal(false);
           }}
-          userName={customerData.name || user?.email || ''}
+          userName={customerData.name || user.email || ''}
           basketName={basketItems[0]?.name || 'tu cesta'}
           orderId={completedOrderId}
-          userId={user?.id}
+          userId={user.id}
         />
       )}
     </Dialog>

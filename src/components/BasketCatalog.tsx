@@ -1664,6 +1664,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         onClose={() => {
           setShowCheckout(false);
           setCart([]); // Clear local cart
+          localStorage.removeItem('pendingCheckout'); // Clear any pending checkout flag
           // Al cerrar desde catálogo, quedarse en el catálogo (no navegar)
         }}
         basketItems={basketItems}

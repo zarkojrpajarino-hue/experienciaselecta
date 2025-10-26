@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -71,9 +71,14 @@ const ReviewModal = ({ isOpen, onClose, userName, basketName, orderId, userId }:
     onClose();
   };
 
+  // Log when modal state changes for debugging
+  React.useEffect(() => {
+    console.log('ReviewModal render - isOpen:', isOpen, 'orderId:', orderId, 'userId:', userId);
+  }, [isOpen, orderId, userId]);
+
   return (
-    <Dialog modal={false} open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto bg-card/95 backdrop-blur-sm border-2 border-border/50 rounded-2xl p-0">
+    <Dialog modal={true} open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md mx-auto bg-card/95 backdrop-blur-sm border-2 border-border/50 rounded-2xl p-0 z-[100]">
         <DialogTitle className="sr-only">Valorar tu compra</DialogTitle>
         <DialogDescription className="sr-only">
           Deja una valoración de tu experiencia

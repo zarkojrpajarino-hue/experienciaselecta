@@ -89,7 +89,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   const handleGoogleSignIn = async () => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      // Preserve current URL to return after OAuth
+      const currentUrl = window.location.href;
+      const redirectUrl = currentUrl.includes('#') 
+        ? currentUrl 
+        : `${window.location.origin}/`;
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
