@@ -148,19 +148,20 @@ const SobreNosotrosDetalle = () => {
     <div className="min-h-screen bg-background overflow-x-hidden">
       
       {/* Back Button - Above Hero Section */}
-      <div className="pt-24 px-4 sm:px-6 lg:px-8">
+      <div className="pt-24">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
+          className="px-4 sm:px-6 lg:px-8"
         >
           <Button
             onClick={() => {
               navigate('/#categoria-cestas');
             }}
-            variant="ghost"
+            variant="link"
             style={{ color: '#D4AF37' }}
-            className="hover:opacity-80"
+            className="hover:opacity-80 p-0 bg-transparent hover:bg-transparent"
           >
             <ArrowLeft className="mr-2" size={20} />
             Volver
@@ -175,7 +176,7 @@ const SobreNosotrosDetalle = () => {
       </section>
 
       {/* CTA con fondo crema */}
-      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem', border: '1px solid #000' }}>
+      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem' }}>
         {/* Botón Ver Más Sobre Nosotros */}
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
@@ -211,15 +212,15 @@ const SobreNosotrosDetalle = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="mb-8"
+              className="mb-8 px-4 sm:px-6 lg:px-8"
             >
               <Button
                 onClick={() => {
                   navigate('/#categoria-cestas');
                 }}
-                variant="ghost"
+                variant="link"
                 style={{ color: '#D4AF37' }}
-                className="hover:opacity-80"
+                className="hover:opacity-80 p-0 bg-transparent hover:bg-transparent"
               >
                 <ArrowLeft className="mr-2" size={20} />
                 Volver
