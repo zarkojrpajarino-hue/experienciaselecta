@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import AuthModal from "./AuthModal";
+import ReviewModal from "./ReviewModal";
 import type { User } from "@supabase/supabase-js";
 import { z } from "zod";
 
@@ -82,7 +83,7 @@ const PaymentForm: React.FC<{
   customerData: CustomerData;
   basketItems: BasketItem[];
   totalAmount: number;
-  onSuccess: () => void;
+  onSuccess: (orderId: string) => void;
   isGiftMode?: boolean;
   giftData?: GiftData;
   expandedBasketItems?: (BasketItem & { uniqueId: string })[];
@@ -168,6 +169,9 @@ const PaymentForm: React.FC<{
       }
 
       const { clientSecret, orderId } = paymentData;
+      
+      // Store orderId for later use
+      const currentOrderId = orderId;
 
       // Confirm payment with Stripe
       const cardElement = elements.getElement(CardElement);
@@ -221,7 +225,7 @@ const PaymentForm: React.FC<{
           description: "Tu pedido ha sido confirmado. Recibirás un email de confirmación.",
         });
 
-        onSuccess();
+        onSuccess(currentOrderId);
       }
 
     } catch (error: any) {
@@ -339,6 +343,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [completedOrderId, setCompletedOrderId] = useState<string>('');
+  const [showReviewModal, setShowReviewModal] = useState(false);
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -488,7 +494,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setStep('payment');
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = (orderId: string) => {
+    setCompletedOrderId(orderId);
+    
     // Remove only assigned items from cart after successful payment
     if (isGiftMode && onRemoveItems) {
       // Get all assigned basket IDs
@@ -511,12 +519,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     } else if (onClearCart) {
       onClearCart();
     }
+    
     setStep('success');
+    
+    // Show review modal only for non-gift purchases after a short delay
+    if (!isGiftMode && user) {
+      setTimeout(() => {
+        setShowReviewModal(true);
+      }, 1500);
+    }
   };
 
   const handleClose = () => {
     setStep('auth');
     setUser(null);
+    setShowReviewModal(false);
+    setCompletedOrderId('');
     setCustomerData({
       name: '',
       email: '',
@@ -1086,6 +1104,18 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           onSuccess={handleAuthSuccess}
         />
       </DialogContent>
+
+      {/* Review Modal - Only show for non-gift purchases */}
+      {!isGiftMode && user && completedOrderId && (
+        <ReviewModal
+          isOpen={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          userName={customerData.name || user.email || ''}
+          basketName={basketItems[0]?.name || 'tu cesta'}
+          orderId={completedOrderId}
+          userId={user.id}
+        />
+      )}
     </Dialog>
   );
 };
