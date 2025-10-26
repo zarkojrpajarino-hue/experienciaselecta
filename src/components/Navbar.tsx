@@ -8,6 +8,7 @@ import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import AuthModal from "./AuthModal";
+import FeedbackModal from "./FeedbackModal";
 import logo from "@/assets/logo-experiencia-selecta.png";
 import headerBg from "@/assets/iberian-products-background.jpg";
 import dropdownBg from "@/assets/jamon-iberico-traditional.jpg";
@@ -16,6 +17,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCartPreview, setShowCartPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
@@ -512,6 +514,32 @@ const Navbar = () => {
                 }} />
                       <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(45,100%,70%)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.button>)}
+
+                  {/* Feedback button */}
+                  <motion.button 
+                    initial={{
+                      opacity: 0,
+                      x: -20
+                    }} 
+                    animate={{
+                      opacity: 1,
+                      x: 0
+                    }} 
+                    transition={{
+                      delay: (navItems.length + 1) * 0.05
+                    }} 
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setShowFeedbackModal(true);
+                    }}
+                    className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-[hsl(45,100%,50%)] hover:text-[hsl(45,100%,60%)] transition-all duration-300 overflow-hidden flex items-center justify-center whitespace-nowrap"
+                  >
+                    <span className="relative z-10">Feedback.</span>
+                    <motion.div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[hsl(45,100%,50%)] to-transparent origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" style={{
+                      boxShadow: '0 0 10px hsl(45 100% 50%)'
+                    }} />
+                    <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(45,100%,70%)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.button>
                 </div>
               </motion.div>
             </>}
@@ -523,6 +551,14 @@ const Navbar = () => {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onSuccess={() => setShowAuthModal(false)}
+      />
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        userName={user?.email?.split('@')[0] || undefined}
+        showPurchaseQuestion={false}
       />
     </motion.nav>;
 };
