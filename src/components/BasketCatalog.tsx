@@ -256,7 +256,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Parejas que buscan una <span className="text-gold font-bold">primera experiencia gourmet</span> con productos de <span className="text-gold font-bold">calidad excepcional</span>
+              Parejas que buscan una <span style={{ color: '#D4AF37' }} className="font-bold">primera experiencia gourmet</span> con productos de <span style={{ color: '#D4AF37' }} className="font-bold">calidad excepcional</span>
             </>
           ),
           maridaje: "El Ricardo del Duero realza los sabores del jamón y embutidos.",
@@ -281,7 +281,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Conversaciones profundas</span> con sabores <span className="text-gold font-bold">naturales</span> sin alcohol
+              <span style={{ color: '#D4AF37' }} className="font-bold">Conversaciones profundas</span> con sabores <span style={{ color: '#D4AF37' }} className="font-bold">naturales</span> sin alcohol
             </>
           ),
           maridaje: "Disfruta de sabores puros sin necesidad de maridaje.",
@@ -306,7 +306,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Ocasiones especiales</span> que merecen <span className="text-gold font-bold">lo mejor</span>, con jamón <span className="text-gold font-bold">ibérico</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Ocasiones especiales</span> que merecen <span style={{ color: '#D4AF37' }} className="font-bold">lo mejor</span>, con jamón <span style={{ color: '#D4AF37' }} className="font-bold">ibérico</span>
             </>
           ),
           maridaje: "El Entrechuelos Roble realza el jamón ibérico y queso trufado.",
@@ -334,13 +334,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Reuniones familiares</span> y encuentros de <span className="text-gold font-bold">amigos cercanos</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones familiares</span> y encuentros de <span style={{ color: '#D4AF37' }} className="font-bold">amigos cercanos</span>
             </>
           ),
           maridaje: "Rueda verdejo complementa ibéricos.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Reuniones</span> casuales • <span className="text-gold font-bold">Aperitivos</span> • Encuentros de <span className="text-gold font-bold">amigos</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones</span> casuales • <span style={{ color: '#D4AF37' }} className="font-bold">Aperitivos</span> • Encuentros de <span style={{ color: '#D4AF37' }} className="font-bold">amigos</span>
             </>
           ),
           personas: "3-4",
@@ -365,13 +365,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Reuniones familiares</span> que prefieren <span className="text-gold font-bold">opciones sin alcohol</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones familiares</span> que prefieren <span style={{ color: '#D4AF37' }} className="font-bold">opciones sin alcohol</span>
             </>
           ),
           maridaje: "Sabores puros sin alcohol.",
           ocasion: (
             <>
-              Comidas familiares • <span className="text-gold font-bold">Reuniones</span> saludables • Encuentros naturales
+              Comidas familiares • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones</span> saludables • Encuentros naturales
             </>
           ),
           personas: "3-4",
@@ -396,13 +396,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Grupos que valoran la <span className="text-gold font-bold">calidad premium</span> y los <span className="text-gold font-bold">sabores selectos</span>
+              Grupos que valoran la <span style={{ color: '#D4AF37' }} className="font-bold">calidad premium</span> y los <span style={{ color: '#D4AF37' }} className="font-bold">sabores selectos</span>
             </>
           ),
           maridaje: "Verdejo realza sabores ibéricos.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Cenas especiales</span> • <span className="text-gold font-bold">Celebraciones</span> • <span className="text-gold font-bold">Eventos premium</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Cenas especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos premium</span>
             </>
           ),
           personas: "3-4",
@@ -428,13 +428,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Reuniones familiares</span> que buscan <span className="text-gold font-bold">sabores tradicionales</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones familiares</span> que buscan <span style={{ color: '#D4AF37' }} className="font-bold">sabores tradicionales</span>
             </>
           ),
           maridaje: "Vino roble para ibéricos.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Comidas familiares</span> • <span className="text-gold font-bold">Reuniones tradicionales</span> • <span className="text-gold font-bold">Celebraciones clásicas</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Comidas familiares</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones tradicionales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones clásicas</span>
             </>
           ),
           personas: "5-6",
@@ -461,13 +461,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Grupos que buscan una <span className="text-gold font-bold">experiencia gastronómica</span> sin alcohol
+              Grupos que buscan una <span style={{ color: '#D4AF37' }} className="font-bold">experiencia gastronómica</span> sin alcohol
             </>
           ),
           maridaje: "Pureza de sabores premium.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Experiencias únicas</span> • <span className="text-gold font-bold">Reuniones especiales</span> • <span className="text-gold font-bold">Eventos saludables</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Experiencias únicas</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos saludables</span>
             </>
           ),
           personas: "5-6",
@@ -495,13 +495,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Tertulias memorables</span> con productos de <span className="text-gold font-bold">categoría superior</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Tertulias memorables</span> con productos de <span style={{ color: '#D4AF37' }} className="font-bold">categoría superior</span>
             </>
           ),
           maridaje: "Rioja Crianza y Ribera del Duero.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Tertulias especiales</span> • <span className="text-gold font-bold">Celebraciones importantes</span> • <span className="text-gold font-bold">Eventos premium</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Tertulias especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones importantes</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos premium</span>
             </>
           ),
           personas: "5-6",
@@ -530,13 +530,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Celebraciones especiales</span> para grupos de <span className="text-gold font-bold">7-8 personas</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones especiales</span> para grupos de <span style={{ color: '#D4AF37' }} className="font-bold">7-8 personas</span>
             </>
           ),
           maridaje: "Chardonnay y roble completan experiencia.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Celebraciones familiares</span> • <span className="text-gold font-bold">Eventos especiales</span> • <span className="text-gold font-bold">Reuniones grandes</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones familiares</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones grandes</span>
             </>
           ),
           personas: "7-8",
@@ -565,13 +565,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              La <span className="text-gold font-bold">máxima calidad</span> sin alcohol, con <span className="text-gold font-bold">productos premium</span>
+              La <span style={{ color: '#D4AF37' }} className="font-bold">máxima calidad</span> sin alcohol, con <span style={{ color: '#D4AF37' }} className="font-bold">productos premium</span>
             </>
           ),
           maridaje: "Sin alcohol, sabores puros.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Eventos especiales</span> • <span className="text-gold font-bold">Celebraciones grandes</span> • <span className="text-gold font-bold">Reuniones premium</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Eventos especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones grandes</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones premium</span>
             </>
           ),
           personas: "7-8",
@@ -600,13 +600,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Para quienes buscan <span className="text-gold font-bold">lo mejor de lo mejor</span>, con jamón <span className="text-gold font-bold">100% ibérico</span>
+              Para quienes buscan <span style={{ color: '#D4AF37' }} className="font-bold">lo mejor de lo mejor</span>, con jamón <span style={{ color: '#D4AF37' }} className="font-bold">100% ibérico</span>
             </>
           ),
           maridaje: "Ribera del Duero y Rioja Reserva.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Ocasiones especiales</span> • Celebraciones únicas • <span className="text-gold font-bold">Experiencias memorables</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Ocasiones especiales</span> • Celebraciones únicas • <span style={{ color: '#D4AF37' }} className="font-bold">Experiencias memorables</span>
             </>
           ),
           personas: "7-8",
@@ -633,13 +633,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Familias medianas que buscan <span className="text-gold font-bold">conexión natural</span> sin alcohol
+              Familias medianas que buscan <span style={{ color: '#D4AF37' }} className="font-bold">conexión natural</span> sin alcohol
             </>
           ),
           maridaje: "Sin alcohol, doble aceite premium.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Encuentros familiares</span> • <span className="text-gold font-bold">Sin alcohol</span> • <span className="text-gold font-bold">Conexión natural</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Encuentros familiares</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Sin alcohol</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Conexión natural</span>
             </>
           ),
           personas: "2",
@@ -664,13 +664,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Vínculos especiales</span> de parejas con productos <span className="text-gold font-bold">premium</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Vínculos especiales</span> de parejas con productos <span style={{ color: '#D4AF37' }} className="font-bold">premium</span>
             </>
           ),
           maridaje: "Doble jamón con ribera del duero.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Vínculos especiales</span> • <span className="text-gold font-bold">Premium</span> • <span className="text-gold font-bold">Doble jamón</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Vínculos especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Premium</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Doble jamón</span>
             </>
           ),
           personas: "2",
@@ -693,13 +693,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Primera experiencia gourmet</span> accesible para parejas
+              <span style={{ color: '#D4AF37' }} className="font-bold">Primera experiencia gourmet</span> accesible para parejas
             </>
           ),
           maridaje: "Entrada perfecta al mundo gourmet.",
           ocasion: (
             <>
-              <span className="text-gold font-bold">Primeros encuentros</span> • <span className="text-gold font-bold">Experiencia accesible</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Primeros encuentros</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Experiencia accesible</span>
             </>
           ),
           personas: "2",
@@ -728,7 +728,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span className="text-gold font-bold">Largas conversaciones</span> sin necesidad de alcohol
+              <span style={{ color: '#D4AF37' }} className="font-bold">Largas conversaciones</span> sin necesidad de alcohol
             </>
           ),
           maridaje: "Sin alcohol, pureza de conversación.",
@@ -915,7 +915,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           precio: 90,
           descripcion: (
             <>
-              <span className="text-gold font-bold">Vínculos especiales</span> de 5-6 personas con productos <span className="text-gold font-bold">premium</span>
+              <span style={{ color: '#D4AF37' }} className="font-bold">Vínculos especiales</span> de 5-6 personas con productos <span style={{ color: '#D4AF37' }} className="font-bold">premium</span>
             </>
           ),
           categoria: "Gourmet",
@@ -1093,19 +1093,19 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     if (showGroupSize === '3-4') {
       return (
         <>
-          Cestas para <span className="text-gold">3-4 personas</span>
+          Cestas para <span style={{ color: '#D4AF37' }}>3-4 personas</span>
         </>
       );
     } else if (showGroupSize === '5-6') {
       return (
         <>
-          Cestas para <span className="text-gold">5-6 personas</span>
+          Cestas para <span style={{ color: '#D4AF37' }}>5-6 personas</span>
         </>
       );
     } else {
       return (
         <>
-          Cestas para <span className="text-gold">7-8 personas</span>
+          Cestas para <span style={{ color: '#D4AF37' }}>7-8 personas</span>
         </>
       );
     }
@@ -1179,7 +1179,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             }`}
             whileHover={{ scale: showGroupSize === '3-4' ? 1.1 : 1.05 }}
           >
-            <span className={showGroupSize === '3-4' ? 'text-gold' : 'text-black'}>3-4</span>
+            <span className={showGroupSize === '3-4' ? '' : 'text-black'} style={showGroupSize === '3-4' ? { color: '#D4AF37' } : {}}>3-4</span>
           </motion.button>
           
           <span className="text-black text-base sm:text-xl mx-1 sm:mx-2">|</span>
@@ -1196,7 +1196,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             }`}
             whileHover={{ scale: showGroupSize === '5-6' ? 1.1 : 1.05 }}
           >
-            <span className={showGroupSize === '5-6' ? 'text-gold' : 'text-black'}>5-6</span>
+            <span className={showGroupSize === '5-6' ? '' : 'text-black'} style={showGroupSize === '5-6' ? { color: '#D4AF37' } : {}}>5-6</span>
           </motion.button>
           
           <span className="text-black text-base sm:text-xl mx-1 sm:mx-2">|</span>
@@ -1213,7 +1213,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             }`}
             whileHover={{ scale: showGroupSize === '7-8' ? 1.1 : 1.05 }}
           >
-            <span className={showGroupSize === '7-8' ? 'text-gold' : 'text-black'}>7-8</span>
+            <span className={showGroupSize === '7-8' ? '' : 'text-black'} style={showGroupSize === '7-8' ? { color: '#D4AF37' } : {}}>7-8</span>
           </motion.button>
         </div>
       )}
@@ -1361,13 +1361,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                   <DialogTitle>¿Por qué no vendemos cestas?</DialogTitle>
                                   <DialogDescription className="text-base leading-relaxed">
                                     <p className="mb-4">
-                                      En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
+                                      En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
                                     </p>
                                     <p className="mb-4">
                                       Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
                                     </p>
                                     <p>
-                                      Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold text-gold">acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
+                                      Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold" style={{ color: '#D4AF37' }}>acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
                                     </p>
                                   </DialogDescription>
                                 </DialogContent>
@@ -1572,7 +1572,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                           <DialogDescription asChild>
                                             <div className="space-y-4 text-base">
                                               <p>
-                                                En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
+                                                En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
                                               </p>
                                               <p>
                                                 Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.

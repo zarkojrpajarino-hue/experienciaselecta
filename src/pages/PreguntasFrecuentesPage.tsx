@@ -35,9 +35,9 @@ const PreguntasFrecuentesPage = () => {
   const faqSlides = [
     { 
       image: faqParejaRooftop, 
-      title: <>¿Qué incluye <span className='text-gold font-bold'>cada cesta</span>?</>, 
-      text: <>Contenido <span className='text-gold'>exclusivo personalizado</span>.</>,
-      navigationColor: "#FFD700"
+      title: <>¿Qué incluye <span style={{ color: '#D4AF37' }} className='font-bold'>cada cesta</span>?</>, 
+      text: <>Contenido <span style={{ color: '#D4AF37' }}>exclusivo personalizado</span>.</>,
+      navigationColor: "#D4AF37"
     },
     { 
       image: faqAmigosMesa, 
@@ -53,9 +53,9 @@ const PreguntasFrecuentesPage = () => {
     },
     { 
       image: faqJamonPinzas, 
-      title: <>¿<span className='text-gold font-bold'>Calidad</span> de productos?</>, 
-      text: <><span className='text-gold'>Certificada</span>.</>,
-      navigationColor: "#FFD700"
+      title: <>¿<span style={{ color: '#D4AF37' }} className='font-bold'>Calidad</span> de productos?</>, 
+      text: <><span style={{ color: '#D4AF37' }}>Certificada</span>.</>,
+      navigationColor: "#D4AF37"
     },
     { 
       image: faqProductoresLocales, 
@@ -71,9 +71,9 @@ const PreguntasFrecuentesPage = () => {
     },
     { 
       image: faqParejaVinedo, 
-      title: <>¿Cuál es <span className='text-gold font-bold'>vuestra filosofía</span>?</>, 
-      text: <>Los mejores recuerdos <span className='text-gold'>se viven, no se graban</span>.</>,
-      navigationColor: "#FFD700"
+      title: <>¿Cuál es <span style={{ color: '#D4AF37' }} className='font-bold'>vuestra filosofía</span>?</>, 
+      text: <>Los mejores recuerdos <span style={{ color: '#D4AF37' }}>se viven, no se graban</span>.</>,
+      navigationColor: "#D4AF37"
     },
     { 
       image: faqFamiliaPorche, 
@@ -100,7 +100,8 @@ const PreguntasFrecuentesPage = () => {
             <Button
               onClick={() => navigate("/#categoria-cestas")}
               variant="ghost"
-              className="text-gold hover:text-gold/80 hover:bg-gold/10"
+              style={{ color: '#D4AF37' }}
+              className="hover:opacity-80"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Volver
@@ -110,10 +111,10 @@ const PreguntasFrecuentesPage = () => {
       </section>
       
       {/* Espacio superior para centrar */}
-      <div className="pt-8 md:pt-12"></div>
+      <div className="pt-12 md:pt-16"></div>
 
       {/* Botón Contáctanos */}
-      <div className="py-6 md:py-8 flex justify-center bg-white">
+      <div className="py-8 md:py-10 flex justify-center bg-white">
         <ContactModal>
           <div className="flex flex-col items-center gap-2 cursor-pointer">
             <p className="text-black hover:text-gray-600 font-work-sans font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300" style={{ textTransform: "none" }}>

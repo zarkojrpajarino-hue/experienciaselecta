@@ -68,7 +68,7 @@ const CestasPage = () => {
       </div>
       
       {/* Header Section */}
-      <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-black rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8">
+      <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start mb-4">
             <Button variant="link" onClick={() => {
@@ -77,7 +77,7 @@ const CestasPage = () => {
               top: 0,
               behavior: 'smooth'
             }), 100);
-          }} className="text-white hover:text-white/80 p-0">
+          }} className="text-black hover:text-black/80 p-0">
               ← Volver al inicio
             </Button>
           </div>
@@ -96,7 +96,7 @@ const CestasPage = () => {
           damping: 15
         }} className="text-center mb-8">
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
-              <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-white whitespace-nowrap">
+              <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
                 Regala una experiencia personalizada.
               </h2>
               
@@ -107,7 +107,7 @@ const CestasPage = () => {
                     <motion.span onClick={() => {
                     window.location.href = '/#que-vendemos';
                   }} onMouseEnter={() => setTooltipOpen(true)} onMouseLeave={() => setTooltipOpen(false)} className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-xl sm:text-2xl md:text-4xl font-bold" style={{
-                    color: '#FFD700'
+                    color: '#D4AF37'
                   }} animate={{
                     rotateZ: [0, 180, 0]
                   }} transition={{
@@ -125,7 +125,7 @@ const CestasPage = () => {
               </TooltipProvider>
             </div>
             
-            <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-white">
+            <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-black">
               Elige la experiencia perfecta: <span className="font-bold" style={{
               color: '#4A7050'
             }}>familia</span>, <span className="font-bold" style={{
@@ -151,19 +151,19 @@ const CestasPage = () => {
 
           {/* Category Filter Buttons - Pareja primero */}
           <div className="flex justify-center items-center gap-2 sm:gap-4 mb-8">
-            <motion.button onClick={() => setSelectedCategory('Pareja')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Pareja' ? 'bg-[#782C23] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
+            <motion.button onClick={() => setSelectedCategory('Pareja')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Pareja' ? 'bg-[#782C23] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
             scale: selectedCategory === 'Pareja' ? 1.1 : 1.05
           }}>
               Pareja.
             </motion.button>
 
-            <motion.button onClick={() => setSelectedCategory('Familia')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Familia' ? 'bg-[#4A7050] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
+            <motion.button onClick={() => setSelectedCategory('Familia')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Familia' ? 'bg-[#4A7050] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
             scale: selectedCategory === 'Familia' ? 1.1 : 1.05
           }}>
               Familia.
             </motion.button>
             
-            <motion.button onClick={() => setSelectedCategory('Amigos')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Amigos' ? 'bg-[#44667D] text-white scale-110' : 'bg-white/10 text-white hover:bg-white/20'}`} whileHover={{
+            <motion.button onClick={() => setSelectedCategory('Amigos')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Amigos' ? 'bg-[#44667D] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
             scale: selectedCategory === 'Amigos' ? 1.1 : 1.05
           }}>
               Amigos.
