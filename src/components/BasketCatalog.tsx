@@ -461,13 +461,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Grupos que buscan una <span style={{ color: '#D4AF37' }} className="font-bold">experiencia gastronómica</span> sin alcohol
+              Grupos que buscan una <span style={{ color: '#ff1493' }} className="font-bold">experiencia gastronómica</span> sin alcohol
             </>
           ),
           maridaje: "Pureza de sabores premium.",
           ocasion: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Experiencias únicas</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos saludables</span>
+              <span style={{ color: '#ff1493' }} className="font-bold">Experiencias únicas</span> • <span style={{ color: '#ff1493' }} className="font-bold">Reuniones especiales</span> • <span style={{ color: '#ff1493' }} className="font-bold">Eventos saludables</span>
             </>
           ),
           personas: "5-6",
@@ -495,13 +495,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Tertulias memorables</span> con productos de <span style={{ color: '#D4AF37' }} className="font-bold">categoría superior</span>
+              <span style={{ color: '#ff1493' }} className="font-bold">Tertulias memorables</span> con productos de <span style={{ color: '#ff1493' }} className="font-bold">categoría superior</span>
             </>
           ),
           maridaje: "Rioja Crianza y Ribera del Duero.",
           ocasion: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Tertulias especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones importantes</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos premium</span>
+              <span style={{ color: '#ff1493' }} className="font-bold">Tertulias especiales</span> • <span style={{ color: '#ff1493' }} className="font-bold">Celebraciones importantes</span> • <span style={{ color: '#ff1493' }} className="font-bold">Eventos premium</span>
             </>
           ),
           personas: "5-6",
@@ -530,13 +530,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones especiales</span> para grupos de <span style={{ color: '#D4AF37' }} className="font-bold">7-8 personas</span>
+              <span style={{ color: '#00BFFF' }} className="font-bold">Celebraciones especiales</span> para grupos de <span style={{ color: '#00BFFF' }} className="font-bold">7-8 personas</span>
             </>
           ),
           maridaje: "Chardonnay y roble completan experiencia.",
           ocasion: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones familiares</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Eventos especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones grandes</span>
+              <span style={{ color: '#00BFFF' }} className="font-bold">Celebraciones familiares</span> • <span style={{ color: '#00BFFF' }} className="font-bold">Eventos especiales</span> • <span style={{ color: '#00BFFF' }} className="font-bold">Reuniones grandes</span>
             </>
           ),
           personas: "7-8",
@@ -565,13 +565,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              La <span style={{ color: '#D4AF37' }} className="font-bold">máxima calidad</span> sin alcohol, con <span style={{ color: '#D4AF37' }} className="font-bold">productos premium</span>
+              La <span style={{ color: '#00BFFF' }} className="font-bold">máxima calidad</span> sin alcohol, con <span style={{ color: '#00BFFF' }} className="font-bold">productos premium</span>
             </>
           ),
           maridaje: "Sin alcohol, sabores puros.",
           ocasion: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Eventos especiales</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Celebraciones grandes</span> • <span style={{ color: '#D4AF37' }} className="font-bold">Reuniones premium</span>
+              <span style={{ color: '#00BFFF' }} className="font-bold">Eventos especiales</span> • <span style={{ color: '#00BFFF' }} className="font-bold">Celebraciones grandes</span> • <span style={{ color: '#00BFFF' }} className="font-bold">Reuniones premium</span>
             </>
           ),
           personas: "7-8",
@@ -600,13 +600,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           ],
           ideal: (
             <>
-              Para quienes buscan <span style={{ color: '#D4AF37' }} className="font-bold">lo mejor de lo mejor</span>, con jamón <span style={{ color: '#D4AF37' }} className="font-bold">100% ibérico</span>
+              Para quienes buscan <span style={{ color: '#00BFFF' }} className="font-bold">lo mejor de lo mejor</span>, con jamón <span style={{ color: '#00BFFF' }} className="font-bold">100% ibérico</span>
             </>
           ),
           maridaje: "Ribera del Duero y Rioja Reserva.",
           ocasion: (
             <>
-              <span style={{ color: '#D4AF37' }} className="font-bold">Ocasiones especiales</span> • Celebraciones únicas • <span style={{ color: '#D4AF37' }} className="font-bold">Experiencias memorables</span>
+              <span style={{ color: '#00BFFF' }} className="font-bold">Ocasiones especiales</span> • Celebraciones únicas • <span style={{ color: '#00BFFF' }} className="font-bold">Experiencias memorables</span>
             </>
           ),
           personas: "7-8",

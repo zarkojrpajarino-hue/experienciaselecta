@@ -861,11 +861,18 @@ const ProfilePage = () => {
                       </div>
                       
                       <CollapsibleContent className="mt-4 space-y-4">
-                        {reviews.map((review) => (
+                        {reviews.map((review) => {
+                          const precio = basketData[review.basket_name]?.precio;
+                          return (
                           <Card key={review.id} className="bg-white/10 border-none shadow-lg">
                             <CardHeader>
                               <div className="flex justify-between items-start">
-                                <CardTitle className="text-lg text-white font-poppins font-bold">{review.basket_name}.</CardTitle>
+                                <div>
+                                  <CardTitle className="text-lg text-white font-poppins font-bold">{review.basket_name}.</CardTitle>
+                                  {precio && (
+                                    <p className="text-white font-poppins font-bold mt-1">{precio}€.</p>
+                                  )}
+                                </div>
                                 <div className="flex gap-1">
                                   {[...Array(5)].map((_, i) => (
                                     <Star
@@ -891,7 +898,8 @@ const ProfilePage = () => {
                               <p className="text-white font-poppins font-bold">{review.comment}.</p>
                             </CardContent>
                           </Card>
-                        ))}
+                        );
+                        })}
                       </CollapsibleContent>
                     </Collapsible>
                   </CardContent>

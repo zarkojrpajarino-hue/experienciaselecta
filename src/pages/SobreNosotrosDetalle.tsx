@@ -159,7 +159,8 @@ const SobreNosotrosDetalle = () => {
               navigate('/#categoria-cestas');
             }}
             variant="ghost"
-            className="text-black hover:text-gold hover:bg-transparent transition-all duration-300 font-work-sans"
+            style={{ color: '#D4AF37' }}
+            className="hover:opacity-80"
           >
             <ArrowLeft className="mr-2" size={20} />
             Volver
@@ -174,7 +175,7 @@ const SobreNosotrosDetalle = () => {
       </section>
 
       {/* CTA con fondo crema */}
-      <div className="relative pt-20 pb-8" style={{ backgroundColor: '#F5F5DC' }}>
+      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem' }}>
         {/* Botón Ver Más Sobre Nosotros */}
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
@@ -217,7 +218,8 @@ const SobreNosotrosDetalle = () => {
                   navigate('/#categoria-cestas');
                 }}
                 variant="ghost"
-                className="text-black hover:text-gold hover:bg-transparent transition-all duration-300 font-work-sans"
+                style={{ color: '#D4AF37' }}
+                className="hover:opacity-80"
               >
                 <ArrowLeft className="mr-2" size={20} />
                 Volver
