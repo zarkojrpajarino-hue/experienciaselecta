@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import AuthModal from "./AuthModal";
-import ReviewModal from "./ReviewModal";
+import FeedbackModal from "./FeedbackModal";
 import type { User } from "@supabase/supabase-js";
 import { z } from "zod";
 
@@ -344,7 +344,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [completedOrderId, setCompletedOrderId] = useState<string>('');
-  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [lastOrderUserName, setLastOrderUserName] = useState<string>('');
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     email: '',
@@ -543,29 +544,38 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     setStep('success');
     
-    // Show review modal after a brief delay for non-gift purchases
-    // This ensures the checkout modal has time to close properly
+    // Show feedback modal for non-gift purchases only if not given in this session
     if (!isGiftMode && user?.id) {
-      console.log('Scheduling review modal to open...');
-      setTimeout(() => {
-        console.log('Opening review modal now');
-        setShowReviewModal(true);
-      }, 500);
+      const feedbackGiven = sessionStorage.getItem('feedbackGiven');
+      if (!feedbackGiven) {
+        console.log('Scheduling feedback modal to open...');
+        setLastOrderUserName(customerData.name || user.email || 'Usuario');
+        setTimeout(() => {
+          console.log('Opening feedback modal now');
+          setShowFeedbackModal(true);
+        }, 500);
+      } else {
+        console.log('Feedback already given in this session');
+      }
     } else {
-      console.log('Review modal NOT shown - isGiftMode:', isGiftMode, 'user:', user?.id);
+      console.log('Feedback modal NOT shown - isGiftMode:', isGiftMode, 'user:', user?.id);
     }
   };
 
   const handleClose = () => {
-    // Si hay un pedido completado y el modal de revisión debería mostrarse, no cerrar aún
-    if (completedOrderId && !isGiftMode && user?.id && !showReviewModal) {
-      console.log('Preventing close - review modal should show');
-      return;
+    // Si hay un pedido completado y el modal de feedback debería mostrarse, no cerrar aún
+    if (completedOrderId && !isGiftMode && user?.id && !showFeedbackModal) {
+      const feedbackGiven = sessionStorage.getItem('feedbackGiven');
+      if (!feedbackGiven) {
+        console.log('Preventing close - feedback modal should show');
+        return;
+      }
     }
     
     setStep('auth');
     setUser(null);
-    setShowReviewModal(false);
+    setShowFeedbackModal(false);
+    setLastOrderUserName('');
     setCompletedOrderId('');
     setCustomerData({
       name: '',
@@ -1119,9 +1129,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </p>
             <Button 
               onClick={() => {
-                // If review modal should show, close checkout and let review modal appear
-                if (!isGiftMode && user?.id && completedOrderId) {
-                  console.log('Closing checkout, review modal will show');
+                // If feedback modal should show, close checkout and let feedback modal appear
+                const feedbackGiven = sessionStorage.getItem('feedbackGiven');
+                if (!isGiftMode && user?.id && completedOrderId && !feedbackGiven) {
+                  console.log('Closing checkout, feedback modal will show');
                   onClose();
                 } else {
                   handleClose();
@@ -1143,19 +1154,18 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       </DialogContent>
     </Dialog>
       
-    {/* Review Modal - Rendered OUTSIDE the checkout Dialog to prevent blocking */}
-    {!isGiftMode && completedOrderId && user?.id && showReviewModal && (
-      <ReviewModal
-        isOpen={showReviewModal}
+    {/* Feedback Modal - Rendered OUTSIDE the checkout Dialog to prevent blocking */}
+    {!isGiftMode && completedOrderId && user?.id && showFeedbackModal && (
+      <FeedbackModal
+        isOpen={showFeedbackModal}
         onClose={() => {
-          console.log('Closing review modal');
-          setShowReviewModal(false);
+          console.log('Closing feedback modal');
+          setShowFeedbackModal(false);
+          setLastOrderUserName('');
           setCompletedOrderId('');
         }}
-        userName={customerData.name || user.email || ''}
-        basketName={basketItems[0]?.name || 'tu cesta'}
-        orderId={completedOrderId}
-        userId={user.id}
+        userName={lastOrderUserName}
+        showPurchaseQuestion={true}
       />
     )}
     </>
