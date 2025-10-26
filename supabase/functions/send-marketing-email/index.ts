@@ -1,5 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { Resend } from 'https://esm.sh/resend@4.0.0';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,13 +14,58 @@ serve(async (req) => {
   }
 
   try {
-    const { userEmail, userName } = await req.json();
-
-    if (!userEmail) {
-      throw new Error('Email is required');
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
-    console.log('Sending marketing email to:', userEmail);
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('Authentication error:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Validate input
+    const marketingEmailSchema = z.object({
+      userEmail: z.string().trim().email().max(255),
+      userName: z.string().trim().max(200).optional()
+    });
+
+    const requestData = await req.json();
+    const validationResult = marketingEmailSchema.safeParse(requestData);
+
+    if (!validationResult.success) {
+      console.error('Validation error:', validationResult.error);
+      return new Response(
+        JSON.stringify({ error: 'Invalid input data', details: validationResult.error.issues }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    const { userEmail, userName } = validationResult.data;
+    console.log('Sending marketing email to:', userEmail, 'for user:', user.id);
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
