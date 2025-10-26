@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Send } from "lucide-react";
+import { Star, Send, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -94,6 +94,14 @@ const FeedbackPage = () => {
   return (
     <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
+        {/* Back button in top left */}
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-black font-poppins font-bold text-base hover:opacity-70 transition-opacity mb-8"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="capitalize">v</span>olver.
+        </button>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -226,7 +234,7 @@ const FeedbackPage = () => {
               <Button
                 type="submit"
                 disabled={generalRating === 0 || understoodPurpose === null || isSubmitting}
-                className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base"
+                className="w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-wide border-2 border-black/20 shadow-lg"
               >
                 <motion.div
                   animate={isSubmitting ? { rotate: 360 } : { rotate: 0 }}
@@ -249,23 +257,14 @@ const FeedbackPage = () => {
           </form>
         </motion.div>
 
-        <motion.div
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-8"
+          className="text-center text-black/60 font-poppins text-sm mt-8"
         >
-          <button
-            onClick={() => navigate('/')}
-            className="text-black font-poppins font-bold text-base hover:opacity-70 transition-opacity"
-          >
-            <span className="capitalize">v</span>olver.
-          </button>
-          
-          <p className="text-black/60 font-poppins text-sm mt-4">
-            <span className="capitalize">g</span>racias por ayudarnos a <span className="font-bold">mejorar</span> cada día.
-          </p>
-        </motion.div>
+          <span className="capitalize">g</span>racias por ayudarnos a <span className="font-bold">mejorar</span> cada día.
+        </motion.p>
       </div>
     </div>
   );
