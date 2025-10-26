@@ -599,7 +599,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={handleClose}>
+      <Dialog open={isOpen && !showFeedbackModal} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -1164,6 +1164,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           setShowFeedbackModal(false);
           setLastOrderUserName('');
           setCompletedOrderId('');
+          // Close the checkout fully so it doesn't reopen
+          onClose();
         }}
         userName={lastOrderUserName}
         showPurchaseQuestion={true}
