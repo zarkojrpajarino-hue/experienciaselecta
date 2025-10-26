@@ -7,13 +7,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.send-order-confirmation]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-gift-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-review-request]
-verify_jwt = false
+verify_jwt = true
 
 [functions.resend-gift-reminders]
 verify_jwt = false

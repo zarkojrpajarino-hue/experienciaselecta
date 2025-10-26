@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -8,15 +9,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface FeedbackRequest {
-  userName: string;
-  generalRating: number;
-  purchaseRating: number | null;
-  understoodPurpose: boolean | null;
-  intuitiveComment: string | null;
-  suggestion: string | null;
-  isPostPurchase: boolean;
-}
+const feedbackSchema = z.object({
+  userName: z.string().trim().min(1).max(100),
+  generalRating: z.number().int().min(1).max(5),
+  purchaseRating: z.number().int().min(1).max(5).nullable(),
+  understoodPurpose: z.boolean().nullable(),
+  intuitiveComment: z.string().trim().max(1000).nullable(),
+  suggestion: z.string().trim().max(2000).nullable(),
+  isPostPurchase: z.boolean()
+});
+
+type FeedbackRequest = z.infer<typeof feedbackSchema>;
 
 const escapeHtml = (text: string): string => {
   const map: { [key: string]: string } = {
@@ -41,6 +44,17 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const requestData = await req.json();
+    
+    const validationResult = feedbackSchema.safeParse(requestData);
+    if (!validationResult.success) {
+      console.error("Validation error:", validationResult.error);
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const {
       userName,
       generalRating,
@@ -49,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
       intuitiveComment,
       suggestion,
       isPostPurchase
-    }: FeedbackRequest = await req.json();
+    } = validationResult.data;
 
     console.log("Processing feedback from:", userName);
 
