@@ -490,7 +490,7 @@ const Navbar = () => {
                     className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-black hover:text-[hsl(45,100%,50%)] transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 whitespace-nowrap"
                   >
                     <span className="text-xl">🎁</span>
-                    <span className="relative z-10">Regalar</span>
+                    <span className="relative z-10">Regalar.</span>
                     <motion.div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[hsl(45,100%,50%)] to-transparent origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" style={{
                       boxShadow: '0 0 10px hsl(45 100% 50%)'
                     }} />

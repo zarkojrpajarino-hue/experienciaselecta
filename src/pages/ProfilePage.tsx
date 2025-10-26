@@ -772,13 +772,13 @@ const ProfilePage = () => {
                       onChange={(e) => setNewReview({ ...newReview, basketName: e.target.value })}
                       className="w-full p-3 bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:outline-none focus:border-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] transition-all cursor-pointer" 
                     >
-                      {orders.length === 0 ? (
-                        <option value="" className="font-poppins font-bold bg-white text-black">No hay pedidos disponibles.</option>
+                      {Object.keys(basketData).length === 0 ? (
+                        <option value="" className="font-poppins font-bold bg-white text-black">No hay cestas disponibles.</option>
                       ) : (
-                        // Crear un Set para evitar duplicados
-                        Array.from(new Set(orders.flatMap(o => o.items.map(i => i.basket_name)))).map((basketName, idx) => (
-                          <option key={`${basketName}-${idx}`} value={basketName} className="font-poppins font-bold bg-white text-black">
-                            {basketName} - {basketData[basketName]?.precio || "N/A"}€
+                        // Usar las cestas del catálogo actual en lugar de pedidos antiguos
+                        Object.entries(basketData).map(([basketName, data]) => (
+                          <option key={basketName} value={basketName} className="font-poppins font-bold bg-white text-black">
+                            {basketName} - {data.precio}€
                           </option>
                         ))
                       )}
