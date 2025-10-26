@@ -27,7 +27,7 @@ const ExperienciaSelectaPage = () => {
       image: experiencia1,
       text: (
         <p>
-          Experiencia Selecta no es para <span className="text-gold">todo el mundo</span>.
+          Experiencia Selecta no es para <span className="text-gold font-bold">todo el mundo</span>.
         </p>
       )
     },
@@ -35,7 +35,7 @@ const ExperienciaSelectaPage = () => {
       image: experiencia2,
       text: (
         <p>
-          Las dinámicas que acompañan cada cesta, son <span className="text-gold">preguntas que invitan a pensar</span>, a dialogar, a abrirse, a mostrar quiénes somos realmente.
+          Las dinámicas que acompañan cada cesta, son <span className="text-gold font-bold">preguntas que invitan a pensar</span>, a dialogar, a abrirse, a mostrar quiénes somos realmente.
         </p>
       )
     },
@@ -43,7 +43,7 @@ const ExperienciaSelectaPage = () => {
       image: experiencia3,
       text: (
         <p>
-          No son las preguntas que haces cada día, sino las que <span className="text-gold">despiertan algo</span>, las que te hacen <span className="text-gold">mirar hacia dentro</span> y compartir lo que normalmente no se dice.
+          No son las preguntas que haces cada día, sino las que <span className="text-gold font-bold">despiertan algo</span>, las que te hacen <span className="text-gold font-bold">mirar hacia dentro</span> y compartir lo que normalmente no se dice.
         </p>
       )
     },
@@ -51,7 +51,7 @@ const ExperienciaSelectaPage = () => {
       image: experiencia4,
       text: (
         <p>
-          Nuestro propósito es que las personas puedan <span className="text-gold">manifestar realmente que piensan</span>, quien son, que tú <span className="text-gold">conozcas a las personas que te rodean</span>. En una sociedad en la que cada vez hay <span className="text-gold">menos cosas reales</span> desgraciadamente.
+          Nuestro propósito es que las personas puedan <span className="text-gold font-bold">manifestar realmente que piensan</span>, quien son, que tú <span className="text-gold font-bold">conozcas a las personas que te rodean</span>. En una sociedad en la que cada vez hay <span className="text-gold font-bold">menos cosas reales</span> desgraciadamente.
         </p>
       )
     },
@@ -59,7 +59,7 @@ const ExperienciaSelectaPage = () => {
       image: experiencia5,
       text: (
         <p>
-          Porque la cesta es solo la excusa: lo que ofrecemos es una <span className="text-gold">experiencia humana, íntima y única</span>, una oportunidad para descubrir personas… y a uno mismo.
+          Porque la cesta es solo la excusa: lo que ofrecemos es una <span className="text-gold font-bold">experiencia humana, íntima y única</span>, una oportunidad para descubrir personas… y a uno mismo.
         </p>
       )
     }
@@ -70,7 +70,7 @@ const ExperienciaSelectaPage = () => {
       image: selecta1,
       text: (
         <p>
-          En Selecta celebramos <span className="text-gold">lo nuestro</span>.
+          En Selecta celebramos <span className="text-gold font-bold">lo nuestro</span>.
         </p>
       )
     },
@@ -78,7 +78,7 @@ const ExperienciaSelectaPage = () => {
       image: selecta2,
       text: (
         <p>
-          Cada producto que elegimos tiene <span className="text-gold">sello nacional</span>, elaborado por manos que cuidan la <span className="text-gold">tradición, la calidad y la sostenibilidad</span>.
+          Cada producto que elegimos tiene <span className="text-gold font-bold">sello nacional</span>, elaborado por manos que cuidan la <span className="text-gold font-bold">tradición, la calidad y la sostenibilidad</span>.
         </p>
       )
     },
@@ -86,7 +86,7 @@ const ExperienciaSelectaPage = () => {
       image: selecta3,
       text: (
         <p>
-          Apoyamos el <span className="text-gold">comercio nacional</span>, trabajamos directamente con <span className="text-gold">productores</span>, con personas que viven de lo que hacen, y apostamos por que el <span className="text-gold">valor se quede aquí, en nuestra tierra</span>.
+          Apoyamos el <span className="text-gold font-bold">comercio nacional</span>, trabajamos directamente con <span className="text-gold font-bold">productores</span>, con personas que viven de lo que hacen, y apostamos por que el <span className="text-gold font-bold">valor se quede aquí, en nuestra tierra</span>.
         </p>
       )
     },
@@ -94,7 +94,7 @@ const ExperienciaSelectaPage = () => {
       image: selecta4,
       text: (
         <p>
-          Creemos que los productos de nuestra tierra no deberían reservarse solo para ocasiones especiales: <span className="text-gold">hacemos accesible lo excepcional</span>, llevando lo mejor de nuestra gastronomía a todos los hogares.
+          Creemos que los productos de nuestra tierra no deberían reservarse solo para ocasiones especiales: <span className="text-gold font-bold">hacemos accesible lo excepcional</span>, llevando lo mejor de nuestra gastronomía a todos los hogares.
         </p>
       )
     },
@@ -102,7 +102,7 @@ const ExperienciaSelectaPage = () => {
       image: selecta5,
       text: (
         <p>
-          En cada cesta hay <span className="text-gold">compromiso, cercanía y respeto</span> por lo que somos. Porque para crear algo <span className="text-gold">memorable y único</span>, hace falta un acompañamiento a la altura, apoyar lo nuestro y compartirlo con quienes más queremos.
+          En cada cesta hay <span className="text-gold font-bold">compromiso, cercanía y respeto</span> por lo que somos. Porque para crear algo <span className="text-gold font-bold">memorable y único</span>, hace falta un acompañamiento a la altura, apoyar lo nuestro y compartirlo con quienes más queremos.
         </p>
       )
     }
@@ -148,41 +148,40 @@ const ExperienciaSelectaPage = () => {
               
               <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
-                  nos enseñaron a desconectar. nosotros preferimos <span style={{ color: '#D4AF37' }}>reconectar</span>.
+                  nos enseñaron a desconectar. nosotros preferimos <span className="font-bold" style={{ color: '#D4AF37' }}>reconectar</span>.
                 </p>
                 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  creamos espacios donde la <span style={{ color: '#D4AF37' }}>conversación importa</span> y <span style={{ color: '#D4AF37' }}>mirar a los ojos</span> no da miedo.
+                  creamos espacios donde la <span className="font-bold" style={{ color: '#D4AF37' }}>conversación importa</span> y <span className="font-bold" style={{ color: '#D4AF37' }}>mirar a los ojos</span> no da miedo.
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  porque conocer es <span style={{ color: '#D4AF37' }}>escuchar y compartir</span>. ahí empieza lo auténtico.
+                  porque conocer es <span className="font-bold" style={{ color: '#D4AF37' }}>escuchar y compartir</span>. ahí empieza lo auténtico.
                 </p>
               </div>
             </div>
 
             {/* Experiencia Carousel */}
             <div className="mt-12">
+              <div className="flex justify-center mb-8">
+                <Button
+                  onClick={() => {
+                    const selectaElement = document.getElementById('selecta');
+                    if (selectaElement) {
+                      selectaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                  }}
+                  variant="ghost"
+                  size="lg"
+                  className="text-gold hover:text-gold/80 hover:bg-gold/10"
+                >
+                  Ir a Selecta
+                  <ArrowUp className="h-6 w-6 ml-2 rotate-180" />
+                </Button>
+              </div>
               <ImageCarousel3D slides={experienciaSlides} title="Experiencia" />
             </div>
           </motion.div>
-
-          <div className="flex justify-center mt-12">
-            <Button
-              onClick={() => {
-                const selectaElement = document.getElementById('selecta');
-                if (selectaElement) {
-                  selectaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-              }}
-              variant="ghost"
-              size="lg"
-              className="text-gold hover:text-gold/80 hover:bg-gold/10"
-            >
-              Ir a Selecta
-              <ArrowUp className="h-6 w-6 ml-2 rotate-180" />
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -197,23 +196,6 @@ const ExperienciaSelectaPage = () => {
             viewport={{ once: true }} 
             className="mb-12 max-w-6xl mx-auto"
           >
-            <div className="flex justify-center mb-6">
-              <Button
-                onClick={() => {
-                  const experienciaElement = document.getElementById('experiencia');
-                  if (experienciaElement) {
-                    experienciaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }
-                }}
-                variant="ghost"
-                size="lg"
-                className="text-gold hover:text-gold/80 hover:bg-gold/10"
-              >
-                <ArrowUp className="h-6 w-6 mr-2" />
-                Ir a Experiencia
-              </Button>
-            </div>
-
             <div className="p-8 md:p-12 transition-all duration-500">
               <div className="flex items-center gap-4 mb-8">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-relaxed" style={{ color: '#000000' }}>
@@ -223,21 +205,37 @@ const ExperienciaSelectaPage = () => {
 
               <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
-                  trabajamos con <span style={{ color: '#D4AF37' }}>productores españoles</span>. personas reales, <span style={{ color: '#D4AF37' }}>productos excepcionales</span>.
+                  trabajamos con <span className="font-bold" style={{ color: '#D4AF37' }}>productores españoles</span>. personas reales, <span className="font-bold" style={{ color: '#D4AF37' }}>productos excepcionales</span>.
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  priorizamos <span style={{ color: '#D4AF37' }}>calidad sobre cantidad</span>. en productos, momentos y relaciones.
+                  priorizamos <span className="font-bold" style={{ color: '#D4AF37' }}>calidad sobre cantidad</span>. en productos, momentos y relaciones.
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span style={{ color: '#D4AF37' }}>sostenibilidad</span> y <span style={{ color: '#D4AF37' }}>compromiso local</span> son nuestra esencia.
+                  <span className="font-bold" style={{ color: '#D4AF37' }}>sostenibilidad</span> y <span className="font-bold" style={{ color: '#D4AF37' }}>compromiso local</span> son nuestra esencia.
                 </p>
               </div>
             </div>
 
             {/* Selecta Carousel */}
             <div className="mt-12">
+              <div className="flex justify-center mb-8">
+                <Button
+                  onClick={() => {
+                    const experienciaElement = document.getElementById('experiencia');
+                    if (experienciaElement) {
+                      experienciaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                  }}
+                  variant="ghost"
+                  size="lg"
+                  className="text-gold hover:text-gold/80 hover:bg-gold/10"
+                >
+                  <ArrowUp className="h-6 w-6 mr-2" />
+                  Ir a Experiencia
+                </Button>
+              </div>
               <ImageCarousel3D slides={selectaSlides} title="Selecta" />
             </div>
           </motion.div>
