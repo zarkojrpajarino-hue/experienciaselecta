@@ -148,7 +148,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={prevSlide}
-            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
+            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 text-black rounded-full shadow-lg transition-all duration-300"
           >
             <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
           </motion.button>
@@ -161,7 +161,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={nextSlide}
-            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
+            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 text-black rounded-full shadow-lg transition-all duration-300"
           >
             <ChevronRight className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
           </motion.button>

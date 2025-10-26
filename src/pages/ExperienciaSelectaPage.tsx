@@ -142,11 +142,11 @@ const ExperienciaSelectaPage = () => {
             <div className="p-8 md:p-12 rounded-3xl transition-all duration-500" style={{ backgroundColor: '#FFFFFF' }}>
               <div className="flex items-center gap-4 mb-8">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-relaxed" style={{ color: '#000000' }}>
-                  Experiencia
+                  Experiencia.
                 </h2>
               </div>
               
-              <div className="space-y-6 font-lora text-lg leading-relaxed text-center font-bold" style={{ color: '#000000' }}>
+              <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
                   nos enseñaron a desconectar. nosotros preferimos <span style={{ color: '#D4AF37' }}>reconectar</span>.
                 </p>
@@ -217,11 +217,11 @@ const ExperienciaSelectaPage = () => {
             <div className="p-8 md:p-12 transition-all duration-500">
               <div className="flex items-center gap-4 mb-8">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-work-sans font-bold leading-relaxed" style={{ color: '#000000' }}>
-                  Selecta
+                  Selecta.
                 </h2>
               </div>
 
-              <div className="space-y-6 font-lora text-lg leading-relaxed text-center font-bold" style={{ color: '#000000' }}>
+              <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
                   trabajamos con <span style={{ color: '#D4AF37' }}>productores españoles</span>. personas reales, <span style={{ color: '#D4AF37' }}>productos excepcionales</span>.
                 </p>
