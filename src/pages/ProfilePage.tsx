@@ -862,14 +862,28 @@ const ProfilePage = () => {
                       
                       <CollapsibleContent className="mt-4 space-y-4">
                         {reviews.map((review) => {
-                          const precio = basketData[review.basket_name]?.precio;
+                          const normalize = (s: string) => s
+                            .toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^\w\s]/g, '')
+                            .replace(/\s+/g, ' ')
+                            .trim();
+                          const n = normalize(review.basket_name || '');
+                          const matchKey = Object.keys(basketData).find((k) => {
+                            const nk = normalize(k);
+                            return nk === n || nk.includes(n) || n.includes(nk);
+                          });
+                          const displayName = matchKey || review.basket_name;
+                          const precio = matchKey ? basketData[matchKey].precio : undefined;
+
                           return (
                           <Card key={review.id} className="bg-white/10 border-none shadow-lg">
                             <CardHeader>
                               <div className="flex justify-between items-start">
                                 <div>
-                                  <CardTitle className="text-lg text-white font-poppins font-bold">{review.basket_name}.</CardTitle>
-                                  {precio && (
+                                  <CardTitle className="text-lg text-white font-poppins font-bold">{displayName}.</CardTitle>
+                                  {precio !== undefined && (
                                     <p className="text-white font-poppins font-bold mt-1">{precio}€.</p>
                                   )}
                                 </div>

@@ -1113,42 +1113,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
   // Determinar combo de colores según categoría y tamaño de grupo
   const getColorCombo = () => {
-    if (categoria === "Pareja") {
-      // Pareja: texto negro, importantes rosa
-      return { 
-        bg: 'bg-background', 
-        text: 'text-black', 
-        important: 'text-[#ff1493]',
-        button: 'bg-gray-500 hover:bg-gray-600 text-white border-0',
-        navText: 'text-black',
-        navImportant: 'text-[#ff1493]',
-        border: 'border-black'
-      };
-    } else if (categoria === "Amigos") {
-      // Amigos: texto negro, importantes azul
-      return { 
-        bg: 'bg-background', 
-        text: 'text-black', 
-        important: 'text-[#00BFFF]',
-        button: 'bg-blue-500 hover:bg-blue-600 text-white border-0',
-        navText: 'text-black',
-        navImportant: 'text-[#00BFFF]',
-        border: 'border-black'
-      };
-    } else if (categoria === "Familia") {
-      // Familia: texto negro, importantes dorado
-      return { 
-        bg: 'bg-background', 
-        text: 'text-black', 
-        important: 'text-[#D4AF37]',
-        button: 'bg-yellow-500 hover:bg-yellow-600 text-white border-0',
-        navText: 'text-black',
-        navImportant: 'text-[#D4AF37]',
-        border: 'border-black'
-      };
-    }
-    // Default
-    return { 
+    let combo = { 
       bg: 'bg-background', 
       text: 'text-black', 
       important: 'text-[#D4AF37]',
@@ -1157,6 +1122,25 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       navImportant: 'text-[#D4AF37]',
       border: 'border-black'
     };
+
+    if (categoria === "Pareja") {
+      combo = { ...combo, important: 'text-[#ff1493]', navImportant: 'text-[#ff1493]' };
+    } else if (categoria === "Amigos") {
+      combo = { ...combo, important: 'text-[#00BFFF]', navImportant: 'text-[#00BFFF]' };
+    } else if (categoria === "Familia") {
+      combo = { ...combo, important: 'text-[#D4AF37]', navImportant: 'text-[#D4AF37]' };
+    }
+
+    // Override por tamaño de grupo en catálogo normal (no regalos)
+    if (typeof showGroupSize !== 'undefined' && shouldShowGroupButtons) {
+      if (showGroupSize === '5-6') {
+        combo = { ...combo, important: 'text-[#ff1493]', navImportant: 'text-[#ff1493]' };
+      } else if (showGroupSize === '7-8') {
+        combo = { ...combo, important: 'text-[#00BFFF]', navImportant: 'text-[#00BFFF]' };
+      }
+    }
+
+    return combo;
   };
 
   const colorCombo = getColorCombo();

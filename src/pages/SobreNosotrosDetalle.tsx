@@ -175,7 +175,7 @@ const SobreNosotrosDetalle = () => {
       </section>
 
       {/* CTA con fondo crema */}
-      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem' }}>
+      <div className="relative pt-20 pb-8 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem', border: '1px solid #000' }}>
         {/* Botón Ver Más Sobre Nosotros */}
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
@@ -188,9 +188,9 @@ const SobreNosotrosDetalle = () => {
             ver más sobre nosotros
           </p>
           <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-0 bg-transparent text-black hover:text-gold transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            className="p-0 text-black hover:text-gold transition-all duration-300"
           >
             <ChevronDown className="w-5 h-5" />
           </motion.div>

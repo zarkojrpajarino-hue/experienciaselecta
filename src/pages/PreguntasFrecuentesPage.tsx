@@ -114,7 +114,7 @@ const PreguntasFrecuentesPage = () => {
       <div className="pt-12 md:pt-16"></div>
 
       {/* CTA con fondo crema */}
-      <div className="relative py-8 md:py-10 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem' }}>
+      <div className="relative py-8 md:py-10 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem', border: '1px solid #000' }}>
         {/* Botón Contáctanos */}
         <div className="flex justify-center">
         <ContactModal>
