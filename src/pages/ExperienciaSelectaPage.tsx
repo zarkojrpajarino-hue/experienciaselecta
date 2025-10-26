@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import PageNavigation from "@/components/PageNavigation";
-import ImageGallery3D from "@/components/ImageGallery3D";
+import ImageCarousel3D from "@/components/ImageCarousel3D";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowUp } from "lucide-react";
 
@@ -22,20 +22,90 @@ import selecta5 from "@/assets/selecta-5.png";
 const ExperienciaSelectaPage = () => {
   const navigate = useNavigate();
 
-  const experienciaImages = [
-    experiencia1,
-    experiencia2,
-    experiencia3,
-    experiencia4,
-    experiencia5,
+  const experienciaSlides = [
+    {
+      image: experiencia1,
+      text: (
+        <p>
+          Experiencia Selecta no es para <span className="text-gold">todo el mundo</span>.
+        </p>
+      )
+    },
+    {
+      image: experiencia2,
+      text: (
+        <p>
+          Las dinámicas que acompañan cada cesta, son <span className="text-gold">preguntas que invitan a pensar</span>, a dialogar, a abrirse, a mostrar quiénes somos realmente.
+        </p>
+      )
+    },
+    {
+      image: experiencia3,
+      text: (
+        <p>
+          No son las preguntas que haces cada día, sino las que <span className="text-gold">despiertan algo</span>, las que te hacen <span className="text-gold">mirar hacia dentro</span> y compartir lo que normalmente no se dice.
+        </p>
+      )
+    },
+    {
+      image: experiencia4,
+      text: (
+        <p>
+          Nuestro propósito es que las personas puedan <span className="text-gold">manifestar realmente que piensan</span>, quien son, que tú <span className="text-gold">conozcas a las personas que te rodean</span>. En una sociedad en la que cada vez hay <span className="text-gold">menos cosas reales</span> desgraciadamente.
+        </p>
+      )
+    },
+    {
+      image: experiencia5,
+      text: (
+        <p>
+          Porque la cesta es solo la excusa: lo que ofrecemos es una <span className="text-gold">experiencia humana, íntima y única</span>, una oportunidad para descubrir personas… y a uno mismo.
+        </p>
+      )
+    }
   ];
 
-  const selectaImages = [
-    selecta1,
-    selecta2,
-    selecta3,
-    selecta4,
-    selecta5,
+  const selectaSlides = [
+    {
+      image: selecta1,
+      text: (
+        <p>
+          En Selecta celebramos <span className="text-gold">lo nuestro</span>.
+        </p>
+      )
+    },
+    {
+      image: selecta2,
+      text: (
+        <p>
+          Cada producto que elegimos tiene <span className="text-gold">sello nacional</span>, elaborado por manos que cuidan la <span className="text-gold">tradición, la calidad y la sostenibilidad</span>.
+        </p>
+      )
+    },
+    {
+      image: selecta3,
+      text: (
+        <p>
+          Apoyamos el <span className="text-gold">comercio nacional</span>, trabajamos directamente con <span className="text-gold">productores</span>, con personas que viven de lo que hacen, y apostamos por que el <span className="text-gold">valor se quede aquí, en nuestra tierra</span>.
+        </p>
+      )
+    },
+    {
+      image: selecta4,
+      text: (
+        <p>
+          Creemos que los productos de nuestra tierra no deberían reservarse solo para ocasiones especiales: <span className="text-gold">hacemos accesible lo excepcional</span>, llevando lo mejor de nuestra gastronomía a todos los hogares.
+        </p>
+      )
+    },
+    {
+      image: selecta5,
+      text: (
+        <p>
+          En cada cesta hay <span className="text-gold">compromiso, cercanía y respeto</span> por lo que somos. Porque para crear algo <span className="text-gold">memorable y único</span>, hace falta un acompañamiento a la altura, apoyar lo nuestro y compartirlo con quienes más queremos.
+        </p>
+      )
+    }
   ];
 
   return (
@@ -99,9 +169,9 @@ const ExperienciaSelectaPage = () => {
               </div>
             </div>
 
-            {/* Experiencia Images Gallery */}
+            {/* Experiencia Carousel */}
             <div className="mt-12">
-              <ImageGallery3D images={experienciaImages} title="Experiencia" />
+              <ImageCarousel3D slides={experienciaSlides} title="Experiencia" />
             </div>
           </motion.div>
 
@@ -186,9 +256,9 @@ const ExperienciaSelectaPage = () => {
               </div>
             </div>
 
-            {/* Selecta Images Gallery */}
+            {/* Selecta Carousel */}
             <div className="mt-12">
-              <ImageGallery3D images={selectaImages} title="Selecta" />
+              <ImageCarousel3D slides={selectaSlides} title="Selecta" />
             </div>
           </motion.div>
         </div>
