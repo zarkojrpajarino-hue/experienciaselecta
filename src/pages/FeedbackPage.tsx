@@ -24,6 +24,10 @@ const FeedbackPage = () => {
   const [suggestion, setSuggestion] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const showPurchaseQuestion = Boolean(sessionStorage.getItem('pendingPurchaseFeedback')) && !sessionStorage.getItem('feedbackGiven');
+  const [purchaseRating, setPurchaseRating] = useState(0);
+  const [hoveredPurchaseRating, setHoveredPurchaseRating] = useState(0);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -35,6 +39,11 @@ const FeedbackPage = () => {
         suggestion
       });
       
+      if (showPurchaseQuestion && purchaseRating === 0) {
+        toast.error('Por favor valora tu experiencia de compra');
+        return;
+      }
+
       setIsSubmitting(true);
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -43,17 +52,21 @@ const FeedbackPage = () => {
         body: {
           userName: user?.email || 'Usuario anónimo',
           generalRating,
-          purchaseRating: null,
+          purchaseRating: showPurchaseQuestion ? purchaseRating : null,
           understoodPurpose,
           intuitiveComment: intuitiveComment.trim() || null,
           suggestion: suggestion.trim() || null,
-          isPostPurchase: false,
+          isPostPurchase: showPurchaseQuestion,
         },
       });
 
       if (error) throw error;
 
       sessionStorage.setItem('feedbackGiven', 'true');
+      try {
+        sessionStorage.removeItem('pendingPurchaseFeedback');
+        window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
+      } catch {}
 
       toast.success('¡Gracias por tu feedback!', {
         description: 'Tu opinión nos ayuda a mejorar.',
@@ -161,6 +174,32 @@ const FeedbackPage = () => {
                 </motion.p>
               )}
             </div>
+
+            {showPurchaseQuestion && (
+              <div className="space-y-4">
+                <label className="text-base sm:text-lg font-poppins font-medium text-white block">
+                  ¿Cómo calificarías el sistema de compras de la web?
+                </label>
+                <div className="flex justify-center gap-2 sm:gap-3">
+                  {[1,2,3,4,5].map((star) => (
+                    <motion.button
+                      key={star}
+                      type="button"
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setPurchaseRating(star)}
+                      onMouseEnter={() => setHoveredPurchaseRating(star)}
+                      onMouseLeave={() => setHoveredPurchaseRating(0)}
+                      className="p-0 bg-transparent border-0 cursor-pointer"
+                    >
+                      <Star
+                        className={`w-10 h-10 sm:w-12 sm:h-12 transition-colors ${star <= (hoveredPurchaseRating || purchaseRating) ? 'fill-gold text-gold' : 'fill-crema/20 text-crema/20'}`}
+                      />
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Understood Purpose */}
             <div className="space-y-3">

@@ -20,6 +20,7 @@ const Navbar = () => {
   const [session, setSession] = useState<any>(null);
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
+  const [hasPendingFeedback, setHasPendingFeedback] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, getTotalItems, getTotalAmount, removeFromCart } = useCart();
@@ -50,6 +51,18 @@ const Navbar = () => {
     return () => {
       subscription.unsubscribe();
     };
+  }, []);
+
+  // Listen for pending feedback changes (session-based)
+  useEffect(() => {
+    const update = () => {
+      const hasPending = !!sessionStorage.getItem('pendingPurchaseFeedback');
+      const given = !!sessionStorage.getItem('feedbackGiven');
+      setHasPendingFeedback(hasPending && !given);
+    };
+    update();
+    window.addEventListener('pendingFeedbackChanged', update);
+    return () => window.removeEventListener('pendingFeedbackChanged', update);
   }, []);
 
   const checkPendingGifts = async (email: string) => {
@@ -345,6 +358,14 @@ const Navbar = () => {
               className="relative z-50 p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {hasPendingFeedback && (
+                <span
+                  className="absolute -top-1 -right-1 bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] text-[10px] font-bold rounded-full px-1.5 h-5 flex items-center justify-center shadow"
+                  aria-label="Feedback pendiente"
+                >
+                  +1
+                </span>
+              )}
             </motion.button>
           </div>
         </div>
@@ -533,6 +554,14 @@ const Navbar = () => {
                     className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-[hsl(45,100%,50%)] hover:text-[hsl(45,100%,60%)] transition-all duration-300 overflow-hidden flex items-center justify-center whitespace-nowrap"
                   >
                     <span className="relative z-10">Feedback.</span>
+                    {hasPendingFeedback && (
+                      <span
+                        className="absolute top-2 right-4 bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] text-[10px] font-bold rounded-full px-1.5 h-5 flex items-center justify-center shadow"
+                        aria-label="Feedback pendiente"
+                      >
+                        +1
+                      </span>
+                    )}
                     <motion.div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[hsl(45,100%,50%)] to-transparent origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" style={{
                       boxShadow: '0 0 10px hsl(45 100% 50%)'
                     }} />
