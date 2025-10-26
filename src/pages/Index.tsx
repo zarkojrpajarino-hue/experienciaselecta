@@ -122,11 +122,11 @@ const Index = () => {
   const processSlides = [
     { 
       image: nuevaSeccion01Img, 
-      title: <span style={{color: 'black'}}>Creamos <span style={{color: '#FFD700', fontWeight: 'bold'}}>experiencias</span> para que vosotros conozcáis a <span style={{color: '#FFD700', fontWeight: 'bold'}}>personas</span>.</span>
+      title: <span style={{color: 'black'}}>Creamos <span style={{color: '#D4AF37', fontWeight: 'bold'}}>experiencias</span> para que vosotros conozcáis a <span style={{color: '#D4AF37', fontWeight: 'bold'}}>personas</span>.</span>
     },
     { 
       image: nuevaSeccion02Img, 
-      title: <span style={{color: 'black'}}>Transformamos <span style={{color: '#FFD700', fontWeight: 'bold'}}>productos gourmet</span> en un plan <span style={{color: '#FFD700', fontWeight: 'bold'}}>alternativo</span>, <span style={{color: '#FFD700', fontWeight: 'bold'}}>personalizado</span> y <span style={{color: '#FFD700', fontWeight: 'bold'}}>asequible</span>.</span>
+      title: <span style={{color: 'black'}}>Transformamos <span style={{color: '#D4AF37', fontWeight: 'bold'}}>productos gourmet</span> en un plan <span style={{color: '#D4AF37', fontWeight: 'bold'}}>alternativo</span>, <span style={{color: '#D4AF37', fontWeight: 'bold'}}>personalizado</span> y <span style={{color: '#D4AF37', fontWeight: 'bold'}}>asequible</span>.</span>
     },
     { 
       image: nuevaSeccion03Img, 

@@ -113,8 +113,10 @@ const PreguntasFrecuentesPage = () => {
       {/* Espacio superior para centrar */}
       <div className="pt-12 md:pt-16"></div>
 
-      {/* Botón Contáctanos */}
-      <div className="py-8 md:py-10 flex justify-center bg-white">
+      {/* CTA con fondo crema */}
+      <div className="relative py-8 md:py-10" style={{ backgroundColor: '#F5F5DC' }}>
+        {/* Botón Contáctanos */}
+        <div className="flex justify-center">
         <ContactModal>
           <div className="flex flex-col items-center gap-2 cursor-pointer">
             <p className="text-black hover:text-gray-600 font-work-sans font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300" style={{ textTransform: "none" }}>
@@ -125,10 +127,11 @@ const PreguntasFrecuentesPage = () => {
               whileTap={{ scale: 0.95 }}
               className="p-0 bg-transparent text-black hover:text-gray-600 transition-all duration-300"
             >
-              <ChevronDown className="w-5 h-5" />
-            </motion.div>
-          </div>
-        </ContactModal>
+            <ChevronDown className="w-5 h-5" />
+          </motion.div>
+        </div>
+      </ContactModal>
+      </div>
       </div>
 
       {/* Sección única fusionada de FAQ y Valores */}

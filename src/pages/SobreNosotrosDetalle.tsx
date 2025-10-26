@@ -173,9 +173,11 @@ const SobreNosotrosDetalle = () => {
         <CarouselSection slides={benefitsSlides} position="right" imageHeightClasses="h-[180px] md:h-[220px]" />
       </section>
 
-      {/* Botón Ver Más Sobre Nosotros */}
-      <div className="pt-20 pb-8 flex justify-center">
-        <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
+      {/* CTA con fondo crema */}
+      <div className="relative pt-20 pb-8" style={{ backgroundColor: '#F5F5DC' }}>
+        {/* Botón Ver Más Sobre Nosotros */}
+        <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-2 cursor-pointer" onClick={() => {
           const element = document.getElementById('carousel-section');
           if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -192,6 +194,7 @@ const SobreNosotrosDetalle = () => {
             <ChevronDown className="w-5 h-5" />
           </motion.div>
         </div>
+      </div>
       </div>
       
       {/* Carousel Section - Always Open */}
