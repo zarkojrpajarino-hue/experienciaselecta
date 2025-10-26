@@ -73,18 +73,13 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               </h2>
               <motion.button
                 onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setTimeout(() => {
-                    // Buscar el botón hamburger por el ícono de Menu
-                    const buttons = document.querySelectorAll('button');
-                    const hamburgerButton = Array.from(buttons).find(btn => {
-                      const svg = btn.querySelector('svg');
-                      return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
-                    });
-                    if (hamburgerButton) {
-                      hamburgerButton.click();
-                    }
-                  }, 600);
+                  // Abrir el menú hamburger inmediatamente sin hacer scroll
+                  const buttons = document.querySelectorAll('button');
+                  const hamburgerButton = Array.from(buttons).find(btn => {
+                    const svg = btn.querySelector('svg');
+                    return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
+                  }) as HTMLButtonElement | undefined;
+                  hamburgerButton?.click();
                 }}
                 whileHover={{ scale: 1.15, y: -3 }}
                 whileTap={{ scale: 0.9 }}
