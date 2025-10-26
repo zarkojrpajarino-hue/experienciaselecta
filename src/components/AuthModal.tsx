@@ -89,7 +89,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   const handleGoogleSignIn = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const inIframe = window.self !== window.top;
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/`,
@@ -97,10 +98,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
             access_type: 'offline',
             prompt: 'select_account',
           },
+          skipBrowserRedirect: inIframe,
         }
       });
 
       if (error) throw error;
+
+      if (inIframe && data?.url) {
+        window.open(data.url, '_blank', 'noopener,noreferrer');
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
