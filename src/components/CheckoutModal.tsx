@@ -523,13 +523,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     setStep('success');
     
-    // Show review modal only for non-gift purchases after a short delay
+    // Show review modal immediately for non-gift purchases
     if (!isGiftMode && user) {
-      console.log('Setting timeout to show review modal...');
-      setTimeout(() => {
-        console.log('Opening review modal now');
-        setShowReviewModal(true);
-      }, 1500);
+      console.log('Opening review modal (no delay)');
+      setShowReviewModal(true);
     } else {
       console.log('Review modal NOT shown - isGiftMode:', isGiftMode, 'user:', !!user);
     }
@@ -1102,17 +1099,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       </DialogContent>
       
       {/* Review Modal - Only show for non-gift purchases */}
-      {!isGiftMode && user && completedOrderId && (
+      {!isGiftMode && completedOrderId && (
         <ReviewModal
           isOpen={showReviewModal}
           onClose={() => {
             console.log('Closing review modal');
             setShowReviewModal(false);
           }}
-          userName={customerData.name || user.email || ''}
+          userName={customerData.name || user?.email || ''}
           basketName={basketItems[0]?.name || 'tu cesta'}
           orderId={completedOrderId}
-          userId={user.id}
+          userId={user?.id}
         />
       )}
     </Dialog>

@@ -72,7 +72,7 @@ const ReviewModal = ({ isOpen, onClose, userName, basketName, orderId, userId }:
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog modal={false} open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto bg-card/95 backdrop-blur-sm border-2 border-border/50 rounded-2xl p-0">
         <DialogTitle className="sr-only">Valorar tu compra</DialogTitle>
         <DialogDescription className="sr-only">
