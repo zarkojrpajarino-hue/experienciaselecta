@@ -202,8 +202,10 @@ const FAQPage = () => {
             scale: 1.05
           }} whileTap={{
             scale: 0.95
-          }} className="text-white hover:text-gold font-cinzel font-bold text-2xl transition-all duration-300 inline-flex items-center gap-3" style={{
-            textShadow: '0 0 0px rgba(212, 175, 55, 0)'
+          }} className="text-white hover:text-gold font-cinzel font-bold text-2xl transition-all duration-300 inline-flex items-center gap-3 border-0 outline-0" style={{
+            textShadow: '0 0 0px rgba(212, 175, 55, 0)',
+            border: 'none',
+            outline: 'none'
           }} onMouseEnter={e => {
             e.currentTarget.style.textShadow = '0 0 20px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.6)';
           }} onMouseLeave={e => {
