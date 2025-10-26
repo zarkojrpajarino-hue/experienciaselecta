@@ -18,7 +18,6 @@ import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
 import VisualHeader from "@/components/VisualHeader";
-import HeaderMenuArrow from "@/components/HeaderMenuArrow";
 import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
 import aboutBackgroundImg from "@/assets/sobre-nosotros-hero-final.jpg";
 import jamonPinzasImg from "@/assets/jamon-pinzas-primera.png";
@@ -448,7 +447,6 @@ const Index = () => {
       
       <div id="porque-no-vendemos-cestas" className="bg-white">
         <RoundedImageCarousel slides={processSlides} titleBold={false} />
-        <HeaderMenuArrow />
       </div>
       
       {/* Espaciado blanco antes de categorías */}

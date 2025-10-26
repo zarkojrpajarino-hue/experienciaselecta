@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -67,9 +67,47 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {/* Título principal */}
         {!hideMainTitle && (
           <div className="text-center mb-2">
-            <h2 className="text-lg sm:text-xl md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
-              ¿Por qué no vendemos cestas y cómo te entendemos?
-            </h2>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
+                ¿Por qué no vendemos cestas y cómo te entendemos?
+              </h2>
+              <motion.button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setTimeout(() => {
+                    // Buscar el botón hamburger por el ícono de Menu
+                    const buttons = document.querySelectorAll('button');
+                    const hamburgerButton = Array.from(buttons).find(btn => {
+                      const svg = btn.querySelector('svg');
+                      return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
+                    });
+                    if (hamburgerButton) {
+                      hamburgerButton.click();
+                    }
+                  }, 600);
+                }}
+                whileHover={{ scale: 1.15, y: -3 }}
+                whileTap={{ scale: 0.9 }}
+                animate={{
+                  y: [0, -5, 0],
+                }}
+                transition={{
+                  y: {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="p-0 bg-transparent border-0 cursor-pointer"
+                aria-label="Abrir menú"
+              >
+                <ChevronUp 
+                  className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" 
+                  style={{ color: '#D4AF37' }}
+                  strokeWidth={3}
+                />
+              </motion.button>
+            </div>
           </div>
         )}
 
