@@ -92,7 +92,7 @@ const FeedbackPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -100,11 +100,11 @@ const FeedbackPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl sm:text-4xl font-poppins font-bold text-white mb-3">
+          <h1 className="text-3xl sm:text-4xl font-poppins font-bold text-black mb-3">
             <span className="capitalize">t</span>u opinión nos importa.
           </h1>
           
-          <p className="text-white/80 font-poppins text-base sm:text-lg max-w-xl mx-auto">
+          <p className="text-black/80 font-poppins text-base sm:text-lg max-w-xl mx-auto">
             <span className="capitalize">a</span>yúdanos a <span className="font-bold">mejorar</span> tu experiencia en nuestra web.
           </p>
         </motion.div>
@@ -113,7 +113,7 @@ const FeedbackPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-black/50 backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 sm:p-8"
+          className="bg-black backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 sm:p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* General Rating */}
@@ -163,7 +163,7 @@ const FeedbackPage = () => {
                 <Button
                   type="button"
                   onClick={() => setUnderstoodPurpose(true)}
-                  className={`flex-1 font-poppins text-base ${
+                  className={`flex-1 font-poppins text-base tracking-normal ${
                     understoodPurpose === true 
                       ? 'bg-gold hover:bg-gold/90 text-black' 
                       : 'bg-transparent border-2 border-white/30 text-white hover:bg-white/10'
@@ -174,7 +174,7 @@ const FeedbackPage = () => {
                 <Button
                   type="button"
                   onClick={() => setUnderstoodPurpose(false)}
-                  className={`flex-1 font-poppins text-base ${
+                  className={`flex-1 font-poppins text-base tracking-normal ${
                     understoodPurpose === false 
                       ? 'bg-gold hover:bg-gold/90 text-black' 
                       : 'bg-transparent border-2 border-white/30 text-white hover:bg-white/10'
@@ -222,19 +222,11 @@ const FeedbackPage = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button
-                type="button"
-                onClick={() => navigate('/')}
-                className="flex-1 bg-transparent border-2 border-white/30 text-white hover:bg-white/10 font-poppins text-base order-2 sm:order-1"
-                disabled={isSubmitting}
-              >
-                <span className="capitalize">v</span>olver.
-              </Button>
+            <div className="flex flex-col gap-3 pt-4">
               <Button
                 type="submit"
                 disabled={generalRating === 0 || understoodPurpose === null || isSubmitting}
-                className="flex-1 bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base order-1 sm:order-2"
+                className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base"
               >
                 <motion.div
                   animate={isSubmitting ? { rotate: 360 } : { rotate: 0 }}
@@ -257,14 +249,23 @@ const FeedbackPage = () => {
           </form>
         </motion.div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center text-white/60 font-poppins text-sm mt-8"
+          className="text-center mt-8"
         >
-          <span className="capitalize">g</span>racias por ayudarnos a <span className="font-bold">mejorar</span> cada día.
-        </motion.p>
+          <button
+            onClick={() => navigate('/')}
+            className="text-black font-poppins font-bold text-base hover:opacity-70 transition-opacity"
+          >
+            <span className="capitalize">v</span>olver.
+          </button>
+          
+          <p className="text-black/60 font-poppins text-sm mt-4">
+            <span className="capitalize">g</span>racias por ayudarnos a <span className="font-bold">mejorar</span> cada día.
+          </p>
+        </motion.div>
       </div>
     </div>
   );
