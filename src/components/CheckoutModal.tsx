@@ -544,16 +544,15 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     setStep('success');
     
-    // Show feedback modal for non-gift purchases
-    // Only show if user hasn't given general feedback in this session
+    // Tras el pago correcto, marcar feedback de compra como pendiente (sin abrir modal)
     if (!isGiftMode) {
-      const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
-      if (!generalFeedbackGiven) {
-        console.log('Opening feedback modal immediately... orderId:', orderId);
-        setLastOrderUserName(customerData.name || user?.email || 'Usuario');
-        setShowFeedbackModal(true);
-      } else {
-        console.log('Feedback already given in this session, not showing modal');
+      try {
+        sessionStorage.setItem('pendingPurchaseFeedback', JSON.stringify({ orderId, ts: Date.now() }));
+        // Notificar al header para refrescar el badge inmediatamente
+        window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
+        console.log('Pending purchase feedback set - orderId:', orderId);
+      } catch (e) {
+        console.warn('Could not set pendingPurchaseFeedback flag:', e);
       }
     } else {
       console.log('Feedback modal NOT shown - isGiftMode:', isGiftMode);
