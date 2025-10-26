@@ -25,8 +25,8 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const openImage = () => {
-    setSelectedImage(currentIndex);
+  const openImage = (index: number) => {
+    setSelectedImage(index);
   };
 
   const closeImage = () => {
@@ -49,22 +49,68 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     }
   };
 
+  const getCardPosition = (index: number) => {
+    const diff = (index - currentIndex + slides.length) % slides.length;
+    
+    if (diff === 0) {
+      // Tarjeta central (activa)
+      return {
+        x: 0,
+        z: 0,
+        rotateY: 0,
+        scale: 1,
+        opacity: 1,
+        zIndex: 30
+      };
+    } else if (diff === 1) {
+      // Tarjeta derecha
+      return {
+        x: '65%',
+        z: -350,
+        rotateY: -40,
+        scale: 0.7,
+        opacity: 0.5,
+        zIndex: 10
+      };
+    } else if (diff === slides.length - 1) {
+      // Tarjeta izquierda
+      return {
+        x: '-65%',
+        z: -350,
+        rotateY: 40,
+        scale: 0.7,
+        opacity: 0.5,
+        zIndex: 10
+      };
+    } else {
+      // Tarjetas ocultas
+      return {
+        x: diff > slides.length / 2 ? '-100%' : '100%',
+        z: -500,
+        rotateY: diff > slides.length / 2 ? 60 : -60,
+        scale: 0.5,
+        opacity: 0,
+        zIndex: 0
+      };
+    }
+  };
+
   return (
     <>
       {/* Carousel */}
-      <div className="relative max-w-5xl mx-auto">
+      <div className="relative max-w-6xl mx-auto">
         {/* Navigation Buttons */}
-        <div className="flex justify-center items-center gap-4 mb-8">
+        <div className="flex justify-center items-center gap-8 mb-6">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={prevSlide}
-            className="flex items-center justify-center w-12 h-12 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
           </motion.button>
 
-          <span className="text-black font-poppins font-bold text-lg">
+          <span className="text-black font-poppins font-bold text-base md:text-lg">
             {currentIndex + 1} / {slides.length}
           </span>
 
@@ -72,55 +118,68 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={nextSlide}
-            className="flex items-center justify-center w-12 h-12 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 hover:bg-gold text-black hover:text-white rounded-full shadow-lg transition-all duration-300"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-6 h-6 md:w-8 md:h-8" strokeWidth={3} />
           </motion.button>
         </div>
 
-        {/* Slide Content */}
+        {/* 3D Carousel Container */}
+        <div 
+          className="relative w-full h-[300px] md:h-[450px] flex items-center justify-center mx-auto mb-8" 
+          style={{ perspective: '1800px' }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            {slides.map((slide, index) => {
+              const position = getCardPosition(index);
+              const isActive = (index - currentIndex + slides.length) % slides.length === 0;
+
+              return (
+                <div
+                  key={index}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] md:w-[50%] max-w-lg"
+                  style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
+                  onClick={() => isActive && openImage(index)}
+                >
+                  <motion.div
+                    animate={{
+                      x: position.x,
+                      z: position.z,
+                      rotateY: position.rotateY,
+                      scale: position.scale,
+                      opacity: position.opacity
+                    }}
+                    transition={{ duration: 0.6, ease: 'easeInOut' }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                    className="cursor-pointer"
+                  >
+                    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+                      <img
+                        src={slide.image}
+                        alt={`${title} ${index + 1}`}
+                        className="w-full aspect-square object-cover"
+                      />
+                    </div>
+                  </motion.div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Text Below Carousel */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, x: 100, rotateY: -20 }}
-            animate={{ opacity: 1, x: 0, rotateY: 0 }}
-            exit={{ opacity: 0, x: -100, rotateY: 20 }}
-            transition={{ duration: 0.5 }}
-            className="perspective-1500"
-            style={{ transformStyle: 'preserve-3d' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="text-center px-4 md:px-12 mt-4"
           >
-            {/* Image */}
-            <motion.div
-              whileHover={{ 
-                scale: 1.02, 
-                rotateY: 2,
-                z: 30,
-                transition: { duration: 0.3 }
-              }}
-              className="cursor-pointer mb-8"
-              onClick={openImage}
-            >
-              <div className="relative group overflow-hidden rounded-3xl shadow-2xl">
-                <img
-                  src={slides[currentIndex].image}
-                  alt={`${title} ${currentIndex + 1}`}
-                  className="w-full h-[200px] md:h-[250px] object-cover"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-              </div>
-            </motion.div>
-
-            {/* Text */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="text-center px-4 md:px-12"
-            >
-              <div className="font-poppins text-base md:text-lg font-bold text-black leading-relaxed">
-                {slides[currentIndex].text}
-              </div>
-            </motion.div>
+            <div className="font-poppins text-base md:text-lg font-bold text-black leading-relaxed max-w-3xl mx-auto">
+              {slides[currentIndex].text}
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
