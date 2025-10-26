@@ -62,12 +62,12 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   const current = slides[index];
 
   return (
-    <section id="que-vendemos" className="w-full py-4" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <section id="que-vendemos" className="w-full py-4 bg-black" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título principal */}
         {!hideMainTitle && (
           <div className="text-center mb-2">
-            <h2 className="text-lg sm:text-xl md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
+            <h2 className="text-lg sm:text-xl md:text-xl lg:text-2xl font-poppins font-bold text-white tracking-wide">
               Por qué no vendemos cestas y cómo te entendemos.
             </h2>
           </div>
@@ -77,13 +77,13 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         <div className="w-full flex flex-col items-center justify-center py-1">
           <div className="px-4 max-w-2xl mb-1 text-center">
             <div
-              className={`text-sm sm:text-base md:text-base lg:text-lg xl:text-xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
+              className={`text-sm sm:text-base md:text-base lg:text-lg xl:text-xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-white`}
               style={{ textTransform: "none" }}
             >
               {current.title}
             </div>
             {current.text && (
-              <div className="mt-1 text-xs md:text-sm font-poppins font-normal text-black no-bold" style={{ textTransform: "none", fontWeight: 400 }}>
+              <div className="mt-1 text-xs md:text-sm font-poppins font-normal text-white no-bold" style={{ textTransform: "none", fontWeight: 400 }}>
                 {current.text}
               </div>
             )}
@@ -97,7 +97,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
                 className="w-2 h-2 rounded-full transition-all duration-300"
                 style={{
                   backgroundColor: index === i 
-                    ? (i % 2 === 0 ? '#000000' : '#FFD700')
+                    ? (i % 2 === 0 ? '#FFFFFF' : '#FFD700')
                     : '#D1D5DB'
                 }}
               />
@@ -111,7 +111,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} 
               className="p-0 bg-transparent border-0"
-              style={{ color: '#000000' }}
+              style={{ color: '#FFFFFF' }}
             >
               <ChevronLeft className="w-6 h-6" />
             </motion.button>
@@ -120,7 +120,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p + 1) % slides.length)} 
               className="p-0 bg-transparent border-0"
-              style={{ color: '#000000' }}
+              style={{ color: '#FFFFFF' }}
             >
               <ChevronRight className="w-6 h-6" />
             </motion.button>
