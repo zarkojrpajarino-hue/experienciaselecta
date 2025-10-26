@@ -128,6 +128,8 @@
   html {
     scroll-behavior: auto;
     overflow-x: hidden;
+    /* Enable GPU acceleration for smoother scrolling */
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
@@ -135,6 +137,10 @@
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 100vh;
+    /* Optimize font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   
   /* Excepciones específicas donde NO queremos uppercase */
@@ -171,5 +177,20 @@
   /* Utility to force-remove bold from nested content */
   .no-bold, .no-bold * {
     font-weight: 400 !important;
+  }
+  
+  /* Performance optimizations */
+  .will-change-transform {
+    will-change: transform;
+  }
+  
+  .will-change-opacity {
+    will-change: opacity;
+  }
+  
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
   }
 }

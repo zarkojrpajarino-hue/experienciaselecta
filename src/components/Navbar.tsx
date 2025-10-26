@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { throttle } from "@/utils/throttle";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronLeft, ChevronRight, ShoppingCart, User, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -136,13 +137,13 @@ const Navbar = () => {
     });
   };
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
+    }, 100);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const handleNavigation = (item: {
+  const handleNavigation = useCallback((item: {
     label: string;
     id: string;
     route?: string;
@@ -190,7 +191,7 @@ const Navbar = () => {
         }
       }
     }
-  };
+  }, [navigate, location.pathname]);
   const navItems = [{
     label: "Experiencia selecta.",
     id: "experiencia-selecta",
@@ -213,13 +214,13 @@ const Navbar = () => {
     return navItems.findIndex(item => item.id === location.hash.replace('#', ''));
   };
 
-  const navigateToSection = (direction: 'prev' | 'next') => {
+  const navigateToSection = useCallback((direction: 'prev' | 'next') => {
     const currentIndex = getCurrentSectionIndex();
     const newIndex = direction === 'prev' 
       ? (currentIndex - 1 + navItems.length) % navItems.length
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
-  };
+  }, [handleNavigation, location.hash]);
   return <motion.nav initial={{
     y: -100,
     opacity: 0

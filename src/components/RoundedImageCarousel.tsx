@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -206,6 +206,8 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               <img
                 src={s.image}
                 alt={s.alt || (typeof s.title === 'string' ? s.title : 'Imagen del carrusel')}
+                loading={i === index ? "eager" : "lazy"}
+                decoding="async"
                 className="w-full h-full object-cover rounded-[2rem]"
               />
             </motion.div>
@@ -238,4 +240,4 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   );
 };
 
-export default RoundedImageCarousel;
+export default memo(RoundedImageCarousel);

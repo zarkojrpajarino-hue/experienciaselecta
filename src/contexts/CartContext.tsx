@@ -37,16 +37,20 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   });
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage with debounce to improve performance
   useEffect(() => {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-    } catch (error) {
-      console.error('Error saving cart to localStorage:', error);
-    }
+    const timeoutId = setTimeout(() => {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      } catch (error) {
+        console.error('Error saving cart to localStorage:', error);
+      }
+    }, 300);
+    
+    return () => clearTimeout(timeoutId);
   }, [cart]);
 
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
+  const addToCart = React.useCallback((item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
       // Buscar item con mismo id y mismo tipo (regalo o personal)
       const existingItem = prevCart.find(
@@ -61,15 +65,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return [...prevCart, { ...item, quantity: 1 }];
     });
-  };
+  }, []);
 
-  const removeFromCart = (id: number, isGift?: boolean) => {
+  const removeFromCart = React.useCallback((id: number, isGift?: boolean) => {
     setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
-  };
+  }, []);
 
-  const updateQuantity = (id: number, quantity: number, isGift?: boolean) => {
+  const updateQuantity = React.useCallback((id: number, quantity: number, isGift?: boolean) => {
     if (quantity <= 0) {
-      removeFromCart(id, isGift);
+      setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
       return;
     }
     setCart(prevCart =>
@@ -77,13 +81,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         item.id === id && item.isGift === isGift ? { ...item, quantity } : item
       )
     );
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = React.useCallback(() => {
     setCart([]);
-  };
+  }, []);
 
-  const removeMultipleItems = (itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
+  const removeMultipleItems = React.useCallback((itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
     setCart(prevCart => {
       let newCart = [...prevCart];
       
@@ -108,15 +112,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       return newCart;
     });
-  };
+  }, []);
 
-  const getTotalItems = () => {
+  const getTotalItems = React.useCallback(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  }, [cart]);
 
-  const getTotalAmount = () => {
+  const getTotalAmount = React.useCallback(() => {
     return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
-  };
+  }, [cart]);
 
   return (
     <CartContext.Provider

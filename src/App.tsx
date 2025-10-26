@@ -24,9 +24,9 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const CookieBanner = lazy(() => import("./components/CookieBanner"));
 const AutoUpdater = lazy(() => import("./components/AutoUpdater"));
 
-// Loading component
+// Loading component with GPU acceleration
 const PageLoader = () => (
-  <div className="min-h-screen bg-background flex flex-col">
+  <div className="min-h-screen bg-background flex flex-col gpu-accelerated">
     <div className="w-full h-20 bg-muted/20">
       <Skeleton className="h-full w-full" />
     </div>
@@ -38,7 +38,18 @@ const PageLoader = () => (
   </div>
 );
 
-const queryClient = new QueryClient();
+// Configure QueryClient with optimized defaults for better performance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute
+      gcTime: 5 * 60 * 1000, // 5 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: 'always',
+      retry: 1,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
