@@ -495,6 +495,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handlePaymentSuccess = (orderId: string) => {
+    console.log('Payment success - orderId:', orderId, 'isGiftMode:', isGiftMode, 'user:', user?.id);
     setCompletedOrderId(orderId);
     
     // Remove only assigned items from cart after successful payment
@@ -524,9 +525,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     
     // Show review modal only for non-gift purchases after a short delay
     if (!isGiftMode && user) {
+      console.log('Setting timeout to show review modal...');
       setTimeout(() => {
+        console.log('Opening review modal now');
         setShowReviewModal(true);
       }, 1500);
+    } else {
+      console.log('Review modal NOT shown - isGiftMode:', isGiftMode, 'user:', !!user);
     }
   };
 
@@ -1104,12 +1109,15 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           onSuccess={handleAuthSuccess}
         />
       </DialogContent>
-
+      
       {/* Review Modal - Only show for non-gift purchases */}
       {!isGiftMode && user && completedOrderId && (
         <ReviewModal
           isOpen={showReviewModal}
-          onClose={() => setShowReviewModal(false)}
+          onClose={() => {
+            console.log('Closing review modal');
+            setShowReviewModal(false);
+          }}
           userName={customerData.name || user.email || ''}
           basketName={basketItems[0]?.name || 'tu cesta'}
           orderId={completedOrderId}
