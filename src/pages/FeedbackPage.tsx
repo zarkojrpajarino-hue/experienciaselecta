@@ -121,7 +121,7 @@ const FeedbackPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-black backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 sm:p-8"
+          className="relative z-[60] bg-black backdrop-blur-sm border-2 border-white/20 rounded-2xl p-6 sm:p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* General Rating */}
@@ -230,11 +230,11 @@ const FeedbackPage = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col gap-3 pt-4 relative z-50">
+            <div className="flex flex-col gap-3 pt-4 relative z-[70]">
               <Button
                 type="submit"
                 disabled={generalRating === 0 || understoodPurpose === null || isSubmitting}
-                className="w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-normal border-2 border-black shadow-2xl"
+                className="relative z-[70] w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-normal border-2 border-black shadow-2xl pointer-events-auto disabled:opacity-100"
               >
                 <motion.div
                   animate={isSubmitting ? { rotate: 360 } : { rotate: 0 }}
