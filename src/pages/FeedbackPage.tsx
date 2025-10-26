@@ -230,11 +230,11 @@ const FeedbackPage = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col gap-3 pt-4">
+            <div className="flex flex-col gap-3 pt-4 relative z-50">
               <Button
                 type="submit"
                 disabled={generalRating === 0 || understoodPurpose === null || isSubmitting}
-                className="relative z-10 w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-normal border-2 border-black/20 shadow-lg"
+                className="w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-normal border-2 border-black shadow-2xl"
               >
                 <motion.div
                   animate={isSubmitting ? { rotate: 360 } : { rotate: 0 }}
