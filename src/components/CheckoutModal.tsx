@@ -934,15 +934,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     placeholder="+34 123 456 789"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="phone">Teléfono</Label>
-                  <Input
-                    id="phone"
-                    value={customerData.phone}
-                    onChange={(e) => setCustomerData(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+34 123 456 789"
-                  />
-                </div>
               </>
             )}
 
