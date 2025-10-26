@@ -177,7 +177,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
             transition={{ duration: 0.4 }}
             className="text-center px-4 md:px-12 mt-4"
           >
-            <div className="font-poppins text-base md:text-lg font-bold text-black leading-relaxed max-w-3xl mx-auto">
+            <div className="font-poppins text-base md:text-lg text-black leading-relaxed max-w-3xl mx-auto">
               {slides[currentIndex].text}
             </div>
           </motion.div>
