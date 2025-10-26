@@ -101,7 +101,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
       <div className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
-          className="relative w-full h-[250px] md:h-[320px] flex items-center justify-center mx-auto mb-6" 
+          className="relative w-full h-[125px] md:h-[160px] flex items-center justify-center mx-auto mb-6" 
           style={{ perspective: '1800px' }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
