@@ -100,7 +100,7 @@ const FeedbackPage = () => {
           className="flex items-center gap-2 text-black font-poppins font-bold text-base hover:opacity-70 transition-opacity mb-8"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="capitalize">v</span>olver.
+          Volver.
         </button>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -177,7 +177,7 @@ const FeedbackPage = () => {
                       : 'bg-transparent border-2 border-white/30 text-white hover:bg-white/10'
                   }`}
                 >
-                  <span className="capitalize">s</span>í.
+                  Sí.
                 </Button>
                 <Button
                   type="button"
@@ -188,7 +188,7 @@ const FeedbackPage = () => {
                       : 'bg-transparent border-2 border-white/30 text-white hover:bg-white/10'
                   }`}
                 >
-                  <span className="capitalize">n</span>o.
+                  No.
                 </Button>
               </div>
             </div>
@@ -234,7 +234,7 @@ const FeedbackPage = () => {
               <Button
                 type="submit"
                 disabled={generalRating === 0 || understoodPurpose === null || isSubmitting}
-                className="w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-wide border-2 border-black/20 shadow-lg"
+                className="relative z-10 w-full bg-white hover:bg-white/90 text-black font-poppins font-extrabold text-base tracking-normal border-2 border-black/20 shadow-lg"
               >
                 <motion.div
                   animate={isSubmitting ? { rotate: 360 } : { rotate: 0 }}
@@ -244,11 +244,11 @@ const FeedbackPage = () => {
                   <Send className="w-5 h-5" />
                   {isSubmitting ? (
                     <>
-                      <span className="capitalize">e</span>nviando...
+                      Enviando...
                     </>
                   ) : (
                     <>
-                      <span className="capitalize">e</span>nviar.
+                      Enviar.
                     </>
                   )}
                 </motion.div>
