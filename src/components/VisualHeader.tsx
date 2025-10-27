@@ -42,7 +42,7 @@ const VisualHeader = () => {
           </h1>
           
           <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold mt-16 sm:mt-8">
-            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>hablar</span>, <span style={{ color: '#FFD700' }}>conocer</span> y <span style={{ color: '#FFD700' }}>reír</span>.
+            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
           </p>
 
           <div className="flex flex-col items-center gap-4">

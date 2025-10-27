@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 const feedbackSchema = z.object({
   generalRating: z.number().min(1, "Por favor selecciona una puntuación").max(5),
   understoodPurpose: z.boolean().nullable(),
+  howKnewUs: z.string().trim().max(200).optional(),
   intuitiveComment: z.string().trim().max(500).optional(),
   suggestion: z.string().trim().max(500).optional(),
 });
@@ -20,6 +21,7 @@ const FeedbackPage = () => {
   const [generalRating, setGeneralRating] = useState(0);
   const [hoveredGeneralRating, setHoveredGeneralRating] = useState(0);
   const [understoodPurpose, setUnderstoodPurpose] = useState<boolean | null>(null);
+  const [howKnewUs, setHowKnewUs] = useState("");
   const [intuitiveComment, setIntuitiveComment] = useState("");
   const [suggestion, setSuggestion] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +37,7 @@ const FeedbackPage = () => {
       feedbackSchema.parse({ 
         generalRating,
         understoodPurpose,
+        howKnewUs,
         intuitiveComment,
         suggestion
       });
@@ -54,6 +57,7 @@ const FeedbackPage = () => {
           generalRating,
           purchaseRating: showPurchaseQuestion ? purchaseRating : null,
           understoodPurpose,
+          howKnewUs: howKnewUs.trim() || null,
           intuitiveComment: intuitiveComment.trim() || null,
           suggestion: suggestion.trim() || null,
           isPostPurchase: showPurchaseQuestion,
@@ -75,6 +79,7 @@ const FeedbackPage = () => {
       // Reset form
       setGeneralRating(0);
       setUnderstoodPurpose(null);
+      setHowKnewUs("");
       setIntuitiveComment("");
       setSuggestion("");
       
@@ -230,6 +235,24 @@ const FeedbackPage = () => {
                   No.
                 </Button>
               </div>
+            </div>
+
+            {/* How Knew Us */}
+            <div className="space-y-3">
+              <label className="text-base sm:text-lg font-poppins font-medium text-white block">
+                ¿<span className="capitalize">c</span>ómo <span className="font-bold">nos has conocido</span>?
+              </label>
+              <Textarea
+                value={howKnewUs}
+                onChange={(e) => setHowKnewUs(e.target.value)}
+                placeholder="Redes sociales, recomendación, búsqueda en Google..."
+                rows={3}
+                maxLength={200}
+                className="bg-white/10 border-2 border-white/30 focus:border-gold resize-none text-white placeholder:text-white/50 font-poppins text-base"
+              />
+              <p className="text-xs sm:text-sm text-white/50 text-right font-poppins">
+                {howKnewUs.length}/200
+              </p>
             </div>
 
             {/* Intuitive Comment */}

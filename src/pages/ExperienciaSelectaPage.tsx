@@ -148,15 +148,15 @@ const ExperienciaSelectaPage = () => {
               
               <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
-                  nos enseñaron a desconectar. nosotros preferimos <span className="font-bold" style={{ color: '#D4AF37' }}>reconectar</span>.
+                  <span className="font-bold" style={{ color: '#000000' }}>nos enseñaron a desconectar. nosotros preferimos reconectar.</span>
                 </p>
                 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  creamos espacios donde la <span className="font-bold" style={{ color: '#D4AF37' }}>conversación importa</span> y <span className="font-bold" style={{ color: '#D4AF37' }}>mirar a los ojos</span> no da miedo.
+                  <span className="font-bold" style={{ color: '#000000' }}>creamos espacios donde la conversación importa y mirar a los ojos no da miedo.</span>
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  porque conocer es <span className="font-bold" style={{ color: '#D4AF37' }}>escuchar y compartir</span>. ahí empieza lo auténtico.
+                  <span className="font-bold" style={{ color: '#000000' }}>porque conocer es escuchar y compartir. ahí empieza lo auténtico.</span>
                 </p>
               </div>
             </div>
@@ -205,15 +205,15 @@ const ExperienciaSelectaPage = () => {
 
               <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
-                  trabajamos con <span className="font-bold" style={{ color: '#D4AF37' }}>productores españoles</span>. personas reales, <span className="font-bold" style={{ color: '#D4AF37' }}>productos excepcionales</span>.
+                  <span className="font-bold" style={{ color: '#000000' }}>trabajamos con productores españoles. personas reales, productos excepcionales.</span>
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  priorizamos <span className="font-bold" style={{ color: '#D4AF37' }}>calidad sobre cantidad</span>. en productos, momentos y relaciones.
+                  <span className="font-bold" style={{ color: '#000000' }}>priorizamos calidad sobre cantidad. en productos, momentos y relaciones.</span>
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#D4AF37' }}>sostenibilidad</span> y <span className="font-bold" style={{ color: '#D4AF37' }}>compromiso local</span> son nuestra esencia.
+                  <span className="font-bold" style={{ color: '#000000' }}>sostenibilidad y compromiso local son nuestra esencia.</span>
                 </p>
               </div>
             </div>

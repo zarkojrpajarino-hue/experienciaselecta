@@ -12,6 +12,7 @@ const feedbackSchema = z.object({
   generalRating: z.number().min(1, "Por favor selecciona una puntuación").max(5),
   purchaseRating: z.number().min(1).max(5).optional(),
   understoodPurpose: z.boolean().nullable(),
+  howKnewUs: z.string().trim().max(200).optional(),
   intuitiveComment: z.string().trim().max(500).optional(),
   suggestion: z.string().trim().max(500).optional(),
 });
@@ -38,6 +39,7 @@ const FeedbackModal = ({
   const [hoveredPurchaseRating, setHoveredPurchaseRating] = useState(0);
   
   const [understoodPurpose, setUnderstoodPurpose] = useState<boolean | null>(null);
+  const [howKnewUs, setHowKnewUs] = useState("");
   const [intuitiveComment, setIntuitiveComment] = useState("");
   const [suggestion, setSuggestion] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,6 +53,7 @@ const FeedbackModal = ({
         generalRating,
         purchaseRating: showPurchaseQuestion ? purchaseRating : undefined,
         understoodPurpose,
+        howKnewUs,
         intuitiveComment,
         suggestion
       });
@@ -67,6 +70,7 @@ const FeedbackModal = ({
           generalRating,
           purchaseRating: showPurchaseQuestion ? purchaseRating : null,
           understoodPurpose,
+          howKnewUs: howKnewUs.trim() || null,
           intuitiveComment: intuitiveComment.trim() || null,
           suggestion: suggestion.trim() || null,
           isPostPurchase: showPurchaseQuestion,
@@ -265,6 +269,24 @@ const FeedbackModal = ({
                   <span className="capitalize">n</span>o
                 </Button>
               </div>
+            </div>
+
+            {/* How Knew Us */}
+            <div className="space-y-2">
+              <label className="text-sm font-poppins font-medium text-crema">
+                ¿<span className="capitalize">c</span>ómo <span className="font-bold">nos has conocido</span>?
+              </label>
+              <Textarea
+                value={howKnewUs}
+                onChange={(e) => setHowKnewUs(e.target.value)}
+                placeholder="Redes sociales, recomendación, búsqueda en Google..."
+                rows={2}
+                maxLength={200}
+                className="bg-crema/10 border-crema/30 focus:border-mango resize-none text-crema placeholder:text-crema/50 font-poppins"
+              />
+              <p className="text-xs text-crema/50 text-right">
+                {howKnewUs.length}/200
+              </p>
             </div>
 
             {/* Intuitive Comment */}
