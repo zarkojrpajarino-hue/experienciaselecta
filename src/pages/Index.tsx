@@ -55,6 +55,7 @@ import faqPrimeraImagen from "@/assets/nueva-seccion-10.jpg";
 import faqDuracionExperiencia from "@/assets/faq-pates-gourmet-final.png";
 import faqDesconocidosEncuentro from "@/assets/faq-desconocidos-encuentro.jpg";
 import faqGarantiaSatisfaccion from "@/assets/faq-embutidos-ibericos-final.png";
+// Main Index Page Component
 const Index = () => {
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
