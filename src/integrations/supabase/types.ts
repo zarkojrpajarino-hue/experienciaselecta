@@ -385,13 +385,15 @@ export type Database = {
         Row: {
           basket_category: string | null
           basket_name: string | null
-          completed_at: string | null
-          email: string | null
           order_id: string | null
           price: number | null
+          purchase_date: string | null
           purchase_type: string | null
           quantity: number | null
+          total_paid: number | null
+          user_email: string | null
           user_id: string | null
+          user_name: string | null
         }
         Relationships: []
       }
