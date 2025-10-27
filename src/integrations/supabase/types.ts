@@ -384,6 +384,7 @@ export type Database = {
       completed_purchases: {
         Row: {
           basket_category: string | null
+          basket_id: string | null
           basket_name: string | null
           order_id: string | null
           price: number | null
