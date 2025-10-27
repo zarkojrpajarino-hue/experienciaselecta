@@ -381,6 +381,20 @@ export type Database = {
       }
     }
     Views: {
+      completed_purchases: {
+        Row: {
+          basket_category: string | null
+          basket_name: string | null
+          completed_at: string | null
+          email: string | null
+          order_id: string | null
+          price: number | null
+          purchase_type: string | null
+          quantity: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       purchases: {
         Row: {
           basket_category: string | null
