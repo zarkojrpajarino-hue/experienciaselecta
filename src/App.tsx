@@ -21,8 +21,8 @@ const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPa
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const CookieBanner = lazy(() => import("./components/CookieBanner"));
-const AutoUpdater = lazy(() => import("./components/AutoUpdater"));
+import CookieBanner from "./components/CookieBanner";
+import AutoUpdater from "./components/AutoUpdater";
 
 // Loading component with GPU acceleration
 const PageLoader = () => (
