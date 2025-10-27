@@ -129,7 +129,8 @@ Experiencias Selecta - Momentos que perduran
       
       // Send SMS if phone is provided
       if (recipient.recipientPhone) {
-        const smsMessage = `${recipient.recipientName}, ${validatedData.senderName} acaba de regalarte una experiencia personalizada e inolvidable, entra en la web experienciaselecta.com para que podamos enviarte el regalo${recipient.personalNote ? `. Nota: ${recipient.personalNote}` : ''}`;
+        const personalNoteText = recipient.personalNote ? `\n\nMensaje: "${recipient.personalNote}"` : '';
+        const smsMessage = `Hola ${recipient.recipientName}, ${validatedData.senderName} te ha regalado una experiencia única. Reclama tu regalo: https://experienciaselecta.com/regalos${personalNoteText}`;
         
         console.log('Sending SMS to', recipient.recipientPhone);
         

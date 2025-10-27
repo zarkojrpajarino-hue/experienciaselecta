@@ -45,13 +45,13 @@ serve(async (req) => {
     }
 
     // Validate input
-    const marketingEmailSchema = z.object({
+    const welcomeEmailSchema = z.object({
       userEmail: z.string().trim().email().max(255),
       userName: z.string().trim().max(200).optional()
     });
 
     const requestData = await req.json();
-    const validationResult = marketingEmailSchema.safeParse(requestData);
+    const validationResult = welcomeEmailSchema.safeParse(requestData);
 
     if (!validationResult.success) {
       console.error('Validation error:', validationResult.error);
@@ -65,24 +65,36 @@ serve(async (req) => {
     }
 
     const { userEmail, userName } = validationResult.data;
-    console.log('Sending marketing email to:', userEmail, 'for user:', user.id);
+    console.log('Sending welcome email to:', userEmail, 'for user:', user.id);
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
     const emailContent = `
 ¡Hola ${userName || 'amigo/a'}!
 
-¿Estás listo/a para vivir una experiencia inolvidable?
+Bienvenido/a a Experiencia Selecta 🌟
 
-¿Quieres romper con la monotonía? ¿Tener un plan diferente, lleno de valor? ¿Conectar con las personas que más quieres y conocerte a ti mismo?
+Nos alegra mucho que estés aquí. Has dado el primer paso hacia experiencias gastronómicas únicas que transformarán tus momentos especiales.
 
-🌟 Entra en experienciaselecta.com y descubre una nueva forma de disfrutar.
+¿Qué te espera en Experiencia Selecta?
 
-Cada momento cuenta. Hazlo especial.
+✨ Cestas gourmet premium con productos ibéricos de la más alta calidad
+🎯 Experiencias personalizadas diseñadas especialmente para ti
+💝 La posibilidad de regalar momentos inolvidables
+🌐 Acceso exclusivo a paragenteselecta.com con cada compra
 
-Saludos,
+Cada una de nuestras cestas viene con 24 horas de experiencia digital personalizada. No es solo una compra, es el inicio de un viaje sensorial.
+
+¿Listo/a para empezar?
+
+👉 Explora nuestras cestas: https://experienciaselecta.com
+
+Si tienes alguna pregunta, estamos aquí para ayudarte.
+
+¡Bienvenido/a a la familia Selecta!
+
 El equipo de Experiencia Selecta
-`;
+    `;
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -123,12 +135,19 @@ El equipo de Experiencia Selecta
       margin: 20px 0;
       font-weight: bold;
     }
-    .highlight {
+    .features {
       background: linear-gradient(135deg, rgba(139,69,19,0.1), rgba(47,79,47,0.1));
       padding: 20px;
       border-radius: 8px;
       margin: 20px 0;
       border-left: 4px solid #8B4513;
+    }
+    .features ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .features li {
+      margin-bottom: 10px;
     }
     .footer {
       text-align: center;
@@ -140,30 +159,40 @@ El equipo de Experiencia Selecta
 </head>
 <body>
   <div class="header">
-    <h1>¿Estás listo/a para vivir una experiencia inolvidable? ✨</h1>
+    <h1>¡Bienvenido/a a Experiencia Selecta! ✨</h1>
   </div>
   <div class="content">
-    <p>Hola ${userName || 'amigo/a'},</p>
+    <p>¡Hola ${userName || 'amigo/a'}!</p>
     
-    <div class="highlight">
-      <p style="margin: 0; font-size: 18px; color: #8B4513;"><strong>¿Quieres romper con la monotonía?</strong></p>
-      <p style="margin: 10px 0 0 0;">¿Tener un plan diferente, lleno de valor?</p>
-      <p style="margin: 5px 0 0 0;">¿Conectar con las personas que más quieres y conocerte a ti mismo?</p>
+    <p>Nos alegra mucho que estés aquí. Has dado el primer paso hacia <strong>experiencias gastronómicas únicas</strong> que transformarán tus momentos especiales.</p>
+    
+    <div class="features">
+      <p style="margin: 0 0 10px 0; font-size: 18px; color: #8B4513;"><strong>¿Qué te espera en Experiencia Selecta?</strong></p>
+      <ul>
+        <li><strong>✨ Cestas gourmet premium</strong> con productos ibéricos de la más alta calidad</li>
+        <li><strong>🎯 Experiencias personalizadas</strong> diseñadas especialmente para ti</li>
+        <li><strong>💝 La posibilidad de regalar</strong> momentos inolvidables</li>
+        <li><strong>🌐 Acceso exclusivo</strong> a paragenteselecta.com con cada compra</li>
+      </ul>
     </div>
 
+    <p>Cada una de nuestras cestas viene con <strong>24 horas de experiencia digital personalizada</strong>. No es solo una compra, es el inicio de un viaje sensorial.</p>
+    
     <p style="text-align: center; font-size: 18px; margin: 30px 0;">
-      <strong>Descubre una nueva forma de disfrutar.</strong>
+      <strong>¿Listo/a para empezar?</strong>
     </p>
     
     <p style="text-align: center;">
-      <a href="https://experienciaselecta.com" class="cta-button">Entra en experienciaselecta.com</a>
+      <a href="https://experienciaselecta.com" class="cta-button">Explora Nuestras Cestas</a>
     </p>
     
-    <p style="text-align: center; color: #8B4513; font-size: 16px; margin-top: 30px;">
-      <em>Cada momento cuenta. Hazlo especial.</em>
+    <p>Si tienes alguna pregunta, estamos aquí para ayudarte.</p>
+    
+    <p style="text-align: center; color: #8B4513; font-size: 18px; margin-top: 40px;">
+      <strong>¡Bienvenido/a a la familia Selecta!</strong>
     </p>
     
-    <p style="margin-top: 40px;"><strong>El equipo de Experiencia Selecta</strong></p>
+    <p style="margin-top: 30px;"><strong>El equipo de Experiencia Selecta</strong></p>
   </div>
   <div class="footer">
     <p>Experiencia Selecta - Experiencias gastronómicas únicas</p>
@@ -171,17 +200,17 @@ El equipo de Experiencia Selecta
   </div>
 </body>
 </html>
-`;
+    `;
 
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [userEmail],
-      subject: '✨ ¿Estás listo/a para vivir una experiencia inolvidable?',
+      subject: '✨ ¡Bienvenido/a a Experiencia Selecta! Tu viaje comienza aquí',
       text: emailContent,
       html: htmlContent,
     });
 
-    console.log('Marketing email sent successfully to:', userEmail);
+    console.log('Welcome email sent successfully to:', userEmail);
 
     return new Response(
       JSON.stringify({ success: true }),
@@ -191,7 +220,7 @@ El equipo de Experiencia Selecta
       }
     );
   } catch (error: any) {
-    console.error('Error sending marketing email:', error);
+    console.error('Error sending welcome email:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
