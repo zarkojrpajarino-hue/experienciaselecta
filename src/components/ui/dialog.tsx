@@ -1,4 +1,14 @@
-import * as React from "react";
+import type { FC, ReactNode, ReactElement, ButtonHTMLAttributes, HTMLAttributes } from "react";
+import {
+  useState,
+  useMemo,
+  useCallback,
+  useContext,
+  forwardRef,
+  isValidElement,
+  cloneElement,
+  createContext,
+} from "react";
 import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 
@@ -14,22 +24,22 @@ interface DialogContextValue {
   setOpen: (open: boolean) => void;
 }
 
-const DialogContext = React.createContext<DialogContextValue | null>(null);
+const DialogContext = createContext<DialogContextValue | null>(null);
 
 interface DialogProps {
   open?: boolean;
   defaultOpen?: boolean;
   modal?: boolean;
   onOpenChange?: OpenChangeHandler;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-const Dialog: React.FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, children }) => {
+const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, children }) => {
   const isControlled = typeof open === "boolean";
-  const [internalOpen, setInternalOpen] = React.useState(false);
+  const [internalOpen, setInternalOpen] = useState(!!defaultOpen);
   const actualOpen = isControlled ? (open as boolean) : internalOpen;
 
-  const setOpen = React.useCallback(
+  const setOpen = useCallback(
     (next: boolean) => {
       if (!isControlled) setInternalOpen(next);
       onOpenChange?.(next);
@@ -37,31 +47,31 @@ const Dialog: React.FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange,
     [isControlled, onOpenChange],
   );
 
-  const value = React.useMemo(() => ({ open: actualOpen, setOpen }), [actualOpen, setOpen]);
+  const value = useMemo(() => ({ open: actualOpen, setOpen }), [actualOpen, setOpen]);
 
   return <DialogContext.Provider value={value}>{children}</DialogContext.Provider>;
 };
 
 // Trigger
-interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DialogTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
+const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>(
   ({ asChild, onClick, children, ...props }, ref) => {
-    const ctx = React.useContext(DialogContext);
-    if (!ctx) return asChild && React.isValidElement(children) ? (children as any) : <button {...props} ref={ref} />;
+    const ctx = useContext(DialogContext);
+    if (!ctx) return asChild && isValidElement(children) ? (children as any) : <button {...props} ref={ref} />;
 
     const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
       onClick?.(e);
       if (!e.defaultPrevented) ctx.setOpen(true);
     };
 
-    if (asChild && React.isValidElement(children)) {
-      return React.cloneElement(children as React.ReactElement, {
+    if (asChild && isValidElement(children)) {
+      return cloneElement(children as ReactElement, {
         onClick: (e: any) => {
-          children.props?.onClick?.(e);
+          (children as any).props?.onClick?.(e);
           handleClick(e);
         },
         ref,
@@ -78,23 +88,23 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
 DialogTrigger.displayName = "DialogTrigger";
 
 // Close
-interface DialogCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DialogCloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
 }
 
-const DialogClose = React.forwardRef<HTMLButtonElement, DialogCloseProps>(({ asChild, onClick, children, ...props }, ref) => {
-  const ctx = React.useContext(DialogContext);
-  if (!ctx) return asChild && React.isValidElement(children) ? (children as any) : <button {...props} ref={ref} />;
+const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>(({ asChild, onClick, children, ...props }, ref) => {
+  const ctx = useContext(DialogContext);
+  if (!ctx) return asChild && isValidElement(children) ? (children as any) : <button {...props} ref={ref} />;
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     onClick?.(e);
     if (!e.defaultPrevented) ctx.setOpen(false);
   };
 
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement, {
+  if (asChild && isValidElement(children)) {
+    return cloneElement(children as ReactElement, {
       onClick: (e: any) => {
-        children.props?.onClick?.(e);
+        (children as any).props?.onClick?.(e);
         handleClick(e);
       },
       ref,
@@ -110,12 +120,12 @@ const DialogClose = React.forwardRef<HTMLButtonElement, DialogCloseProps>(({ asC
 DialogClose.displayName = "DialogClose";
 
 // Portal & Overlay
-const DialogPortal: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const DialogPortal: FC<{ children?: ReactNode }> = ({ children }) => {
   if (typeof document === "undefined") return null;
-  return createPortal(children as React.ReactNode, document.body);
+  return createPortal(children as ReactNode, document.body);
 };
 
-const DialogOverlay = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
@@ -128,12 +138,12 @@ const DialogOverlay = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 DialogOverlay.displayName = "DialogOverlay";
 
 // Content
-interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
   hideClose?: boolean;
 }
 
-const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, ...props }, ref) => {
-  const ctx = React.useContext(DialogContext);
+const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, ...props }, ref) => {
+  const ctx = useContext(DialogContext);
   if (!ctx || !ctx.open) return null;
 
   return (
@@ -164,23 +174,23 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(({ cl
 DialogContent.displayName = "DialogContent";
 
 // Header / Footer / Title / Description
-const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+const DialogHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
 );
 DialogHeader.displayName = "DialogHeader";
 
-const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+const DialogFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)} {...props} />
 );
 DialogFooter.displayName = "DialogFooter";
 
-interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {
   asChild?: boolean;
 }
 
-const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(({ className, asChild, children, ...props }, ref) => {
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement, {
+const DialogTitle = forwardRef<HTMLHeadingElement, DialogTitleProps>(({ className, asChild, children, ...props }, ref) => {
+  if (asChild && isValidElement(children)) {
+    return cloneElement(children as ReactElement, {
       ref,
       className: cn("text-lg font-semibold leading-none tracking-tight", className, (children as any).props?.className),
       ...props,
@@ -194,14 +204,14 @@ const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(({ cl
 });
 DialogTitle.displayName = "DialogTitle";
 
-interface DialogDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+interface DialogDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
   asChild?: boolean;
 }
 
-const DialogDescription = React.forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
+const DialogDescription = forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
   ({ className, asChild, children, ...props }, ref) => {
-    if (asChild && React.isValidElement(children)) {
-      return React.cloneElement(children as React.ReactElement, {
+    if (asChild && isValidElement(children)) {
+      return cloneElement(children as ReactElement, {
         ref,
         className: cn("text-sm text-muted-foreground", className, (children as any).props?.className),
         ...props,
