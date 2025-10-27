@@ -4,6 +4,8 @@ import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+// Force rebuild to resolve React context issue
+
 const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
