@@ -174,13 +174,45 @@ const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 );
 DialogFooter.displayName = "DialogFooter";
 
-const DialogTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(({ className, ...props }, ref) => (
-  <h2 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props} />
-));
+interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  asChild?: boolean;
+}
+
+const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(({ className, asChild, children, ...props }, ref) => {
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children as React.ReactElement, {
+      ref,
+      className: cn("text-lg font-semibold leading-none tracking-tight", className, (children as any).props?.className),
+      ...props,
+    });
+  }
+  return (
+    <h2 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props}>
+      {children}
+    </h2>
+  );
+});
 DialogTitle.displayName = "DialogTitle";
 
-const DialogDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
-  ({ className, ...props }, ref) => <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />,
+interface DialogDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  asChild?: boolean;
+}
+
+const DialogDescription = React.forwardRef<HTMLParagraphElement, DialogDescriptionProps>(
+  ({ className, asChild, children, ...props }, ref) => {
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(children as React.ReactElement, {
+        ref,
+        className: cn("text-sm text-muted-foreground", className, (children as any).props?.className),
+        ...props,
+      });
+    }
+    return (
+      <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props}>
+        {children}
+      </p>
+    );
+  },
 );
 DialogDescription.displayName = "DialogDescription";
 
