@@ -276,7 +276,7 @@ const RegalosPage = () => {
                             Nota: "{gift.personal_note}"
                           </p>
                         )}
-                        <p className="text-[0.65rem] sm:text-sm md:text-base font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] font-bungee mt-4 leading-tight">
+                        <p className="text-[0.65rem] sm:text-sm md:text-base font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] font-bungee mt-4 leading-tight text-black">
                           Rellena la información para que podamos enviártelo
                         </p>
                       </div>

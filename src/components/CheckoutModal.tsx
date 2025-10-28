@@ -765,7 +765,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   {giftData.recipients.map((recipient, index) => (
                     <div key={index} className="border rounded-lg p-4 space-y-4 mb-4 bg-white">
                       <div className="flex justify-between items-center">
-                        <h4 className="font-medium">Destinatario {index + 1}</h4>
+                        <h4 className="font-medium">Regalo {index + 1}</h4>
                         {giftData.recipients.length > 1 && (
                           <Button
                             type="button"
@@ -783,7 +783,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor={`recipientName-${index}`}>Nombre del destinatario *</Label>
+                          <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
                           <Input
                             id={`recipientName-${index}`}
                             value={recipient.recipientName}
@@ -797,7 +797,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`recipientEmail-${index}`}>Email del destinatario *</Label>
+                          <Label htmlFor={`recipientEmail-${index}`}>Email *</Label>
                           <Input
                             id={`recipientEmail-${index}`}
                             type="email"
@@ -1017,7 +1017,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 {giftData.recipients.map((recipient, index) => (
                   <div key={index} className="border rounded-lg p-4 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-medium">Destinatario {index + 1}</h3>
+                      <h3 className="font-medium">Regalo {index + 1}</h3>
                       {giftData.recipients.length > 1 && (
                         <Button
                           type="button"
@@ -1035,7 +1035,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor={`recipientName-${index}`}>Nombre del destinatario *</Label>
+                        <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
                         <Input
                           id={`recipientName-${index}`}
                           value={recipient.recipientName}
@@ -1052,7 +1052,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Label>Email del destinatario *</Label>
+                        <Label>Email *</Label>
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button 
@@ -1122,7 +1122,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`recipientPhone-${index}`}>o Número del destinatario</Label>
+                          <Label htmlFor={`recipientPhone-${index}`}>o Número</Label>
                           <Input
                             id={`recipientPhone-${index}`}
                             type="tel"
