@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,11 @@ const CartPage = () => {
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Refs para anclar el scroll al abrir el checkout
+  const giftSummaryRef = useRef<HTMLDivElement | null>(null);
+  const personalSummaryRef = useRef<HTMLDivElement | null>(null);
+  const combinedSummaryRef = useRef<HTMLDivElement | null>(null);
 
   // Reopen checkout after OAuth redirect if there's a pending checkout
   React.useEffect(() => {
@@ -49,7 +54,15 @@ const CartPage = () => {
     setIsCheckoutOpen(true);
   };
 
-  // Map CartItem to BasketItem for CheckoutModal - basado en modo
+  const openCheckout = (anchorRef: React.RefObject<HTMLElement | null>, giftMode: boolean, items: typeof cart) => {
+    try {
+      anchorRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {}
+    setTimeout(() => {
+      setCheckoutItems(items);
+      handleCheckout(giftMode, items);
+    }, 300);
+  };
   const [checkoutItems, setCheckoutItems] = useState<typeof cart>([]);
   
   const getBasketItems = (items: typeof cart) => items.map(item => ({
@@ -214,7 +227,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Order Summary for Gifts */}
-                  <div className="lg:col-span-1">
+                  <div className="lg:col-span-1" ref={giftSummaryRef}>
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
@@ -253,10 +266,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => {
-                            setCheckoutItems(giftItems);
-                            handleCheckout(true, giftItems);
-                          }}
+                          onClick={() => openCheckout(giftSummaryRef, true, giftItems)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
@@ -378,7 +388,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Order Summary for Personal */}
-                  <div className="lg:col-span-1">
+                  <div className="lg:col-span-1" ref={personalSummaryRef}>
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
