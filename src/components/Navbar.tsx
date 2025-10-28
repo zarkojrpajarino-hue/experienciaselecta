@@ -138,7 +138,7 @@ const Navbar = () => {
   };
   useEffect(() => {
     const handleScroll = throttle(() => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 0);
     }, 100);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
