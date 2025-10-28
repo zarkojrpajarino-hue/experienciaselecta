@@ -3,6 +3,7 @@ import {
   useState,
   useMemo,
   useCallback,
+  useEffect,
   useContext,
   forwardRef,
   isValidElement,
@@ -48,6 +49,16 @@ const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, child
   );
 
   const value = useMemo(() => ({ open: actualOpen, setOpen }), [actualOpen, setOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!actualOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [actualOpen, setOpen]);
 
   return <DialogContext.Provider value={value}>{children}</DialogContext.Provider>;
 };
@@ -125,16 +136,25 @@ const DialogPortal: FC<{ children?: ReactNode }> = ({ children }) => {
   return createPortal(children as ReactNode, document.body);
 };
 
-const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
-    )}
-    {...props}
-  />
-));
+const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, onClick, ...props }, ref) => {
+    const ctx = useContext(DialogContext);
+    return (
+      <div
+        ref={ref}
+        onClick={(e) => {
+          onClick?.(e as any);
+          if (!(e as any).defaultPrevented) ctx?.setOpen(false);
+        }}
+        className={cn(
+          "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
 DialogOverlay.displayName = "DialogOverlay";
 
 // Content

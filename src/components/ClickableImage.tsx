@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -43,13 +43,15 @@ const ClickableImage = ({
         <DialogContent hideClose className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] sm:rounded-[2rem] md:rounded-[2rem] lg:rounded-[2rem] xl:rounded-[2rem] overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
-          <Button 
-            onClick={() => setIsOpen(false)} 
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-            size="icon"
-          >
-            <X className="h-6 w-6" />
-          </Button>
+          <DialogClose asChild>
+            <Button 
+              className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              size="icon"
+              aria-label="Cerrar imagen"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+          </DialogClose>
           <div className="rounded-[2rem] overflow-hidden">
             <img 
               src={src} 
