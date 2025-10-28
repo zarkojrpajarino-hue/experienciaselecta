@@ -137,10 +137,19 @@ const Navbar = () => {
     });
   };
   useEffect(() => {
+    const getScrollTop = () =>
+      (typeof window !== 'undefined' && typeof window.scrollY === 'number' ? window.scrollY : 0) ||
+      (typeof document !== 'undefined' ? document.documentElement.scrollTop : 0) ||
+      (typeof document !== 'undefined' ? document.body.scrollTop : 0);
+
     const handleScroll = throttle(() => {
-      setIsScrolled(window.scrollY > 0);
+      setIsScrolled(getScrollTop() > 0);
     }, 100);
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initialize on mount in case page loads scrolled
+    setIsScrolled(getScrollTop() > 0);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const handleNavigation = useCallback((item: {
