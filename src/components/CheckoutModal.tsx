@@ -331,20 +331,25 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 }) => {
   // Determine if this is a mixed checkout (both gifts and personal items)
   const isMixedMode = giftItemsCount > 0 && personalItemsCount > 0;
+  
   // Expand basket items so each quantity becomes individual items with unique identifiers
+  // Also mark which items are gifts vs personal
   const expandedBasketItems = useMemo(() => {
-    const expanded: (BasketItem & { uniqueId: string })[] = [];
-    basketItems.forEach(item => {
+    const expanded: (BasketItem & { uniqueId: string; isGift?: boolean })[] = [];
+    basketItems.forEach((item, itemIndex) => {
+      // In mixed mode, first giftItemsCount items are gifts
+      const isGiftItem = isMixedMode && itemIndex < giftItemsCount;
       for (let i = 0; i < item.quantity; i++) {
         expanded.push({
           ...item,
           quantity: 1,
-          uniqueId: `${item.id}-${i}`
+          uniqueId: `${item.id}-${i}`,
+          isGift: isGiftItem
         });
       }
     });
     return expanded;
-  }, [basketItems]);
+  }, [basketItems, isMixedMode, giftItemsCount]);
 
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
@@ -482,11 +487,15 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
       
       // In mixed mode, verify all gift items are assigned
-      if (isMixedMode && assignedBaskets.length < giftItemsCount) {
+      const giftBasketCount = isMixedMode 
+        ? expandedBasketItems.filter(item => item.isGift).length
+        : expandedBasketItems.length;
+        
+      if (assignedBaskets.length < giftBasketCount) {
         toast({
           variant: "destructive",
           title: "Error",
-          description: `Debes asignar todas las ${giftItemsCount} cestas de regalo a destinatarios`,
+          description: `Debes asignar todas las ${giftBasketCount} cestas de regalo a destinatarios`,
         });
         return;
       }
@@ -641,12 +650,93 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <CardTitle className="text-lg">Resumen del pedido</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {isGiftMode && (
+            {(isGiftMode || isMixedMode) && (
               <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium mb-2">Cestas disponibles para asignar:</p>
+                <p className="text-sm font-medium mb-2">
+                  {isMixedMode ? 'Cestas para regalar:' : 'Cestas disponibles para asignar:'}
+                </p>
               </div>
             )}
-            {expandedBasketItems.map((item) => (
+            
+            {/* Gift items section */}
+            {isMixedMode && expandedBasketItems.filter(item => item.isGift).map((item) => (
+              <div key={item.uniqueId} className="flex justify-between items-center">
+                <div className="flex items-center gap-3 flex-1">
+                  {item.imagen && <BasketImageThumbnail src={item.imagen} alt={item.name} />}
+                  <div>
+                    <p className="font-medium">{item.name} 🎁</p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">{item.category}</Badge>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold">{item.price.toFixed(2)}€</p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
+                    onClick={() => {
+                      // Remove this basket from all recipients
+                      const newRecipients = giftData.recipients.map(r => ({
+                        ...r,
+                        basketIds: r.basketIds.filter(id => id !== item.uniqueId)
+                      }));
+                      setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                      // Remove from cart
+                      if (onRemoveItems) {
+                        onRemoveItems([{ id: item.id, isGift: true, quantityToRemove: 1 }]);
+                      }
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+            
+            {/* Personal items section */}
+            {isMixedMode && (
+              <>
+                <Separator />
+                <div className="mb-2 p-3 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium">Cestas personales:</p>
+                </div>
+                {expandedBasketItems.filter(item => !item.isGift).map((item) => (
+                  <div key={item.uniqueId} className="flex justify-between items-center">
+                    <div className="flex items-center gap-3 flex-1">
+                      {item.imagen && <BasketImageThumbnail src={item.imagen} alt={item.name} />}
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">{item.category}</Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">{item.price.toFixed(2)}€</p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
+                        onClick={() => {
+                          if (onRemoveItems) {
+                            onRemoveItems([{ id: item.id, isGift: false, quantityToRemove: 1 }]);
+                          }
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+            
+            {/* Pure gift mode or pure personal mode */}
+            {!isMixedMode && expandedBasketItems.map((item) => (
               <div key={item.uniqueId} className="flex justify-between items-center">
                 <div className="flex items-center gap-3 flex-1">
                   {item.imagen && <BasketImageThumbnail src={item.imagen} alt={item.name} />}
@@ -662,8 +752,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </p>
               </div>
             ))}
+            
             <Separator />
-            {isGiftMode && (
+            {(isGiftMode || isMixedMode) && (
               <>
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total a pagar:</span>
@@ -671,19 +762,26 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     {(() => {
                       // Calculate total based on assigned baskets
                       const assignedIds = new Set(giftData.recipients.flatMap(r => r.basketIds));
-                      return expandedBasketItems
-                        .filter(item => assignedIds.has(item.uniqueId))
-                        .reduce((sum, item) => sum + item.price, 0)
-                        .toFixed(2);
+                      const giftTotal = expandedBasketItems
+                        .filter(item => item.isGift && assignedIds.has(item.uniqueId))
+                        .reduce((sum, item) => sum + item.price, 0);
+                      const personalTotal = isMixedMode 
+                        ? expandedBasketItems
+                            .filter(item => !item.isGift)
+                            .reduce((sum, item) => sum + item.price, 0)
+                        : 0;
+                      return (giftTotal + personalTotal).toFixed(2);
                     })()}€
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Solo se cobrarán las cestas que asignes a destinatarios
+                  {isMixedMode 
+                    ? 'Incluye cestas de regalo asignadas y cestas personales' 
+                    : 'Solo se cobrarán las cestas que asignes a destinatarios'}
                 </p>
               </>
             )}
-            {!isGiftMode && (
+            {!isGiftMode && !isMixedMode && (
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>Total a pagar:</span>
                 <span>{totalAmount.toFixed(2)}€</span>
@@ -1252,62 +1350,71 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
                       </p>
                       <div className="space-y-2">
-                        {expandedBasketItems.map((item) => (
-                          <div key={item.uniqueId} className="flex items-center justify-between space-x-2">
-                            <div className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                id={`basket-${item.uniqueId}-recipient-${index}`}
-                                checked={recipient.basketIds.includes(item.uniqueId)}
-                                onChange={(e) => {
-                                  const newRecipients = [...giftData.recipients];
-                                  if (e.target.checked) {
-                                    newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
-                                  } else {
-                                    newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
-                                  }
-                                  setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                                }}
-                                className="rounded border-gray-300"
-                              />
-                              <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
-                                {item.name}
-                              </Label>
+                        {expandedBasketItems
+                          .filter(item => !isMixedMode || item.isGift) // Only show gift items in mixed mode
+                          .map((item) => (
+                            <div key={item.uniqueId} className="flex items-center justify-between space-x-2">
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={`basket-${item.uniqueId}-recipient-${index}`}
+                                  checked={recipient.basketIds.includes(item.uniqueId)}
+                                  onChange={(e) => {
+                                    const newRecipients = [...giftData.recipients];
+                                    if (e.target.checked) {
+                                      newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
+                                    } else {
+                                      newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
+                                    }
+                                    setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                  }}
+                                  className="rounded border-gray-300"
+                                />
+                                <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
+                                  {item.name}
+                                </Label>
+                              </div>
+                              <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
                             </div>
-                            <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
-                          </div>
                         ))}
                       </div>
                     </div>
                   </div>
                 ))}
 
-                {expandedBasketItems.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      if (giftData.recipients.length >= expandedBasketItems.length) {
-                        toast({
-                          variant: "destructive",
-                          title: "Límite alcanzado",
-                          description: "No puedes añadir más destinatarios que cestas disponibles",
-                        });
-                        return;
-                      }
-                      setGiftData(prev => ({
-                        ...prev,
-                        recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
-                      }));
-                    }}
-                    disabled={giftData.recipients.length >= expandedBasketItems.length}
-                    className="w-full font-bold tracking-[0.15em] uppercase"
-                    style={{ fontFamily: 'Boulder, sans-serif' }}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Añadir otro destinatario
-                  </Button>
-                )}
+                {(() => {
+                  // Only count gift baskets for recipient limit
+                  const giftBasketCount = isMixedMode 
+                    ? expandedBasketItems.filter(item => item.isGift).length
+                    : expandedBasketItems.length;
+                  
+                  return giftBasketCount > 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (giftData.recipients.length >= giftBasketCount) {
+                          toast({
+                            variant: "destructive",
+                            title: "Límite alcanzado",
+                            description: "No puedes añadir más destinatarios que cestas de regalo disponibles",
+                          });
+                          return;
+                        }
+                        setGiftData(prev => ({
+                          ...prev,
+                          recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
+                        }));
+                      }}
+                      disabled={giftData.recipients.length >= giftBasketCount}
+                      className="w-full font-bold tracking-[0.15em] uppercase"
+                      style={{ fontFamily: 'Boulder, sans-serif' }}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Añadir otro destinatario
+                    </Button>
+                  );
+                })()}
               </>
             ) : (
               /* Normal Purchase Fields */
