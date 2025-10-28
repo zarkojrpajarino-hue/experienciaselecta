@@ -427,10 +427,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => {
-                            setCheckoutItems(personalItems);
-                            handleCheckout(false, personalItems);
-                          }}
+                          onClick={() => openCheckout(personalSummaryRef, false, personalItems)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
@@ -488,7 +485,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Resumen y botón de pago */}
-                  <div className="lg:col-span-1">
+                  <div className="lg:col-span-1" ref={combinedSummaryRef}>
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
