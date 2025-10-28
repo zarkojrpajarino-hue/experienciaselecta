@@ -329,6 +329,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   giftItemsCount = 0,
   personalItemsCount = 0
 }) => {
+  // Track removed items locally to update UI immediately
+  const [removedItemIds, setRemovedItemIds] = useState<string[]>([]);
+  
   // Determine if this is a mixed checkout (both gifts and personal items)
   const isMixedMode = giftItemsCount > 0 && personalItemsCount > 0;
   
@@ -340,16 +343,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       // In mixed mode, first giftItemsCount items are gifts
       const isGiftItem = isMixedMode && itemIndex < giftItemsCount;
       for (let i = 0; i < item.quantity; i++) {
-        expanded.push({
-          ...item,
-          quantity: 1,
-          uniqueId: `${item.id}-${i}`,
-          isGift: isGiftItem
-        });
+        const uniqueId = `${item.id}-${i}`;
+        // Skip items that have been removed
+        if (!removedItemIds.includes(uniqueId)) {
+          expanded.push({
+            ...item,
+            quantity: 1,
+            uniqueId,
+            isGift: isGiftItem
+          });
+        }
       }
     });
     return expanded;
-  }, [basketItems, isMixedMode, giftItemsCount]);
+  }, [basketItems, isMixedMode, giftItemsCount, removedItemIds]);
 
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
@@ -412,6 +419,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       checkAuthStatus();
       // Set flag to reopen checkout after OAuth redirect
       localStorage.setItem('pendingCheckout', 'true');
+      // Reset removed items when modal opens
+      setRemovedItemIds([]);
     }
   }, [isOpen]);
 
@@ -678,6 +687,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     size="sm"
                     className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
                     onClick={() => {
+                      // Mark as removed immediately for UI update
+                      setRemovedItemIds(prev => [...prev, item.uniqueId]);
                       // Remove this basket from all recipients
                       const newRecipients = giftData.recipients.map(r => ({
                         ...r,
@@ -722,6 +733,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         size="sm"
                         className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
                         onClick={() => {
+                          // Mark as removed immediately for UI update
+                          setRemovedItemIds(prev => [...prev, item.uniqueId]);
+                          // Remove from cart
                           if (onRemoveItems) {
                             onRemoveItems([{ id: item.id, isGift: false, quantityToRemove: 1 }]);
                           }
