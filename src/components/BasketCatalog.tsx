@@ -1289,7 +1289,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       <div className="w-full md:w-2/3">
                         <button 
                           onClick={() => setOpenProducts(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
-                          className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto bg-black/90 px-3 py-1.5 rounded-lg"
+                          className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto bg-black px-3 py-1.5 rounded-lg"
                         >
                           <span className="font-bold text-xs sm:text-sm text-gold">Productos incluidos</span>
                           <span className="text-gold">
@@ -1655,7 +1655,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                 e.stopPropagation();
                 handleCloseImage();
               }}
-              className="absolute top-2 right-2 z-[70] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110 pointer-events-auto"
+              className="absolute top-2 right-2 z-[70] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110 pointer-events-auto flex items-center justify-center"
               aria-label="Cerrar imagen"
             >
               <X className="h-5 w-5 sm:h-6 sm:w-6" />
