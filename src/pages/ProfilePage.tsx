@@ -273,25 +273,28 @@ const ProfilePage = () => {
         setOrders(expandedOrders);
       }
 
-      // Load user's reviews from paragenteselecta.com only
-      const { data: reviewsData, error: reviewsError } = await supabase
-        .from("reviews")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("source_site", "paragenteselecta")
-        .order("created_at", { ascending: false });
+      // Load user's reviews via Edge Function (pull from remote endpoint)
+      const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
+        body: { limit: 200 }
+      });
 
-      if (reviewsError) {
-        console.error("Error loading reviews:", reviewsError);
+      if (fnErr) {
+        console.error("Error fetching remote reviews:", fnErr);
       }
 
-      // Map profile to reviews using the profile data already loaded
-      const reviewsWithProfiles = (reviewsData || []).map(review => ({
-        ...review,
+      const remoteReviews = (fnRes as any)?.data || [];
+      const reviewsMapped = remoteReviews.map((r: any) => ({
+        id: r.id,
+        basket_name: r.basket_name,
+        rating: r.rating,
+        comment: r.comment || '',
+        created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
+        user_id: userId,
+        source_site: 'paragenteselecta',
         profiles: profileData
       }));
 
-      setReviews(reviewsWithProfiles);
+      setReviews(reviewsMapped);
     } catch (error: any) {
       toast({
         variant: "destructive",

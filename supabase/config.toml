@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.receive-review]
 verify_jwt = false
+
+[functions.get-user-reviews]
+verify_jwt = true

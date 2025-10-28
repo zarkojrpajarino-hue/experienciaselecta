@@ -253,7 +253,7 @@ const Navbar = () => {
     handleNavigation(navItems[newIndex]);
   }, [handleNavigation, location.hash]);
   // Only show navbar on homepage after scrolling
-  const shouldShowNavbar = true;
+  const shouldShowNavbar = location.pathname === '/' && isScrolled;
 
   return <motion.nav initial={{
     y: -100,
