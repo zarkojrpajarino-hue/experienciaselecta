@@ -12,12 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    // Verify CRON secret for authentication
+    // Enhanced CRON authentication with timestamp validation
     const cronSecret = req.headers.get('authorization')?.replace('Bearer ', '');
     const validCronSecret = Deno.env.get('CRON_SECRET');
+    const requestTimestamp = req.headers.get('X-Request-Timestamp');
 
     if (!cronSecret || cronSecret !== validCronSecret) {
-      console.error('Unauthorized sync attempt');
+      console.error('Unauthorized sync attempt - invalid secret');
       return new Response(
         JSON.stringify({ error: 'Unauthorized - Invalid authentication' }),
         {
@@ -25,6 +26,24 @@ serve(async (req) => {
           status: 401,
         }
       );
+    }
+
+    // Validate timestamp to prevent replay attacks (allow 5 minute window)
+    if (requestTimestamp) {
+      const timestamp = parseInt(requestTimestamp, 10);
+      const now = Date.now();
+      const fiveMinutes = 5 * 60 * 1000;
+      
+      if (isNaN(timestamp) || Math.abs(now - timestamp) > fiveMinutes) {
+        console.error('Unauthorized sync attempt - invalid or expired timestamp');
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized - Request expired or invalid timestamp' }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 401,
+          }
+        );
+      }
     }
 
     console.log('Starting reviews synchronization...');
