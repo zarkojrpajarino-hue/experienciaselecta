@@ -82,6 +82,7 @@ interface Review {
   comment: string;
   created_at: string;
   user_id: string;
+  source_site: string;
   profiles?: {
     name: string | null;
     user_id: string;
@@ -272,29 +273,29 @@ const ProfilePage = () => {
         setOrders(expandedOrders);
       }
 
-      // Load all user reviews from the platform (paragenteselecta.com and experienciaselecta)
+      // Load user's reviews from paragenteselecta.com only
       const { data: reviewsData, error: reviewsError } = await supabase
         .from("reviews")
         .select("*")
+        .eq("user_id", userId)
+        .eq("source_site", "paragenteselecta")
         .order("created_at", { ascending: false });
 
       if (reviewsError) {
         console.error("Error loading reviews:", reviewsError);
       }
 
-      // Get unique user IDs from reviews
-      const userIds = [...new Set(reviewsData?.map(r => r.user_id) || [])];
-      
-      // Fetch profiles for all users who left reviews
-      const { data: profilesData } = await supabase
+      // Get user profile for the current user
+      const { data: profileData } = await supabase
         .from("profiles")
         .select("user_id, name")
-        .in("user_id", userIds);
+        .eq("user_id", userId)
+        .single();
 
-      // Map profiles to reviews
+      // Map profile to reviews
       const reviewsWithProfiles = (reviewsData || []).map(review => ({
         ...review,
-        profiles: profilesData?.find(p => p.user_id === review.user_id)
+        profiles: profileData
       }));
 
       setReviews(reviewsWithProfiles);
@@ -570,7 +571,7 @@ const ProfilePage = () => {
                                   )}
                                   {review.profiles?.name && (
                                     <p className="text-sm text-white/80 font-poppins mt-1">
-                                      Por: {review.profiles.name}
+                                      Valoración tuya en paragenteselecta.com
                                     </p>
                                   )}
                                 </div>
@@ -617,7 +618,7 @@ const ProfilePage = () => {
               ) : (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
-                    Todavía no hay valoraciones de la comunidad en paragenteselecta.com.
+                    Aún no has dejado valoraciones en paragenteselecta.com.
                   </CardContent>
                 </Card>
               )}
