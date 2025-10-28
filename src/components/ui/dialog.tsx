@@ -178,8 +178,9 @@ const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
           onClick?.(e as any);
           if (!(e as any).defaultPrevented) ctx?.setOpen(false);
         }}
+        style={{ position: 'fixed', zIndex: 9998 }}
         className={cn(
-          "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "inset-0 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           className,
         )}
         {...props}
@@ -200,27 +201,33 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ classNam
 
   useEffect(() => {
     if (ctx?.open) {
-      setScrollY(window.scrollY || document.documentElement.scrollTop || 0);
+      // Capturar la posición de scroll ACTUAL cuando se abre el modal
+      const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
+      setScrollY(currentScrollY);
     }
   }, [ctx?.open]);
 
   if (!ctx || !ctx.open) return null;
 
+  // Calcular la posición para centrar en la ventana visible actual
+  const viewportCenter = scrollY + (window.innerHeight / 2);
+
   return (
     <DialogPortal>
-      <DialogOverlay data-state="open" />
+      <DialogOverlay data-state="open" style={{ position: 'fixed' }} />
       <div
         role="dialog"
         aria-modal="true"
         ref={ref}
         style={{
           position: 'absolute',
-          top: `${scrollY + window.innerHeight / 2}px`,
+          top: `${viewportCenter}px`,
           left: '50%',
           transform: 'translate(-50%, -50%)',
+          zIndex: 9999,
         }}
         className={cn(
-          "z-50 grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+          "grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
