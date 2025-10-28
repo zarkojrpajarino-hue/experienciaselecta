@@ -50,6 +50,14 @@ const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, child
 
   const value = useMemo(() => ({ open: actualOpen, setOpen }), [actualOpen, setOpen]);
 
+  // Lock body scroll when any Dialog is open
+  useEffect(() => {
+    if (!actualOpen || typeof document === 'undefined') return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, [actualOpen]);
+
   // Close on Escape key
   useEffect(() => {
     if (!actualOpen) return;
