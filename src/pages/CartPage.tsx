@@ -179,6 +179,8 @@ const CartPage = () => {
                                 <img 
                                   src={item.imagen} 
                                   alt={item.nombre}
+                                  loading="lazy"
+                                  decoding="async"
                                   className="w-full h-auto object-cover rounded-2xl"
                                 />
                               </div>
@@ -282,15 +284,17 @@ const CartPage = () => {
                           Gastos de envío calculados en el checkout
                         </p>
 
-                        <Button
-                          onClick={() => {
-                            setCheckoutItems(giftItems);
-                            handleCheckout(true, giftItems);
-                          }}
-                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                        >
-                          Pagar regalos
-                        </Button>
+                        {!hasBothTypes && (
+                          <Button
+                            onClick={() => {
+                              setCheckoutItems(giftItems);
+                              handleCheckout(true, giftItems);
+                            }}
+                            className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                          >
+                            Pagar regalos
+                          </Button>
+                        )}
 
                         <p className="text-xs text-gray-500 text-center">
                           Pago seguro con Stripe
@@ -341,6 +345,8 @@ const CartPage = () => {
                                 <img 
                                   src={item.imagen} 
                                   alt={item.nombre}
+                                  loading="lazy"
+                                  decoding="async"
                                   className="w-full h-auto object-cover rounded-2xl"
                                 />
                               </div>
@@ -444,15 +450,17 @@ const CartPage = () => {
                           Gastos de envío calculados en el checkout
                         </p>
 
-                        <Button
-                          onClick={() => {
-                            setCheckoutItems(personalItems);
-                            handleCheckout(false, personalItems);
-                          }}
-                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                        >
-                          Pagar
-                        </Button>
+                        {!hasBothTypes && (
+                          <Button
+                            onClick={() => {
+                              setCheckoutItems(personalItems);
+                              handleCheckout(false, personalItems);
+                            }}
+                            className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                          >
+                            Pagar
+                          </Button>
+                        )}
 
                         <p className="text-xs text-gray-500 text-center">
                           Pago seguro con Stripe

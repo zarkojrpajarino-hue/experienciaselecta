@@ -1527,8 +1527,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             )}
 
             <Button type="submit" className="w-full" size="lg">
-              {isGiftMode ? '🎁' : <Truck className="w-4 h-4 mr-2" />}
-              Continuar al pago
+              {isGiftMode || isMixedMode ? (
+                <>Continuar al pago ({totalAmount.toFixed(2)}€)</>
+              ) : (
+                <>
+                  <Truck className="w-4 h-4 mr-2" />
+                  Continuar al pago ({totalAmount.toFixed(2)}€)
+                </>
+              )}
             </Button>
           </form>
         )}
