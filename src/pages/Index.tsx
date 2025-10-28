@@ -370,13 +370,15 @@ const Index = () => {
         const hasClosedAuthModal = sessionStorage.getItem('hasClosedAuthModal');
         const isReturningFromOAuth = window.location.hash.includes('access_token') || window.location.search.includes('code=');
         
-        if (!hasClosedAuthModal && !isReturningFromOAuth) {
-          setTimeout(() => {
-            if (mounted) {
-              setShowAuthModal(true);
-            }
-          }, 1000);
-        }
+        // Ya no mostramos el modal de login automáticamente en la home
+        // Se abrirá solo bajo acción del usuario (Navbar) o cuando el checkout lo requiera
+        // if (!hasClosedAuthModal && !isReturningFromOAuth) {
+        //   setTimeout(() => {
+        //     if (mounted) {
+        //       setShowAuthModal(true);
+        //     }
+        //   }, 1000);
+        // }
       }
     };
     checkAuth();
