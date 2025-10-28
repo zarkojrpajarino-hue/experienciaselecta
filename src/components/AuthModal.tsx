@@ -127,117 +127,119 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold">
-            Accede a tu cuenta
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="inset-0 left-0 top-0 translate-x-0 translate-y-0 w-screen h-screen max-w-none rounded-none p-4 sm:p-8 z-[100] overflow-y-auto flex items-center justify-center">
+        <div className="w-full max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl font-semibold">
+              Accede a tu cuenta
+            </DialogTitle>
+          </DialogHeader>
 
-        <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-lg">Inicia sesión</CardTitle>
-            <CardDescription>
-              {showCodeInput ? "Introduce el código que te enviamos" : "Te enviaremos un código de verificación a tu email"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              variant="ghost"
-              className="w-full !bg-transparent border-none text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors"
-              onClick={handleGoogleSignIn}
-              disabled={isLoading}
-              type="button"
-            >
-              <Mail className="w-4 h-4 mr-2" />
-              Continuar con Google
-            </Button>
-            
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+          <Card>
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-lg">Inicia sesión</CardTitle>
+              <CardDescription>
+                {showCodeInput ? "Introduce el código que te enviamos" : "Te enviaremos un código de verificación a tu email"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button
+                variant="ghost"
+                className="w-full !bg-transparent border-none text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors"
+                onClick={handleGoogleSignIn}
+                disabled={isLoading}
+                type="button"
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                Continuar con Google
+              </Button>
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    O continuar con email
+                  </span>
+                </div>
               </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-background px-2 text-muted-foreground">
-                  O continuar con email
-                </span>
-              </div>
-            </div>
 
-            {!showCodeInput ? (
-              <form onSubmit={handleSendCode} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              {!showCodeInput ? (
+                <form onSubmit={handleSendCode} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="tu@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-9"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
+                        Enviando código...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowRight className="w-4 h-4 mr-2" />
+                        Enviar código
+                      </>
+                    )}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyCode} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="code">Código de verificación</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="tu@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-9"
+                      id="code"
+                      type="text"
+                      placeholder="123456"
+                      value={verificationCode}
+                      onChange={(e) => setVerificationCode(e.target.value)}
                       autoComplete="off"
                       required
                     />
                   </div>
-                </div>
-                <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
-                      Enviando código...
-                    </>
-                  ) : (
-                    <>
-                      <ArrowRight className="w-4 h-4 mr-2" />
-                      Enviar código
-                    </>
-                  )}
-                </Button>
-              </form>
-            ) : (
-              <form onSubmit={handleVerifyCode} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="code">Código de verificación</Label>
-                  <Input
-                    id="code"
-                    type="text"
-                    placeholder="123456"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                    autoComplete="off"
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
-                      Verificando...
-                    </>
-                  ) : (
-                    <>
-                      <ArrowRight className="w-4 h-4 mr-2" />
-                      Verificar código
-                    </>
-                  )}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="ghost"
-                  onClick={() => {
-                    setShowCodeInput(false);
-                    setVerificationCode("");
-                  }}
-                  className="w-full text-sm"
-                >
-                  Volver a introducir email
-                </Button>
-              </form>
-            )}
-          </CardContent>
-        </Card>
+                  <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
+                        Verificando...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowRight className="w-4 h-4 mr-2" />
+                        Verificar código
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="ghost"
+                    onClick={() => {
+                      setShowCodeInput(false);
+                      setVerificationCode("");
+                    }}
+                    className="w-full text-sm"
+                  >
+                    Volver a introducir email
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </DialogContent>
     </Dialog>
   );
