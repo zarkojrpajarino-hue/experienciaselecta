@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -108,6 +108,16 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Callback optimizado para abrir imagen
+  const handleOpenImage = useCallback((imageSrc: string) => {
+    setSelectedImage(imageSrc);
+  }, []);
+  
+  // Callback optimizado para cerrar imagen
+  const handleCloseImage = useCallback(() => {
+    setSelectedImage(null);
+  }, []);
+  
   // Detectar si estamos en la página de regalo
   const isGiftCatalog = location.pathname === '/cestas';
 
@@ -158,7 +168,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   }, [initialBasketId, categoria, showGroupSize]);
 
   // Handle card toggle and reset collapsibles when closed
-  const handleCardToggle = (cardId: number) => {
+  const handleCardToggle = useCallback((cardId: number) => {
     const newOpenCard = openCard === cardId ? null : cardId;
     setOpenCard(newOpenCard);
     
@@ -180,12 +190,12 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         }
       }, 100);
     }
-  };
+  }, [openCard]);
 
   // Local cart for checkout modal compatibility
   const [cart, setCart] = useState<Basket[]>([]);
 
-  const handleAddToCart = (basket: Basket) => {
+  const handleAddToCart = useCallback((basket: Basket) => {
     // Add to global cart with isGift flag if from gift catalog
     addToGlobalCart({
       id: basket.id,
@@ -222,7 +232,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         behavior: "smooth"
       });
     }
-  };
+  }, [cart, isGiftCatalog, addToGlobalCart]);
 
   const getLocalTotalAmount = () => {
     return cart.reduce((total, item) => total + (item.precio * (item.quantity || 1)), 0);
@@ -1246,17 +1256,18 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               {/* Nuevo layout aplicado a todas las cestas cuando están expandidas */}
               {isCardOpen ? (
                 // NUEVO LAYOUT expandido: imagen centrada, coste centrado, info alrededor
-                <div className="relative w-full px-4 mt-2 bg-black rounded-lg py-6">
+                <div className="relative w-full px-4 mt-2 bg-white border-2 border-gold/30 rounded-lg py-6 shadow-lg">
                   <div className="grid grid-cols-2 gap-4">
                     {/* Top Left: Título, Descripción y Maridaje */}
                   <div className="col-span-1">
                     <div className="flex items-start gap-1 mb-1 relative">
-                      <h3 className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-white whitespace-nowrap">
+                      <h3 className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-black whitespace-nowrap">
                         {basket.nombre}
                       </h3>
                       <button 
                         onClick={() => handleCardToggle(basket.id)}
-                        className="text-gold hover:opacity-70 transition-opacity"
+                        className="text-gold hover:opacity-70 transition-opacity hover:scale-110"
+                        aria-label="Cerrar tarjeta"
                       >
                         <X className="h-4 w-4 sm:h-5 sm:w-5" />
                       </button>
@@ -1268,7 +1279,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                         </Badge>
                       )}
                       
-                      <p className="text-[10px] sm:text-xs leading-tight font-bold text-white basket-descripcion mb-2 whitespace-nowrap">
+                      <p className="text-[10px] sm:text-xs leading-tight font-bold text-black/80 basket-descripcion mb-2 whitespace-nowrap">
                         {basket.descripcion}
                       </p>
                     </div>
@@ -1281,7 +1292,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto"
                         >
                           <span className="font-bold text-xs sm:text-sm text-gold">Productos incluidos</span>
-                          <span className="text-white">
+                          <span className="text-black">
                             {isProductsOpen ? <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" /> : <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />}
                           </span>
                         </button>
@@ -1301,7 +1312,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     );
                                   })
                                    .map((producto, idx) => (
-                                     <p key={idx} className="text-[10px] sm:text-xs font-bold text-white basket-producto-text">
+                                     <p key={idx} className="text-[10px] sm:text-xs font-bold text-black/80 basket-producto-text">
                                        • {producto}
                                      </p>
                                   ))
@@ -1322,7 +1333,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     );
                                   })
                                   .map((producto, idx) => (
-                                     <p key={idx} className="text-[10px] sm:text-xs font-bold text-white basket-producto-text">
+                                     <p key={idx} className="text-[10px] sm:text-xs font-bold text-black/80 basket-producto-text">
                                        • {producto}
                                      </p>
                                   ))
@@ -1366,8 +1377,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     {/* Center: Imagen centrada */}
                     <div className="col-span-2 flex flex-col items-center my-2 gap-2">
                       <div 
-                        className="relative w-32 h-24 sm:w-40 sm:h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300"
-                        onClick={() => setSelectedImage(basket.imagen)}
+                        className="relative w-32 h-24 sm:w-40 sm:h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
+                        onClick={() => handleOpenImage(basket.imagen)}
                       >
                   <img
                     src={basket.imagen}
@@ -1392,7 +1403,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           onOpenChange={() => setOpenIdeal(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
                         >
                           <CollapsibleTrigger asChild>
-                            <button className="w-full flex items-center justify-between gap-2 text-white hover:opacity-80 transition-opacity py-1 px-3 sm:py-2 sm:px-4 rounded-lg hover:bg-white/10">
+                            <button className="w-full flex items-center justify-between gap-2 text-black hover:opacity-80 transition-opacity py-1 px-3 sm:py-2 sm:px-4 rounded-lg hover:bg-gold/10 border border-gold/30">
                               <span className="text-xs sm:text-sm font-bold lowercase first-letter:capitalize">
                                 coste por persona.
                               </span>
@@ -1407,7 +1418,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                               <p className="text-sm sm:text-base font-bold text-center">
                                 {basket.costePersona.split(/(\([^)]+\))/).map((part, index) => {
                                   if (part.match(/\([^)]+\)/)) {
-                                    return <span key={index} className="text-white">{part}</span>;
+                                    return <span key={index} className="text-black/70">{part}</span>;
                                   } else if (part.trim()) {
                                     return <span key={index} className="text-gold font-bold text-base sm:text-lg">{part}</span>;
                                   }
@@ -1433,10 +1444,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     className={`flex-shrink-0 w-24 h-24 md:w-auto md:h-auto ${index % 2 === 1 ? 'md:col-start-2' : ''}`}
                   >
                     <div 
-                      className={`relative w-full overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300 ${
+                      className={`relative w-full overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300 hover:scale-105 ${
                         isCardOpen ? 'h-24 md:h-48' : 'h-24 md:h-64'
                       }`}
-                      onClick={() => setSelectedImage(basket.imagen)}
+                      onClick={() => handleOpenImage(basket.imagen)}
                     >
                       <img 
                         src={basket.imagen}
@@ -1631,25 +1642,29 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
 
       {/* Image Dialog */}
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
+      <Dialog open={!!selectedImage} onOpenChange={(open) => !open && handleCloseImage()}>
+        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-0 shadow-none rounded-3xl overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de cesta</DialogTitle>
           <DialogDescription className="sr-only">
             Imagen ampliada de la cesta seleccionada
           </DialogDescription>
           <Button
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCloseImage();
+            }}
+            className="absolute top-2 right-2 z-[60] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110"
             size="icon"
+            aria-label="Cerrar imagen"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6" />
           </Button>
           {selectedImage && (
-            <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white">
+            <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white p-2">
               <img 
                 src={selectedImage} 
                 alt="Cesta completa"
-                className="w-full h-auto max-h-[80vh] object-contain"
+                className="w-full h-auto max-h-[85vh] object-contain rounded-xl"
                 loading="eager"
                 decoding="async"
               />
