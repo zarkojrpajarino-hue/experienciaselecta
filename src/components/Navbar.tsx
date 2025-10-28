@@ -14,6 +14,7 @@ import headerBg from "@/assets/iberian-products-background.jpg";
 import dropdownBg from "@/assets/jamon-iberico-traditional.jpg";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hasRevealed, setHasRevealed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCartPreview, setShowCartPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -148,24 +149,19 @@ const Navbar = () => {
     const handleScroll = throttle(() => {
       const top = getScrollTop();
       const scrolled = top > THRESHOLD;
-      setIsScrolled(scrolled);
-      console.debug('[Navbar] scrollTop:', top, 'isScrolled:', scrolled);
+      if (scrolled && !hasRevealed) setHasRevealed(true);
+      setIsScrolled(scrolled || hasRevealed);
     }, 100);
 
-    // Helper to bind multiple events
     const bind = (target: any, event: string) => target.addEventListener(event, handleScroll, { passive: true });
     const unbind = (target: any, event: string) => target.removeEventListener(event, handleScroll);
 
-    // Listen on multiple events and targets for maximum fiabilidad
     ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
       bind(window, evt);
       bind(document, evt);
     });
 
-    // Re-evaluate on visibility change (volver a la pestaña)
     document.addEventListener('visibilitychange', handleScroll);
-
-    // Nota: No inicializamos isScrolled al montar para evitar que aparezca sin scroll
 
     return () => {
       ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
@@ -174,7 +170,14 @@ const Navbar = () => {
       });
       document.removeEventListener('visibilitychange', handleScroll);
     };
-  }, []);
+  }, [hasRevealed]);
+  // Reset reveal when entering home (hide until scroll again)
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setHasRevealed(false);
+      setIsScrolled(false);
+    }
+  }, [location.pathname]);
   const handleNavigation = useCallback((item: {
     label: string;
     id: string;
@@ -253,8 +256,8 @@ const Navbar = () => {
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
   }, [handleNavigation, location.hash]);
-  // Only show navbar on homepage after scrolling
-  const shouldShowNavbar = location.pathname === '/' && isScrolled;
+  // Mostrar navbar en la home solo cuando ya se ha revelado por scroll
+  const shouldShowNavbar = location.pathname === '/' && (isScrolled || hasRevealed);
 
   return <motion.nav initial={{
     y: -100,
