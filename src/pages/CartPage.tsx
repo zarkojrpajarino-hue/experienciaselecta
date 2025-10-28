@@ -266,7 +266,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => { setCheckoutItems(giftItems); handleCheckout(true, giftItems); }}
+                          onClick={() => openCheckout(giftSummaryRef, true, giftItems)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
@@ -524,10 +524,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => {
-                            setCheckoutItems(cart);
-                            handleCheckout(giftItems.length > 0, cart);
-                          }}
+                          onClick={() => openCheckout(combinedSummaryRef, giftItems.length > 0, cart)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Continuar al pago ({getTotalAmount().toFixed(2)}€)
