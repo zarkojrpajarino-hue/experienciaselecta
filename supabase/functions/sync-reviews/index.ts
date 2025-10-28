@@ -1,0 +1,146 @@
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    console.log('Starting reviews synchronization...');
+
+    // Cliente para este proyecto (experienciaselecta)
+    const localSupabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Cliente para paragenteselecta.com
+    const remoteSupabase = createClient(
+      'https://qktosxxluytztxhhupya.supabase.co',
+      Deno.env.get('PARAGENTESELECTA_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    console.log('Fetching reviews from paragenteselecta.com...');
+
+    // Obtener todas las reviews de paragenteselecta
+    const { data: remoteReviews, error: fetchError } = await remoteSupabase
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (fetchError) {
+      console.error('Error fetching remote reviews:', fetchError);
+      throw new Error(`Failed to fetch reviews: ${fetchError.message}`);
+    }
+
+    if (!remoteReviews || remoteReviews.length === 0) {
+      console.log('No reviews found in paragenteselecta.com');
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'No reviews to sync',
+          synced: 0 
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
+
+    console.log(`Found ${remoteReviews.length} reviews from paragenteselecta.com`);
+
+    // Para cada review remota, verificar si ya existe localmente
+    let syncedCount = 0;
+    let skippedCount = 0;
+    let errorCount = 0;
+
+    for (const review of remoteReviews) {
+      // Verificar si la review ya existe en este proyecto
+      const { data: existingReview } = await localSupabase
+        .from('reviews')
+        .select('id')
+        .eq('id', review.id)
+        .maybeSingle();
+
+      if (existingReview) {
+        // Ya existe, actualizar si es necesario
+        const { error: updateError } = await localSupabase
+          .from('reviews')
+          .update({
+            rating: review.rating,
+            comment: review.comment,
+            basket_name: review.basket_name,
+            source_site: 'paragenteselecta',
+            updated_at: review.updated_at
+          })
+          .eq('id', review.id);
+
+        if (updateError) {
+          console.error(`Error updating review ${review.id}:`, updateError);
+          errorCount++;
+        } else {
+          skippedCount++;
+        }
+      } else {
+        // No existe, insertar
+        const { error: insertError } = await localSupabase
+          .from('reviews')
+          .insert({
+            id: review.id,
+            user_id: review.user_id,
+            order_id: review.order_id,
+            basket_name: review.basket_name,
+            rating: review.rating,
+            comment: review.comment,
+            source_site: 'paragenteselecta',
+            created_at: review.created_at,
+            updated_at: review.updated_at
+          });
+
+        if (insertError) {
+          console.error(`Error inserting review ${review.id}:`, insertError);
+          errorCount++;
+        } else {
+          syncedCount++;
+        }
+      }
+    }
+
+    console.log(`Sync completed: ${syncedCount} new, ${skippedCount} updated, ${errorCount} errors`);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        message: 'Reviews synchronized successfully',
+        synced: syncedCount,
+        updated: skippedCount,
+        errors: errorCount,
+        total: remoteReviews.length
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
+    );
+
+  } catch (error: any) {
+    console.error('Error in sync-reviews:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: error?.message || 'Unknown error occurred',
+        details: error?.stack
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      }
+    );
+  }
+});
