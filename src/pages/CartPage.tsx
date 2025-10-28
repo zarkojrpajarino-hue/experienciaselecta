@@ -252,17 +252,15 @@ const CartPage = () => {
                           Gastos de envío calculados en el checkout
                         </p>
 
-                        {!hasBothTypes && (
-                          <Button
-                            onClick={() => {
-                              setCheckoutItems(giftItems);
-                              handleCheckout(true, giftItems);
-                            }}
-                            className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                          >
-                            Continuar al pago ({getGiftTotal().toFixed(2)}€)
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => {
+                            setCheckoutItems(giftItems);
+                            handleCheckout(true, giftItems);
+                          }}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
+                        </Button>
 
                         <p className="text-xs text-gray-500 text-center">
                           Pago seguro con Stripe
@@ -418,17 +416,15 @@ const CartPage = () => {
                           Gastos de envío calculados en el checkout
                         </p>
 
-                        {!hasBothTypes && (
-                          <Button
-                            onClick={() => {
-                              setCheckoutItems(personalItems);
-                              handleCheckout(false, personalItems);
-                            }}
-                            className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                          >
-                            Continuar al pago ({getPersonalTotal().toFixed(2)}€)
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => {
+                            setCheckoutItems(personalItems);
+                            handleCheckout(false, personalItems);
+                          }}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
+                        </Button>
 
                         <p className="text-xs text-gray-500 text-center">
                           Pago seguro con Stripe

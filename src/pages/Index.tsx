@@ -366,18 +366,7 @@ const Index = () => {
       } else {
         // Usuario NO tiene sesión
         setIsAuthenticated(false);
-
-        // Mostrar modal si no lo ha cerrado antes en esta sesión Y no está en medio de OAuth
-        const hasClosedAuthModal = sessionStorage.getItem('hasClosedAuthModal');
-        const isReturningFromOAuth = window.location.hash.includes('access_token') || window.location.search.includes('code=');
-        
-        if (!hasClosedAuthModal && !isReturningFromOAuth) {
-          setTimeout(() => {
-            if (mounted) {
-              setShowAuthModal(true);
-            }
-          }, 1000);
-        }
+        // NO mostrar el modal automáticamente - el usuario puede elegir registrarse cuando quiera
       }
     };
     checkAuth();
