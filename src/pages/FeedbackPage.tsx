@@ -6,7 +6,7 @@ import { Star, Send, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
+
 
 const feedbackSchema = z.object({
   generalRating: z.number().min(1, "Por favor selecciona una puntuación").max(5),
@@ -17,7 +17,7 @@ const feedbackSchema = z.object({
 });
 
 const FeedbackPage = () => {
-  const navigate = useNavigate();
+  
   const [generalRating, setGeneralRating] = useState(0);
   const [hoveredGeneralRating, setHoveredGeneralRating] = useState(0);
   const [understoodPurpose, setUnderstoodPurpose] = useState<boolean | null>(null);
@@ -84,7 +84,7 @@ const FeedbackPage = () => {
       setSuggestion("");
       
       setTimeout(() => {
-        navigate('/');
+        window.location.assign('/');
       }, 1500);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -114,7 +114,7 @@ const FeedbackPage = () => {
       <div className="max-w-2xl mx-auto">
         {/* Back button in top left */}
         <button
-          onClick={() => navigate('/')}
+          onClick={() => window.location.assign('/')}
           className="flex items-center gap-2 text-black font-poppins font-bold text-base hover:opacity-70 transition-opacity mb-8"
         >
           <ArrowLeft className="w-5 h-5" />
