@@ -798,7 +798,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor={`recipientEmail-${index}`}>Email *</Label>
+                          <Label htmlFor={`recipientEmail-${index}`}>Email destinatario *</Label>
                           <Input
                             id={`recipientEmail-${index}`}
                             type="email"
@@ -813,7 +813,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`recipientPhone-${index}`}>Número</Label>
+                          <Label htmlFor={`recipientPhone-${index}`}>Número destinatario</Label>
                           <Input
                             id={`recipientPhone-${index}`}
                             type="tel"
@@ -1059,26 +1059,24 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
-                        <Input
-                          id={`recipientName-${index}`}
-                          value={recipient.recipientName}
-                          onChange={(e) => {
-                            const newRecipients = [...giftData.recipients];
-                            newRecipients[index].recipientName = e.target.value;
-                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                          }}
-                          placeholder="¿A quién se lo regalas?"
-                          required
-                        />
-                      </div>
+                    <div>
+                      <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
+                      <Input
+                        id={`recipientName-${index}`}
+                        value={recipient.recipientName}
+                        onChange={(e) => {
+                          const newRecipients = [...giftData.recipients];
+                          newRecipients[index].recipientName = e.target.value;
+                          setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                        }}
+                        placeholder="¿A quién se lo regalas?"
+                        required
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Label>Email *</Label>
+                        <Label>Email destinatario *</Label>
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button 
@@ -1148,7 +1146,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`recipientPhone-${index}`}>Número</Label>
+                          <Label htmlFor={`recipientPhone-${index}`}>Número destinatario</Label>
                           <Input
                             id={`recipientPhone-${index}`}
                             type="tel"
