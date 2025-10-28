@@ -285,14 +285,7 @@ const ProfilePage = () => {
         console.error("Error loading reviews:", reviewsError);
       }
 
-      // Get user profile for the current user
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("user_id, name")
-        .eq("user_id", userId)
-        .single();
-
-      // Map profile to reviews
+      // Map profile to reviews using the profile data already loaded
       const reviewsWithProfiles = (reviewsData || []).map(review => ({
         ...review,
         profiles: profileData
