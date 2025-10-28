@@ -30,6 +30,7 @@ const CartPage = () => {
   // Separar cestas de regalo y cestas personales
   const giftItems = cart.filter(item => item.isGift === true);
   const personalItems = cart.filter(item => !item.isGift);
+  const hasBothTypes = giftItems.length > 0 && personalItems.length > 0;
 
   const getGiftTotal = () => {
     return giftItems.reduce((total, item) => total + (item.precio * item.quantity), 0);
@@ -37,6 +38,10 @@ const CartPage = () => {
 
   const getPersonalTotal = () => {
     return personalItems.reduce((total, item) => total + (item.precio * item.quantity), 0);
+  };
+
+  const getTotalAmount = () => {
+    return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
   };
 
   const handleCheckout = (giftMode: boolean = false, items: typeof cart) => {
@@ -104,6 +109,38 @@ const CartPage = () => {
           </Button>
 
           <div className="space-y-8">
+            {/* Botón para pagar todo junto - solo si hay ambos tipos */}
+            {hasBothTypes && (
+              <Card className="bg-gradient-to-r from-gold/10 to-gold/5 border-gold/20">
+                <CardContent className="p-6">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-poppins font-bold text-black mb-2">
+                        💰 Pagar todo junto
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Completa el pago de tus cestas personales y regalos en una sola transacción
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="text-2xl font-poppins font-bold text-gold">
+                        {getTotalAmount().toFixed(2)}€
+                      </div>
+                      <Button
+                        onClick={() => {
+                          setCheckoutItems(cart);
+                          handleCheckout(giftItems.length > 0, cart);
+                        }}
+                        className="bg-gold hover:bg-gold/90 text-black font-poppins font-bold px-8"
+                      >
+                        Proceder al pago completo
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Cestas para Regalar Section */}
             {giftItems.length > 0 && (
               <div>
@@ -447,6 +484,8 @@ const CartPage = () => {
         isGiftMode={isGiftMode}
         onClearCart={clearCart}
         onRemoveItems={removeMultipleItems}
+        giftItemsCount={checkoutItems.filter(item => item.isGift).length}
+        personalItemsCount={checkoutItems.filter(item => !item.isGift).length}
       />
 
       {/* Imagen Expandida Modal */}

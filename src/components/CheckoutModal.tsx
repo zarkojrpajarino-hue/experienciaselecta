@@ -38,6 +38,8 @@ interface CheckoutModalProps {
   isGiftMode?: boolean;
   onClearCart?: () => void;
   onRemoveItems?: (itemIds: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => void;
+  giftItemsCount?: number; // Number of items that are gifts
+  personalItemsCount?: number; // Number of items that are personal
 }
 
 interface CustomerData {
@@ -323,8 +325,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   totalAmount,
   isGiftMode = false,
   onClearCart,
-  onRemoveItems
+  onRemoveItems,
+  giftItemsCount = 0,
+  personalItemsCount = 0
 }) => {
+  // Determine if this is a mixed checkout (both gifts and personal items)
+  const isMixedMode = giftItemsCount > 0 && personalItemsCount > 0;
   // Expand basket items so each quantity becomes individual items with unique identifiers
   const expandedBasketItems = React.useMemo(() => {
     const expanded: (BasketItem & { uniqueId: string })[] = [];
@@ -463,8 +469,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate that at least one basket is assigned in gift mode
-    if (isGiftMode) {
+    // Validate that at least one basket is assigned in gift mode or mixed mode
+    if (isGiftMode || isMixedMode) {
       const assignedBaskets = giftData.recipients.flatMap(r => r.basketIds);
       if (assignedBaskets.length === 0) {
         toast({
@@ -474,13 +480,29 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         });
         return;
       }
+      
+      // In mixed mode, verify all gift items are assigned
+      if (isMixedMode && assignedBaskets.length < giftItemsCount) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: `Debes asignar todas las ${giftItemsCount} cestas de regalo a destinatarios`,
+        });
+        return;
+      }
     }
     
     // Validate based on mode
     try {
-      if (isGiftMode) {
+      if (isGiftMode && !isMixedMode) {
+        // Pure gift mode - only validate gift data
         giftSchema.parse(giftData);
+      } else if (isMixedMode) {
+        // Mixed mode - validate both gift data and customer data
+        giftSchema.parse(giftData);
+        customerSchema.parse(customerData);
       } else {
+        // Personal mode - only validate customer data
         customerSchema.parse(customerData);
       }
     } catch (error) {
@@ -494,7 +516,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     }
 
-    // Save/update profile data for future use (only for non-gift purchases)
+    // Save/update profile data for future use (for mixed mode or personal purchases)
     if (user && !isGiftMode) {
       await supabase
         .from('profiles')
@@ -605,11 +627,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {isGiftMode ? '🎁' : <ShoppingCart className="w-5 h-5" />}
-            {step === 'auth' && (isGiftMode ? 'Acceso requerido para regalar' : 'Acceso requerido')}
-            {step === 'customer' && (isGiftMode ? 'Información del regalo' : 'Información de envío')}
+            {(isGiftMode || isMixedMode) ? '🎁' : <ShoppingCart className="w-5 h-5" />}
+            {step === 'auth' && ((isGiftMode || isMixedMode) ? 'Acceso requerido para regalar' : 'Acceso requerido')}
+            {step === 'customer' && (isMixedMode ? 'Información de regalos y envío' : isGiftMode ? 'Información del regalo' : 'Información de envío')}
             {step === 'payment' && 'Información de pago'}
-            {step === 'success' && (isGiftMode ? '¡Regalo enviado!' : '¡Pedido confirmado!')}
+            {step === 'success' && ((isGiftMode || isMixedMode) ? '¡Regalo enviado!' : '¡Pedido confirmado!')}
           </DialogTitle>
         </DialogHeader>
 
@@ -696,7 +718,268 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Customer Information Step */}
         {step === 'customer' && (
           <form onSubmit={handleCustomerSubmit} className="space-y-4">
-            {isGiftMode ? (
+            {isMixedMode ? (
+              /* Mixed Mode - Both Personal and Gift Items */
+              <>
+                <div className="p-4 bg-gradient-to-r from-gold/10 to-gold/5 rounded-lg mb-4">
+                  <p className="text-sm font-medium">
+                    🎁 Tienes {giftItemsCount} cesta(s) para regalar y {personalItemsCount} cesta(s) personales
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Primero completa la información de los regalos, luego tus datos de envío personal
+                  </p>
+                </div>
+
+                {/* Gift Section */}
+                <div className="border-2 border-gold/20 rounded-lg p-4 bg-gold/5">
+                  <h3 className="text-lg font-poppins font-bold mb-4 flex items-center gap-2">
+                    🎁 Información de los regalos ({giftItemsCount} cestas)
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <Label htmlFor="senderName">Tu nombre *</Label>
+                      <Input
+                        id="senderName"
+                        value={giftData.senderName}
+                        onChange={(e) => setGiftData(prev => ({ ...prev, senderName: e.target.value }))}
+                        placeholder="¿Quién regala?"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="senderEmail">Tu email *</Label>
+                      <Input
+                        id="senderEmail"
+                        type="email"
+                        value={giftData.senderEmail}
+                        onChange={(e) => setGiftData(prev => ({ ...prev, senderEmail: e.target.value }))}
+                        placeholder="tu@email.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <Separator className="my-4" />
+
+                  {giftData.recipients.map((recipient, index) => (
+                    <div key={index} className="border rounded-lg p-4 space-y-4 mb-4 bg-white">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-medium">Destinatario {index + 1}</h4>
+                        {giftData.recipients.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const newRecipients = giftData.recipients.filter((_, i) => i !== index);
+                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                            }}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`recipientName-${index}`}>Nombre del destinatario *</Label>
+                          <Input
+                            id={`recipientName-${index}`}
+                            value={recipient.recipientName}
+                            onChange={(e) => {
+                              const newRecipients = [...giftData.recipients];
+                              newRecipients[index].recipientName = e.target.value;
+                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                            }}
+                            placeholder="¿A quién se lo regalas?"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor={`recipientEmail-${index}`}>Email del destinatario *</Label>
+                          <Input
+                            id={`recipientEmail-${index}`}
+                            type="email"
+                            value={recipient.recipientEmail}
+                            onChange={(e) => {
+                              const newRecipients = [...giftData.recipients];
+                              newRecipients[index].recipientEmail = e.target.value;
+                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                            }}
+                            placeholder="email@ejemplo.com"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor={`personalNote-${index}`}>Nota personal</Label>
+                        <Textarea
+                          id={`personalNote-${index}`}
+                          value={recipient.personalNote}
+                          onChange={(e) => {
+                            const newRecipients = [...giftData.recipients];
+                            newRecipients[index].personalNote = e.target.value;
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                          placeholder="Escribe una nota personal..."
+                          rows={2}
+                          maxLength={500}
+                        />
+                      </div>
+
+                      <div>
+                        <Label>Asignar cestas de regalo</Label>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
+                        </p>
+                        <div className="space-y-2">
+                          {expandedBasketItems.slice(0, giftItemsCount).map((item) => (
+                            <div key={item.uniqueId} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id={`basket-${item.uniqueId}-recipient-${index}`}
+                                checked={recipient.basketIds.includes(item.uniqueId)}
+                                onChange={(e) => {
+                                  const newRecipients = [...giftData.recipients];
+                                  if (e.target.checked) {
+                                    newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
+                                  } else {
+                                    newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
+                                  }
+                                  setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                }}
+                                className="rounded border-gray-300"
+                              />
+                              <label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="text-sm cursor-pointer">
+                                {item.name} - {item.price.toFixed(2)}€
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setGiftData(prev => ({
+                        ...prev,
+                        recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
+                      }));
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Añadir otro destinatario
+                  </Button>
+                </div>
+
+                <Separator className="my-6" />
+
+                {/* Personal Shipping Section */}
+                <div className="border-2 border-black/10 rounded-lg p-4">
+                  <h3 className="text-lg font-poppins font-bold mb-4 flex items-center gap-2">
+                    <Truck className="w-5 h-5" />
+                    Tu dirección de envío ({personalItemsCount} cestas personales)
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="name">Nombre completo *</Label>
+                      <Input
+                        id="name"
+                        value={customerData.name}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Tu nombre"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email">Email *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={customerData.email}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="tu@email.com"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="phone">Teléfono</Label>
+                      <Input
+                        id="phone"
+                        value={customerData.phone}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, phone: e.target.value }))}
+                        placeholder="+34 600 000 000"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="address_line1">Dirección *</Label>
+                      <Input
+                        id="address_line1"
+                        value={customerData.address_line1}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, address_line1: e.target.value }))}
+                        placeholder="Calle, número"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="address_line2">Dirección 2</Label>
+                      <Input
+                        id="address_line2"
+                        value={customerData.address_line2}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, address_line2: e.target.value }))}
+                        placeholder="Piso, puerta"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="city">Ciudad *</Label>
+                      <Input
+                        id="city"
+                        value={customerData.city}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, city: e.target.value }))}
+                        placeholder="Ciudad"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="postal_code">Código postal *</Label>
+                      <Input
+                        id="postal_code"
+                        value={customerData.postal_code}
+                        onChange={(e) => setCustomerData(prev => ({ ...prev, postal_code: e.target.value }))}
+                        placeholder="28001"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="country">País *</Label>
+                      <Select 
+                        value={customerData.country} 
+                        onValueChange={(value) => setCustomerData(prev => ({ ...prev, country: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona país" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="España">España</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                <Button type="submit" className="w-full" size="lg">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Continuar al pago
+                </Button>
+              </>
+            ) : isGiftMode ? (
               /* Gift Mode Fields */
               <>
                 <div className="p-4 bg-muted/50 rounded-lg mb-4">
@@ -1047,7 +1330,53 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {step === 'payment' && (
           <Elements stripe={stripePromise}>
             <div className="space-y-4">
-              {isGiftMode ? (
+              {isMixedMode ? (
+                /* Mixed Mode - Show both gift and personal info */
+                <>
+                  <div className="p-4 bg-gold/10 border-2 border-gold rounded-lg">
+                    <p className="text-center font-poppins font-bold text-black text-lg">
+                      🎁 Regalos ({giftItemsCount} cestas)
+                    </p>
+                    <div className="mt-3 text-sm text-muted-foreground space-y-2">
+                      <p><strong>De:</strong> {giftData.senderName} ({giftData.senderEmail})</p>
+                      <div className="space-y-1">
+                        <p><strong>Para:</strong></p>
+                          {giftData.recipients.map((recipient, index) => (
+                            <div key={index} className="ml-4">
+                              <p>• {recipient.recipientName} ({recipient.recipientEmail || recipient.recipientPhone})</p>
+                              {recipient.personalNote && (
+                                <p className="text-xs italic ml-2">Nota: "{recipient.personalNote.substring(0, 50)}{recipient.personalNote.length > 50 ? '...' : ''}"</p>
+                              )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <h3 className="font-medium mb-2 flex items-center gap-2">
+                      <Truck className="w-4 h-4" />
+                      Tu dirección de envío ({personalItemsCount} cestas)
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {customerData.name}<br />
+                      {customerData.address_line1}<br />
+                      {customerData.address_line2 && `${customerData.address_line2}\n`}
+                      {customerData.city}, {customerData.postal_code}<br />
+                      {customerData.country}
+                    </p>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStep('customer')}
+                    className="w-full"
+                  >
+                    Editar información
+                  </Button>
+                </>
+              ) : isGiftMode ? (
                 <div className="p-4 bg-gold/10 border-2 border-gold rounded-lg">
                   <p className="text-center font-poppins font-bold text-black text-lg">
                     🎁 Vas a regalar una cesta
@@ -1101,7 +1430,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 basketItems={basketItems}
                 totalAmount={totalAmount}
               onSuccess={handlePaymentSuccess}
-              isGiftMode={isGiftMode}
+              isGiftMode={isGiftMode || isMixedMode}
               giftData={giftData}
               expandedBasketItems={expandedBasketItems}
               />
@@ -1113,20 +1442,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {step === 'success' && (
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-              {isGiftMode ? <span className="text-4xl">🎁</span> : <Check className="w-8 h-8 text-green-600" />}
+              {(isGiftMode || isMixedMode) ? <span className="text-4xl">🎁</span> : <Check className="w-8 h-8 text-green-600" />}
             </div>
             <h3 className="text-xl font-semibold">
-              {isGiftMode ? '¡Regalo enviado!' : '¡Pedido confirmado!'}
+              {isMixedMode ? '¡Pedido confirmado!' : isGiftMode ? '¡Regalo enviado!' : '¡Pedido confirmado!'}
             </h3>
             <p className="text-muted-foreground">
-              {isGiftMode 
+              {isMixedMode
+                ? 'Tu pago ha sido procesado correctamente. Los regalos serán enviados a sus destinatarios y tus cestas personales a tu dirección.'
+                : isGiftMode 
                 ? 'Tu regalo ha sido enviado correctamente. El destinatario recibirá un email con los detalles de tu regalo.'
                 : 'Tu pago ha sido procesado correctamente. Recibirás un email de confirmación con todos los detalles de tu pedido.'
               }
             </p>
             <p className="text-sm text-muted-foreground">
-              {isGiftMode
-                ? 'La cesta será preparada con cariño y enviada a la dirección indicada.'
+              {(isGiftMode || isMixedMode)
+                ? 'Las cestas serán preparadas con cariño y enviadas a las direcciones indicadas.'
                 : 'Tu cesta será preparada con cariño y enviada a la dirección indicada.'
               }
             </p>
