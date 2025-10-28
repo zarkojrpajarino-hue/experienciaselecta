@@ -1289,10 +1289,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       <div className="w-full md:w-2/3">
                         <button 
                           onClick={() => setOpenProducts(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
-                          className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto"
+                          className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto bg-black/90 px-3 py-1.5 rounded-lg"
                         >
                           <span className="font-bold text-xs sm:text-sm text-gold">Productos incluidos</span>
-                          <span className="text-black">
+                          <span className="text-gold">
                             {isProductsOpen ? <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" /> : <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />}
                           </span>
                         </button>
