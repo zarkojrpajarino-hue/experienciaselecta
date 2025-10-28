@@ -53,32 +53,13 @@ const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, child
   useEffect(() => {
     if (!actualOpen || typeof document === 'undefined') return;
     const body = document.body;
-    const prev = {
-      overflow: body.style.overflow,
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-    };
-    const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-    // Lock scroll but preserve current viewport position
+    const prevOverflow = body.style.overflow;
+    
+    // Solo bloquear scroll, sin mover el body
     body.style.overflow = 'hidden';
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.left = '0';
-    body.style.right = '0';
-    body.style.width = '100%';
 
     return () => {
-      body.style.overflow = prev.overflow;
-      body.style.position = prev.position;
-      body.style.top = prev.top;
-      body.style.left = prev.left;
-      body.style.right = prev.right;
-      body.style.width = prev.width;
-      // Restore scroll position
-      window.scrollTo(0, scrollY);
+      body.style.overflow = prevOverflow;
     };
   }, [actualOpen]);
 
