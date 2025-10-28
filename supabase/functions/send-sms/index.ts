@@ -1,12 +1,15 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface SendSMSRequest {
-  to: string;
-  message: string;
-}
+const smsSchema = z.object({
+  to: z.string().trim().regex(/^\+[1-9]\d{1,14}$/, 'Invalid phone number format (must start with + and country code)'),
+  message: z.string().trim().min(1, 'Message cannot be empty').max(1600, 'Message too long (max 1600 characters)')
+});
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
@@ -15,14 +18,45 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { to, message }: SendSMSRequest = await req.json();
-
-    if (!to || !message) {
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
       return new Response(
-        JSON.stringify({ error: 'Phone number and message are required' }),
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    const requestData = await req.json();
+    const validation = smsSchema.safeParse(requestData);
+    
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input', 
+          details: validation.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    const { to, message } = validation.data;
 
     // Get Twilio credentials from environment variables
     const accountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
@@ -48,7 +82,7 @@ Deno.serve(async (req) => {
     // Create Basic Auth header
     const auth = btoa(`${accountSid}:${authToken}`);
 
-    console.log(`Sending SMS to ${to}: ${message.substring(0, 50)}...`);
+    console.log(`User ${user.id} sending SMS to ${to}: ${message.substring(0, 50)}...`);
 
     // Send SMS via Twilio
     const twilioResponse = await fetch(twilioUrl, {
