@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
-import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load pages for better performance
 import Index from "./pages/Index";
@@ -26,14 +25,10 @@ import AutoUpdater from "./components/AutoUpdater";
 
 // Loading component with GPU acceleration
 const PageLoader = () => (
-  <div className="min-h-screen bg-background flex flex-col gpu-accelerated">
-    <div className="w-full h-20 bg-muted/20">
-      <Skeleton className="h-full w-full" />
-    </div>
-    <div className="flex-1 container mx-auto px-4 py-8 space-y-4">
-      <Skeleton className="h-64 w-full rounded-lg" />
-      <Skeleton className="h-48 w-full rounded-lg" />
-      <Skeleton className="h-48 w-full rounded-lg" />
+  <div className="fixed inset-0 bg-background flex items-center justify-center gpu-accelerated z-50">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-gold/20 border-t-gold rounded-full animate-spin mx-auto mb-4" />
+      <p className="text-sm text-muted-foreground font-work-sans">Cargando...</p>
     </div>
   </div>
 );
@@ -59,25 +54,27 @@ const App = () => (
         <Sonner />
         <AutoUpdater />
         <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/perfil" element={<ProfilePage />} />
-              <Route path="/carrito" element={<CartPage />} />
-              <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
-              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-              <Route path="/cestas" element={<CestasPage />} />
-              <Route path="/experiencia" element={<ExperienciaPage />} />
-              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-              <Route path="/regalos" element={<RegalosPage />} />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <CookieBanner />
-          </Suspense>
+          <div className="min-h-screen bg-background gpu-accelerated">
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/perfil" element={<ProfilePage />} />
+                <Route path="/carrito" element={<CartPage />} />
+                <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
+                <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
+                <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+                <Route path="/cestas" element={<CestasPage />} />
+                <Route path="/experiencia" element={<ExperienciaPage />} />
+                <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
+                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+                <Route path="/regalos" element={<RegalosPage />} />
+                <Route path="/feedback" element={<FeedbackPage />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <CookieBanner />
+            </Suspense>
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </CartProvider>
