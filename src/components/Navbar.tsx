@@ -222,11 +222,11 @@ const Navbar = () => {
     handleNavigation(navItems[newIndex]);
   }, [handleNavigation, location.hash]);
   return <motion.nav initial={{
-    y: -100,
+    y: -20,
     opacity: 0
   }} animate={{
-    y: isScrolled ? 0 : -100,
-    opacity: isScrolled ? 1 : 0
+    y: 0,
+    opacity: 1
   }} transition={{
     duration: 0.3
   }} className="fixed top-0 left-0 right-0 z-50 shadow-lg" style={{
