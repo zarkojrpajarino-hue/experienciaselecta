@@ -781,21 +781,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         )}
                       </div>
 
+                      <div>
+                        <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
+                        <Input
+                          id={`recipientName-${index}`}
+                          value={recipient.recipientName}
+                          onChange={(e) => {
+                            const newRecipients = [...giftData.recipients];
+                            newRecipients[index].recipientName = e.target.value;
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                          placeholder="¿A quién se lo regalas?"
+                          required
+                        />
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
-                          <Input
-                            id={`recipientName-${index}`}
-                            value={recipient.recipientName}
-                            onChange={(e) => {
-                              const newRecipients = [...giftData.recipients];
-                              newRecipients[index].recipientName = e.target.value;
-                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                            }}
-                            placeholder="¿A quién se lo regalas?"
-                            required
-                          />
-                        </div>
                         <div>
                           <Label htmlFor={`recipientEmail-${index}`}>Email *</Label>
                           <Input
@@ -809,6 +810,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                             }}
                             placeholder="email@ejemplo.com"
                             required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor={`recipientPhone-${index}`}>Número</Label>
+                          <Input
+                            id={`recipientPhone-${index}`}
+                            type="tel"
+                            value={recipient.recipientPhone || ''}
+                            onChange={(e) => {
+                              const newRecipients = [...giftData.recipients];
+                              newRecipients[index].recipientPhone = e.target.value;
+                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                            }}
+                            placeholder="+34 600 000 000"
                           />
                         </div>
                       </div>
@@ -862,20 +877,31 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     </div>
                   ))}
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setGiftData(prev => ({
-                        ...prev,
-                        recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
-                      }));
-                    }}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Añadir otro destinatario
-                  </Button>
+                  {expandedBasketItems.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (giftData.recipients.length >= expandedBasketItems.length) {
+                          toast({
+                            variant: "destructive",
+                            title: "Límite alcanzado",
+                            description: "No puedes añadir más destinatarios que cestas disponibles",
+                          });
+                          return;
+                        }
+                        setGiftData(prev => ({
+                          ...prev,
+                          recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
+                        }));
+                      }}
+                      disabled={giftData.recipients.length >= expandedBasketItems.length}
+                      className="w-full"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Añadir otro destinatario
+                    </Button>
+                  )}
                 </div>
 
                 <Separator className="my-6" />
@@ -1122,7 +1148,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           />
                         </div>
                         <div>
-                          <Label htmlFor={`recipientPhone-${index}`}>o Número</Label>
+                          <Label htmlFor={`recipientPhone-${index}`}>Número</Label>
                           <Input
                             id={`recipientPhone-${index}`}
                             type="tel"
