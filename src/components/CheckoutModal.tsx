@@ -782,7 +782,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </div>
 
                       <div>
-                        <Label htmlFor={`recipientName-${index}`}>Nombre *</Label>
+                        <Label htmlFor={`recipientName-${index}`}>Nombre destinatario *</Label>
                         <Input
                           id={`recipientName-${index}`}
                           value={recipient.recipientName}
@@ -796,9 +796,68 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Text and info button above email/phone fields */}
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <p className="text-center text-sm font-bold text-muted-foreground">
+                          (solo uno de los dos obligatorio)
+                        </p>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              type="button"
+                              variant="ghost" 
+                              size="sm"
+                              className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                            >
+                              <span className="sr-only">Información sobre el proceso de regalo</span>
+                              <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="2" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                className="h-4 w-4"
+                              >
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4"/>
+                                <path d="M12 8h.01"/>
+                              </svg>
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
+                            <DialogDescription asChild>
+                              <div className="space-y-4 text-sm">
+                                <p className="font-bold">Puedes elegir entre email o móvil:</p>
+                                <ul className="space-y-3 list-disc pl-5">
+                                  <li>
+                                    <span className="font-bold">Por email:</span> El destinatario recibirá un correo con la información del regalo y un enlace para proporcionar su dirección de envío.
+                                  </li>
+                                  <li>
+                                    <span className="font-bold">Por móvil:</span> El destinatario recibirá un mensaje SMS con un enlace a la web donde podrá dejar su dirección de envío.
+                                  </li>
+                                </ul>
+                                <p className="font-bold">¿Qué tiene que hacer el destinatario?</p>
+                                <ol className="space-y-2 list-decimal pl-5">
+                                  <li>Recibir el mensaje (email o SMS)</li>
+                                  <li>Hacer clic en el enlace proporcionado</li>
+                                  <li>Completar sus datos de envío (nombre, dirección, ciudad, código postal)</li>
+                                  <li>Confirmar la información</li>
+                                </ol>
+                                <p className="text-muted-foreground">
+                                  Una vez recibida la información, procesaremos el envío del regalo en un plazo de 2-3 días laborables.
+                                </p>
+                              </div>
+                            </DialogDescription>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor={`recipientEmail-${index}`}>Email destinatario *</Label>
+                          <Label htmlFor={`recipientEmail-${index}`}>Email destinatario</Label>
                           <Input
                             id={`recipientEmail-${index}`}
                             type="email"
@@ -1074,92 +1133,95 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Label>Email destinatario *</Label>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button 
-                              type="button"
-                              variant="ghost" 
-                              size="sm"
-                              className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                    {/* Text and info button above email/phone fields */}
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <p className="text-center text-sm font-bold text-muted-foreground">
+                        (solo uno de los dos obligatorio)
+                      </p>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button 
+                            type="button"
+                            variant="ghost" 
+                            size="sm"
+                            className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                          >
+                            <span className="sr-only">Información sobre el proceso de regalo</span>
+                            <svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              viewBox="0 0 24 24" 
+                              fill="none" 
+                              stroke="currentColor" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              className="h-4 w-4"
                             >
-                              <span className="sr-only">Información sobre el proceso de regalo</span>
-                              <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                viewBox="0 0 24 24" 
-                                fill="none" 
-                                stroke="currentColor" 
-                                strokeWidth="2" 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                className="h-4 w-4"
-                              >
-                                <circle cx="12" cy="12" r="10"/>
-                                <path d="M12 16v-4"/>
-                                <path d="M12 8h.01"/>
-                              </svg>
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-2xl">
-                            <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
-                            <DialogDescription asChild>
-                              <div className="space-y-4 text-sm">
-                                <p className="font-bold">Puedes elegir entre email o móvil:</p>
-                                <ul className="space-y-3 list-disc pl-5">
-                                  <li>
-                                    <span className="font-bold">Por email:</span> El destinatario recibirá un correo con la información del regalo y un enlace para proporcionar su dirección de envío.
-                                  </li>
-                                  <li>
-                                    <span className="font-bold">Por móvil:</span> El destinatario recibirá un mensaje SMS con un enlace a la web donde podrá dejar su dirección de envío.
-                                  </li>
-                                </ul>
-                                <p className="font-bold">¿Qué tiene que hacer el destinatario?</p>
-                                <ol className="space-y-2 list-decimal pl-5">
-                                  <li>Recibir el mensaje (email o SMS)</li>
-                                  <li>Hacer clic en el enlace proporcionado</li>
-                  <li>Completar sus datos de envío (nombre, dirección, ciudad, código postal)</li>
-                                  <li>Confirmar la información</li>
-                                </ol>
-                                <p className="text-muted-foreground">
-                                  Una vez recibida la información, procesaremos el envío del regalo en un plazo de 2-3 días laborables.
-                                </p>
-                              </div>
-                            </DialogDescription>
-                          </DialogContent>
-                        </Dialog>
+                              <circle cx="12" cy="12" r="10"/>
+                              <path d="M12 16v-4"/>
+                              <path d="M12 8h.01"/>
+                            </svg>
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
+                          <DialogDescription asChild>
+                            <div className="space-y-4 text-sm">
+                              <p className="font-bold">Puedes elegir entre email o móvil:</p>
+                              <ul className="space-y-3 list-disc pl-5">
+                                <li>
+                                  <span className="font-bold">Por email:</span> El destinatario recibirá un correo con la información del regalo y un enlace para proporcionar su dirección de envío.
+                                </li>
+                                <li>
+                                  <span className="font-bold">Por móvil:</span> El destinatario recibirá un mensaje SMS con un enlace a la web donde podrá dejar su dirección de envío.
+                                </li>
+                              </ul>
+                              <p className="font-bold">¿Qué tiene que hacer el destinatario?</p>
+                              <ol className="space-y-2 list-decimal pl-5">
+                                <li>Recibir el mensaje (email o SMS)</li>
+                                <li>Hacer clic en el enlace proporcionado</li>
+                                <li>Completar sus datos de envío (nombre, dirección, ciudad, código postal)</li>
+                                <li>Confirmar la información</li>
+                              </ol>
+                              <p className="text-muted-foreground">
+                                Una vez recibida la información, procesaremos el envío del regalo en un plazo de 2-3 días laborables.
+                              </p>
+                            </div>
+                          </DialogDescription>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor={`recipientEmail-${index}`}>Email destinatario</Label>
+                        <Input
+                          id={`recipientEmail-${index}`}
+                          type="email"
+                          value={recipient.recipientEmail}
+                          onChange={(e) => {
+                            const newRecipients = [...giftData.recipients];
+                            newRecipients[index].recipientEmail = e.target.value;
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                          placeholder="email@ejemplo.com"
+                          required={!recipient.recipientPhone}
+                        />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Input
-                            id={`recipientEmail-${index}`}
-                            type="email"
-                            value={recipient.recipientEmail}
-                            onChange={(e) => {
-                              const newRecipients = [...giftData.recipients];
-                              newRecipients[index].recipientEmail = e.target.value;
-                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                            }}
-                            placeholder="email@ejemplo.com"
-                            required={!recipient.recipientPhone}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`recipientPhone-${index}`}>Número destinatario</Label>
-                          <Input
-                            id={`recipientPhone-${index}`}
-                            type="tel"
-                            value={recipient.recipientPhone || ''}
-                            onChange={(e) => {
-                              const newRecipients = [...giftData.recipients];
-                              newRecipients[index].recipientPhone = e.target.value;
-                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                            }}
-                            placeholder="+34 600 000 000"
-                            required={!recipient.recipientEmail}
-                          />
-                        </div>
+                      <div>
+                        <Label htmlFor={`recipientPhone-${index}`}>Número destinatario</Label>
+                        <Input
+                          id={`recipientPhone-${index}`}
+                          type="tel"
+                          value={recipient.recipientPhone || ''}
+                          onChange={(e) => {
+                            const newRecipients = [...giftData.recipients];
+                            newRecipients[index].recipientPhone = e.target.value;
+                            setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                          }}
+                          placeholder="+34 600 000 000"
+                          required={!recipient.recipientEmail}
+                        />
                       </div>
                     </div>
 

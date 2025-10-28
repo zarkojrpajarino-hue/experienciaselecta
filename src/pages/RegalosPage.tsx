@@ -283,24 +283,6 @@ const RegalosPage = () => {
                     </div>
 
                 <div className="space-y-4">
-                  {/* Texto informativo centrado con botón info */}
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <p className="text-center text-sm font-bold text-muted-foreground">
-                      (solo uno de los dos obligatorio)
-                    </p>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-0 bg-transparent border-0 transition-all duration-300"
-                      onClick={() => {
-                        const { toast } = require("sonner");
-                        toast.info("Solo necesitas completar el email O el teléfono, no ambos.");
-                      }}
-                    >
-                      <Info className="w-6 h-6 font-bold text-primary" strokeWidth={3} />
-                    </motion.button>
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium mb-2">Nombre completo *</label>
                     <Input
