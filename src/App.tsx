@@ -9,7 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load pages for better performance
 import Index from "./pages/Index";
-import ExperienciaSelectaPage from "./pages/ExperienciaSelectaPage";
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
@@ -17,6 +16,7 @@ const SobreNosotrosDetalle = lazy(() => import("./pages/SobreNosotrosDetalle"));
 const NuestrosClientesPage = lazy(() => import("./pages/NuestrosClientesPage"));
 const CestasPage = lazy(() => import("./pages/CestasPage"));
 const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
+const ExperienciaSelectaPage = lazy(() => import("./pages/ExperienciaSelectaPage"));
 const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
