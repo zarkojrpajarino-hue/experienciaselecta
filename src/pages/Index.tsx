@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import AuthModal from "@/components/AuthModal";
 import ContactModal from "@/components/ContactModal";
-import ScrollDownIndicator from "@/components/ScrollDownIndicator";
+
 import { supabase } from "@/integrations/supabase/client";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
@@ -452,7 +452,6 @@ const Index = () => {
   return <div className="min-h-screen bg-background font-work-sans">
       <Navbar />
       {/* <PageNavigation /> */}
-      <ScrollDownIndicator />
       
       <VisualHeader />
       
