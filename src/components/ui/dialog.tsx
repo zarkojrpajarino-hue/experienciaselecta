@@ -196,6 +196,14 @@ interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
 
 const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, ...props }, ref) => {
   const ctx = useContext(DialogContext);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    if (ctx?.open) {
+      setScrollY(window.scrollY || document.documentElement.scrollTop || 0);
+    }
+  }, [ctx?.open]);
+
   if (!ctx || !ctx.open) return null;
 
   return (
@@ -205,8 +213,14 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ classNam
         role="dialog"
         aria-modal="true"
         ref={ref}
+        style={{
+          position: 'absolute',
+          top: `${scrollY + window.innerHeight / 2}px`,
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
         className={cn(
-          "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+          "z-50 grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
