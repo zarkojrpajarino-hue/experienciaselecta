@@ -187,8 +187,15 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ classNam
         role="dialog"
         aria-modal="true"
         ref={ref}
+        style={{
+          position: 'fixed',
+          top: '50vh',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 9999,
+        }}
         className={cn(
-          "fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[9999] grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+          "grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
