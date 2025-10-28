@@ -35,11 +35,23 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // Validate environment variables for remote Supabase
+    const remoteUrl = Deno.env.get('PARAGENTESELECTA_SUPABASE_URL');
+    const remoteKey = Deno.env.get('PARAGENTESELECTA_SERVICE_ROLE_KEY');
+
+    if (!remoteUrl || !remoteKey) {
+      console.error('Missing remote Supabase credentials');
+      return new Response(
+        JSON.stringify({ error: 'Configuration error - missing remote credentials' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 500,
+        }
+      );
+    }
+
     // Cliente para paragenteselecta.com
-    const remoteSupabase = createClient(
-      'https://qktosxxluytztxhhupya.supabase.co',
-      Deno.env.get('PARAGENTESELECTA_SERVICE_ROLE_KEY') ?? ''
-    );
+    const remoteSupabase = createClient(remoteUrl, remoteKey);
 
     console.log('Fetching reviews from paragenteselecta.com...');
 
