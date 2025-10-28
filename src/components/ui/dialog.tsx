@@ -178,9 +178,8 @@ const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
           onClick?.(e as any);
           if (!(e as any).defaultPrevented) ctx?.setOpen(false);
         }}
-        style={{ position: 'fixed', zIndex: 9998 }}
         className={cn(
-          "inset-0 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "fixed inset-0 z-[9998] bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           className,
         )}
         {...props}
@@ -197,37 +196,18 @@ interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
 
 const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, ...props }, ref) => {
   const ctx = useContext(DialogContext);
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    if (ctx?.open) {
-      // Capturar la posición de scroll ACTUAL cuando se abre el modal
-      const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
-      setScrollY(currentScrollY);
-    }
-  }, [ctx?.open]);
 
   if (!ctx || !ctx.open) return null;
 
-  // Calcular la posición para centrar en la ventana visible actual
-  const viewportCenter = scrollY + (window.innerHeight / 2);
-
   return (
     <DialogPortal>
-      <DialogOverlay data-state="open" style={{ position: 'fixed' }} />
+      <DialogOverlay data-state="open" />
       <div
         role="dialog"
         aria-modal="true"
         ref={ref}
-        style={{
-          position: 'absolute',
-          top: `${viewportCenter}px`,
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 9999,
-        }}
         className={cn(
-          "grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+          "fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-[9999] grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
