@@ -81,6 +81,11 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
+  user_id: string;
+  profiles?: {
+    name: string | null;
+    user_id: string;
+  };
 }
 
 const ProfilePage = () => {
@@ -267,14 +272,32 @@ const ProfilePage = () => {
         setOrders(expandedOrders);
       }
 
-      // Load user reviews
-      const { data: reviewsData } = await supabase
+      // Load all user reviews from the platform (paragenteselecta.com and experienciaselecta)
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from("reviews")
         .select("*")
-        .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
-      setReviews(reviewsData || []);
+      if (reviewsError) {
+        console.error("Error loading reviews:", reviewsError);
+      }
+
+      // Get unique user IDs from reviews
+      const userIds = [...new Set(reviewsData?.map(r => r.user_id) || [])];
+      
+      // Fetch profiles for all users who left reviews
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("user_id, name")
+        .in("user_id", userIds);
+
+      // Map profiles to reviews
+      const reviewsWithProfiles = (reviewsData || []).map(review => ({
+        ...review,
+        profiles: profilesData?.find(p => p.user_id === review.user_id)
+      }));
+
+      setReviews(reviewsWithProfiles);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -545,6 +568,11 @@ const ProfilePage = () => {
                                   {precio !== undefined && (
                                     <p className="text-white font-poppins font-bold mt-1">{precio}€.</p>
                                   )}
+                                  {review.profiles?.name && (
+                                    <p className="text-sm text-white/80 font-poppins mt-1">
+                                      Por: {review.profiles.name}
+                                    </p>
+                                  )}
                                 </div>
                                 <div className="flex gap-1">
                                   {[...Array(5)].map((_, i) => (
@@ -589,7 +617,7 @@ const ProfilePage = () => {
               ) : (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
-                    Aún no has dejado ninguna valoración en paragenteselecta.com.
+                    Todavía no hay valoraciones de la comunidad en paragenteselecta.com.
                   </CardContent>
                 </Card>
               )}
