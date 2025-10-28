@@ -28,10 +28,10 @@ serve(async (req) => {
 
     console.log('Fetching reviews from paragenteselecta.com...');
 
-    // Obtener todas las reviews de paragenteselecta
+    // Obtener solo columnas necesarias
     const { data: remoteReviews, error: fetchError } = await remoteSupabase
       .from('reviews')
-      .select('*')
+      .select('id,rating,comment,basket_name,user_id,order_id,created_at')
       .order('created_at', { ascending: false });
 
     if (fetchError) {
@@ -69,44 +69,27 @@ serve(async (req) => {
         .eq('id', review.id)
         .maybeSingle();
 
-      if (existingReview) {
-        // Ya existe, actualizar si es necesario
-        const { error: updateError } = await localSupabase
-          .from('reviews')
-          .update({
-            rating: review.rating,
-            comment: review.comment,
-            basket_name: review.basket_name,
-            source_site: 'paragenteselecta',
-            updated_at: review.updated_at
-          })
-          .eq('id', review.id);
+      // Upsert basado en ID; omitimos created_at/updated_at para usar defaults
+      const payload = {
+        id: review.id,
+        user_id: review.user_id,
+        order_id: review.order_id,
+        basket_name: review.basket_name,
+        rating: review.rating,
+        comment: review.comment,
+        source_site: 'paragenteselecta',
+      };
 
-        if (updateError) {
-          console.error(`Error updating review ${review.id}:`, updateError);
-          errorCount++;
-        } else {
-          skippedCount++;
-        }
+      const { error: upsertError } = await localSupabase
+        .from('reviews')
+        .upsert(payload, { onConflict: 'id' });
+
+      if (upsertError) {
+        console.error(`Error upserting review ${review.id}:`, upsertError);
+        errorCount++;
       } else {
-        // No existe, insertar
-        const { error: insertError } = await localSupabase
-          .from('reviews')
-          .insert({
-            id: review.id,
-            user_id: review.user_id,
-            order_id: review.order_id,
-            basket_name: review.basket_name,
-            rating: review.rating,
-            comment: review.comment,
-            source_site: 'paragenteselecta',
-            created_at: review.created_at,
-            updated_at: review.updated_at
-          });
-
-        if (insertError) {
-          console.error(`Error inserting review ${review.id}:`, insertError);
-          errorCount++;
+        if (existingReview) {
+          skippedCount++;
         } else {
           syncedCount++;
         }
