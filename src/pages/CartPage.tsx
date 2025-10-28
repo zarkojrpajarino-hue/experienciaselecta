@@ -109,38 +109,6 @@ const CartPage = () => {
           </Button>
 
           <div className="space-y-8">
-            {/* Botón para pagar todo junto - solo si hay ambos tipos */}
-            {hasBothTypes && (
-              <Card className="bg-gradient-to-r from-gold/10 to-gold/5 border-gold/20">
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-poppins font-bold text-black mb-2">
-                        💰 Pagar todo junto
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Completa el pago de tus cestas personales y regalos en una sola transacción
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="text-2xl font-poppins font-bold text-gold">
-                        {getTotalAmount().toFixed(2)}€
-                      </div>
-                      <Button
-                        onClick={() => {
-                          setCheckoutItems(cart);
-                          handleCheckout(giftItems.length > 0, cart);
-                        }}
-                        className="bg-gold hover:bg-gold/90 text-black font-poppins font-bold px-8"
-                      >
-                        Proceder al pago completo
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
             {/* Cestas para Regalar Section */}
             {giftItems.length > 0 && (
               <div>
@@ -292,7 +260,7 @@ const CartPage = () => {
                             }}
                             className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                           >
-                            Pagar regalos
+                            Continuar al pago ({getGiftTotal().toFixed(2)}€)
                           </Button>
                         )}
 
@@ -458,7 +426,7 @@ const CartPage = () => {
                             }}
                             className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                           >
-                            Pagar
+                            Continuar al pago ({getPersonalTotal().toFixed(2)}€)
                           </Button>
                         )}
 
@@ -469,6 +437,21 @@ const CartPage = () => {
                     </Card>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Botón de pago al final cuando hay ambos tipos */}
+            {hasBothTypes && (
+              <div className="w-full max-w-md mx-auto mt-8">
+                <Button
+                  onClick={() => {
+                    setCheckoutItems(cart);
+                    handleCheckout(giftItems.length > 0, cart);
+                  }}
+                  className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                >
+                  Continuar al pago ({getTotalAmount().toFixed(2)}€)
+                </Button>
               </div>
             )}
           </div>
