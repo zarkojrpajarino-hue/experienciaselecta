@@ -183,7 +183,7 @@ const ProfilePage = () => {
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
       setProfile(profileData);
 
@@ -192,7 +192,7 @@ const ProfilePage = () => {
         .from("customers")
         .select("id")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
       if (customerData) {
         // Load orders with items and shipping info
