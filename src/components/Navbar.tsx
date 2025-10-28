@@ -138,13 +138,16 @@ const Navbar = () => {
   };
   useEffect(() => {
     const getScrollTop = () =>
+      (typeof window !== 'undefined' && typeof window.pageYOffset === 'number' ? window.pageYOffset : 0) ||
       (typeof window !== 'undefined' && typeof window.scrollY === 'number' ? window.scrollY : 0) ||
       (typeof document !== 'undefined' ? document.documentElement.scrollTop : 0) ||
-      (typeof document !== 'undefined' ? document.body.scrollTop : 0);
+      (typeof document !== 'undefined' ? (document.body?.scrollTop ?? 0) : 0);
+
+    const THRESHOLD = 12; // Evita falsos positivos al cargar
 
     const handleScroll = throttle(() => {
       const top = getScrollTop();
-      const scrolled = top > 0;
+      const scrolled = top > THRESHOLD;
       setIsScrolled(scrolled);
       console.debug('[Navbar] scrollTop:', top, 'isScrolled:', scrolled);
     }, 100);
@@ -153,25 +156,23 @@ const Navbar = () => {
     const bind = (target: any, event: string) => target.addEventListener(event, handleScroll, { passive: true });
     const unbind = (target: any, event: string) => target.removeEventListener(event, handleScroll);
 
-    // Listen on multiple events and targets for maximum reliability
+    // Listen on multiple events and targets for maximum fiabilidad
     ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
       bind(window, evt);
       bind(document, evt);
     });
 
-    // Re-evaluate on visibility change (e.g., returning to tab)
-    const handleVisibility = () => setIsScrolled(getScrollTop() > 0);
-    document.addEventListener('visibilitychange', handleVisibility);
+    // Re-evaluate on visibility change (volver a la pestaña)
+    document.addEventListener('visibilitychange', handleScroll);
 
-    // Initialize on mount in case page loads scrolled
-    setTimeout(() => setIsScrolled(getScrollTop() > 0), 0);
+    // Nota: No inicializamos isScrolled al montar para evitar que aparezca sin scroll
 
     return () => {
       ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
         unbind(window, evt);
         unbind(document, evt);
       });
-      document.removeEventListener('visibilitychange', handleVisibility);
+      document.removeEventListener('visibilitychange', handleScroll);
     };
   }, []);
   const handleNavigation = useCallback((item: {

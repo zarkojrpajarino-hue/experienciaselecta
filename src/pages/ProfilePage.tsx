@@ -163,6 +163,15 @@ const ProfilePage = () => {
     };
   }, [user?.id]);
 
+  // Auto-refresh reviews when the tab is active
+  useEffect(() => {
+    if (activeTab !== 'reviews' || !user?.id) return;
+    loadUserData(user.id);
+    const id = setInterval(() => loadUserData(user.id), 15000);
+    return () => clearInterval(id);
+  }, [activeTab, user?.id]);
+
+
   const checkAuthAndLoadData = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     
