@@ -144,20 +144,34 @@ const Navbar = () => {
 
     const handleScroll = throttle(() => {
       const top = getScrollTop();
-      setIsScrolled(top > 0);
-      console.debug('[Navbar] scrollTop:', top, 'isScrolled:', top > 0);
+      const scrolled = top > 0;
+      setIsScrolled(scrolled);
+      console.debug('[Navbar] scrollTop:', top, 'isScrolled:', scrolled);
     }, 100);
 
-    // Listen on both window and document to cover custom scroll containers
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    document.addEventListener("scroll", handleScroll, { passive: true });
+    // Helper to bind multiple events
+    const bind = (target: any, event: string) => target.addEventListener(event, handleScroll, { passive: true });
+    const unbind = (target: any, event: string) => target.removeEventListener(event, handleScroll);
+
+    // Listen on multiple events and targets for maximum reliability
+    ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
+      bind(window, evt);
+      bind(document, evt);
+    });
+
+    // Re-evaluate on visibility change (e.g., returning to tab)
+    const handleVisibility = () => setIsScrolled(getScrollTop() > 0);
+    document.addEventListener('visibilitychange', handleVisibility);
 
     // Initialize on mount in case page loads scrolled
-    setIsScrolled(getScrollTop() > 0);
+    setTimeout(() => setIsScrolled(getScrollTop() > 0), 0);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("scroll", handleScroll);
+      ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
+        unbind(window, evt);
+        unbind(document, evt);
+      });
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
   const handleNavigation = useCallback((item: {
