@@ -16,6 +16,7 @@ import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
 import familiaExperience from "@/assets/familia-experience.jpg";
 import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
 import grupoMedianoExperience from "@/assets/grupo-mediano-experience.jpg";
+
 const NuestrosClientesPage = () => {
   const navigate = useNavigate();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -277,4 +278,5 @@ const NuestrosClientesPage = () => {
       
     </div>;
 };
+
 export default NuestrosClientesPage;
