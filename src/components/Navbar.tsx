@@ -267,8 +267,7 @@ const Navbar = () => {
     opacity: shouldShowNavbar ? 1 : 0
   }} transition={{
     duration: 0.3
-  }} className="fixed top-0 left-0 right-0 z-50 shadow-lg pointer-events-none" style={{
-    pointerEvents: shouldShowNavbar ? 'auto' : 'none',
+  }} className="sticky top-0 z-50 shadow-lg" style={{
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${headerBg})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',

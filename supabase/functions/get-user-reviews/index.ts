@@ -12,7 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    // Auth: require logged-in user to derive email without exposing it
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -29,7 +28,6 @@ serve(async (req) => {
 
     const userEmail = (userData.user.email || '').toLowerCase()
 
-    // Optional filters passed in body
     const body = await req.json().catch(() => ({} as any))
     const {
       basket_name,
@@ -44,7 +42,6 @@ serve(async (req) => {
     const baseUrl = 'https://qktosxxluytztxhhupya.supabase.co/functions/v1/get-completed-reviews'
     const url = new URL(baseUrl)
 
-    // Forward optional filters to minimize payload
     if (basket_name) url.searchParams.set('basket_name', String(basket_name))
     if (basket_category) url.searchParams.set('basket_category', String(basket_category))
     if (min_rating) url.searchParams.set('min_rating', String(min_rating))
@@ -61,7 +58,7 @@ serve(async (req) => {
       })
     }
 
-    console.log('[get-user-reviews] Fetching remote reviews with URL:', url.toString())
+    console.log('[get-user-reviews] URL:', url.toString(), 'email:', userEmail)
 
     const remoteRes = await fetch(url.toString(), {
       headers: { 'x-api-key': shopApiKey },
@@ -79,10 +76,13 @@ serve(async (req) => {
     const remoteJson = await remoteRes.json()
     const all = Array.isArray(remoteJson?.data) ? remoteJson.data : []
 
-    // Filter by the current user's email
-    const filtered = all.filter((r: any) => (r?.user_email || '').toLowerCase() === userEmail)
+    const emailMatch = (val: any) => (String(val || '').toLowerCase() === userEmail)
 
-    console.log(`[get-user-reviews] User ${userEmail} -> ${filtered.length} reviews`)
+    const filtered = all.filter((r: any) =>
+      emailMatch(r?.user_email) || emailMatch(r?.email) || emailMatch(r?.user?.email)
+    )
+
+    console.log(`[get-user-reviews] ${userEmail} -> ${filtered.length} reviews`)
 
     return new Response(
       JSON.stringify({ data: filtered, count: filtered.length }),

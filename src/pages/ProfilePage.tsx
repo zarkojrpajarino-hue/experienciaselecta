@@ -623,7 +623,7 @@ const ProfilePage = () => {
               ) : (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
-                    Aún no has dejado valoraciones en paragenteselecta.com.
+                    Aún no aparecen valoraciones para tu email de sesión. Si acabas de valorar, espera unos segundos y vuelve a abrir esta pestaña.
                   </CardContent>
                 </Card>
               )}
