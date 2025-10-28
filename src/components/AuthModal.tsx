@@ -127,14 +127,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto" hideClose={false}>
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl font-semibold">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto mx-auto" hideClose={false}>
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-xl font-semibold">
               Accede a tu cuenta
             </DialogTitle>
           </DialogHeader>
 
-          <Card>
+          <Card className="border-0 shadow-none">
             <CardHeader className="space-y-1">
               <CardTitle className="text-lg">Inicia sesión</CardTitle>
               <CardDescription>
