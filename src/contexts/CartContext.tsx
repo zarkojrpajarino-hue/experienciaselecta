@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 export interface CartItem {
   id: number;
@@ -25,7 +25,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'shopping-cart';
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Initialize cart from localStorage
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
@@ -50,7 +50,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => clearTimeout(timeoutId);
   }, [cart]);
 
-  const addToCart = React.useCallback((item: Omit<CartItem, 'quantity'>) => {
+  const addToCart = useCallback((item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
       // Buscar item con mismo id y mismo tipo (regalo o personal)
       const existingItem = prevCart.find(
@@ -67,11 +67,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, []);
 
-  const removeFromCart = React.useCallback((id: number, isGift?: boolean) => {
+  const removeFromCart = useCallback((id: number, isGift?: boolean) => {
     setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
   }, []);
 
-  const updateQuantity = React.useCallback((id: number, quantity: number, isGift?: boolean) => {
+  const updateQuantity = useCallback((id: number, quantity: number, isGift?: boolean) => {
     if (quantity <= 0) {
       setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
       return;
@@ -83,11 +83,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   }, []);
 
-  const clearCart = React.useCallback(() => {
+  const clearCart = useCallback(() => {
     setCart([]);
   }, []);
 
-  const removeMultipleItems = React.useCallback((itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
+  const removeMultipleItems = useCallback((itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
     setCart(prevCart => {
       let newCart = [...prevCart];
       
@@ -101,10 +101,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const quantityToRemove = removeItem.quantityToRemove || item.quantity;
           
           if (item.quantity <= quantityToRemove) {
-            // Remove the item completely
+            // Remove the item completamente
             newCart = newCart.filter((_, index) => index !== itemIndex);
           } else {
-            // Just reduce the quantity
+            // Solo reducir la cantidad
             newCart[itemIndex] = { ...item, quantity: item.quantity - quantityToRemove };
           }
         }
@@ -114,11 +114,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, []);
 
-  const getTotalItems = React.useCallback(() => {
+  const getTotalItems = useCallback(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
 
-  const getTotalAmount = React.useCallback(() => {
+  const getTotalAmount = useCallback(() => {
     return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
   }, [cart]);
 
