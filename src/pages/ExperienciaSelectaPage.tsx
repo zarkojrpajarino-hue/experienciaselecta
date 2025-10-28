@@ -148,15 +148,15 @@ const ExperienciaSelectaPage = () => {
               
               <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#000000' }}>nos enseñaron a desconectar. nosotros preferimos reconectar.</span>
+                  <span className="font-bold" style={{ color: '#000000' }}>nos enseñaron a <span className="text-gold">desconectar</span>. nosotros preferimos <span className="text-gold">reconectar</span>.</span>
                 </p>
                 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#000000' }}>creamos espacios donde la conversación importa y mirar a los ojos no da miedo.</span>
+                  <span className="font-bold" style={{ color: '#000000' }}>creamos espacios donde la <span className="text-gold">conversación importa</span> y <span className="text-gold">mirar a los ojos</span> no da miedo.</span>
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#000000' }}>porque conocer es escuchar y compartir. ahí empieza lo auténtico.</span>
+                  <span className="font-bold" style={{ color: '#000000' }}>porque <span className="text-gold">conocer</span> es <span className="text-gold">escuchar</span> y <span className="text-gold">compartir</span>. ahí empieza lo <span className="text-gold">auténtico</span>.</span>
                 </p>
               </div>
             </div>
@@ -205,15 +205,15 @@ const ExperienciaSelectaPage = () => {
 
               <div className="space-y-6 font-lora text-lg leading-relaxed text-center" style={{ color: '#000000' }}>
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#000000' }}>trabajamos con productores españoles. personas reales, productos excepcionales.</span>
+                  <span className="font-bold" style={{ color: '#000000' }}>trabajamos con <span className="text-gold">productores españoles</span>. <span className="text-gold">personas reales</span>, <span className="text-gold">productos excepcionales</span>.</span>
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#000000' }}>priorizamos calidad sobre cantidad. en productos, momentos y relaciones.</span>
+                  <span className="font-bold" style={{ color: '#000000' }}>priorizamos <span className="text-gold">calidad sobre cantidad</span>. en <span className="text-gold">productos, momentos y relaciones</span>.</span>
                 </p>
 
                 <p className="normal-case first-letter:uppercase lowercase">
-                  <span className="font-bold" style={{ color: '#000000' }}>sostenibilidad y compromiso local son nuestra esencia.</span>
+                  <span className="font-bold" style={{ color: '#000000' }}><span className="text-gold">sostenibilidad</span> y <span className="text-gold">compromiso local</span> son nuestra esencia.</span>
                 </p>
               </div>
             </div>
