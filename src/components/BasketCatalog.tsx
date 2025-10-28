@@ -1246,17 +1246,17 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               {/* Nuevo layout aplicado a todas las cestas cuando están expandidas */}
               {isCardOpen ? (
                 // NUEVO LAYOUT expandido: imagen centrada, coste centrado, info alrededor
-                <div className="relative w-full px-4 mt-2">
+                <div className="relative w-full px-4 mt-2 bg-black rounded-lg py-6">
                   <div className="grid grid-cols-2 gap-4">
                     {/* Top Left: Título, Descripción y Maridaje */}
                   <div className="col-span-1">
                     <div className="flex items-start gap-1 mb-1 relative">
-                      <h3 className={`font-poppins font-bold text-base sm:text-xl transition-colors basket-title ${colorCombo.text} whitespace-nowrap`}>
+                      <h3 className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-white whitespace-nowrap">
                         {basket.nombre}
                       </h3>
                       <button 
                         onClick={() => handleCardToggle(basket.id)}
-                        className={`${colorCombo.important} hover:opacity-70 transition-opacity`}
+                        className="text-gold hover:opacity-70 transition-opacity"
                       >
                         <X className="h-4 w-4 sm:h-5 sm:w-5" />
                       </button>
@@ -1268,7 +1268,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                         </Badge>
                       )}
                       
-                      <p className={`text-[10px] sm:text-xs leading-tight font-bold ${colorCombo.text} basket-descripcion mb-2 whitespace-nowrap`}>
+                      <p className="text-[10px] sm:text-xs leading-tight font-bold text-white basket-descripcion mb-2 whitespace-nowrap">
                         {basket.descripcion}
                       </p>
                     </div>
@@ -1280,8 +1280,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           onClick={() => setOpenProducts(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
                           className="flex items-center gap-2 mb-1 hover:opacity-70 transition-opacity ml-auto"
                         >
-                          <span className={`font-bold text-xs sm:text-sm ${colorCombo.important}`}>Productos incluidos</span>
-                          <span className={`${colorCombo.text}`}>
+                          <span className="font-bold text-xs sm:text-sm text-gold">Productos incluidos</span>
+                          <span className="text-white">
                             {isProductsOpen ? <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" /> : <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />}
                           </span>
                         </button>
@@ -1300,8 +1300,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                       lower.includes('cecina') || lower.includes('queso')
                                     );
                                   })
-                                  .map((producto, idx) => (
-                                     <p key={idx} className={`text-[10px] sm:text-xs font-bold ${colorCombo.text} basket-producto-text`}>
+                                   .map((producto, idx) => (
+                                     <p key={idx} className="text-[10px] sm:text-xs font-bold text-white basket-producto-text">
                                        • {producto}
                                      </p>
                                   ))
@@ -1322,7 +1322,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     );
                                   })
                                   .map((producto, idx) => (
-                                     <p key={idx} className={`text-[10px] sm:text-xs font-bold ${colorCombo.text} basket-producto-text`}>
+                                     <p key={idx} className="text-[10px] sm:text-xs font-bold text-white basket-producto-text">
                                        • {producto}
                                      </p>
                                   ))
@@ -1332,7 +1332,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             
                             {/* ACCESO A EXPERIENCIA ÚNICA */}
                             <div className="col-span-2 flex flex-col items-center justify-center mt-4 mb-2">
-                              <p className={`text-center ${colorCombo.important} font-bungee text-xs sm:text-sm tracking-[0.15em] mb-2`}>
+                              <p className="text-center text-gold font-bungee text-xs sm:text-sm tracking-[0.15em] mb-2">
                                 ACCESO A EXPERIENCIA ÚNICA
                               </p>
                               <Dialog>
@@ -1392,7 +1392,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           onOpenChange={() => setOpenIdeal(prev => ({ ...prev, [basket.id]: !prev[basket.id] }))}
                         >
                           <CollapsibleTrigger asChild>
-                            <button className={`w-full flex items-center justify-between gap-2 text-black hover:opacity-80 transition-opacity py-1 px-3 sm:py-2 sm:px-4 rounded-lg hover:bg-black/5`}>
+                            <button className="w-full flex items-center justify-between gap-2 text-white hover:opacity-80 transition-opacity py-1 px-3 sm:py-2 sm:px-4 rounded-lg hover:bg-white/10">
                               <span className="text-xs sm:text-sm font-bold lowercase first-letter:capitalize">
                                 coste por persona.
                               </span>
@@ -1404,12 +1404,12 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           </CollapsibleTrigger>
                           <CollapsibleContent className="mt-2">
                             {basket.costePersona && (
-                              <p className={`text-sm sm:text-base font-bold text-center`}>
+                              <p className="text-sm sm:text-base font-bold text-center">
                                 {basket.costePersona.split(/(\([^)]+\))/).map((part, index) => {
                                   if (part.match(/\([^)]+\)/)) {
-                                    return <span key={index} className="text-black">{part}</span>;
+                                    return <span key={index} className="text-white">{part}</span>;
                                   } else if (part.trim()) {
-                                    return <span key={index} style={{ color: "#D4AF37" }} className="font-bold text-base sm:text-lg">{part}</span>;
+                                    return <span key={index} className="text-gold font-bold text-base sm:text-lg">{part}</span>;
                                   }
                                   return null;
                                 })}
