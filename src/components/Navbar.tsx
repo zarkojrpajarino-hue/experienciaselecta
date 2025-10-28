@@ -221,15 +221,19 @@ const Navbar = () => {
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
   }, [handleNavigation, location.hash]);
+  // Only show navbar on homepage after scrolling
+  const shouldShowNavbar = location.pathname === '/' && isScrolled;
+
   return <motion.nav initial={{
-    y: -20,
+    y: -100,
     opacity: 0
   }} animate={{
-    y: 0,
-    opacity: 1
+    y: shouldShowNavbar ? 0 : -100,
+    opacity: shouldShowNavbar ? 1 : 0
   }} transition={{
     duration: 0.3
-  }} className="fixed top-0 left-0 right-0 z-50 shadow-lg" style={{
+  }} className="fixed top-0 left-0 right-0 z-50 shadow-lg pointer-events-none" style={{
+    pointerEvents: shouldShowNavbar ? 'auto' : 'none',
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${headerBg})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
