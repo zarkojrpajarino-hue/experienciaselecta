@@ -323,17 +323,8 @@ const Navbar = () => {
                   <p>{pendingReviewsCount > 0 ? 'Experiencias por valorar' : 'Mi perfil'}</p>
                 </TooltipContent>
               </Tooltip>
-            ) : (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAuthModal(true)}
-                className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
-                aria-label="Iniciar sesión"
-              >
-                <User size={20} />
-              </motion.button>
-            )}
+            ) : null}
+
 
             {/* Pending Gifts Badge */}
             {user && pendingGiftsCount > 0 && (
