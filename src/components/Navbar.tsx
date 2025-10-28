@@ -143,14 +143,22 @@ const Navbar = () => {
       (typeof document !== 'undefined' ? document.body.scrollTop : 0);
 
     const handleScroll = throttle(() => {
-      setIsScrolled(getScrollTop() > 0);
+      const top = getScrollTop();
+      setIsScrolled(top > 0);
+      console.debug('[Navbar] scrollTop:', top, 'isScrolled:', top > 0);
     }, 100);
 
+    // Listen on both window and document to cover custom scroll containers
     window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("scroll", handleScroll, { passive: true });
+
     // Initialize on mount in case page loads scrolled
     setIsScrolled(getScrollTop() > 0);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("scroll", handleScroll);
+    };
   }, []);
   const handleNavigation = useCallback((item: {
     label: string;
