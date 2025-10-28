@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -35,38 +34,26 @@ const PageNavigation = () => {
   };
   const currentIndex = getCurrentSectionIndex();
   if (currentIndex === -1) return null;
-  return <>
+  return (
+    <>
       {/* Left Arrow */}
-      <motion.button whileHover={{
-      scale: 1.1,
-      x: -2
-    }} whileTap={{
-      scale: 0.95
-    }} animate={animate ? {
-      x: [0, -6, 0, -6, 0],
-      opacity: [1, 0.8, 1, 0.8, 1]
-    } : {}} transition={animate ? {
-      duration: 1.5,
-      ease: "easeInOut"
-    } : {}} onClick={() => navigateToSection('prev')} className="fixed left-2 top-1/2 -translate-y-1/2 z-40 p-2 text-white hover:text-white/80 transition-all duration-300 bg-transparent" aria-label="Página anterior">
-          <ChevronLeft className="w-6 h-6" />
-        </motion.button>
-      
+      <button
+        onClick={() => navigateToSection('prev')}
+        className={`fixed left-2 top-1/2 -translate-y-1/2 z-40 p-2 text-white hover:text-white/80 transition-all duration-300 bg-transparent hover-scale ${animate ? 'pulse' : ''}`}
+        aria-label="Página anterior"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+
       {/* Right Arrow */}
-      <motion.button whileHover={{
-      scale: 1.1,
-      x: 2
-    }} whileTap={{
-      scale: 0.95
-    }} animate={animate ? {
-      x: [0, 6, 0, 6, 0],
-      opacity: [1, 0.8, 1, 0.8, 1]
-    } : {}} transition={animate ? {
-      duration: 1.5,
-      ease: "easeInOut"
-    } : {}} onClick={() => navigateToSection('next')} className="fixed right-2 top-1/2 -translate-y-1/2 z-40 p-2 text-white hover:text-white/80 transition-all duration-300 bg-transparent" aria-label="Siguiente página">
-          <ChevronRight className="w-6 h-6" />
-        </motion.button>
-    </>;
+      <button
+        onClick={() => navigateToSection('next')}
+        className={`fixed right-2 top-1/2 -translate-y-1/2 z-40 p-2 text-white hover:text-white/80 transition-all duration-300 bg-transparent hover-scale ${animate ? 'pulse' : ''}`}
+        aria-label="Siguiente página"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+    </>
+  );
 };
 export default PageNavigation;
