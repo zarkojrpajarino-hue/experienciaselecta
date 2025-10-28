@@ -12,6 +12,21 @@ serve(async (req) => {
   }
 
   try {
+    // Verify CRON secret for authentication
+    const cronSecret = req.headers.get('authorization')?.replace('Bearer ', '');
+    const validCronSecret = Deno.env.get('CRON_SECRET');
+
+    if (!cronSecret || cronSecret !== validCronSecret) {
+      console.error('Unauthorized sync attempt');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Invalid authentication' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      );
+    }
+
     console.log('Starting reviews synchronization...');
 
     // Cliente para este proyecto (experienciaselecta)
@@ -117,8 +132,8 @@ serve(async (req) => {
     console.error('Error in sync-reviews:', error);
     return new Response(
       JSON.stringify({ 
-        error: error?.message || 'Unknown error occurred',
-        details: error?.stack
+        error: 'An error occurred during synchronization',
+        message: error?.message || 'Unknown error occurred'
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
