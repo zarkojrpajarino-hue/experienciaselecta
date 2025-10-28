@@ -642,7 +642,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   return (
     <>
       <Dialog open={isOpen && !showFeedbackModal} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl w-[95vw] max-h-[95vh] overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {(isGiftMode || isMixedMode) ? '🎁' : <ShoppingCart className="w-5 h-5" />}
