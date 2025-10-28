@@ -150,7 +150,7 @@ const DialogPortal: FC<{ children?: ReactNode }> = ({ children }) => {
 };
 
 const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, onClick, ...props }, ref) => {
+  ({ className, onClick, style, ...props }, ref) => {
     const ctx = useContext(DialogContext);
     return (
       <div
@@ -159,8 +159,18 @@ const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
           onClick?.(e as any);
           if (!(e as any).defaultPrevented) ctx?.setOpen(false);
         }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9998,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          ...style
+        }}
         className={cn(
-          "fixed inset-0 z-[9998] bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           className,
         )}
         {...props}
@@ -175,7 +185,7 @@ interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
   hideClose?: boolean;
 }
 
-const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, ...props }, ref) => {
+const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, style, ...props }, ref) => {
   const ctx = useContext(DialogContext);
 
   if (!ctx || !ctx.open) return null;
@@ -189,10 +199,13 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ classNam
         ref={ref}
         style={{
           position: 'fixed',
-          top: '50vh',
+          top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           zIndex: 9999,
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          ...style
         }}
         className={cn(
           "grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
