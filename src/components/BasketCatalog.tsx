@@ -1650,7 +1650,12 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           </DialogDescription>
           <DialogClose asChild>
             <button
-              className="absolute top-2 right-2 z-[60] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCloseImage();
+              }}
+              className="absolute top-2 right-2 z-[70] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110 pointer-events-auto"
               aria-label="Cerrar imagen"
             >
               <X className="h-5 w-5 sm:h-6 sm:w-6" />
