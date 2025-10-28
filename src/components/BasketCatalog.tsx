@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -1642,25 +1642,25 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
 
       {/* Image Dialog */}
-      <Dialog open={!!selectedImage} onOpenChange={(open) => !open && handleCloseImage()}>
+      <Dialog open={!!selectedImage} onOpenChange={handleCloseImage}>
         <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-0 shadow-none rounded-3xl overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de cesta</DialogTitle>
           <DialogDescription className="sr-only">
             Imagen ampliada de la cesta seleccionada
           </DialogDescription>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCloseImage();
-            }}
-            className="absolute top-2 right-2 z-[60] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110"
-            size="icon"
-            aria-label="Cerrar imagen"
-          >
-            <X className="h-5 w-5 sm:h-6 sm:w-6" />
-          </Button>
+          <DialogClose asChild>
+            <button
+              className="absolute top-2 right-2 z-[60] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110"
+              aria-label="Cerrar imagen"
+            >
+              <X className="h-5 w-5 sm:h-6 sm:w-6" />
+            </button>
+          </DialogClose>
           {selectedImage && (
-            <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white p-2">
+            <div 
+              className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white p-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <img 
                 src={selectedImage} 
                 alt="Cesta completa"
