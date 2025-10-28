@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -332,7 +332,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   // Determine if this is a mixed checkout (both gifts and personal items)
   const isMixedMode = giftItemsCount > 0 && personalItemsCount > 0;
   // Expand basket items so each quantity becomes individual items with unique identifiers
-  const expandedBasketItems = useMemo(() => {
+  const expandedBasketItems = (() => {
     const expanded: (BasketItem & { uniqueId: string })[] = [];
     basketItems.forEach(item => {
       for (let i = 0; i < item.quantity; i++) {
@@ -344,7 +344,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     });
     return expanded;
-  }, [basketItems]);
+  })();
 
   const [step, setStep] = useState<'auth' | 'customer' | 'payment' | 'success'>('auth');
   const [user, setUser] = useState<User | null>(null);
