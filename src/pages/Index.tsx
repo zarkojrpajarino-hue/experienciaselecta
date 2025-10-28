@@ -311,10 +311,11 @@ const Index = () => {
       data: {
         subscription
       }
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (mounted) {
         const wasAuthenticated = isAuthenticated;
         setIsAuthenticated(!!session);
+        
         if (session) {
           setShowAuthModal(false);
           // Limpiar TODOS los flags cuando el usuario inicia sesión exitosamente
@@ -322,24 +323,24 @@ const Index = () => {
           localStorage.removeItem('pendingCheckout');
           
           // Show welcome toast for new login (not on page load)
-          if (!wasAuthenticated && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
-            // Get user name from profile if available
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('name')
-              .eq('user_id', session.user.id)
-              .single();
-            
-            const userName = profile?.name || session.user.email;
-            
-            // Import toast only if it's a new sign in
-            if (event === 'SIGNED_IN') {
-              const { toast } = await import("sonner");
-              toast.success(`¡Bienvenido, ${userName}!`, {
-                position: "bottom-right",
-                duration: 4000,
-              });
-            }
+          if (!wasAuthenticated && event === 'SIGNED_IN') {
+            // Defer Supabase calls with setTimeout to prevent deadlock
+            setTimeout(() => {
+              supabase
+                .from('profiles')
+                .select('name')
+                .eq('user_id', session.user.id)
+                .single()
+                .then(({ data: profile }) => {
+                  const userName = profile?.name || session.user.email;
+                  import("sonner").then(({ toast }) => {
+                    toast.success(`¡Bienvenido, ${userName}!`, {
+                      position: "bottom-right",
+                      duration: 4000,
+                    });
+                  });
+                });
+            }, 0);
           }
         } else {
           // No hay sesión
