@@ -40,10 +40,9 @@ serve(async (req) => {
   }
 
   try {
-    // Enhanced CRON authentication with timestamp validation
+    // Verify cron secret
     const authHeader = req.headers.get('Authorization');
     const cronSecret = Deno.env.get('CRON_SECRET');
-    const requestTimestamp = req.headers.get('X-Request-Timestamp');
     
     if (!authHeader || !cronSecret || !authHeader.includes(cronSecret)) {
       console.error('Unauthorized: Invalid cron secret');
@@ -54,24 +53,6 @@ serve(async (req) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
-    }
-
-    // Validate timestamp to prevent replay attacks (allow 5 minute window)
-    if (requestTimestamp) {
-      const timestamp = parseInt(requestTimestamp, 10);
-      const now = Date.now();
-      const fiveMinutes = 5 * 60 * 1000;
-      
-      if (isNaN(timestamp) || Math.abs(now - timestamp) > fiveMinutes) {
-        console.error('Unauthorized: Invalid or expired timestamp');
-        return new Response(
-          JSON.stringify({ error: 'Unauthorized - Request expired or invalid timestamp' }),
-          { 
-            status: 401,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
-      }
     }
 
     const supabase = createClient(

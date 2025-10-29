@@ -126,9 +126,8 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     overflow-x: hidden;
-    height: 100%;
     /* Enable GPU acceleration for smoother scrolling */
     -webkit-overflow-scrolling: touch;
   }
@@ -136,20 +135,12 @@
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
-    height: 100%;
+    overflow-y: auto;
+    min-height: 100vh;
     /* Optimize font rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    /* Prevent layout shifts */
-    transform: translateZ(0);
-  }
-  
-  /* Smooth page transitions */
-  #root {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
   }
   
   /* Excepciones específicas donde NO queremos uppercase */
@@ -201,37 +192,5 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
-  }
-  
-  /* Smooth transitions */
-  .smooth-transition {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  /* Image optimization */
-  img {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-  
-  /* Prevent layout shift */
-  .aspect-ratio-box {
-    position: relative;
-    width: 100%;
-  }
-  
-  .aspect-ratio-box::before {
-    content: '';
-    display: block;
-    padding-top: 100%; /* Default 1:1 ratio */
-  }
-  
-  .aspect-ratio-box > * {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 }

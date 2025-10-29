@@ -14,7 +14,6 @@ import headerBg from "@/assets/iberian-products-background.jpg";
 import dropdownBg from "@/assets/jamon-iberico-traditional.jpg";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [hasRevealed, setHasRevealed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCartPreview, setShowCartPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -138,46 +137,12 @@ const Navbar = () => {
     });
   };
   useEffect(() => {
-    const getScrollTop = () =>
-      (typeof window !== 'undefined' && typeof window.pageYOffset === 'number' ? window.pageYOffset : 0) ||
-      (typeof window !== 'undefined' && typeof window.scrollY === 'number' ? window.scrollY : 0) ||
-      (typeof document !== 'undefined' ? document.documentElement.scrollTop : 0) ||
-      (typeof document !== 'undefined' ? (document.body?.scrollTop ?? 0) : 0);
-
-    const THRESHOLD = 12; // Evita falsos positivos al cargar
-
     const handleScroll = throttle(() => {
-      const top = getScrollTop();
-      const scrolled = top > THRESHOLD;
-      if (scrolled && !hasRevealed) setHasRevealed(true);
-      setIsScrolled(scrolled || hasRevealed);
+      setIsScrolled(window.scrollY > 50);
     }, 100);
-
-    const bind = (target: any, event: string) => target.addEventListener(event, handleScroll, { passive: true });
-    const unbind = (target: any, event: string) => target.removeEventListener(event, handleScroll);
-
-    ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
-      bind(window, evt);
-      bind(document, evt);
-    });
-
-    document.addEventListener('visibilitychange', handleScroll);
-
-    return () => {
-      ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
-        unbind(window, evt);
-        unbind(document, evt);
-      });
-      document.removeEventListener('visibilitychange', handleScroll);
-    };
-  }, [hasRevealed]);
-  // Reset reveal when entering home (hide until scroll again)
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setHasRevealed(false);
-      setIsScrolled(false);
-    }
-  }, [location.pathname]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const handleNavigation = useCallback((item: {
     label: string;
     id: string;
@@ -256,18 +221,15 @@ const Navbar = () => {
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
   }, [handleNavigation, location.hash]);
-  // Mostrar navbar en la home solo cuando ya se ha revelado por scroll
-  const shouldShowNavbar = location.pathname === '/' && (isScrolled || hasRevealed);
-
   return <motion.nav initial={{
     y: -100,
     opacity: 0
   }} animate={{
-    y: shouldShowNavbar ? 0 : -100,
-    opacity: shouldShowNavbar ? 1 : 0
+    y: isScrolled ? 0 : -100,
+    opacity: isScrolled ? 1 : 0
   }} transition={{
     duration: 0.3
-  }} className="sticky top-0 z-50 shadow-lg" style={{
+  }} className="fixed top-0 left-0 right-0 z-50 shadow-lg" style={{
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${headerBg})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -323,8 +285,17 @@ const Navbar = () => {
                   <p>{pendingReviewsCount > 0 ? 'Experiencias por valorar' : 'Mi perfil'}</p>
                 </TooltipContent>
               </Tooltip>
-            ) : null}
-
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAuthModal(true)}
+                className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
+                aria-label="Iniciar sesión"
+              >
+                <User size={20} />
+              </motion.button>
+            )}
 
             {/* Pending Gifts Badge */}
             {user && pendingGiftsCount > 0 && (
@@ -355,8 +326,8 @@ const Navbar = () => {
               </Tooltip>
             )}
 
-            {/* Cart Button - Only show if user is authenticated and cart has items */}
-            {user && getTotalItems() > 0 && (
+            {/* Cart Button - Only show if cart has items */}
+            {getTotalItems() > 0 && (
               <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}

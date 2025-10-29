@@ -59,27 +59,25 @@ const App = () => (
         <Sonner />
         <AutoUpdater />
         <BrowserRouter>
-          <div className="min-h-screen bg-background gpu-accelerated">
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/perfil" element={<ProfilePage />} />
-                <Route path="/carrito" element={<CartPage />} />
-                <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
-                <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-                <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-                <Route path="/cestas" element={<CestasPage />} />
-                <Route path="/experiencia" element={<ExperienciaPage />} />
-                <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-                <Route path="/regalos" element={<RegalosPage />} />
-                <Route path="/feedback" element={<FeedbackPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <CookieBanner />
-            </Suspense>
-          </div>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/perfil" element={<ProfilePage />} />
+              <Route path="/carrito" element={<CartPage />} />
+              <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
+              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
+              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+              <Route path="/cestas" element={<CestasPage />} />
+              <Route path="/experiencia" element={<ExperienciaPage />} />
+              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
+              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+              <Route path="/regalos" element={<RegalosPage />} />
+              <Route path="/feedback" element={<FeedbackPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <CookieBanner />
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </CartProvider>

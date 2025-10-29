@@ -29,12 +29,3 @@ verify_jwt = true
 
 [functions.process-gift-shipping]
 verify_jwt = true
-
-[functions.sync-reviews]
-verify_jwt = false
-
-[functions.receive-review]
-verify_jwt = false
-
-[functions.get-user-reviews]
-verify_jwt = true

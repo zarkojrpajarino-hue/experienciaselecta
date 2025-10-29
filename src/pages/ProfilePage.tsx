@@ -163,15 +163,6 @@ const ProfilePage = () => {
     };
   }, [user?.id]);
 
-  // Auto-refresh reviews when the tab is active
-  useEffect(() => {
-    if (activeTab !== 'reviews' || !user?.id) return;
-    loadUserData(user.id);
-    const id = setInterval(() => loadUserData(user.id), 15000);
-    return () => clearInterval(id);
-  }, [activeTab, user?.id]);
-
-
   const checkAuthAndLoadData = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -192,7 +183,7 @@ const ProfilePage = () => {
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
-        .maybeSingle();
+        .single();
 
       setProfile(profileData);
 
@@ -201,7 +192,7 @@ const ProfilePage = () => {
         .from("customers")
         .select("id")
         .eq("user_id", userId)
-        .maybeSingle();
+        .single();
 
       if (customerData) {
         // Load orders with items and shipping info
@@ -282,28 +273,25 @@ const ProfilePage = () => {
         setOrders(expandedOrders);
       }
 
-      // Load user's reviews via Edge Function (pull from remote endpoint)
-      const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
-        body: { limit: 200 }
-      });
+      // Load user's reviews from paragenteselecta.com only
+      const { data: reviewsData, error: reviewsError } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("source_site", "paragenteselecta")
+        .order("created_at", { ascending: false });
 
-      if (fnErr) {
-        console.error("Error fetching remote reviews:", fnErr);
+      if (reviewsError) {
+        console.error("Error loading reviews:", reviewsError);
       }
 
-      const remoteReviews = (fnRes as any)?.data || [];
-      const reviewsMapped = remoteReviews.map((r: any) => ({
-        id: r.id,
-        basket_name: r.basket_name,
-        rating: r.rating,
-        comment: r.comment || '',
-        created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
-        user_id: userId,
-        source_site: 'paragenteselecta',
+      // Map profile to reviews using the profile data already loaded
+      const reviewsWithProfiles = (reviewsData || []).map(review => ({
+        ...review,
         profiles: profileData
       }));
 
-      setReviews(reviewsMapped);
+      setReviews(reviewsWithProfiles);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -623,7 +611,7 @@ const ProfilePage = () => {
               ) : (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
-                    Aún no aparecen valoraciones para tu email de sesión. Si acabas de valorar, espera unos segundos y vuelve a abrir esta pestaña.
+                    Aún no has dejado valoraciones en paragenteselecta.com.
                   </CardContent>
                 </Card>
               )}
