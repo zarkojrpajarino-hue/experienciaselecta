@@ -150,23 +150,26 @@ const DialogPortal: FC<{ children?: ReactNode }> = ({ children }) => {
 };
 
 const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, onClick, style, ...props }, ref) => {
+  ({ className, onClick, style, children, ...props }, ref) => {
     const ctx = useContext(DialogContext);
     return (
       <div
         ref={ref}
         onClick={(e) => {
           onClick?.(e as any);
-          if (!(e as any).defaultPrevented) ctx?.setOpen(false);
+          if ((e.target as HTMLElement) === e.currentTarget && !(e as any).defaultPrevented) {
+            ctx?.setOpen(false);
+          }
         }}
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          inset: 0,
           zIndex: 9998,
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
           ...style
         }}
         className={cn(
@@ -174,7 +177,9 @@ const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
           className,
         )}
         {...props}
-      />
+      >
+        {children}
+      </div>
     );
   },
 );
@@ -192,36 +197,36 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ classNam
 
   return (
     <DialogPortal>
-      <DialogOverlay data-state="open" />
-      <div
-        role="dialog"
-        aria-modal="true"
-        ref={ref}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 9999,
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          ...style
-        }}
-        className={cn(
-          "grid w-full gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-        {!hideClose && (
-          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogClose>
-        )}
-      </div>
+      <DialogOverlay data-state="open">
+        <div
+          role="dialog"
+          aria-modal="true"
+          ref={ref}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'relative',
+            zIndex: 9999,
+            maxHeight: '90dvh',
+            width: '100%',
+            overflowY: 'auto',
+            ...style
+          }}
+          className={cn(
+            "grid w-full max-w-lg sm:max-w-xl md:max-w-2xl gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+            "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+          {!hideClose && (
+            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </DialogClose>
+          )}
+        </div>
+      </DialogOverlay>
     </DialogPortal>
   );
 });
