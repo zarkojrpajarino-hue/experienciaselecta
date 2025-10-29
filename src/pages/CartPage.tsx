@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,11 @@ const CartPage = () => {
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Refs para anclar el scroll al abrir el checkout
+  const giftSummaryRef = useRef<HTMLDivElement | null>(null);
+  const personalSummaryRef = useRef<HTMLDivElement | null>(null);
+  const combinedSummaryRef = useRef<HTMLDivElement | null>(null);
 
   // Reopen checkout after OAuth redirect if there's a pending checkout
   React.useEffect(() => {
@@ -49,7 +54,15 @@ const CartPage = () => {
     setIsCheckoutOpen(true);
   };
 
-  // Map CartItem to BasketItem for CheckoutModal - basado en modo
+  const openCheckout = (anchorRef: React.RefObject<HTMLElement | null>, giftMode: boolean, items: typeof cart) => {
+    try {
+      anchorRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {}
+    setTimeout(() => {
+      setCheckoutItems(items);
+      handleCheckout(giftMode, items);
+    }, 300);
+  };
   const [checkoutItems, setCheckoutItems] = useState<typeof cart>([]);
   
   const getBasketItems = (items: typeof cart) => items.map(item => ({
@@ -214,7 +227,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Order Summary for Gifts */}
-                  <div className="lg:col-span-1">
+                  <div className="lg:col-span-1" ref={giftSummaryRef}>
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
@@ -252,17 +265,12 @@ const CartPage = () => {
                           Gastos de envío calculados en el checkout
                         </p>
 
-                        {!hasBothTypes && (
-                          <Button
-                            onClick={() => {
-                              setCheckoutItems(giftItems);
-                              handleCheckout(true, giftItems);
-                            }}
-                            className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                          >
-                            Continuar al pago ({getGiftTotal().toFixed(2)}€)
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => openCheckout(giftSummaryRef, true, giftItems)}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
+                        </Button>
 
                         <p className="text-xs text-gray-500 text-center">
                           Pago seguro con Stripe
@@ -380,7 +388,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Order Summary for Personal */}
-                  <div className="lg:col-span-1">
+                  <div className="lg:col-span-1" ref={personalSummaryRef}>
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
@@ -418,17 +426,12 @@ const CartPage = () => {
                           Gastos de envío calculados en el checkout
                         </p>
 
-                        {!hasBothTypes && (
-                          <Button
-                            onClick={() => {
-                              setCheckoutItems(personalItems);
-                              handleCheckout(false, personalItems);
-                            }}
-                            className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                          >
-                            Continuar al pago ({getPersonalTotal().toFixed(2)}€)
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => openCheckout(personalSummaryRef, false, personalItems)}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
+                        </Button>
 
                         <p className="text-xs text-gray-500 text-center">
                           Pago seguro con Stripe
@@ -440,18 +443,100 @@ const CartPage = () => {
               </div>
             )}
 
-            {/* Botón de pago al final cuando hay ambos tipos */}
+            {/* Tarjeta de pago conjunto cuando hay ambos tipos */}
             {hasBothTypes && (
-              <div className="w-full max-w-md mx-auto mt-8">
-                <Button
-                  onClick={() => {
-                    setCheckoutItems(cart);
-                    handleCheckout(giftItems.length > 0, cart);
-                  }}
-                  className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
-                >
-                  Continuar al pago ({getTotalAmount().toFixed(2)}€)
-                </Button>
+              <div className="mt-8">
+                <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
+                  💳 Pagar ambos carritos a la vez
+                </h1>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Descripción */}
+                  <div className="lg:col-span-2">
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <p className="text-lg font-poppins text-black">
+                            Puedes pagar todas tus cestas (regalos y personales) en un solo proceso.
+                          </p>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 bg-gold/10 rounded-lg">
+                              <p className="text-sm text-gray-600 mb-1">Cestas para regalar</p>
+                              <p className="text-2xl font-poppins font-bold text-black">
+                                {giftItems.length} {giftItems.length === 1 ? 'cesta' : 'cestas'}
+                              </p>
+                              <p className="text-lg font-poppins font-bold text-gold mt-1">
+                                {getGiftTotal().toFixed(2)}€
+                              </p>
+                            </div>
+                            <div className="p-4 bg-gold/10 rounded-lg">
+                              <p className="text-sm text-gray-600 mb-1">Tus cestas</p>
+                              <p className="text-2xl font-poppins font-bold text-black">
+                                {personalItems.length} {personalItems.length === 1 ? 'cesta' : 'cestas'}
+                              </p>
+                              <p className="text-lg font-poppins font-bold text-gold mt-1">
+                                {getPersonalTotal().toFixed(2)}€
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Resumen y botón de pago */}
+                  <div className="lg:col-span-1" ref={combinedSummaryRef}>
+                    <Card className="sticky top-24">
+                      <CardHeader>
+                        <CardTitle className="font-poppins text-black">
+                          Resumen total
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Cestas de regalo</span>
+                            <span className="font-poppins font-bold text-black">
+                              {getGiftTotal().toFixed(2)}€
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Tus cestas</span>
+                            <span className="font-poppins font-bold text-black">
+                              {getPersonalTotal().toFixed(2)}€
+                            </span>
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        <div className="flex justify-between text-lg">
+                          <span className="font-poppins font-bold text-black">Total</span>
+                          <span className="font-poppins font-bold text-gold text-xl">
+                            {getTotalAmount().toFixed(2)}€
+                          </span>
+                        </div>
+
+                        <Separator />
+
+                        <p className="text-xs text-gray-500 text-center">
+                          Gastos de envío calculados en el checkout
+                        </p>
+
+                        <Button
+                          onClick={() => openCheckout(combinedSummaryRef, giftItems.length > 0, cart)}
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                        >
+                          Continuar al pago ({getTotalAmount().toFixed(2)}€)
+                        </Button>
+
+                        <p className="text-xs text-gray-500 text-center">
+                          Pago seguro con Stripe
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               </div>
             )}
           </div>

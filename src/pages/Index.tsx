@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import AuthModal from "@/components/AuthModal";
 import ContactModal from "@/components/ContactModal";
-import ScrollDownIndicator from "@/components/ScrollDownIndicator";
+
 import { supabase } from "@/integrations/supabase/client";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
@@ -311,10 +311,11 @@ const Index = () => {
       data: {
         subscription
       }
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (mounted) {
         const wasAuthenticated = isAuthenticated;
         setIsAuthenticated(!!session);
+        
         if (session) {
           setShowAuthModal(false);
           // Limpiar TODOS los flags cuando el usuario inicia sesión exitosamente
@@ -322,24 +323,24 @@ const Index = () => {
           localStorage.removeItem('pendingCheckout');
           
           // Show welcome toast for new login (not on page load)
-          if (!wasAuthenticated && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
-            // Get user name from profile if available
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('name')
-              .eq('user_id', session.user.id)
-              .single();
-            
-            const userName = profile?.name || session.user.email;
-            
-            // Import toast only if it's a new sign in
-            if (event === 'SIGNED_IN') {
-              const { toast } = await import("sonner");
-              toast.success(`¡Bienvenido, ${userName}!`, {
-                position: "bottom-right",
-                duration: 4000,
-              });
-            }
+          if (!wasAuthenticated && event === 'SIGNED_IN') {
+            // Defer Supabase calls with setTimeout to prevent deadlock
+            setTimeout(() => {
+              supabase
+                .from('profiles')
+                .select('name')
+                .eq('user_id', session.user.id)
+                .single()
+                .then(({ data: profile }) => {
+                  const userName = profile?.name || session.user.email;
+                  import("sonner").then(({ toast }) => {
+                    toast.success(`¡Bienvenido, ${userName}!`, {
+                      position: "bottom-right",
+                      duration: 4000,
+                    });
+                  });
+                });
+            }, 0);
           }
         } else {
           // No hay sesión
@@ -363,22 +364,9 @@ const Index = () => {
         // Limpiar flags
         sessionStorage.removeItem('hasClosedAuthModal');
       } else {
-        // Usuario NO tiene sesión
+        // Usuario NO tiene sesión: mostrar modal inmediatamente al entrar
         setIsAuthenticated(false);
-
-        // Solo mostrar modal si no lo ha cerrado antes en esta sesión Y no está en medio de OAuth
-        const hasClosedAuthModal = sessionStorage.getItem('hasClosedAuthModal');
-        const isReturningFromOAuth = window.location.hash.includes('access_token') || window.location.search.includes('code=');
-        
-        // Ya no mostramos el modal de login automáticamente en la home
-        // Se abrirá solo bajo acción del usuario (Navbar) o cuando el checkout lo requiera
-        // if (!hasClosedAuthModal && !isReturningFromOAuth) {
-        //   setTimeout(() => {
-        //     if (mounted) {
-        //       setShowAuthModal(true);
-        //     }
-        //   }, 1000);
-        // }
+        setShowAuthModal(true);
       }
     };
     checkAuth();
@@ -451,7 +439,6 @@ const Index = () => {
   return <div className="min-h-screen bg-background font-work-sans">
       <Navbar />
       {/* <PageNavigation /> */}
-      <ScrollDownIndicator />
       
       <VisualHeader />
       
