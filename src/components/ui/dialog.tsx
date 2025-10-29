@@ -53,13 +53,17 @@ const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, child
   useEffect(() => {
     if (!actualOpen || typeof document === 'undefined') return;
     const body = document.body;
-    const prevOverflow = body.style.overflow;
-    
-    // Solo bloquear scroll, sin mover el body
+    const html = document.documentElement;
+    const prevBodyOverflow = body.style.overflow;
+    const prevHtmlOverflow = html.style.overflow;
+
+    // Bloquear scroll del documento completo
     body.style.overflow = 'hidden';
+    html.style.overflow = 'hidden';
 
     return () => {
-      body.style.overflow = prevOverflow;
+      body.style.overflow = prevBodyOverflow;
+      html.style.overflow = prevHtmlOverflow;
     };
   }, [actualOpen]);
 
@@ -170,6 +174,8 @@ const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
           alignItems: 'center',
           justifyContent: 'center',
           padding: '16px',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
           ...style
         }}
         className={cn(
