@@ -168,13 +168,14 @@ const DialogOverlay = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
         style={{
           position: 'fixed',
           inset: 0,
-          zIndex: 9998,
+          zIndex: 2147483646,
           backgroundColor: 'rgba(0, 0, 0, 0.6)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           padding: '16px',
-          overflowY: 'auto',
+          overflow: 'hidden',
+          pointerEvents: 'auto',
           WebkitOverflowScrolling: 'touch',
           ...style
         }}
@@ -211,10 +212,11 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ classNam
           onClick={(e) => e.stopPropagation()}
           style={{
             position: 'relative',
-            zIndex: 9999,
-            maxHeight: '90dvh',
+            zIndex: 2147483647,
+            maxHeight: 'min(90vh, 90dvh)',
             width: '100%',
             overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
             ...style
           }}
           className={cn(
