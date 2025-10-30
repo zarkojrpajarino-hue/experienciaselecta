@@ -25,6 +25,7 @@ import grupoGrandeExperienceImg from "@/assets/grupo-grande-experience.jpg";
 import parejaCestasImg from "@/assets/pareja-nueva-cesta-clean.png";
 import familiaCestasImg from "@/assets/familia-nueva-cesta.jpg";
 import amigosCestasImg from "@/assets/amigos-nueva-cesta-clean.png";
+import OptimizedImage from "./OptimizedImage";
 const BasketCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
