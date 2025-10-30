@@ -384,13 +384,15 @@ const BasketCategories = () => {
               const isActive = (index - currentIndex + categories.length) % categories.length === 0;
 
               return (
-                  <div
-                    key={category.id}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl"
-                    style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
-                    onClick={() => isActive && handleCategoryClick(category.title)}
-                  >
                   <motion.div
+                    key={category.id}
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl cursor-pointer"
+                    style={{ 
+                      zIndex: position.zIndex,
+                      pointerEvents: 'auto',
+                      willChange: isActive ? 'transform' : 'auto'
+                    }}
+                    onClick={() => isActive && handleCategoryClick(category.title)}
                     animate={{
                       x: position.x,
                       z: position.z,
@@ -398,17 +400,21 @@ const BasketCategories = () => {
                       scale: position.scale,
                       opacity: position.opacity
                     }}
-                    transition={{ duration: 0.7, ease: 'easeInOut' }}
-                    style={{ transformStyle: 'preserve-3d' }}
+                    transition={{ 
+                      duration: 0.5, 
+                      ease: [0.4, 0, 0.2, 1]
+                    }}
                   >
                     {/* Card Container */}
-                    <div className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0">
+                    <div className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0 pointer-events-none">
                       {/* Imagen */}
                       <div className="w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
                           className="w-full h-full object-cover rounded-3xl md:rounded-[2rem]"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
 
@@ -442,7 +448,6 @@ const BasketCategories = () => {
                       </div>
                     </div>
                   </motion.div>
-                </div>
               );
             })}
           </div>

@@ -200,7 +200,8 @@
   .gpu-accelerated {
     transform: translateZ(0);
     backface-visibility: hidden;
-    perspective: 1000px;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
   }
   
   /* Smooth transitions */
