@@ -404,6 +404,13 @@ const BasketCategories = () => {
                   >
                     {/* Card Container */}
                     <div className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0">
+                      <button
+                        type="button"
+                        aria-label={`Abrir catálogo: ${category.title}`}
+                        onClick={() => handleCategoryClick(category.title)}
+                        className="absolute inset-0 z-40 cursor-pointer bg-transparent"
+                        style={{ pointerEvents: 'auto' }}
+                      />
                       {/* Imagen */}
                       <div className="w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
