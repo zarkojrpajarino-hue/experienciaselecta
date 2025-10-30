@@ -45,6 +45,12 @@ const BasketCategories = () => {
     tooltipTimerRef.current = window.setTimeout(() => setTooltipOpen(false), ms);
   };
 
+  // Debug: monitor opening of the sheet and selected category
+  useEffect(() => {
+    if (isSheetOpen) {
+      console.info('sheet open with category', selectedCategory);
+    }
+  }, [isSheetOpen, selectedCategory]);
   // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
   useEffect(() => {
     const parseBasketId = (): number | null => {
@@ -473,7 +479,7 @@ const BasketCategories = () => {
       <Sheet key={sheetKey} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent 
           side="right" 
-          className="w-full sm:max-w-4xl lg:max-w-6xl overflow-y-auto border-0 shadow-lg p-0 bg-white"
+          className="z-[120] w-full sm:max-w-4xl lg:max-w-6xl overflow-y-auto border-0 shadow-lg p-0 bg-white"
         >
           <SheetHeader className="relative p-6 text-left bg-white" style={{ paddingTop: '3rem' }}>
             <div className="flex items-center justify-between">
