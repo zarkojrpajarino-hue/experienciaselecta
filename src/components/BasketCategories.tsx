@@ -389,13 +389,7 @@ const BasketCategories = () => {
                     key={category.id}
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl cursor-pointer"
                     style={{ zIndex: position.zIndex, pointerEvents: 'auto' }}
-                    onClick={() => {
-                      if (isActive) {
-                        handleCategoryClick(category.title);
-                      } else {
-                        setCurrentIndex(index);
-                      }
-                    }}
+                    onClick={() => handleCategoryClick(category.title)}
                   >
                   <motion.div
                     animate={{
