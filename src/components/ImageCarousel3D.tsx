@@ -110,38 +110,33 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
               const isActive = (index - currentIndex + slides.length) % slides.length === 0;
 
               return (
-                <motion.div
+                <div
                   key={index}
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[35%] md:w-[25%] max-w-xs cursor-pointer"
-                  style={{ 
-                    zIndex: position.zIndex,
-                    pointerEvents: 'auto',
-                    willChange: isActive ? 'transform' : 'auto'
-                  }}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[35%] md:w-[25%] max-w-xs"
+                  style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
                   onClick={() => isActive && openImage(index)}
-                  animate={{
-                    x: position.x,
-                    z: position.z,
-                    rotateY: position.rotateY,
-                    scale: position.scale,
-                    opacity: position.opacity
-                  }}
-                  transition={{ 
-                    duration: 0.5, 
-                    ease: [0.4, 0, 0.2, 1]
-                  }}
                 >
-                    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-none">
+                  <motion.div
+                    animate={{
+                      x: position.x,
+                      z: position.z,
+                      rotateY: position.rotateY,
+                      scale: position.scale,
+                      opacity: position.opacity
+                    }}
+                    transition={{ duration: 0.6, ease: 'easeInOut' }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                    className="cursor-pointer"
+                  >
+                    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
                       <img
                         src={slide.image}
                         alt={`${title} ${index + 1}`}
                         className="w-full aspect-square object-cover"
-                        loading={isActive ? "eager" : "lazy"}
-                        decoding="async"
-                        style={{ transform: 'translateZ(0)' }}
                       />
                     </div>
                   </motion.div>
+                </div>
               );
             })}
           </div>
@@ -150,8 +145,8 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         {/* Navigation Buttons Below Images */}
         <div className="flex justify-center items-center gap-8 my-8 mt-4">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={prevSlide}
             className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 text-black rounded-full shadow-lg transition-all duration-300"
           >
@@ -163,8 +158,8 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
           </span>
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={nextSlide}
             className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white/90 text-black rounded-full shadow-lg transition-all duration-300"
           >

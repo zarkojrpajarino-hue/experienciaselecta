@@ -27,7 +27,7 @@ const OptimizedImage = ({ src, alt, className, priority = false, width, height }
           }
         });
       },
-      { rootMargin: "100px" }
+      { rootMargin: "50px" }
     );
 
     if (imgRef.current) {
@@ -40,7 +40,7 @@ const OptimizedImage = ({ src, alt, className, priority = false, width, height }
   return (
     <div className={cn("relative overflow-hidden", className)}>
       {!isLoaded && (
-        <div className="absolute inset-0 bg-muted/30 animate-pulse" />
+        <div className="absolute inset-0 bg-muted animate-pulse" />
       )}
       <img
         ref={imgRef}
@@ -52,11 +52,10 @@ const OptimizedImage = ({ src, alt, className, priority = false, width, height }
         decoding="async"
         onLoad={() => setIsLoaded(true)}
         className={cn(
-          "transition-opacity duration-200",
+          "transition-opacity duration-300",
           isLoaded ? "opacity-100" : "opacity-0",
           className
         )}
-        style={{ transform: 'translateZ(0)' }}
       />
     </div>
   );

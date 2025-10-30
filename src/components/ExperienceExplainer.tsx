@@ -79,8 +79,9 @@ const ExperienceExplainer = () => {
                  }}
                  className="absolute inset-0 flex items-center justify-center"
                  style={{
-                 transformStyle: "preserve-3d",
+                   transformStyle: "preserve-3d",
                    transformOrigin: "50% 50%",
+                   willChange: "transform, opacity",
                    zIndex: isActive ? 3 : (isNext || isPrev) ? 2 : 1,
                    pointerEvents: isActive ? "auto" : "none"
                  }}

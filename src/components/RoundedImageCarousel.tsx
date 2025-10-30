@@ -86,7 +86,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               <TooltipProvider delayDuration={0}>
                 <Tooltip open={arrowTooltipOpen} onOpenChange={setArrowTooltipOpen}>
                   <TooltipTrigger asChild>
-                      <motion.button
+                    <motion.button
                       onClick={() => {
                         // Abrir el menú hamburger inmediatamente sin hacer scroll
                         const buttons = document.querySelectorAll('button');
@@ -96,8 +96,8 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
                         }) as HTMLButtonElement | undefined;
                         hamburgerButton?.click();
                       }}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.15, y: -3 }}
+                      whileTap={{ scale: 0.9 }}
                       animate={{
                         y: [0, -5, 0],
                       }}
@@ -166,8 +166,8 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           {/* Nav */}
           <div className="flex gap-3 py-2">
             <motion.button 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }} 
+              whileHover={{ scale: 1.1 }} 
+              whileTap={{ scale: 0.9 }} 
               onClick={() => setIndex((p) => (p - 1 + slides.length) % slides.length)} 
               className="p-0 bg-transparent border-0"
               style={{ color: '#000000' }}
@@ -175,9 +175,9 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               <ChevronLeft className="w-6 h-6" />
             </motion.button>
             <motion.button 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }} 
-              onClick={() => setIndex((p) => (p + 1) % slides.length)}
+              whileHover={{ scale: 1.1 }} 
+              whileTap={{ scale: 0.9 }} 
+              onClick={() => setIndex((p) => (p + 1) % slides.length)} 
               className="p-0 bg-transparent border-0"
               style={{ color: '#000000' }}
             >
@@ -198,12 +198,9 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               key={i}
               initial={false}
               animate={{ opacity: index === i ? 1 : 0 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: 0.6 }}
               className="absolute inset-0 cursor-zoom-in rounded-[2rem] overflow-hidden"
-              style={{ 
-                pointerEvents: index === i ? "auto" : "none",
-                transform: 'translateZ(0)'
-              }}
+              style={{ pointerEvents: index === i ? "auto" : "none" }}
               onClick={() => setOpen(true)}
             >
               <img
@@ -211,7 +208,6 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
                 alt={s.alt || (typeof s.title === 'string' ? s.title : 'Imagen del carrusel')}
                 loading={i === index ? "eager" : "lazy"}
                 decoding="async"
-                style={{ transform: 'translateZ(0)' }}
                 className="w-full h-full object-cover rounded-[2rem]"
               />
             </motion.div>
