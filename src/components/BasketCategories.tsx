@@ -407,7 +407,7 @@ const BasketCategories = () => {
                       <button
                         type="button"
                         aria-label={`Abrir catálogo: ${category.title}`}
-                        onClick={() => handleCategoryClick(category.title)}
+                        onClick={(e) => { e.stopPropagation(); console.log('abrir categoría', category.title); handleCategoryClick(category.title); }}
                         className="absolute inset-0 z-40 cursor-pointer bg-transparent"
                         style={{ pointerEvents: 'auto' }}
                       />
@@ -416,20 +416,31 @@ const BasketCategories = () => {
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
-                          className="w-full h-full object-cover rounded-3xl md:rounded-[2rem]"
+                          className="w-full h-full object-cover rounded-3xl md:rounded-[2rem] cursor-pointer"
+                          loading="lazy"
+                          decoding="async"
+                          onClick={(e) => { e.stopPropagation(); handleCategoryClick(category.title); }}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategoryClick(category.title); } }}
+                          style={{ pointerEvents: 'auto' }}
                         />
                       </div>
 
                       {/* Título y Flecha */}
                       <div className="flex items-center justify-center gap-2 md:gap-3">
                         <h3 
-                          className="font-bebas font-bold text-2xl md:text-4xl whitespace-nowrap tracking-[0.2em]"
+                          className="font-bebas font-bold text-2xl md:text-4xl whitespace-nowrap tracking-[0.2em] cursor-pointer"
                           style={{ 
                             color: category.title === "Familia" ? '#4A7050' 
                                  : category.title === "Pareja" ? '#782C23'
                                  : category.title === "Amigos" ? '#44667D'
                                  : '#FFFFFF'
                           }}
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); handleCategoryClick(category.title); }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategoryClick(category.title); } }}
                         >
                           {category.title}.
                         </h3>
