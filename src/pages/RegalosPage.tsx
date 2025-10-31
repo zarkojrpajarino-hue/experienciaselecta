@@ -4,8 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Gift, X, Home, Info } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Gift, X, Home } from 'lucide-react';
 
 // Import basket images
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -276,9 +275,9 @@ const RegalosPage = () => {
                             Nota: "{gift.personal_note}"
                           </p>
                         )}
-                          <p className="text-[0.65rem] sm:text-sm md:text-base font-poppins font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] mt-4 leading-tight text-black">
-                            Rellena la información para que podamos enviártelo
-                          </p>
+                        <p className="text-[0.65rem] sm:text-sm md:text-base font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] font-bungee mt-4 leading-tight">
+                          Rellena la información para que podamos enviártelo
+                        </p>
                       </div>
                     </div>
 
@@ -294,7 +293,7 @@ const RegalosPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Mail de destinatario *</label>
+                    <label className="block text-sm font-medium mb-2">Email *</label>
                     <Input
                       type="email"
                       value={shippingData.email}
@@ -302,14 +301,6 @@ const RegalosPage = () => {
                       placeholder="tu@email.com"
                       required
                       readOnly
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Número del destinatario</label>
-                    <Input
-                      type="tel"
-                      placeholder="+34 600 000 000"
                     />
                   </div>
 

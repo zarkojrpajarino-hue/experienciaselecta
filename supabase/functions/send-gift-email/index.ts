@@ -1,7 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { Resend } from 'https://esm.sh/resend@4.0.0'
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -127,35 +126,27 @@ Experiencias Selecta - Momentos que perduran
         console.log('Recipient email sent:', recipientEmailResponse);
       }
       
-      // Send SMS if phone is provided
+      // Send SMS if phone is provided (log the message for now - user needs to configure SMS provider like Twilio)
       if (recipient.recipientPhone) {
-        const personalNoteText = recipient.personalNote ? `\n\nMensaje: "${recipient.personalNote}"` : '';
-        const smsMessage = `Hola ${recipient.recipientName}, ${validatedData.senderName} te ha regalado una experiencia única. Reclama tu regalo: https://experienciaselecta.com/regalos${personalNoteText}`;
+        const smsMessage = `${recipient.recipientName}, ${validatedData.senderName} acaba de regalarte una experiencia personalizada e inolvidable, entra en la web experienciaselecta.com para que podamos enviarte el regalo${recipient.personalNote ? `. Nota: ${recipient.personalNote}` : ''}`;
         
-        console.log('Sending SMS to', recipient.recipientPhone);
+        console.log('SMS message prepared for', recipient.recipientPhone, ':', smsMessage);
+        console.log('⚠️ IMPORTANTE: Para enviar SMS, configura un proveedor de SMS como Twilio y descomenta el código correspondiente.');
         
-        try {
-          // Initialize Supabase client to call our send-sms function
-          const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-          const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-          const supabase = createClient(supabaseUrl, supabaseKey);
-          
-          const { data: smsData, error: smsError } = await supabase.functions.invoke('send-sms', {
-            body: {
-              to: recipient.recipientPhone,
-              message: smsMessage
-            }
-          });
-
-          if (smsError) {
-            console.error('Error sending SMS:', smsError);
-          } else {
-            console.log('SMS sent successfully:', smsData);
-          }
-        } catch (smsError) {
-          console.error('Failed to send SMS:', smsError);
-          // Continue execution even if SMS fails
-        }
+        // TODO: Configurar Twilio para envío de SMS
+        // Ejemplo de código para Twilio (descomentar cuando esté configurado):
+        /*
+        const twilioClient = new Twilio(
+          Deno.env.get('TWILIO_ACCOUNT_SID'),
+          Deno.env.get('TWILIO_AUTH_TOKEN')
+        );
+        
+        await twilioClient.messages.create({
+          body: smsMessage,
+          from: Deno.env.get('TWILIO_PHONE_NUMBER'),
+          to: recipient.recipientPhone
+        });
+        */
       }
 
       console.log('Notification sent to recipient:', recipient.recipientName);

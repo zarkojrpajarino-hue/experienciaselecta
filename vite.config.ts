@@ -14,12 +14,6 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
-    preserveSymlinks: false,
-  },
-  optimizeDeps: {
-    include: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
-    esbuildOptions: { jsx: "automatic" }
   },
   build: {
     // Generate unique hashes for each build to force updates

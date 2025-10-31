@@ -14,7 +14,7 @@ const AddToCartButton = ({ onClick, price, className = "" }: AddToCartButtonProp
     >
       <button
         onClick={onClick}
-        className="relative bg-primary text-primary-foreground font-rubik font-bold text-base transition-all duration-300 border-0 rounded-xl px-4 py-2 flex items-center gap-2 hover:scale-105 hover:bg-primary/90 whitespace-nowrap shadow-md"
+        className="relative bg-transparent text-black font-rubik font-bold text-base transition-all duration-300 border-0 rounded-xl px-4 py-2 flex items-center gap-2 hover:scale-105 whitespace-nowrap"
         style={{ 
           transformStyle: 'preserve-3d',
           cursor: 'pointer'
@@ -41,7 +41,7 @@ const AddToCartButton = ({ onClick, price, className = "" }: AddToCartButtonProp
       >
         <ShoppingCart className="w-4 h-4" />
         <span className="flex items-center gap-1">
-          Añadir al carrito <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span> <ArrowRight className="w-4 h-4" />
+          Añadir al carrito <span style={{ color: '#FFD700' }} className="text-xl font-bold">{price}€</span> <ArrowRight className="w-4 h-4 text-black" />
         </span>
       </button>
     </div>

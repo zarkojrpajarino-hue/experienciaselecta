@@ -1,34 +1,31 @@
-import React, { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
+import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load pages for better performance
-import Index from "./pages/Index";
-import CestasPage from "./pages/CestasPage";
-import ComprarCestasPage from "./pages/ComprarCestasPage";
+const Index = lazy(() => import("./pages/Index"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
-const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
 const SobreNosotrosDetalle = lazy(() => import("./pages/SobreNosotrosDetalle"));
 const NuestrosClientesPage = lazy(() => import("./pages/NuestrosClientesPage"));
+const CestasPage = lazy(() => import("./pages/CestasPage"));
 const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const ExperienciaSelectaPage = lazy(() => import("./pages/ExperienciaSelectaPage"));
 const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
-const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-import CookieBanner from "./components/CookieBanner";
-import AutoUpdater from "./components/AutoUpdater";
+const CookieBanner = lazy(() => import("./components/CookieBanner"));
+const AutoUpdater = lazy(() => import("./components/AutoUpdater"));
 
-// Loading component with GPU acceleration
+// Loading component
 const PageLoader = () => (
-  <div className="min-h-screen bg-background flex flex-col gpu-accelerated">
+  <div className="min-h-screen bg-background flex flex-col">
     <div className="w-full h-20 bg-muted/20">
       <Skeleton className="h-full w-full" />
     </div>
@@ -40,18 +37,7 @@ const PageLoader = () => (
   </div>
 );
 
-// Configure QueryClient with optimized defaults for better performance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      gcTime: 5 * 60 * 1000, // 5 minutes (formerly cacheTime)
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: 'always',
-      retry: 1,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -61,29 +47,24 @@ const App = () => (
         <Sonner />
         <AutoUpdater />
         <BrowserRouter>
-          <div className="min-h-screen bg-background gpu-accelerated">
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/perfil" element={<ProfilePage />} />
-                <Route path="/carrito" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
-                <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-                <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-                <Route path="/cestas" element={<CestasPage />} />
-                <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
-                <Route path="/experiencia" element={<ExperienciaPage />} />
-                <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-                <Route path="/regalos" element={<RegalosPage />} />
-                <Route path="/feedback" element={<FeedbackPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <CookieBanner />
-            </Suspense>
-          </div>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/perfil" element={<ProfilePage />} />
+              <Route path="/carrito" element={<CartPage />} />
+              <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
+              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
+              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+              <Route path="/cestas" element={<CestasPage />} />
+              <Route path="/experiencia" element={<ExperienciaPage />} />
+              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
+              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+              <Route path="/regalos" element={<RegalosPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <CookieBanner />
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </CartProvider>

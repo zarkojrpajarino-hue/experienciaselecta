@@ -85,10 +85,10 @@ const AutoUpdater = () => {
       checkForUpdates();
     }, 5000);
 
-    // Check every 5 minutes (optimized for better performance)
+    // Check every 2 minutes (not 30 seconds to avoid constant checks)
     checkIntervalRef.current = setInterval(() => {
       checkForUpdates();
-    }, 300000); // 5 minutes
+    }, 120000); // 2 minutes
 
     // Check when tab becomes visible again
     const handleVisibilityChange = () => {

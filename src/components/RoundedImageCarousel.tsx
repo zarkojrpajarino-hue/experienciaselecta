@@ -1,9 +1,8 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SlideItem {
   image: string;
@@ -27,20 +26,9 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   const [open, setOpen] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [arrowTooltipOpen, setArrowTooltipOpen] = useState(false);
 
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
-
-  // Auto-show tooltip for arrow every 12 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setArrowTooltipOpen(true);
-      setTimeout(() => setArrowTooltipOpen(false), 2000);
-    }, 12000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -79,56 +67,9 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {/* Título principal */}
         {!hideMainTitle && (
           <div className="text-center mb-2">
-            <div className="flex items-center justify-center gap-1 sm:gap-2">
-              <h2 className="text-xs sm:text-lg md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
-                ¿Por qué no vendemos cestas y cómo te entendemos?
-              </h2>
-              <TooltipProvider delayDuration={0}>
-                <Tooltip open={arrowTooltipOpen} onOpenChange={setArrowTooltipOpen}>
-                  <TooltipTrigger asChild>
-                    <motion.button
-                      onClick={() => {
-                        // Abrir el menú hamburger inmediatamente sin hacer scroll
-                        const buttons = document.querySelectorAll('button');
-                        const hamburgerButton = Array.from(buttons).find(btn => {
-                          const svg = btn.querySelector('svg');
-                          return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
-                        }) as HTMLButtonElement | undefined;
-                        hamburgerButton?.click();
-                      }}
-                      whileHover={{ scale: 1.15, y: -3 }}
-                      whileTap={{ scale: 0.9 }}
-                      animate={{
-                        y: [0, -5, 0],
-                      }}
-                      transition={{
-                        y: {
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                      }}
-                      onMouseEnter={() => setArrowTooltipOpen(true)}
-                      onMouseLeave={() => setArrowTooltipOpen(false)}
-                      className="p-0 bg-transparent border-0 cursor-pointer flex-shrink-0"
-                      aria-label="Abrir menú"
-                    >
-                      <ChevronUp 
-                        className="w-4 h-4 sm:w-6 sm:h-6 md:w-7 md:h-7" 
-                        style={{ color: '#D4AF37' }}
-                        strokeWidth={3}
-                      />
-                    </motion.button>
-                  </TooltipTrigger>
-                  <TooltipContent 
-                    side="top" 
-                    className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2 before:absolute before:bottom-full before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-black/10 after:absolute after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-transparent after:border-b-white"
-                  >
-                    click
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <h2 className="text-lg sm:text-xl md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
+              ¿Por qué no vendemos cestas y cómo te entendemos?
+            </h2>
           </div>
         )}
 
@@ -206,8 +147,6 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               <img
                 src={s.image}
                 alt={s.alt || (typeof s.title === 'string' ? s.title : 'Imagen del carrusel')}
-                loading={i === index ? "eager" : "lazy"}
-                decoding="async"
                 className="w-full h-full object-cover rounded-[2rem]"
               />
             </motion.div>
@@ -240,4 +179,4 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   );
 };
 
-export default memo(RoundedImageCarousel);
+export default RoundedImageCarousel;

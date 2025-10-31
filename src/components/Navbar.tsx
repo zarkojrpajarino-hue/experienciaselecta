@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { throttle } from "@/utils/throttle";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronLeft, ChevronRight, ShoppingCart, User, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,6 @@ import headerBg from "@/assets/iberian-products-background.jpg";
 import dropdownBg from "@/assets/jamon-iberico-traditional.jpg";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [hasRevealed, setHasRevealed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCartPreview, setShowCartPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -22,7 +20,6 @@ const Navbar = () => {
   const [session, setSession] = useState<any>(null);
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
-  const [hasPendingFeedback, setHasPendingFeedback] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, getTotalItems, getTotalAmount, removeFromCart } = useCart();
@@ -53,18 +50,6 @@ const Navbar = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
-
-  // Listen for pending feedback changes (session-based)
-  useEffect(() => {
-    const update = () => {
-      const hasPending = !!sessionStorage.getItem('pendingPurchaseFeedback');
-      const given = !!sessionStorage.getItem('feedbackGiven');
-      setHasPendingFeedback(hasPending && !given);
-    };
-    update();
-    window.addEventListener('pendingFeedbackChanged', update);
-    return () => window.removeEventListener('pendingFeedbackChanged', update);
   }, []);
 
   const checkPendingGifts = async (email: string) => {
@@ -138,47 +123,13 @@ const Navbar = () => {
     });
   };
   useEffect(() => {
-    const getScrollTop = () =>
-      (typeof window !== 'undefined' && typeof window.pageYOffset === 'number' ? window.pageYOffset : 0) ||
-      (typeof window !== 'undefined' && typeof window.scrollY === 'number' ? window.scrollY : 0) ||
-      (typeof document !== 'undefined' ? document.documentElement.scrollTop : 0) ||
-      (typeof document !== 'undefined' ? (document.body?.scrollTop ?? 0) : 0);
-
-    const THRESHOLD = 12; // Evita falsos positivos al cargar
-
-    const handleScroll = throttle(() => {
-      const top = getScrollTop();
-      const scrolled = top > THRESHOLD;
-      if (scrolled && !hasRevealed) setHasRevealed(true);
-      setIsScrolled(scrolled || hasRevealed);
-    }, 100);
-
-    const bind = (target: any, event: string) => target.addEventListener(event, handleScroll, { passive: true });
-    const unbind = (target: any, event: string) => target.removeEventListener(event, handleScroll);
-
-    ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
-      bind(window, evt);
-      bind(document, evt);
-    });
-
-    document.addEventListener('visibilitychange', handleScroll);
-
-    return () => {
-      ['scroll', 'wheel', 'touchmove', 'resize'].forEach((evt) => {
-        unbind(window, evt);
-        unbind(document, evt);
-      });
-      document.removeEventListener('visibilitychange', handleScroll);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
     };
-  }, [hasRevealed]);
-  // Reset reveal when entering home (hide until scroll again)
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setHasRevealed(false);
-      setIsScrolled(false);
-    }
-  }, [location.pathname]);
-  const handleNavigation = useCallback((item: {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  const handleNavigation = (item: {
     label: string;
     id: string;
     route?: string;
@@ -226,7 +177,7 @@ const Navbar = () => {
         }
       }
     }
-  }, [navigate, location.pathname]);
+  };
   const navItems = [{
     label: "Experiencia selecta.",
     id: "experiencia-selecta",
@@ -249,25 +200,22 @@ const Navbar = () => {
     return navItems.findIndex(item => item.id === location.hash.replace('#', ''));
   };
 
-  const navigateToSection = useCallback((direction: 'prev' | 'next') => {
+  const navigateToSection = (direction: 'prev' | 'next') => {
     const currentIndex = getCurrentSectionIndex();
     const newIndex = direction === 'prev' 
       ? (currentIndex - 1 + navItems.length) % navItems.length
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
-  }, [handleNavigation, location.hash]);
-  // Mostrar navbar en la home solo cuando ya se ha revelado por scroll
-  const shouldShowNavbar = location.pathname === '/' && (isScrolled || hasRevealed);
-
+  };
   return <motion.nav initial={{
     y: -100,
     opacity: 0
   }} animate={{
-    y: shouldShowNavbar ? 0 : -100,
-    opacity: shouldShowNavbar ? 1 : 0
+    y: isScrolled ? 0 : -100,
+    opacity: isScrolled ? 1 : 0
   }} transition={{
     duration: 0.3
-  }} className="sticky top-0 z-50 shadow-lg" style={{
+  }} className="fixed top-0 left-0 right-0 z-50 shadow-lg" style={{
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${headerBg})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -323,8 +271,17 @@ const Navbar = () => {
                   <p>{pendingReviewsCount > 0 ? 'Experiencias por valorar' : 'Mi perfil'}</p>
                 </TooltipContent>
               </Tooltip>
-            ) : null}
-
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAuthModal(true)}
+                className="p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
+                aria-label="Iniciar sesión"
+              >
+                <User size={20} />
+              </motion.button>
+            )}
 
             {/* Pending Gifts Badge */}
             {user && pendingGiftsCount > 0 && (
@@ -355,8 +312,8 @@ const Navbar = () => {
               </Tooltip>
             )}
 
-            {/* Cart Button - Only show if user is authenticated and cart has items */}
-            {user && getTotalItems() > 0 && (
+            {/* Cart Button - Only show if cart has items */}
+            {getTotalItems() > 0 && (
               <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -388,14 +345,6 @@ const Navbar = () => {
               className="relative z-50 p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              {hasPendingFeedback && (
-                <span
-                  className="absolute -top-1 -right-1 bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] text-[10px] font-bold rounded-full px-1.5 h-5 flex items-center justify-center shadow"
-                  aria-label="Feedback pendiente"
-                >
-                  +1
-                </span>
-              )}
             </motion.button>
           </div>
         </div>
@@ -563,40 +512,6 @@ const Navbar = () => {
                 }} />
                       <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(45,100%,70%)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.button>)}
-
-                  {/* Feedback button */}
-                  <motion.button 
-                    initial={{
-                      opacity: 0,
-                      x: -20
-                    }} 
-                    animate={{
-                      opacity: 1,
-                      x: 0
-                    }} 
-                    transition={{
-                      delay: (navItems.length + 1) * 0.05
-                    }} 
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      navigate('/feedback');
-                    }}
-                    className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-[hsl(45,100%,50%)] hover:text-[hsl(45,100%,60%)] transition-all duration-300 overflow-hidden flex items-center justify-center whitespace-nowrap"
-                  >
-                    <span className="relative z-10">Feedback.</span>
-                    {hasPendingFeedback && (
-                      <span
-                        className="absolute top-2 right-4 bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] text-[10px] font-bold rounded-full px-1.5 h-5 flex items-center justify-center shadow"
-                        aria-label="Feedback pendiente"
-                      >
-                        +1
-                      </span>
-                    )}
-                    <motion.div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[hsl(45,100%,50%)] to-transparent origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" style={{
-                      boxShadow: '0 0 10px hsl(45 100% 50%)'
-                    }} />
-                    <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(45,100%,70%)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </motion.button>
                 </div>
               </motion.div>
             </>}

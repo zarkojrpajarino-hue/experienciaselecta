@@ -1,7 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { Resend } from 'https://esm.sh/resend@4.0.0';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
-import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,71 +12,31 @@ serve(async (req) => {
   }
 
   try {
-    // Verify authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Authentication required' }),
-        { 
-          status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+    const { userEmail, userName } = await req.json();
+
+    if (!userEmail) {
+      throw new Error('Email is required');
     }
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      console.error('Authentication error:', authError);
-      return new Response(
-        JSON.stringify({ error: 'Invalid authentication' }),
-        { 
-          status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    // Validate input
-    const marketingEmailSchema = z.object({
-      userEmail: z.string().trim().email().max(255),
-      userName: z.string().trim().max(200).optional()
-    });
-
-    const requestData = await req.json();
-    const validationResult = marketingEmailSchema.safeParse(requestData);
-
-    if (!validationResult.success) {
-      console.error('Validation error:', validationResult.error);
-      return new Response(
-        JSON.stringify({ error: 'Invalid input data', details: validationResult.error.issues }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    const { userEmail, userName } = validationResult.data;
-    console.log('Sending marketing email to:', userEmail, 'for user:', user.id);
+    console.log('Sending marketing email to:', userEmail);
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
     const emailContent = `
 ¡Hola ${userName || 'amigo/a'}!
 
-¿Estás listo/a para vivir una experiencia inolvidable?
+Bienvenido/a a Experiencia Selecta - el nuevo plan alternativo.
 
-¿Quieres romper con la monotonía? ¿Tener un plan diferente, lleno de valor? ¿Conectar con las personas que más quieres y conocerte a ti mismo?
+🌟 Descubre quiénes somos y por qué estamos revolucionando el mundo de las experiencias gastronómicas.
 
-🌟 Entra en experienciaselecta.com y descubre una nueva forma de disfrutar.
+¿Quieres probar una experiencia nueva? 
 
-Cada momento cuenta. Hazlo especial.
+Visita nuestra web y descubre todo lo que tenemos para ofrecerte:
+👉 https://experienciaselecta.com
+
+Estamos aquí para hacer que cada momento sea especial.
+
+¡Gracias por confiar en nosotros!
 
 Saludos,
 El equipo de Experiencia Selecta
@@ -88,8 +46,6 @@ El equipo de Experiencia Selecta
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -98,37 +54,28 @@ El equipo de Experiencia Selecta
       max-width: 600px;
       margin: 0 auto;
       padding: 20px;
-      background-color: #f5f5f5;
     }
     .header {
-      background: linear-gradient(135deg, #8B4513, #2F4F2F);
+      background: linear-gradient(135deg, #782C23, #4A7050);
       color: white;
-      padding: 40px 20px;
+      padding: 30px 20px;
       text-align: center;
       border-radius: 10px 10px 0 0;
     }
     .content {
-      background: #ffffff;
-      padding: 40px 30px;
+      background: #f9f9f9;
+      padding: 30px 20px;
       border-radius: 0 0 10px 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .cta-button {
       display: inline-block;
-      background: #8B4513;
+      background: #782C23;
       color: white;
       padding: 15px 30px;
       text-decoration: none;
       border-radius: 5px;
       margin: 20px 0;
       font-weight: bold;
-    }
-    .highlight {
-      background: linear-gradient(135deg, rgba(139,69,19,0.1), rgba(47,79,47,0.1));
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-      border-left: 4px solid #8B4513;
     }
     .footer {
       text-align: center;
@@ -140,30 +87,19 @@ El equipo de Experiencia Selecta
 </head>
 <body>
   <div class="header">
-    <h1>¿Estás listo/a para vivir una experiencia inolvidable? ✨</h1>
+    <h1>¡Bienvenido/a a Experiencia Selecta!</h1>
   </div>
   <div class="content">
+    <h2>El nuevo plan alternativo 🌟</h2>
     <p>Hola ${userName || 'amigo/a'},</p>
-    
-    <div class="highlight">
-      <p style="margin: 0; font-size: 18px; color: #8B4513;"><strong>¿Quieres romper con la monotonía?</strong></p>
-      <p style="margin: 10px 0 0 0;">¿Tener un plan diferente, lleno de valor?</p>
-      <p style="margin: 5px 0 0 0;">¿Conectar con las personas que más quieres y conocerte a ti mismo?</p>
-    </div>
-
-    <p style="text-align: center; font-size: 18px; margin: 30px 0;">
-      <strong>Descubre una nueva forma de disfrutar.</strong>
-    </p>
-    
+    <p>Descubre quiénes somos y por qué estamos revolucionando el mundo de las experiencias gastronómicas.</p>
+    <p><strong>¿Quieres probar una experiencia nueva?</strong></p>
     <p style="text-align: center;">
-      <a href="https://experienciaselecta.com" class="cta-button">Entra en experienciaselecta.com</a>
+      <a href="https://experienciaselecta.com" class="cta-button">Descubre Experiencia Selecta</a>
     </p>
-    
-    <p style="text-align: center; color: #8B4513; font-size: 16px; margin-top: 30px;">
-      <em>Cada momento cuenta. Hazlo especial.</em>
-    </p>
-    
-    <p style="margin-top: 40px;"><strong>El equipo de Experiencia Selecta</strong></p>
+    <p>Estamos aquí para hacer que cada momento sea especial.</p>
+    <p>¡Gracias por confiar en nosotros!</p>
+    <p><strong>El equipo de Experiencia Selecta</strong></p>
   </div>
   <div class="footer">
     <p>Experiencia Selecta - Experiencias gastronómicas únicas</p>
@@ -176,7 +112,7 @@ El equipo de Experiencia Selecta
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [userEmail],
-      subject: '✨ ¿Estás listo/a para vivir una experiencia inolvidable?',
+      subject: '🌟 Bienvenido/a a Experiencia Selecta - El nuevo plan alternativo',
       text: emailContent,
       html: htmlContent,
     });

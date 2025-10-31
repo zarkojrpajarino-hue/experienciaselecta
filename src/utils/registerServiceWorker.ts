@@ -7,10 +7,10 @@ export const registerServiceWorker = async () => {
 
       console.log('Service Worker registered successfully:', registration);
 
-      // Check for updates every 3 minutes (reduced frequency for better performance)
+      // Check for updates every 30 seconds
       setInterval(() => {
         registration.update();
-      }, 180000);
+      }, 30000);
 
       // Listen for updates
       registration.addEventListener('updatefound', () => {

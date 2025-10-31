@@ -42,34 +42,20 @@ const VisualHeader = () => {
           </h1>
           
           <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold mt-16 sm:mt-8">
-            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
+            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>hablar</span>, <span style={{ color: '#FFD700' }}>conocer</span> y <span style={{ color: '#FFD700' }}>reír</span>.
           </p>
 
-          <div className="flex flex-col items-center gap-4">
-            <motion.button 
-              whileHover={{ color: '#FFD700' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-              onClick={() => {
-                const element = document.getElementById('categoria-cestas');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-            >
-              ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!. <ChevronDown className="inline-block ml-2 w-5 h-5 md:w-6 md:h-6" />
-            </motion.button>
-            
-            <motion.button 
-              whileHover={{ color: '#FFD700' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-              onClick={() => {
-                const element = document.getElementById('porque-no-vendemos-cestas');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }}
-            >
-              Conócenos. <ChevronDown className="inline-block ml-2 w-5 h-5 md:w-6 md:h-6" />
-            </motion.button>
-          </div>
+          <motion.button 
+            whileHover={{ color: '#FFD700' }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap mt-12 sm:mt-16 md:mt-20"
+            onClick={() => {
+              const element = document.getElementById('categoria-cestas');
+              element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+          >
+            ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!. <ChevronDown className="inline-block ml-2 w-5 h-5 md:w-6 md:h-6" />
+          </motion.button>
         </motion.div>
       </div>
     </section>;

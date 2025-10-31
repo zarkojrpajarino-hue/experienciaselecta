@@ -339,7 +339,6 @@ export type Database = {
           id: string
           order_id: string
           rating: number
-          source_site: string
           updated_at: string
           user_id: string
         }
@@ -350,7 +349,6 @@ export type Database = {
           id?: string
           order_id: string
           rating: number
-          source_site?: string
           updated_at?: string
           user_id: string
         }
@@ -361,7 +359,6 @@ export type Database = {
           id?: string
           order_id?: string
           rating?: number
-          source_site?: string
           updated_at?: string
           user_id?: string
         }
@@ -384,23 +381,6 @@ export type Database = {
       }
     }
     Views: {
-      completed_purchases: {
-        Row: {
-          basket_category: string | null
-          basket_id: string | null
-          basket_name: string | null
-          order_id: string | null
-          price: number | null
-          purchase_date: string | null
-          purchase_type: string | null
-          quantity: number | null
-          total_paid: number | null
-          user_email: string | null
-          user_id: string | null
-          user_name: string | null
-        }
-        Relationships: []
-      }
       purchases: {
         Row: {
           basket_category: string | null
