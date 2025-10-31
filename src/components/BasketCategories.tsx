@@ -174,6 +174,7 @@ const BasketCategories = () => {
   };
 
   const handleCategoryClick = (categoryTitle: string) => {
+    console.info('handleCategoryClick:', categoryTitle);
     if (categoryTitle === "Pareja" || categoryTitle === "Familia" || categoryTitle === "Amigos") {
       setSelectedCategory(categoryTitle);
       setIsSheetOpen(true);
@@ -395,7 +396,11 @@ const BasketCategories = () => {
                     key={category.id}
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl cursor-pointer"
                     style={{ zIndex: position.zIndex, pointerEvents: 'auto' }}
-                    onClick={() => handleCategoryClick(category.title)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Abrir catálogo: ${category.title}`}
+                    onClickCapture={() => handleCategoryClick(category.title)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategoryClick(category.title); } }}
                   >
                   <motion.div
                     animate={{
