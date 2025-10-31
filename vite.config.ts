@@ -16,6 +16,10 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom"],
   },
+  optimizeDeps: {
+    include: ["react", "react-dom"],
+    esbuildOptions: { jsx: "automatic" }
+  },
   build: {
     // Generate unique hashes for each build to force updates
     rollupOptions: {
