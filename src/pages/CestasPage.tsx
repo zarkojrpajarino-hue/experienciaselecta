@@ -6,10 +6,16 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 const CestasPage = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Pareja');
+  const location = useLocation();
+  const initialCategory = (location.state as { selectedCategory?: string })?.selectedCategory || 'Pareja';
+  const [selectedCategory, setSelectedCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>(
+    (initialCategory === 'Pareja' || initialCategory === 'Familia' || initialCategory === 'Amigos') 
+      ? initialCategory 
+      : 'Pareja'
+  );
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const [tooltipOpen, setTooltipOpen] = useState(false);
 

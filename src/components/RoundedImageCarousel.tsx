@@ -79,8 +79,8 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {/* Título principal */}
         {!hideMainTitle && (
           <div className="text-center mb-2">
-            <div className="flex items-center justify-center gap-2 flex-wrap">
-              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
+            <div className="flex items-center justify-center gap-1 sm:gap-2">
+              <h2 className="text-xs sm:text-lg md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
                 ¿Por qué no vendemos cestas y cómo te entendemos?
               </h2>
               <TooltipProvider delayDuration={0}>
@@ -110,11 +110,11 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
                       }}
                       onMouseEnter={() => setArrowTooltipOpen(true)}
                       onMouseLeave={() => setArrowTooltipOpen(false)}
-                      className="p-0 bg-transparent border-0 cursor-pointer"
+                      className="p-0 bg-transparent border-0 cursor-pointer flex-shrink-0"
                       aria-label="Abrir menú"
                     >
                       <ChevronUp 
-                        className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" 
+                        className="w-4 h-4 sm:w-6 sm:h-6 md:w-7 md:h-7" 
                         style={{ color: '#D4AF37' }}
                         strokeWidth={3}
                       />
