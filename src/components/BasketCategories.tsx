@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Heart, Users, UserPlus, UsersRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 import SideSheet from "@/components/ui/side-sheet";
 import BasketCatalog from "@/components/BasketCatalog";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
@@ -31,6 +32,7 @@ const BasketCategories = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<number | null>(null);
   const hasShownRef = useRef(false);
+  const navigate = useNavigate();
   const openTooltipTemporarily = (ms = 2000) => {
     setTooltipOpen(true);
     if (tooltipTimerRef.current) window.clearTimeout(tooltipTimerRef.current);
@@ -87,17 +89,11 @@ const BasketCategories = () => {
 
   const handleCategoryClick = (categoryTitle: string) => {
     console.log('[BasketCategories] handleCategoryClick:', categoryTitle);
-    console.log('[BasketCategories] Current sheetOpen state:', sheetOpen);
-    if (categoryTitle === "Pareja" || categoryTitle === "Familia" || categoryTitle === "Amigos") {
-      setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
-      // Open on next frame to avoid the initial click closing it immediately
-      requestAnimationFrame(() => {
-        console.log('[BasketCategories] Opening sheet via rAF');
-        setSheetOpen(true);
-      });
-    } else {
-      alert(`Catálogo de ${categoryTitle} próximamente disponible`);
-    }
+    setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
+    // Intento abrir panel
+    requestAnimationFrame(() => setSheetOpen(true));
+    // Fallback inmediato: navegar a la página de cestas con la categoría seleccionada
+    navigate('/cestas', { state: { selectedCategory: categoryTitle } });
   };
   // Animated Title Component
   const AnimatedTitle = ({ text, index }: { text: string; index: number }) => {
