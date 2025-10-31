@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -27,6 +28,7 @@ import familiaCestasImg from "@/assets/familia-nueva-cesta.jpg";
 import amigosCestasImg from "@/assets/amigos-nueva-cesta-clean.png";
 import OptimizedImage from "./OptimizedImage";
 const BasketCategories = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
@@ -414,44 +416,33 @@ const BasketCategories = () => {
                     style={{ transformStyle: 'preserve-3d' }}
                   >
                     {/* Card Container */}
-                    <div className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0">
-                      <button
-                        type="button"
-                        aria-label={`Abrir catálogo: ${category.title}`}
-                        onClick={(e) => { e.stopPropagation(); console.log('abrir categoría', category.title); handleCategoryClick(category.title); }}
-                        className="absolute inset-0 z-40 cursor-pointer bg-transparent"
-                        style={{ pointerEvents: 'auto' }}
-                      />
+                    <button
+                      type="button"
+                      aria-label={`Abrir catálogo: ${category.title}`}
+                      onClick={() => handleCategoryClick(category.title)}
+                      className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0 w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
                       {/* Imagen */}
                       <div className="w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
-                          className="w-full h-full object-cover rounded-3xl md:rounded-[2rem] cursor-pointer"
+                          className="w-full h-full object-cover rounded-3xl md:rounded-[2rem]"
                           loading="lazy"
                           decoding="async"
-                          onClick={(e) => { e.stopPropagation(); handleCategoryClick(category.title); }}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategoryClick(category.title); } }}
-                          style={{ pointerEvents: 'auto' }}
                         />
                       </div>
 
                       {/* Título y Flecha */}
                       <div className="flex items-center justify-center gap-2 md:gap-3">
                         <h3 
-                          className="font-bebas font-bold text-2xl md:text-4xl whitespace-nowrap tracking-[0.2em] cursor-pointer"
+                          className="font-bebas font-bold text-2xl md:text-4xl whitespace-nowrap tracking-[0.2em]"
                           style={{ 
                             color: category.title === "Familia" ? '#4A7050' 
                                  : category.title === "Pareja" ? '#782C23'
                                  : category.title === "Amigos" ? '#44667D'
                                  : '#FFFFFF'
                           }}
-                          role="button"
-                          tabIndex={0}
-                          onClick={(e) => { e.stopPropagation(); handleCategoryClick(category.title); }}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategoryClick(category.title); } }}
                         >
                           {category.title}.
                         </h3>
@@ -470,7 +461,7 @@ const BasketCategories = () => {
                           />
                         </svg>
                       </div>
-                    </div>
+                    </button>
                   </motion.div>
                 </div>
               );
