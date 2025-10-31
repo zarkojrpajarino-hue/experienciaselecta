@@ -6,9 +6,11 @@ interface OptimizedImageProps {
   alt: string;
   className?: string;
   priority?: boolean;
+  width?: number;
+  height?: number;
 }
 
-const OptimizedImage = ({ src, alt, className, priority = false }: OptimizedImageProps) => {
+const OptimizedImage = ({ src, alt, className, priority = false, width, height }: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -44,7 +46,10 @@ const OptimizedImage = ({ src, alt, className, priority = false }: OptimizedImag
         ref={imgRef}
         src={isInView ? src : undefined}
         alt={alt}
+        width={width}
+        height={height}
         loading={priority ? "eager" : "lazy"}
+        decoding="async"
         onLoad={() => setIsLoaded(true)}
         className={cn(
           "transition-opacity duration-300",

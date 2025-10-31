@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,16 +11,18 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface GiftNotificationRequest {
-  recipientEmail: string;
-  recipientName: string;
-  senderName: string;
-  senderEmail: string;
-  basketName: string;
-  basketImage?: string;
-  personalNote?: string;
-  giftId: string;
-}
+const giftNotificationSchema = z.object({
+  recipientEmail: z.string().trim().email().max(255),
+  recipientName: z.string().trim().min(1).max(200),
+  senderName: z.string().trim().min(1).max(200),
+  senderEmail: z.string().trim().email().max(255),
+  basketName: z.string().trim().min(1).max(200),
+  basketImage: z.string().url().max(500).optional(),
+  personalNote: z.string().trim().max(1000).optional(),
+  giftId: z.string().uuid()
+});
+
+type GiftNotificationRequest = z.infer<typeof giftNotificationSchema>;
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -26,6 +30,38 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    const jwt = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const requestData = await req.json();
+    const validationResult = giftNotificationSchema.safeParse(requestData);
+    if (!validationResult.success) {
+      console.error("Validation error:", validationResult.error);
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const { 
       recipientEmail, 
       recipientName, 
@@ -35,7 +71,7 @@ const handler = async (req: Request): Promise<Response> => {
       basketImage,
       personalNote,
       giftId 
-    }: GiftNotificationRequest = await req.json();
+    } = validationResult.data;
 
     console.log("Enviando notificación de regalo a:", recipientEmail);
 

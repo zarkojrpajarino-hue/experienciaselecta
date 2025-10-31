@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp, X, ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -67,7 +66,6 @@ interface Order {
   shipping_postal_code: string;
   shipping_country: string;
   items: OrderItem[];
-  hasReview?: boolean;
 }
 
 interface OrderItem {
@@ -83,6 +81,12 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
+  user_id: string;
+  source_site: string;
+  profiles?: {
+    name: string | null;
+    user_id: string;
+  };
 }
 
 const ProfilePage = () => {
@@ -93,25 +97,8 @@ const ProfilePage = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [openOrders, setOpenOrders] = useState<{ [key: string]: boolean }>({});
-  const [reviewForm, setReviewForm] = useState<{
-    orderId: string;
-    basketName: string;
-    rating: number;
-    comment: string;
-  } | null>(null);
-  const [submitting, setSubmitting] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("orders");
-  const [openPreviousReviews, setOpenPreviousReviews] = useState(false);
-  const [newReview, setNewReview] = useState<{
-    basketName: string;
-    rating: number;
-    comment: string;
-  }>({
-    basketName: "",
-    rating: 0,
-    comment: ""
-  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -176,6 +163,15 @@ const ProfilePage = () => {
     };
   }, [user?.id]);
 
+  // Auto-refresh reviews when the tab is active
+  useEffect(() => {
+    if (activeTab !== 'reviews' || !user?.id) return;
+    loadUserData(user.id);
+    const id = setInterval(() => loadUserData(user.id), 15000);
+    return () => clearInterval(id);
+  }, [activeTab, user?.id]);
+
+
   const checkAuthAndLoadData = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -196,7 +192,7 @@ const ProfilePage = () => {
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
       setProfile(profileData);
 
@@ -205,13 +201,9 @@ const ProfilePage = () => {
         .from("customers")
         .select("id")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
       if (customerData) {
-        // Calculate date 10 days ago
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
         // Load orders with items and shipping info
         const { data: ordersData, error: ordersError } = await supabase
           .from("orders")
@@ -246,10 +238,6 @@ const ProfilePage = () => {
           // Skip orders that were entirely gifts
           if (giftedOrderIds.has(order.id)) continue;
 
-          // Check if order is older than 10 days
-          const orderDate = new Date(order.created_at);
-          const isOlderThan10Days = orderDate < tenDaysAgo;
-
           const { data: items } = await supabase
             .from("order_items")
             .select("basket_name, basket_category, quantity, price_per_item")
@@ -257,24 +245,9 @@ const ProfilePage = () => {
 
           // Create a separate order entry for each item (no grouping)
           for (const item of items || []) {
-            // Check if this specific item has a review
-            const { data: reviewData } = await supabase
-              .from("reviews")
-              .select("id")
-              .eq("order_id", order.id)
-              .eq("basket_name", item.basket_name)
-              .eq("user_id", userId);
-
-            const hasReview = (reviewData?.length || 0) > 0;
-
-            // If order is older than 10 days, mark as completed for review section
-            const orderStatus = isOlderThan10Days ? 'completed' : order.status;
-
             expandedOrders.push({
               ...order,
-              status: orderStatus,
               items: [item], // Single item per order
-              hasReview: hasReview,
             });
           }
         }
@@ -287,21 +260,11 @@ const ProfilePage = () => {
           .eq("shipping_completed", true);
 
         for (const gift of receivedGifts || []) {
-          const giftDate = new Date(gift.created_at);
-          const isOlderThan10Days = giftDate < tenDaysAgo;
-
-          const { data: reviewData } = await supabase
-            .from("reviews")
-            .select("id")
-            .eq("order_id", gift.order_id)
-            .eq("basket_name", gift.basket_name)
-            .eq("user_id", userId);
-
           expandedOrders.push({
             id: gift.order_id,
             created_at: gift.created_at,
             total_amount: gift.price * gift.quantity,
-            status: isOlderThan10Days ? "completed" : "pending",
+            status: "pending",
             shipping_address_line1: gift.shipping_address_line1 || "",
             shipping_address_line2: gift.shipping_address_line2,
             shipping_city: gift.shipping_city || "",
@@ -313,29 +276,34 @@ const ProfilePage = () => {
               quantity: gift.quantity,
               price_per_item: gift.price,
             }],
-            hasReview: (reviewData?.length || 0) > 0,
           });
         }
 
         setOrders(expandedOrders);
-        
-        // Set default basket name from first order item
-        if (expandedOrders.length > 0 && expandedOrders[0].items.length > 0) {
-          setNewReview(prev => ({
-            ...prev,
-            basketName: expandedOrders[0].items[0].basket_name
-          }));
-        }
       }
 
-      // Load user reviews
-      const { data: reviewsData } = await supabase
-        .from("reviews")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
+      // Load user's reviews via Edge Function (pull from remote endpoint)
+      const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
+        body: { limit: 200 }
+      });
 
-      setReviews(reviewsData || []);
+      if (fnErr) {
+        console.error("Error fetching remote reviews:", fnErr);
+      }
+
+      const remoteReviews = (fnRes as any)?.data || [];
+      const reviewsMapped = remoteReviews.map((r: any) => ({
+        id: r.id,
+        basket_name: r.basket_name,
+        rating: r.rating,
+        comment: r.comment || '',
+        created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
+        user_id: userId,
+        source_site: 'paragenteselecta',
+        profiles: profileData
+      }));
+
+      setReviews(reviewsMapped);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -354,116 +322,6 @@ const ProfilePage = () => {
       title: "Sesión cerrada",
       description: "Has cerrado sesión correctamente.",
     });
-  };
-
-  const startReview = (orderId: string, basketName: string) => {
-    setReviewForm({
-      orderId,
-      basketName,
-      rating: 5,
-      comment: "",
-    });
-  };
-
-  const submitReview = async () => {
-    if (!reviewForm || !user) return;
-
-    setSubmitting(true);
-    try {
-      const { data: reviewData, error } = await supabase.from("reviews").insert({
-        user_id: user.id,
-        order_id: reviewForm.orderId,
-        basket_name: reviewForm.basketName,
-        rating: reviewForm.rating,
-        comment: reviewForm.comment,
-      }).select().single();
-
-      if (error) throw error;
-
-      // Send review to admin email
-      try {
-        await supabase.functions.invoke('send-review-to-admin', {
-          body: { reviewId: reviewData.id }
-        });
-      } catch (emailError) {
-        console.error('Error sending review to admin:', emailError);
-        // Don't fail the whole operation if email fails
-      }
-
-      toast({
-        title: "¡Gracias por tu valoración!",
-        description: "Tu opinión nos ayuda a mejorar.",
-      });
-
-      setReviewForm(null);
-      await loadUserData(user.id);
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo guardar tu valoración.",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const submitNewReview = async () => {
-    if (!user || newReview.rating === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Por favor selecciona una puntuación.",
-      });
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const { data: reviewData, error } = await supabase.from("reviews").insert({
-        user_id: user.id,
-        order_id: orders[0]?.id || "demo-order-id",
-        basket_name: newReview.basketName,
-        rating: newReview.rating,
-        comment: newReview.comment,
-      }).select().single();
-
-      if (error) throw error;
-
-      // Enviar notificación al administrador
-      try {
-        await supabase.functions.invoke('send-review-to-admin', {
-          body: { reviewId: reviewData.id }
-        });
-        console.log('Notificación enviada al administrador');
-      } catch (emailError) {
-        console.error('Error enviando email al admin:', emailError);
-        // No mostramos error al usuario, la valoración ya está guardada
-      }
-
-      toast({
-        title: "¡Valoración enviada!",
-        description: "Gracias por tu feedback.",
-      });
-
-      // Reload reviews
-      await loadUserData(user.id);
-
-      // Reset form
-      setNewReview({
-        basketName: "Pareja Gourmet",
-        rating: 0,
-        comment: ""
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo enviar tu valoración.",
-      });
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   if (loading) {
@@ -556,15 +414,15 @@ const ProfilePage = () => {
 
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6 animate-fade-in">
-              {/* Active/Paid Orders Only */}
-              {orders.filter(o => o.status !== 'completed').length === 0 ? (
+              {/* Active/Paid Orders */}
+              {orders.length === 0 ? (
                 <Card className="bg-transparent border-none">
                   <CardContent className="pt-6 text-center text-white font-poppins font-bold">
                     No tienes pedidos activos.
                   </CardContent>
                 </Card>
               ) : (
-                orders.filter(o => o.status !== 'completed').map((order) => (
+                orders.map((order) => (
                   <Card key={order.id} className="overflow-hidden bg-transparent border-none shadow-lg">
                     <CardHeader className="p-6">
                       <Collapsible
@@ -676,15 +534,6 @@ const ProfilePage = () => {
                               <p className="text-sm text-white font-poppins font-bold">{order.shipping_country}.</p>
                             </div>
                           </div>
-                            
-                          {!order.hasReview && order.status === "completed" && (
-                            <Button
-                              onClick={() => startReview(order.id, order.items[0]?.basket_name)}
-                              className="w-full mt-4 bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
-                            >
-                              ⭐ Valorar experiencia.
-                            </Button>
-                          )}
                         </CollapsibleContent>
                       </Collapsible>
                     </CardHeader>
@@ -695,172 +544,9 @@ const ProfilePage = () => {
 
             {/* Reviews Tab */}
             <TabsContent value="reviews" className="space-y-6 animate-fade-in">
-              {/* Orders ready for review (older than 10 days without review) */}
-              {orders.filter(o => o.status === 'completed' && !o.hasReview).length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bungee text-[hsl(45,100%,65%)] mb-4 tracking-wider">Experiencias por valorar.</h2>
-                  <div className="space-y-6">
-                    {orders.filter(o => o.status === 'completed' && !o.hasReview).map((order) => {
-                      const item = order.items[0];
-                      const byName = basketData[item.basket_name]?.imagen;
-                      const cat = (item.basket_category || '').toLowerCase();
-                      const byCategory = cat.includes('pareja')
-                        ? categoryFallbackImage.Pareja
-                        : cat.includes('familia')
-                          ? categoryFallbackImage.Familia
-                          : cat.includes('amig')
-                            ? categoryFallbackImage.Amigos
-                            : undefined;
-                      const imgSrc = byName || byCategory || parejaInicialImg;
-                      
-                      return (
-                        <Card key={order.id + item.basket_name} className="overflow-hidden bg-transparent border-none shadow-lg">
-                          <CardHeader className="p-6">
-                            <div className="space-y-4">
-                              <div className="flex justify-between items-start px-4">
-                                <div className="flex-1 text-left pr-4">
-                                  <h3 className="text-xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
-                                    {item.basket_name}.
-                                  </h3>
-                                  <p className="text-sm text-white font-poppins font-bold">
-                                    📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
-                                      year: "numeric",
-                                      month: "long",
-                                      day: "numeric",
-                                    })}.
-                                  </p>
-                                  <p className="font-poppins font-bold text-white text-lg mt-2">
-                                    {( (basketData[item.basket_name]?.precio ?? (item.price_per_item / 100)) * item.quantity ).toFixed(2)}€.
-                                  </p>
-                                </div>
-                                <div className="flex-1 text-center">
-                                  <div 
-                                    className="w-28 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg inline-block"
-                                    onClick={() => setZoomedImage(imgSrc)}
-                                  >
-                                    <img 
-                                      src={imgSrc} 
-                                      alt={item.basket_name}
-                                      className="w-full h-auto object-cover"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <Button
-                                onClick={() => startReview(order.id, item.basket_name)}
-                                className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold"
-                              >
-                                ⭐ Dejar valoración.
-                              </Button>
-                            </div>
-                          </CardHeader>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Formulario para nueva valoración */}
-              <Card className="bg-transparent border-none shadow-lg">
-                <CardContent className="space-y-4 pt-6">
-                  <div>
-                    <label className="block mb-2 font-bungee tracking-wider text-[hsl(45,100%,65%)]">Cesta.</label>
-                    <select
-                      value={newReview.basketName}
-                      onChange={(e) => setNewReview({ ...newReview, basketName: e.target.value })}
-                      className="w-full p-3 bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:outline-none focus:border-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] transition-all cursor-pointer" 
-                    >
-                      {Object.keys(basketData).length === 0 ? (
-                        <option value="" className="font-poppins font-bold bg-white text-black">No hay cestas disponibles.</option>
-                      ) : (
-                        // Usar las cestas del catálogo actual en lugar de pedidos antiguos
-                        Object.entries(basketData).map(([basketName, data]) => (
-                          <option key={basketName} value={basketName} className="font-poppins font-bold bg-white text-black">
-                            {basketName} - {data.precio}€
-                          </option>
-                        ))
-                      )}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block mb-2 font-bungee tracking-wider text-[hsl(45,100%,65%)]">Puntuación.</label>
-                    <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          onClick={() => setNewReview({ ...newReview, rating: star })}
-                        >
-                          <Star
-                            className={`w-8 h-8 cursor-pointer transition-colors ${
-                              star <= newReview.rating
-                                ? "fill-[hsl(45,100%,50%)] text-[hsl(45,100%,50%)]"
-                                : "text-white hover:text-[hsl(45,100%,50%)]"
-                            }`}
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block mb-2 font-bungee tracking-wider text-[hsl(45,100%,65%)]">Comentario.</label>
-                    <Textarea
-                      value={newReview.comment}
-                      onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                      placeholder="Cuéntanos tu experiencia..."
-                      rows={4}
-                      className="bg-white text-black font-poppins font-bold border-2 border-[hsl(45,100%,65%)]/30 focus:border-[hsl(45,100%,65%)] placeholder:text-black/50"
-                    />
-                  </div>
-                  <Button
-                    onClick={submitNewReview}
-                    disabled={submitting}
-                    className="w-full bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-poppins font-bold border-none shadow-lg transition-all duration-300 hover:shadow-xl disabled:opacity-50"
-                  >
-                    {submitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Enviando...
-                      </>
-                    ) : (
-                      "Enviar valoración."
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Valoraciones existentes */}
-              {reviews.length > 0 && (
-                <Card className="bg-transparent border-none shadow-lg">
-                  <CardContent className="pt-6">
-                    <Collapsible
-                      open={openPreviousReviews}
-                      onOpenChange={setOpenPreviousReviews}
-                    >
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-white text-lg font-bungee tracking-wider">Mis valoraciones anteriores.</h3>
-                        <CollapsibleTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold"
-                          >
-                            {openPreviousReviews ? (
-                              <>
-                                <ChevronUp className="w-4 h-4 mr-2" />
-                                Ocultar
-                              </>
-                            ) : (
-                              <>
-                                <ChevronDown className="w-4 h-4 mr-2" />
-                                Ver valoraciones
-                              </>
-                            )}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                      
-                      <CollapsibleContent className="mt-4 space-y-4">
+              {/* Valoraciones desde paragenteselecta.com */}
+              {reviews.length > 0 ? (
+                <div className="space-y-4">
                         {reviews.map((review) => {
                           const normalize = (s: string) => s
                             .toLowerCase()
@@ -877,6 +563,8 @@ const ProfilePage = () => {
                           const displayName = matchKey || review.basket_name;
                           const precio = matchKey ? basketData[matchKey].precio : undefined;
 
+                          const imgSrc = matchKey ? basketData[matchKey].imagen : parejaGourmetImg;
+
                           return (
                           <Card key={review.id} className="bg-white/10 border-none shadow-lg">
                             <CardHeader>
@@ -885,6 +573,11 @@ const ProfilePage = () => {
                                   <CardTitle className="text-lg text-white font-poppins font-bold">{displayName}.</CardTitle>
                                   {precio !== undefined && (
                                     <p className="text-white font-poppins font-bold mt-1">{precio}€.</p>
+                                  )}
+                                  {review.profiles?.name && (
+                                    <p className="text-sm text-white/80 font-poppins mt-1">
+                                      Valoración tuya en paragenteselecta.com
+                                    </p>
                                   )}
                                 </div>
                                 <div className="flex gap-1">
@@ -908,14 +601,29 @@ const ProfilePage = () => {
                                 })}.
                               </p>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="space-y-4">
+                              <div className="flex justify-center">
+                                <div 
+                                  className="w-32 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
+                                  onClick={() => setZoomedImage(imgSrc)}
+                                >
+                                  <img 
+                                    src={imgSrc} 
+                                    alt={displayName}
+                                    className="w-full h-auto object-cover"
+                                  />
+                                </div>
+                              </div>
                               <p className="text-white font-poppins font-bold">{review.comment}.</p>
                             </CardContent>
                           </Card>
                         );
                         })}
-                      </CollapsibleContent>
-                    </Collapsible>
+                </div>
+              ) : (
+                <Card className="bg-transparent border-none">
+                  <CardContent className="pt-6 text-center text-white font-poppins font-bold">
+                    Aún no aparecen valoraciones para tu email de sesión. Si acabas de valorar, espera unos segundos y vuelve a abrir esta pestaña.
                   </CardContent>
                 </Card>
               )}
@@ -942,73 +650,6 @@ const ProfilePage = () => {
                 alt="Cesta ampliada"
                 className="max-w-full max-h-full object-contain rounded-lg"
               />
-            </div>
-          )}
-
-          {/* Review Form Modal */}
-          {reviewForm && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <Card className="w-full max-w-md">
-                <CardHeader>
-                  <CardTitle>Valorar: {reviewForm.basketName}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="block mb-2 font-semibold">Puntuación</label>
-                    <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                        >
-                          <Star
-                            className={`w-8 h-8 cursor-pointer transition-colors ${
-                              star <= reviewForm.rating
-                                ? "fill-[hsl(45,100%,50%)] text-[hsl(45,100%,50%)]"
-                                : "text-gray-300 hover:text-[hsl(45,100%,50%)]"
-                            }`}
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block mb-2 font-semibold">Comentario</label>
-                    <Textarea
-                      value={reviewForm.comment}
-                      onChange={(e) =>
-                        setReviewForm({ ...reviewForm, comment: e.target.value })
-                      }
-                      placeholder="Cuéntanos tu experiencia..."
-                      rows={4}
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => setReviewForm(null)}
-                      variant="outline"
-                      className="flex-1"
-                      disabled={submitting}
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      onClick={submitReview}
-                      className="flex-1 bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-[hsl(271,100%,20%)]"
-                      disabled={submitting}
-                    >
-                      {submitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Enviando...
-                        </>
-                      ) : (
-                        "Enviar"
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           )}
         </div>

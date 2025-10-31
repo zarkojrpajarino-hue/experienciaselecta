@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import AuthModal from "@/components/AuthModal";
 import ContactModal from "@/components/ContactModal";
-import ScrollDownIndicator from "@/components/ScrollDownIndicator";
+
 import { supabase } from "@/integrations/supabase/client";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
@@ -55,6 +55,7 @@ import faqPrimeraImagen from "@/assets/nueva-seccion-10.jpg";
 import faqDuracionExperiencia from "@/assets/faq-pates-gourmet-final.png";
 import faqDesconocidosEncuentro from "@/assets/faq-desconocidos-encuentro.jpg";
 import faqGarantiaSatisfaccion from "@/assets/faq-embutidos-ibericos-final.png";
+// Main Index Page Component
 const Index = () => {
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -312,11 +313,38 @@ const Index = () => {
       }
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (mounted) {
+        const wasAuthenticated = isAuthenticated;
         setIsAuthenticated(!!session);
+        
         if (session) {
           setShowAuthModal(false);
-          // Limpiar el flag si el usuario inicia sesión
+          // Limpiar TODOS los flags cuando el usuario inicia sesión exitosamente
           sessionStorage.removeItem('hasClosedAuthModal');
+          localStorage.removeItem('pendingCheckout');
+          
+          // Show welcome toast for new login (not on page load)
+          if (!wasAuthenticated && event === 'SIGNED_IN') {
+            // Defer Supabase calls with setTimeout to prevent deadlock
+            setTimeout(() => {
+              supabase
+                .from('profiles')
+                .select('name')
+                .eq('user_id', session.user.id)
+                .single()
+                .then(({ data: profile }) => {
+                  const userName = profile?.name || session.user.email;
+                  import("sonner").then(({ toast }) => {
+                    toast.success(`¡Bienvenido, ${userName}!`, {
+                      position: "bottom-right",
+                      duration: 4000,
+                    });
+                  });
+                });
+            }, 0);
+          }
+        } else {
+          // No hay sesión
+          setShowAuthModal(false);
         }
       }
     });
@@ -333,19 +361,12 @@ const Index = () => {
         // Usuario ya tiene sesión activa - NO mostrar modal
         setIsAuthenticated(true);
         setShowAuthModal(false);
+        // Limpiar flags
+        sessionStorage.removeItem('hasClosedAuthModal');
       } else {
-        // Usuario NO tiene sesión
+        // Usuario NO tiene sesión: NO mostrar modal automáticamente
         setIsAuthenticated(false);
-
-        // Solo mostrar modal si no lo ha cerrado antes en esta sesión
-        const hasClosedAuthModal = sessionStorage.getItem('hasClosedAuthModal');
-        if (!hasClosedAuthModal) {
-          setTimeout(() => {
-            if (mounted) {
-              setShowAuthModal(true);
-            }
-          }, 1000);
-        }
+        setShowAuthModal(false);
       }
     };
     checkAuth();
@@ -418,14 +439,15 @@ const Index = () => {
   return <div className="min-h-screen bg-background font-work-sans">
       <Navbar />
       {/* <PageNavigation /> */}
-      <ScrollDownIndicator />
       
       <VisualHeader />
       
       {/* Espaciado blanco */}
       <div className="bg-white py-8"></div>
       
-      <RoundedImageCarousel slides={processSlides} titleBold={false} />
+      <div id="porque-no-vendemos-cestas" className="bg-white">
+        <RoundedImageCarousel slides={processSlides} titleBold={false} />
+      </div>
       
       {/* Espaciado blanco antes de categorías */}
       <div className="bg-white py-8"></div>

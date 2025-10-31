@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Heart, Users, UserPlus, UsersRound, ArrowLeft, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Heart, Users, UserPlus, UsersRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
 import catalogHeaderBg from "@/assets/catalog-header-background.jpg";
 import basketDetailsBg from "@/assets/basket-details-background.jpg";
-import cestas34Bg from "@/assets/cestas-3-4-bg-final.jpg";
-import cestas56Bg from "@/assets/cestas-5-6-bg-final.jpg";
-import cestas78Bg from "@/assets/cestas-7-8-bg-final.jpg";
-import BasketCatalog from "./BasketCatalog";
-import DesconocidosCategory from "./DesconocidosCategory";
 
 // Import experience images
 import familiaExperienceImg from "@/assets/familia-experience.jpg";
@@ -26,83 +19,22 @@ import grupoGrandeExperienceImg from "@/assets/grupo-grande-experience.jpg";
 import parejaCestasImg from "@/assets/pareja-nueva-cesta-clean.png";
 import familiaCestasImg from "@/assets/familia-nueva-cesta.jpg";
 import amigosCestasImg from "@/assets/amigos-nueva-cesta-clean.png";
+import OptimizedImage from "./OptimizedImage";
+import ErrorBoundary from "@/components/ErrorBoundary";
 const BasketCategories = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
-  const [sheetKey, setSheetKey] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [initialBasketId, setInitialBasketId] = useState<number | null>(null);
-  // Tooltip open state (show once on first visit + hover)
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<number | null>(null);
   const hasShownRef = useRef(false);
+  const navigate = useNavigate();
+  
   const openTooltipTemporarily = (ms = 2000) => {
     setTooltipOpen(true);
     if (tooltipTimerRef.current) window.clearTimeout(tooltipTimerRef.current);
     tooltipTimerRef.current = window.setTimeout(() => setTooltipOpen(false), ms);
   };
-
-  // Handle deep-links: /cestas#cesta-ID (abre categoría correcta y hace scroll a la cesta)
-  useEffect(() => {
-    const parseBasketId = (): number | null => {
-      const hash = window.location.hash;
-      const match = hash.match(/^#cesta-(\d+)$/);
-      return match ? parseInt(match[1], 10) : null;
-    };
-
-    const basketId = parseBasketId();
-    if (basketId == null) return;
-
-    const categoriesToTry: Array<'Familia' | 'Amigos' | 'Pareja'> = ['Familia', 'Amigos', 'Pareja'];
-
-    const tryCategory = (idx: number) => {
-      if (idx >= categoriesToTry.length) return;
-
-      const category = categoriesToTry[idx];
-      setSelectedCategory(category);
-      setIsSheetOpen(true);
-      setSheetKey(prev => prev + 1);
-      setInitialBasketId(basketId);
-
-      const tryScroll = (attempt = 0) => {
-        const el = document.getElementById(`cesta-${basketId}`);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.classList.add('ring-2', 'ring-accent', 'ring-offset-2');
-          setTimeout(() => {
-            el.classList.remove('ring-2', 'ring-accent', 'ring-offset-2');
-          }, 2000);
-        } else if (attempt < 10) {
-          setTimeout(() => tryScroll(attempt + 1), 200);
-        } else {
-          // No encontrado en esta categoría; probar la siguiente
-          setTimeout(() => tryCategory(idx + 1), 200);
-        }
-      };
-
-      // Dar tiempo a montar el contenido del Sheet
-      setTimeout(() => tryScroll(0), 400);
-    };
-
-    tryCategory(0);
-
-    const onHashChange = () => {
-      const newId = parseBasketId();
-      if (newId != null) {
-        setInitialBasketId(newId);
-        tryCategory(0);
-      }
-    };
-    window.addEventListener('hashchange', onHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', onHashChange);
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    };
-  }, []);
 
   // Auto-open tooltip when the section enters viewport or when hash targets the section
   useEffect(() => {
@@ -152,33 +84,8 @@ const BasketCategories = () => {
     };
   }, []);
 
-
-  // Determine background based on group size
-  const getBackgroundImage = () => {
-    switch (groupSize) {
-      case '3-4':
-        return cestas34Bg;
-      case '5-6':
-        return cestas56Bg;
-      case '7-8':
-        return cestas78Bg;
-      default:
-        return cestas34Bg;
-    }
-  };
-
   const handleCategoryClick = (categoryTitle: string) => {
-    if (categoryTitle === "Pareja" || categoryTitle === "Familia" || categoryTitle === "Amigos") {
-      setSelectedCategory(categoryTitle);
-      setIsSheetOpen(true);
-      // Incrementar la key para forzar un re-render completo del Sheet
-      setSheetKey(prev => prev + 1);
-      // Reset group size cuando se abre una nueva categoría
-      setGroupSize('3-4');
-    } else {
-      // Para otras categorías mostrar mensaje temporal
-      alert(`Catálogo de ${categoryTitle} próximamente disponible`);
-    }
+    navigate('/comprar-cestas', { state: { selectedCategory: categoryTitle } });
   };
   // Animated Title Component
   const AnimatedTitle = ({ text, index }: { text: string; index: number }) => {
@@ -387,9 +294,9 @@ const BasketCategories = () => {
               return (
                   <div
                     key={category.id}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl"
-                    style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
-                    onClick={() => isActive && handleCategoryClick(category.title)}
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl cursor-pointer"
+                    style={{ zIndex: position.zIndex, pointerEvents: 'auto' }}
+                    aria-label={`Abrir catálogo: ${category.title}`}
                   >
                   <motion.div
                     animate={{
@@ -403,13 +310,20 @@ const BasketCategories = () => {
                     style={{ transformStyle: 'preserve-3d' }}
                   >
                     {/* Card Container */}
-                    <div className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0">
+                    <button
+                      type="button"
+                      aria-label={`Abrir catálogo: ${category.title}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCategoryClick(category.title); }}
+                      className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0 w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
                       {/* Imagen */}
                       <div className="w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
                           className="w-full h-full object-cover rounded-3xl md:rounded-[2rem]"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
 
@@ -441,47 +355,15 @@ const BasketCategories = () => {
                           />
                         </svg>
                       </div>
-                    </div>
+                    </button>
                   </motion.div>
                 </div>
               );
             })}
           </div>
-        </div>
+          </div>
         </div>
       </div>
-
-      {/* Sheet for Basket Catalog */}
-      <Sheet key={sheetKey} open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent 
-          side="right" 
-          className="w-full sm:max-w-4xl lg:max-w-6xl overflow-y-auto border-0 shadow-lg p-0 bg-white"
-        >
-          <SheetHeader className="relative p-6 text-left bg-white" style={{ paddingTop: '3rem' }}>
-            <div className="flex items-center justify-between">
-              <div className="text-left">
-                <SheetTitle className="text-2xl sm:text-3xl font-poppins font-bold text-left text-black whitespace-nowrap">
-                  <span className="text-gold">Experiencia</span> Selecta
-                </SheetTitle>
-            <SheetDescription className="font-work-sans font-bold text-left text-black">
-              Descubre nuestras <span className="text-gold">cestas</span> para <span className="text-gold">descubrir personas</span>
-            </SheetDescription>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setIsSheetOpen(false)} 
-                className="h-8 w-8 text-black hover:bg-black/10"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </div>
-          </SheetHeader>
-          <div className="mt-0">
-            {selectedCategory ? <BasketCatalog categoria={selectedCategory} initialBasketId={initialBasketId ?? undefined} onGroupSizeChange={setGroupSize} /> : null}
-          </div>
-        </SheetContent>
-      </Sheet>
     </section>;
 };
 export default BasketCategories;

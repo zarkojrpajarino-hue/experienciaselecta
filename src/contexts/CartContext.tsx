@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 export interface CartItem {
   id: number;
@@ -23,10 +23,34 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+const CART_STORAGE_KEY = 'shopping-cart';
 
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  // Initialize cart from localStorage
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error('Error loading cart from localStorage:', error);
+      return [];
+    }
+  });
+
+  // Save cart to localStorage with debounce to improve performance
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      } catch (error) {
+        console.error('Error saving cart to localStorage:', error);
+      }
+    }, 300);
+    
+    return () => clearTimeout(timeoutId);
+  }, [cart]);
+
+  const addToCart = useCallback((item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
       // Buscar item con mismo id y mismo tipo (regalo o personal)
       const existingItem = prevCart.find(
@@ -41,15 +65,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return [...prevCart, { ...item, quantity: 1 }];
     });
-  };
+  }, []);
 
-  const removeFromCart = (id: number, isGift?: boolean) => {
+  const removeFromCart = useCallback((id: number, isGift?: boolean) => {
     setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
-  };
+  }, []);
 
-  const updateQuantity = (id: number, quantity: number, isGift?: boolean) => {
+  const updateQuantity = useCallback((id: number, quantity: number, isGift?: boolean) => {
     if (quantity <= 0) {
-      removeFromCart(id, isGift);
+      setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
       return;
     }
     setCart(prevCart =>
@@ -57,13 +81,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         item.id === id && item.isGift === isGift ? { ...item, quantity } : item
       )
     );
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
-  };
+  }, []);
 
-  const removeMultipleItems = (itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
+  const removeMultipleItems = useCallback((itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
     setCart(prevCart => {
       let newCart = [...prevCart];
       
@@ -77,10 +101,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const quantityToRemove = removeItem.quantityToRemove || item.quantity;
           
           if (item.quantity <= quantityToRemove) {
-            // Remove the item completely
+            // Remove the item completamente
             newCart = newCart.filter((_, index) => index !== itemIndex);
           } else {
-            // Just reduce the quantity
+            // Solo reducir la cantidad
             newCart[itemIndex] = { ...item, quantity: item.quantity - quantityToRemove };
           }
         }
@@ -88,15 +112,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       return newCart;
     });
-  };
+  }, []);
 
-  const getTotalItems = () => {
+  const getTotalItems = useCallback(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  }, [cart]);
 
-  const getTotalAmount = () => {
+  const getTotalAmount = useCallback(() => {
     return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
-  };
+  }, [cart]);
 
   return (
     <CartContext.Provider

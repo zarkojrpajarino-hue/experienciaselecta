@@ -97,81 +97,38 @@ serve(async (req) => {
 
     console.log('Order marked as completed for gift:', validatedData.giftId);
 
-    // Email to host (as order notification)
-    const hostEmail = `
-¡NUEVO PEDIDO DE REGALO CONFIRMADO!
+    // Note: Using simplified schema - full implementation would fetch from DB
+    const shippingDataExtended = {
+      ...validatedData,
+      shippingAddress1: validatedData.shippingAddress.split(',')[0] || validatedData.shippingAddress,
+      shippingAddress2: '',
+      shippingCity: 'Ciudad',
+      shippingPostalCode: '00000',
+      shippingCountry: 'España'
+    };
 
-${escapeHtml(validatedData.senderName)} ha regalado ${escapeHtml(validatedData.basketName)} a ${escapeHtml(validatedData.recipientName)}
-
-Dirección de envío:
-${escapeHtml(validatedData.shippingAddress)}
-
-El destinatario ha completado sus datos y el pedido está listo para enviar.
-    `;
-
+    // Send all 3 emails with optimized content as specified
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: ['selectaexperiencia@gmail.com'],
-      subject: `📦 Nuevo pedido de regalo - ${validatedData.basketName}`,
-      text: hostEmail,
+      subject: `📦 Nuevo Pedido de Regalo - ${validatedData.basketName}`,
+      text: `Nuevo pedido: ${validatedData.basketName}\nDestinatario: ${validatedData.recipientName}\nDirección: ${validatedData.shippingAddress}`,
     });
-
-    // Email to recipient with access information
-    const recipientEmailContent = `
-¡Enhorabuena ${escapeHtml(validatedData.recipientName)}!
-
-✅ Tu pedido está de camino.
-
-Al haber recibido una cesta en nuestra web, no solo tienes acceso a los productos de alta calidad que esta trae, también a la web paragenteselecta.com
-
-En esta web están todas las dinámicas para llevar a cabo toda la experiencia.
-
-⚠️ IMPORTANTE: UNA VEZ ABIERTA LA WEB SOLO TENDRÁS 24 HORAS DE ACCESO A ESTA. ES UNA WEB PRIVADA Y ÚNICA, PARA NUESTROS CLIENTES Y EXPERIENCIAS.
-
-🎁 DETALLES DEL REGALO
-Regalo: ${escapeHtml(validatedData.basketName)}
-De parte de: ${escapeHtml(validatedData.senderName)}
-
-📍 DIRECCIÓN DE ENVÍO
-${escapeHtml(validatedData.shippingAddress)}
-
-¡Esperamos que disfrutes de esta experiencia gastronómica única!
-
-Saludos,
-El equipo de Experiencia Selecta
-    `;
 
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [gift.recipient_email],
-      subject: '✅ ¡Tu pedido está de camino! - Experiencia Selecta',
-      text: recipientEmailContent,
+      subject: `🎁 ¡Enhorabuena! Tu regalo ${validatedData.basketName} está reclamado y de camino`,
+      text: `¡Enhorabuena! Tu regalo ${validatedData.basketName} está reclamado y de camino. Con este regalo tienes acceso a productos ibéricos premium y a paragenteselecta.com con 24 horas de experiencia personalizada.`,
     });
 
-    // Email to sender (original buyer) confirming recipient completed shipping
     const senderEmail = (gift as any).orders?.customers?.email;
     if (senderEmail) {
-      const senderEmailContent = `
-¡Hola ${escapeHtml(validatedData.senderName)}!
-
-Te confirmamos que ${escapeHtml(validatedData.recipientName)} (${escapeHtml(gift.recipient_email)}) ya ha rellenado los datos de envío para recibir su regalo.
-
-🎁 Regalo: ${escapeHtml(validatedData.basketName)}
-
-El pedido ahora está de camino a la dirección proporcionada:
-${escapeHtml(validatedData.shippingAddress)}
-
-¡Gracias por regalar momentos especiales!
-
-Saludos,
-El equipo de Experiencia Selecta
-      `;
-
       await resend.emails.send({
         from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
         to: [senderEmail],
-        subject: `✅ ${validatedData.recipientName} completó los datos - Tu regalo está de camino`,
-        text: senderEmailContent,
+        subject: `✅ ${validatedData.recipientName} ha canjeado su regalo y está de camino`,
+        text: `¡Buenas noticias! ${validatedData.recipientName} ha canjeado su regalo y está de camino.`,
       });
 
       console.log('Sender notification email sent to:', senderEmail);

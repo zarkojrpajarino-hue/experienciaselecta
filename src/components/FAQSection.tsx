@@ -96,9 +96,9 @@ const FAQSection = () => {
             backgroundImage: `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url(${faq.image})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
             opacity: currentFaqIndex === index ? 1 : 0,
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            willChange: 'opacity'
           }}
         />
       ))}
