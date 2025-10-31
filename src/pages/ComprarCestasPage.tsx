@@ -28,6 +28,11 @@ const ComprarCestasPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
+  // Scroll al inicio en cambio de categoría
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedCategory]);
+
   useEffect(() => {
     // Force scroll to top immediately
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });

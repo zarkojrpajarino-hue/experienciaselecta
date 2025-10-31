@@ -12,30 +12,17 @@ const CookieBanner = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Preferir localStorage (cumplimiento y persistencia). Migrar desde sessionStorage si existía.
+    // Siempre mostrar el banner de cookies al entrar
+    setIsVisible(true);
+    
+    // Cargar preferencias guardadas si existen
     const stored = localStorage.getItem("cookieConsent");
     if (stored) {
-      setIsVisible(false);
       try {
         const parsed = JSON.parse(stored);
         setAnalytics(!!parsed.analytics);
         setMarketing(!!parsed.marketing);
       } catch {}
-      return;
-    }
-
-    const legacy = sessionStorage.getItem("cookieConsent");
-    if (legacy) {
-      const migrated = legacy === "accepted"
-        ? { essential: true, analytics: true, marketing: true, timestamp: Date.now(), version: "1.0" }
-        : { essential: true, analytics: false, marketing: false, timestamp: Date.now(), version: "1.0" };
-      localStorage.setItem("cookieConsent", JSON.stringify(migrated));
-      sessionStorage.removeItem("cookieConsent");
-      setIsVisible(false);
-      setAnalytics(migrated.analytics);
-      setMarketing(migrated.marketing);
-    } else {
-      setIsVisible(true);
     }
   }, []);
 

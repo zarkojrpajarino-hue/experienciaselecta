@@ -32,6 +32,11 @@ const CheckoutPage = () => {
 
   const state = location.state as CheckoutState;
   
+  // Scroll al inicio al montar el componente
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+  
   useEffect(() => {
     if (!state || !state.items || state.items.length === 0) {
       navigate("/carrito");

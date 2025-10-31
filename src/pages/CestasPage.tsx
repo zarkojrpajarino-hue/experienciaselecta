@@ -28,6 +28,11 @@ const CestasPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
+  // Scroll al inicio en cambio de categoría
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedCategory]);
+
   // Prevent auto-scroll on mount and check auth
   useEffect(() => {
     // Force scroll to top immediately
