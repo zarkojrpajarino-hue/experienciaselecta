@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Heart, Users, UserPlus, UsersRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import SideSheet from "@/components/ui/side-sheet";
 import BasketCatalog from "@/components/BasketCatalog";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
 import catalogHeaderBg from "@/assets/catalog-header-background.jpg";
@@ -375,19 +375,15 @@ const BasketCategories = () => {
         </div>
       </div>
 
-      {/* Sheet lateral para el catálogo de cestas */}
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto animate-slide-in-right">
-          <SheetHeader>
-            <SheetTitle className="text-2xl font-bold">
-              Catálogo de {selectedCatalogCategory}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="mt-6">
-            <BasketCatalog categoria={selectedCatalogCategory} />
-          </div>
-        </SheetContent>
-      </Sheet>
+      {/* Sheet lateral para el catálogo de cestas (sin Radix) */}
+      <SideSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        title={<>Catálogo de {selectedCatalogCategory}</>}
+        className="w-full sm:max-w-2xl"
+      >
+        <BasketCatalog categoria={selectedCatalogCategory} />
+      </SideSheet>
     </section>;
 };
 export default BasketCategories;
