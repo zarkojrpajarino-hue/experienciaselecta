@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Heart, Users, UserPlus, UsersRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useNavigate } from "react-router-dom";
-import SideSheet from "@/components/ui/side-sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import BasketCatalog from "@/components/BasketCatalog";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
 import catalogHeaderBg from "@/assets/catalog-header-background.jpg";
@@ -32,7 +31,7 @@ const BasketCategories = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<number | null>(null);
   const hasShownRef = useRef(false);
-  const navigate = useNavigate();
+  
   const openTooltipTemporarily = (ms = 2000) => {
     setTooltipOpen(true);
     if (tooltipTimerRef.current) window.clearTimeout(tooltipTimerRef.current);
@@ -89,11 +88,10 @@ const BasketCategories = () => {
 
   const handleCategoryClick = (categoryTitle: string) => {
     console.log('[BasketCategories] handleCategoryClick:', categoryTitle);
-    setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
-    // Intento abrir panel
-    requestAnimationFrame(() => setSheetOpen(true));
-    // Fallback inmediato: navegar a la página de cestas con la categoría seleccionada
-    navigate('/cestas', { state: { selectedCategory: categoryTitle } });
+    if (categoryTitle === 'Pareja' || categoryTitle === 'Familia' || categoryTitle === 'Amigos') {
+      setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
+      requestAnimationFrame(() => setSheetOpen(true));
+    }
   };
   // Animated Title Component
   const AnimatedTitle = ({ text, index }: { text: string; index: number }) => {
@@ -305,7 +303,6 @@ const BasketCategories = () => {
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl cursor-pointer"
                     style={{ zIndex: position.zIndex, pointerEvents: 'auto' }}
                     aria-label={`Abrir catálogo: ${category.title}`}
-                    onClick={() => handleCategoryClick(category.title)}
                   >
                   <motion.div
                     animate={{
@@ -381,17 +378,19 @@ const BasketCategories = () => {
         </div>
       )}
 
-      {/* Sheet lateral para el catálogo de cestas (sin Radix) */}
-      <SideSheet
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        title={<>Catálogo de {selectedCatalogCategory}</>}
-        className="w-full sm:max-w-2xl"
-      >
-        <ErrorBoundary fallback={<div className="text-foreground">Cargando catálogo…</div>}>
-          <BasketCatalog categoria={selectedCatalogCategory} />
-        </ErrorBoundary>
-      </SideSheet>
+      {/* Sheet lateral para el catálogo de cestas (Radix) */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-2xl z-[100] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="text-2xl font-bold">Catálogo de {selectedCatalogCategory}</SheetTitle>
+          </SheetHeader>
+          <div className="mt-6">
+            <ErrorBoundary fallback={<div className="text-foreground">Cargando catálogo…</div>}>
+              <BasketCatalog categoria={selectedCatalogCategory} />
+            </ErrorBoundary>
+          </div>
+        </SheetContent>
+      </Sheet>
     </section>;
-};
-export default BasketCategories;
+  };
+  export default BasketCategories;
