@@ -13,11 +13,8 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      // Ensure single React instance to avoid "hooks dispatcher is null" errors
-      react: path.resolve(__dirname, "./node_modules/react"),
-      "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
-      "react/jsx-runtime": path.resolve(__dirname, "./node_modules/react/jsx-runtime.js"),
     },
+    dedupe: ["react", "react-dom"],
   },
   build: {
     // Generate unique hashes for each build to force updates
