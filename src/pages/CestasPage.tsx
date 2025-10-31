@@ -141,11 +141,11 @@ const CestasPage = () => {
           x: 0,
           scale: 1
         }} transition={{
-          duration: 1.3,
+          duration: 0.8,
           type: "spring",
-          stiffness: 50,
+          stiffness: 60,
           damping: 15
-        }} className="text-center mb-8">
+        }} viewport={{ once: true }} className="text-center mb-8 gpu-accelerated">
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
               <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
                 <span style={{ fontFamily: "'Courier Prime', monospace", color: '#D4AF37' }}>REGALA</span> una experiencia personalizada.
@@ -157,12 +157,12 @@ const CestasPage = () => {
                   <TooltipTrigger asChild>
                     <motion.span onClick={() => {
                     window.location.href = '/#que-vendemos';
-                  }} onMouseEnter={() => setTooltipOpen(true)} onMouseLeave={() => setTooltipOpen(false)} className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-xl sm:text-2xl md:text-4xl font-bold" style={{
+                  }} onMouseEnter={() => setTooltipOpen(true)} onMouseLeave={() => setTooltipOpen(false)} className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-xl sm:text-2xl md:text-4xl font-bold gpu-accelerated" style={{
                     color: '#D4AF37'
                   }} animate={{
                     rotateZ: [0, 180, 0]
                   }} transition={{
-                    duration: 3,
+                    duration: 4,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}>
@@ -190,10 +190,10 @@ const CestasPage = () => {
             <motion.div animate={{
             y: [0, 10, 0]
           }} transition={{
-            duration: 1.5,
+            duration: 2,
             repeat: Infinity,
             ease: "easeInOut"
-          }} className="flex justify-center mb-6">
+          }} className="flex justify-center mb-6 gpu-accelerated">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -202,21 +202,21 @@ const CestasPage = () => {
 
           {/* Category Filter Buttons - Pareja primero */}
           <div className="flex justify-center items-center gap-2 sm:gap-4 mb-8">
-            <motion.button onClick={() => setSelectedCategory('Pareja')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Pareja' ? 'bg-[#782C23] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
-            scale: selectedCategory === 'Pareja' ? 1.1 : 1.05
-          }}>
+            <motion.button onClick={() => setSelectedCategory('Pareja')} className={`font-poppins font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base gpu-accelerated ${selectedCategory === 'Pareja' ? 'bg-[#782C23] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
+            scale: selectedCategory === 'Pareja' ? 1.05 : 1.02
+          }} whileTap={{ scale: 0.98 }}>
               Pareja.
             </motion.button>
 
-            <motion.button onClick={() => setSelectedCategory('Familia')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Familia' ? 'bg-[#4A7050] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
-            scale: selectedCategory === 'Familia' ? 1.1 : 1.05
-          }}>
+            <motion.button onClick={() => setSelectedCategory('Familia')} className={`font-poppins font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base gpu-accelerated ${selectedCategory === 'Familia' ? 'bg-[#4A7050] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
+            scale: selectedCategory === 'Familia' ? 1.05 : 1.02
+          }} whileTap={{ scale: 0.98 }}>
               Familia.
             </motion.button>
             
-            <motion.button onClick={() => setSelectedCategory('Amigos')} className={`font-poppins font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base ${selectedCategory === 'Amigos' ? 'bg-[#44667D] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
-            scale: selectedCategory === 'Amigos' ? 1.1 : 1.05
-          }}>
+            <motion.button onClick={() => setSelectedCategory('Amigos')} className={`font-poppins font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base gpu-accelerated ${selectedCategory === 'Amigos' ? 'bg-[#44667D] text-white scale-110' : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'}`} whileHover={{
+            scale: selectedCategory === 'Amigos' ? 1.05 : 1.02
+          }} whileTap={{ scale: 0.98 }}>
               Amigos.
             </motion.button>
           </div>

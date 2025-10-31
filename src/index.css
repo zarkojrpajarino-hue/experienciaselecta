@@ -131,6 +131,8 @@
     height: 100%;
     /* Enable GPU acceleration for smoother scrolling */
     -webkit-overflow-scrolling: touch;
+    /* Reduce paint on scroll */
+    will-change: scroll-position;
   }
 
   body {
@@ -143,6 +145,9 @@
     text-rendering: optimizeLegibility;
     /* Prevent layout shifts */
     transform: translateZ(0);
+    /* Force hardware acceleration */
+    backface-visibility: hidden;
+    perspective: 1000px;
   }
   
   /* Smooth page transitions */
@@ -150,6 +155,8 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    /* Enable GPU acceleration */
+    transform: translateZ(0);
   }
   
   /* Excepciones específicas donde NO queremos uppercase */
@@ -188,7 +195,7 @@
     font-weight: 400 !important;
   }
   
-  /* Performance optimizations */
+  /* Performance optimizations - Enhanced */
   .will-change-transform {
     will-change: transform;
   }
@@ -197,21 +204,33 @@
     will-change: opacity;
   }
   
+  .will-change-scroll {
+    will-change: scroll-position;
+  }
+  
   .gpu-accelerated {
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
   }
   
-  /* Smooth transitions */
+  /* Smooth transitions - Optimized */
   .smooth-transition {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Fast transitions for interactions */
+  .fast-transition {
+    transition: all 0.15s ease-out;
   }
   
   /* Image optimization */
   img {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+    /* Force GPU rendering */
+    transform: translateZ(0);
   }
   
   /* Prevent layout shift */
@@ -233,5 +252,39 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  
+  /* Optimize scroll containers */
+  .scroll-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    will-change: scroll-position;
+  }
+  
+  /* Reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Optimize hover states */
+  .hover-lift {
+    transition: transform 0.2s ease-out;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px) translateZ(0);
+  }
+  
+  /* Optimize card animations */
+  .animate-card {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
   }
 }

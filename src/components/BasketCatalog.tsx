@@ -1167,12 +1167,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               setShowGroupSize('3-4');
               onGroupSizeChange?.('3-4');
             }}
-            className={`font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-2 ${
+            className={`font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-2 gpu-accelerated ${
               showGroupSize === '3-4' 
                 ? 'text-xl sm:text-2xl scale-110' 
                 : 'text-base sm:text-lg hover:opacity-70'
             }`}
-            whileHover={{ scale: showGroupSize === '3-4' ? 1.1 : 1.05 }}
+            whileHover={{ scale: showGroupSize === '3-4' ? 1.05 : 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <span className={showGroupSize === '3-4' ? '' : 'text-black'} style={showGroupSize === '3-4' ? { color: '#D4AF37' } : {}}>3-4</span>
           </motion.button>
@@ -1184,12 +1185,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               setShowGroupSize('5-6');
               onGroupSizeChange?.('5-6');
             }}
-            className={`font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-2 ${
+            className={`font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-2 gpu-accelerated ${
               showGroupSize === '5-6' 
                 ? 'text-xl sm:text-2xl scale-110' 
                 : 'text-base sm:text-lg hover:opacity-70'
             }`}
-            whileHover={{ scale: showGroupSize === '5-6' ? 1.1 : 1.05 }}
+            whileHover={{ scale: showGroupSize === '5-6' ? 1.05 : 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <span className={showGroupSize === '5-6' ? '' : 'text-black'} style={showGroupSize === '5-6' ? { color: '#D4AF37' } : {}}>5-6</span>
           </motion.button>
@@ -1201,12 +1203,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               setShowGroupSize('7-8');
               onGroupSizeChange?.('7-8');
             }}
-            className={`font-bold transition-all duration-300 px-3 py-2 sm:px-6 sm:py-2 ${
+            className={`font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-2 gpu-accelerated ${
               showGroupSize === '7-8' 
                 ? 'text-xl sm:text-2xl scale-110' 
                 : 'text-base sm:text-lg hover:opacity-70'
             }`}
-            whileHover={{ scale: showGroupSize === '7-8' ? 1.1 : 1.05 }}
+            whileHover={{ scale: showGroupSize === '7-8' ? 1.05 : 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <span className={showGroupSize === '7-8' ? '' : 'text-black'} style={showGroupSize === '7-8' ? { color: '#D4AF37' } : {}}>7-8</span>
           </motion.button>
@@ -1249,10 +1252,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               key={basket.id}
               id={`cesta-${basket.id}`}
               data-basket-id={basket.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group w-full scroll-mt-32"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.3 }}
+              className="group w-full scroll-mt-32 gpu-accelerated"
             >
               {/* Nuevo layout aplicado a todas las cestas cuando están expandidas */}
               {isCardOpen ? (
@@ -1378,7 +1382,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     {/* Center: Imagen centrada */}
                     <div className="col-span-2 flex flex-col items-center my-2 gap-2">
                       <div 
-                        className="relative w-32 h-24 sm:w-40 sm:h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
+                        className="relative w-32 h-24 sm:w-40 sm:h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer fast-transition hover-lift gpu-accelerated"
                         onClick={() => handleOpenImage(basket.imagen)}
                       >
                   <img
@@ -1447,7 +1451,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     className={`flex-shrink-0 w-24 h-24 md:w-auto md:h-auto ${index % 2 === 1 ? 'md:col-start-2' : ''}`}
                   >
                     <div 
-                      className={`relative w-full overflow-hidden rounded-lg shadow-lg cursor-pointer transition-all duration-300 hover:scale-105 ${
+                      className={`relative w-full overflow-hidden rounded-lg shadow-lg cursor-pointer fast-transition hover-lift gpu-accelerated ${
                         isCardOpen ? 'h-24 md:h-48' : 'h-24 md:h-64'
                       }`}
                       onClick={() => handleOpenImage(basket.imagen)}
@@ -1485,7 +1489,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
                             className="space-y-5 overflow-hidden"
                           >
                             {/* Without Alcohol Badge */}
