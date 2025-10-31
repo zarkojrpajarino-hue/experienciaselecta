@@ -85,9 +85,11 @@ const BasketCategories = () => {
   }, []);
 
   const handleCategoryClick = (categoryTitle: string) => {
-    console.info('handleCategoryClick:', categoryTitle);
+    console.log('[BasketCategories] handleCategoryClick:', categoryTitle);
+    console.log('[BasketCategories] Current sheetOpen state:', sheetOpen);
     if (categoryTitle === "Pareja" || categoryTitle === "Familia" || categoryTitle === "Amigos") {
       setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
+      console.log('[BasketCategories] Setting sheetOpen to true');
       setSheetOpen(true);
     } else {
       alert(`Catálogo de ${categoryTitle} próximamente disponible`);

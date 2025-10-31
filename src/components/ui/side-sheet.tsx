@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ interface SideSheetProps {
 // Lightweight right-side sheet without Radix to avoid React interop issues
 const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, className, children }) => {
   useEffect(() => {
+    console.log('[SideSheet] State changed:', open);
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onOpenChange(false);
@@ -27,11 +29,11 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50" aria-modal="true" role="dialog">
+  const content = (
+    <div className="fixed inset-0 z-[9999]" aria-modal="true" role="dialog">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/50 transition-opacity"
+        className="absolute inset-0 bg-black/50 transition-opacity animate-in fade-in-0"
         onClick={() => onOpenChange(false)}
         aria-hidden="true"
       />
@@ -40,13 +42,11 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
       <div
         className={cn(
           "absolute right-0 top-0 h-full w-full sm:max-w-2xl bg-background shadow-xl border-l",
-          "data-[state=open]:animate-in data-[state=open]:slide-in-from-right",
-          "data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right",
+          "animate-in slide-in-from-right duration-300",
           className
         )}
-        data-state="open"
       >
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b bg-background">
           <div className="text-lg font-semibold text-foreground">{title}</div>
           <button
             type="button"
@@ -57,12 +57,14 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="p-4 overflow-y-auto h-[calc(100%-57px)]">
+        <div className="p-4 overflow-y-auto h-[calc(100%-57px)] bg-background">
           {children}
         </div>
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 };
 
 export default SideSheet;
