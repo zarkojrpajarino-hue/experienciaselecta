@@ -375,7 +375,12 @@ const BasketCategories = () => {
           </div>
         </div>
         </div>
-      </div>
+      {/* Indicador de depuración visible cuando sheetOpen=true */}
+      {sheetOpen && (
+        <div className="fixed top-4 right-4 z-[10000] px-3 py-2 rounded-md bg-primary text-primary-foreground shadow-lg">
+          Panel: abierto ({selectedCatalogCategory})
+        </div>
+      )}
 
       {/* Sheet lateral para el catálogo de cestas (sin Radix) */}
       <SideSheet

@@ -21,6 +21,16 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
     };
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
+    // Post-mount check of DOM presence and position
+    setTimeout(() => {
+      const el = document.getElementById('side-sheet-root');
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        console.log('[SideSheet] Root present. rect=', rect);
+      } else {
+        console.warn('[SideSheet] Root NOT found in DOM');
+      }
+    }, 0);
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
@@ -30,7 +40,7 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
   if (!open) return null;
 
   const content = (
-    <div className="fixed inset-0 z-[9999]" aria-modal="true" role="dialog">
+    <div id="side-sheet-root" className="fixed inset-0 z-[9999]" aria-modal="true" role="dialog">
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/60"
