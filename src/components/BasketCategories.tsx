@@ -21,6 +21,7 @@ import parejaCestasImg from "@/assets/pareja-nueva-cesta-clean.png";
 import familiaCestasImg from "@/assets/familia-nueva-cesta.jpg";
 import amigosCestasImg from "@/assets/amigos-nueva-cesta-clean.png";
 import OptimizedImage from "./OptimizedImage";
+import ErrorBoundary from "@/components/ErrorBoundary";
 const BasketCategories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -383,7 +384,9 @@ const BasketCategories = () => {
         title={<>Catálogo de {selectedCatalogCategory}</>}
         className="w-full sm:max-w-2xl"
       >
-        <BasketCatalog categoria={selectedCatalogCategory} />
+        <ErrorBoundary fallback={<div className="text-foreground">Cargando catálogo…</div>}>
+          <BasketCatalog categoria={selectedCatalogCategory} />
+        </ErrorBoundary>
       </SideSheet>
     </section>;
 };
