@@ -218,9 +218,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       setCart([...cart, { ...basket, quantity: 1 }]);
     }
 
-    // Show toast notification
-    toast.success("¡Cesta añadida!", {
-      description: `${basket.nombre} se ha añadido a tu carrito`,
+    // Show custom toast with catalog type
+    const cartType = isGiftCatalog ? "carrito de regalos" : "carrito de cestas";
+    toast.success(`${basket.nombre}`, {
+      description: `Añadida al ${cartType}`,
       duration: 3000,
     });
 

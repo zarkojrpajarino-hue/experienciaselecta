@@ -3,10 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
-
 import Navbar from "@/components/Navbar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import AuthModal from "@/components/AuthModal";
+import StickyToast from "@/components/StickyToast";
+import { supabase } from "@/integrations/supabase/client";
 
 const CestasPage = () => {
   const navigate = useNavigate();
@@ -19,10 +21,32 @@ const CestasPage = () => {
   );
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
 
-  // Prevent auto-scroll on mount
+  // Prevent auto-scroll on mount and check auth
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        setShowWelcomeToast(true);
+      } else {
+        setShowAuthModal(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        setShowAuthModal(false);
+        setShowWelcomeToast(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   // Handle deep-link from external catalog (#cesta-ID)
@@ -103,7 +127,7 @@ const CestasPage = () => {
         }} className="text-center mb-8">
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
               <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
-                Regala una experiencia personalizada.
+                <span style={{ fontFamily: "'Courier Prime', monospace", color: '#D4AF37' }}>REGALA</span> una experiencia personalizada.
               </h2>
               
               {/* Interrogaciones al final de la frase */}
@@ -185,8 +209,23 @@ const CestasPage = () => {
         </div>
       </section>
 
-      {/* Interrogaciones al final */}
-      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => {
+          setShowAuthModal(false);
+          setShowWelcomeToast(true);
+        }}
+      />
+
+      {/* Welcome Toast */}
+      <StickyToast
+        message={`¡Bienvenido, ${user?.email?.split('@')[0] || 'Usuario'}!`}
+        visible={showWelcomeToast}
+        onClose={() => setShowWelcomeToast(false)}
+        autoHideDuration={2000}
+      />
     </div>;
 };
 export default CestasPage;

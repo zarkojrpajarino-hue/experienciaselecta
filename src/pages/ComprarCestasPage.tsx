@@ -6,6 +6,9 @@ import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import AuthModal from "@/components/AuthModal";
+import StickyToast from "@/components/StickyToast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ComprarCestasPage = () => {
   const navigate = useNavigate();
@@ -18,9 +21,32 @@ const ComprarCestasPage = () => {
   );
   const [groupSize, setGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Check auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        setShowWelcomeToast(true);
+      } else {
+        setShowAuthModal(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        setShowAuthModal(false);
+        setShowWelcomeToast(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
@@ -55,7 +81,7 @@ const ComprarCestasPage = () => {
           >
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
               <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
-                Compra tu experiencia personalizada.
+                <span style={{ fontFamily: "'Courier Prime', monospace", color: '#D4AF37' }}>COMPRA</span> tu experiencia personalizada.
               </h2>
               
               <TooltipProvider delayDuration={80}>
@@ -142,6 +168,24 @@ const ComprarCestasPage = () => {
           <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
         </div>
       </section>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => {
+          setShowAuthModal(false);
+          setShowWelcomeToast(true);
+        }}
+      />
+
+      {/* Welcome Toast */}
+      <StickyToast
+        message={`¡Bienvenido, ${user?.email?.split('@')[0] || 'Usuario'}!`}
+        visible={showWelcomeToast}
+        onClose={() => setShowWelcomeToast(false)}
+        autoHideDuration={2000}
+      />
     </div>
   );
 };

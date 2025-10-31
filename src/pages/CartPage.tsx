@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -6,31 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import CheckoutModal from "@/components/CheckoutModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity, clearCart, removeMultipleItems } = useCart();
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [isGiftMode, setIsGiftMode] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Refs para anclar el scroll al abrir el checkout
-  const giftSummaryRef = useRef<HTMLDivElement | null>(null);
-  const personalSummaryRef = useRef<HTMLDivElement | null>(null);
-  const combinedSummaryRef = useRef<HTMLDivElement | null>(null);
-
-  // Reopen checkout after OAuth redirect if there's a pending checkout
-  React.useEffect(() => {
-    const hasPendingCheckout = localStorage.getItem('pendingCheckout');
-    if (hasPendingCheckout && cart.length > 0) {
-      localStorage.removeItem('pendingCheckout');
-      setIsCheckoutOpen(true);
-    }
-  }, [cart.length]);
 
   // Separar cestas de regalo y cestas personales
   const giftItems = cart.filter(item => item.isGift === true);
@@ -49,30 +32,26 @@ const CartPage = () => {
     return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
   };
 
-  const handleCheckout = (giftMode: boolean = false, items: typeof cart) => {
-    setIsGiftMode(giftMode);
-    setIsCheckoutOpen(true);
+  const openCheckout = (items: typeof cart, giftMode: boolean) => {
+    const total = items.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
+    navigate('/checkout', {
+      state: {
+        items: items.map(item => ({
+          id: item.id,
+          nombre: item.nombre,
+          name: item.nombre,
+          precio: item.precio,
+          price: item.precio,
+          categoria: item.categoria,
+          category: item.categoria,
+          quantity: item.quantity,
+          imagen: item.imagen
+        })),
+        isGiftMode: giftMode,
+        total
+      }
+    });
   };
-
-  const openCheckout = (anchorRef: React.RefObject<HTMLElement | null>, giftMode: boolean, items: typeof cart) => {
-    try {
-      anchorRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (e) {}
-    setTimeout(() => {
-      setCheckoutItems(items);
-      handleCheckout(giftMode, items);
-    }, 300);
-  };
-  const [checkoutItems, setCheckoutItems] = useState<typeof cart>([]);
-  
-  const getBasketItems = (items: typeof cart) => items.map(item => ({
-    id: item.id,
-    name: item.nombre,
-    price: item.precio,
-    category: item.categoria,
-    quantity: item.quantity,
-    imagen: item.imagen
-  }));
 
   if (cart.length === 0) {
     return (
@@ -227,7 +206,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Order Summary for Gifts */}
-                  <div className="lg:col-span-1" ref={giftSummaryRef}>
+                  <div className="lg:col-span-1">
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
@@ -266,7 +245,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => openCheckout(giftSummaryRef, true, giftItems)}
+                          onClick={() => openCheckout(giftItems, true)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
@@ -388,7 +367,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Order Summary for Personal */}
-                  <div className="lg:col-span-1" ref={personalSummaryRef}>
+                  <div className="lg:col-span-1">
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
@@ -427,7 +406,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => openCheckout(personalSummaryRef, false, personalItems)}
+                          onClick={() => openCheckout(personalItems, false)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
@@ -485,7 +464,7 @@ const CartPage = () => {
                   </div>
 
                   {/* Resumen y botón de pago */}
-                  <div className="lg:col-span-1" ref={combinedSummaryRef}>
+                  <div className="lg:col-span-1">
                     <Card className="sticky top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black">
@@ -524,7 +503,7 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => openCheckout(combinedSummaryRef, giftItems.length > 0, cart)}
+                          onClick={() => openCheckout(cart, giftItems.length > 0)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
                         >
                           Continuar al pago ({getTotalAmount().toFixed(2)}€)
@@ -542,27 +521,6 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Checkout Modal */}
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => {
-          setIsCheckoutOpen(false);
-          setIsGiftMode(false);
-          // Si no quedan cestas, ir a la página principal, si quedan cestas quedarse en el carrito
-          if (cart.length === 0) {
-            navigate('/');
-          }
-          // Si hay cestas, no navegar (quedarse en el carrito)
-        }}
-        basketItems={getBasketItems(checkoutItems)}
-        totalAmount={checkoutItems.reduce((total, item) => total + (item.precio * item.quantity), 0)}
-        isGiftMode={isGiftMode}
-        onClearCart={clearCart}
-        onRemoveItems={removeMultipleItems}
-        giftItemsCount={checkoutItems.filter(item => item.isGift).length}
-        personalItemsCount={checkoutItems.filter(item => !item.isGift).length}
-      />
 
       {/* Imagen Expandida Modal */}
       <AnimatePresence>
