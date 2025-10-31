@@ -62,10 +62,21 @@ const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, child
     html.style.overflow = 'hidden';
 
     return () => {
-      body.style.overflow = prevBodyOverflow;
-      html.style.overflow = prevHtmlOverflow;
+      // Restaurar scroll siempre
+      body.style.overflow = prevBodyOverflow || '';
+      html.style.overflow = prevHtmlOverflow || '';
     };
   }, [actualOpen]);
+
+  // Cleanup adicional al desmontar
+  useEffect(() => {
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
+    };
+  }, []);
 
   // Close on Escape key - disabled to prevent accidental closes
   // useEffect(() => {
