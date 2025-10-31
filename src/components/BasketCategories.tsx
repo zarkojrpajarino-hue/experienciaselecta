@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { Heart, Users, UserPlus, UsersRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import BasketCatalog from "@/components/BasketCatalog";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
 import catalogHeaderBg from "@/assets/catalog-header-background.jpg";
 import basketDetailsBg from "@/assets/basket-details-background.jpg";
@@ -21,11 +22,11 @@ import familiaCestasImg from "@/assets/familia-nueva-cesta.jpg";
 import amigosCestasImg from "@/assets/amigos-nueva-cesta-clean.png";
 import OptimizedImage from "./OptimizedImage";
 const BasketCategories = () => {
-  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Tooltip open state (show once on first visit + hover)
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [selectedCatalogCategory, setSelectedCatalogCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Pareja');
   const sectionRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<number | null>(null);
   const hasShownRef = useRef(false);
@@ -86,10 +87,9 @@ const BasketCategories = () => {
   const handleCategoryClick = (categoryTitle: string) => {
     console.info('handleCategoryClick:', categoryTitle);
     if (categoryTitle === "Pareja" || categoryTitle === "Familia" || categoryTitle === "Amigos") {
-      // Navegar a la página de cestas con la categoría seleccionada
-      navigate('/cestas', { state: { selectedCategory: categoryTitle } });
+      setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
+      setSheetOpen(true);
     } else {
-      // Para otras categorías mostrar mensaje temporal
       alert(`Catálogo de ${categoryTitle} próximamente disponible`);
     }
   };
@@ -374,6 +374,20 @@ const BasketCategories = () => {
         </div>
         </div>
       </div>
+
+      {/* Sheet lateral para el catálogo de cestas */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="text-2xl font-bold">
+              Catálogo de {selectedCatalogCategory}
+            </SheetTitle>
+          </SheetHeader>
+          <div className="mt-6">
+            <BasketCatalog categoria={selectedCatalogCategory} />
+          </div>
+        </SheetContent>
+      </Sheet>
     </section>;
 };
 export default BasketCategories;
