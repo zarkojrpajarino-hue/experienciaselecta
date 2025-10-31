@@ -15,22 +15,10 @@ const StickyToast: React.FC<StickyToastProps> = ({
   onClose, 
   autoHideDuration = 3000 
 }) => {
-  const [position, setPosition] = useState({ top: 100, right: 16 });
-
   useEffect(() => {
-    if (visible) {
-      // Calcular posición basada en scroll actual del usuario
-      const scrollY = window.scrollY || window.pageYOffset;
-      setPosition({
-        top: scrollY + 100, // 100px desde la posición actual del scroll
-        right: 16
-      });
-
-      // Auto-hide después de la duración especificada
-      if (autoHideDuration > 0) {
-        const timer = setTimeout(onClose, autoHideDuration);
-        return () => clearTimeout(timer);
-      }
+    if (visible && autoHideDuration > 0) {
+      const timer = setTimeout(onClose, autoHideDuration);
+      return () => clearTimeout(timer);
     }
   }, [visible, autoHideDuration, onClose]);
 
@@ -42,12 +30,8 @@ const StickyToast: React.FC<StickyToastProps> = ({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 100 }}
           transition={{ duration: 0.3 }}
-          className="fixed z-[200] bg-white border-2 border-black rounded-xl shadow-2xl p-4 max-w-sm"
-          style={{ 
-            top: `${position.top}px`,
-            right: `${position.right}px`,
-            willChange: "transform" 
-          }}
+          className="fixed top-6 right-4 z-[200] bg-white border-2 border-black rounded-xl shadow-2xl p-4 max-w-sm"
+          style={{ willChange: "transform" }}
         >
           <div className="flex items-start gap-3">
             <div className="flex-1">

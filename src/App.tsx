@@ -1,9 +1,9 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -53,6 +53,16 @@ const queryClient = new QueryClient({
   },
 });
 
+// Scroll to top on every route change
+const ScrollToTopOnRouteChange = () => {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, [location.pathname]);
+  return null;
+};
+
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CartProvider>
@@ -61,6 +71,7 @@ const App = () => (
         <Sonner />
         <AutoUpdater />
         <BrowserRouter>
+          <ScrollToTopOnRouteChange />
           <div className="min-h-screen bg-background gpu-accelerated">
             <Suspense fallback={<PageLoader />}>
               <Routes>
