@@ -89,8 +89,11 @@ const BasketCategories = () => {
     console.log('[BasketCategories] Current sheetOpen state:', sheetOpen);
     if (categoryTitle === "Pareja" || categoryTitle === "Familia" || categoryTitle === "Amigos") {
       setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
-      console.log('[BasketCategories] Setting sheetOpen to true');
-      setSheetOpen(true);
+      // Open on next frame to avoid the initial click closing it immediately
+      requestAnimationFrame(() => {
+        console.log('[BasketCategories] Opening sheet via rAF');
+        setSheetOpen(true);
+      });
     } else {
       alert(`Catálogo de ${categoryTitle} próximamente disponible`);
     }
@@ -304,11 +307,7 @@ const BasketCategories = () => {
                     key={category.id}
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] sm:w-[50%] md:w-[55%] max-w-2xl cursor-pointer"
                     style={{ zIndex: position.zIndex, pointerEvents: 'auto' }}
-                    role="button"
-                    tabIndex={0}
                     aria-label={`Abrir catálogo: ${category.title}`}
-                    onClickCapture={() => handleCategoryClick(category.title)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategoryClick(category.title); } }}
                   >
                   <motion.div
                     animate={{
@@ -325,7 +324,7 @@ const BasketCategories = () => {
                     <button
                       type="button"
                       aria-label={`Abrir catálogo: ${category.title}`}
-                      onClick={() => handleCategoryClick(category.title)}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCategoryClick(category.title); }}
                       className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0 w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     >
                       {/* Imagen */}
