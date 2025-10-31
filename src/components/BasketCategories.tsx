@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Heart, Users, UserPlus, UsersRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import BasketCatalog from "@/components/BasketCatalog";
+import { useNavigate } from "react-router-dom";
 import basketImage from "@/assets/conversaciones-profundas.jpg";
 import catalogHeaderBg from "@/assets/catalog-header-background.jpg";
 import basketDetailsBg from "@/assets/basket-details-background.jpg";
@@ -26,11 +25,10 @@ const BasketCategories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [selectedCatalogCategory, setSelectedCatalogCategory] = useState<'Pareja' | 'Familia' | 'Amigos'>('Pareja');
   const sectionRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<number | null>(null);
   const hasShownRef = useRef(false);
+  const navigate = useNavigate();
   
   const openTooltipTemporarily = (ms = 2000) => {
     setTooltipOpen(true);
@@ -87,11 +85,7 @@ const BasketCategories = () => {
   }, []);
 
   const handleCategoryClick = (categoryTitle: string) => {
-    console.log('[BasketCategories] handleCategoryClick:', categoryTitle);
-    if (categoryTitle === 'Pareja' || categoryTitle === 'Familia' || categoryTitle === 'Amigos') {
-      setSelectedCatalogCategory(categoryTitle as 'Pareja' | 'Familia' | 'Amigos');
-      requestAnimationFrame(() => setSheetOpen(true));
-    }
+    navigate('/cestas', { state: { selectedCategory: categoryTitle } });
   };
   // Animated Title Component
   const AnimatedTitle = ({ text, index }: { text: string; index: number }) => {
@@ -370,27 +364,6 @@ const BasketCategories = () => {
           </div>
         </div>
       </div>
-
-      {/* Indicador de depuración visible cuando sheetOpen=true */}
-      {sheetOpen && (
-        <div className="fixed top-4 right-4 z-[10000] px-3 py-2 rounded-md bg-primary text-primary-foreground shadow-lg">
-          Panel: abierto ({selectedCatalogCategory})
-        </div>
-      )}
-
-      {/* Sheet lateral para el catálogo de cestas (Radix) */}
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-2xl z-[100] overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle className="text-2xl font-bold">Catálogo de {selectedCatalogCategory}</SheetTitle>
-          </SheetHeader>
-          <div className="mt-6">
-            <ErrorBoundary fallback={<div className="text-foreground">Cargando catálogo…</div>}>
-              <BasketCatalog categoria={selectedCatalogCategory} />
-            </ErrorBoundary>
-          </div>
-        </SheetContent>
-      </Sheet>
     </section>;
-  };
-  export default BasketCategories;
+};
+export default BasketCategories;
