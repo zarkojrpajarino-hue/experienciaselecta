@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import AuthModal from "@/components/AuthModal";
 import StickyToast from "@/components/StickyToast";
+import ExitConfirmDialog from "@/components/ExitConfirmDialog";
 import { supabase } from "@/integrations/supabase/client";
 
 const CestasPage = () => {
@@ -25,6 +26,7 @@ const CestasPage = () => {
   const [user, setUser] = useState<any>(null);
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   // Prevent auto-scroll on mount and check auth
   useEffect(() => {
@@ -116,22 +118,20 @@ const CestasPage = () => {
         <ScrollIndicator />
       </div>
       
-      {/* Header Section - Only show if authenticated */}
+      {/* Header Section */}
       {user && (
         <>
           <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-start mb-4">
-            <Button variant="link" onClick={() => {
-            navigate('/');
-            setTimeout(() => window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            }), 100);
-          }} className="text-black hover:text-black/80 p-0">
-              ← Volver al inicio
-            </Button>
-          </div>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-start mb-4">
+                <Button 
+                  variant="link" 
+                  onClick={() => navigate('/')} 
+                  className="text-black hover:text-black/80 p-0"
+                >
+                  ← Volver al inicio
+                </Button>
+              </div>
           <motion.div initial={{
           opacity: 0,
           x: -100,
@@ -147,8 +147,8 @@ const CestasPage = () => {
           damping: 15
         }} viewport={{ once: true }} className="text-center mb-8 gpu-accelerated">
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
-              <h2 className="text-sm sm:text-lg md:text-2xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
-                <span style={{ fontFamily: "'Courier Prime', monospace", color: '#D4AF37' }}>REGALA</span> una experiencia personalizada.
+              <h2 className="text-base sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
+                <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>REGALA</span> una experiencia personalizada.
               </h2>
               
               {/* Interrogaciones al final de la frase */}
@@ -219,18 +219,31 @@ const CestasPage = () => {
           }} whileTap={{ scale: 0.98 }}>
               Amigos.
             </motion.button>
-          </div>
+              </div>
+            </div>
+          </section>
+          
+          {/* Basket Catalog Section */}
+          <section className="py-8 md:py-10">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* Botón volver si no autenticado */}
+      {!user && (
+        <div className="pt-24 px-4">
+          <Button 
+            variant="link" 
+            onClick={() => setShowExitDialog(true)} 
+            className="text-black hover:text-black/80"
+          >
+            ← Volver
+          </Button>
         </div>
-      </section>
-      
-      {/* Basket Catalog Section */}
-      <section className="py-8 md:py-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
-        </div>
-      </section>
-    </>
-  )}
+      )}
 
   {/* Auth Modal - No se puede cerrar sin autenticarse */}
   <AuthModal 
@@ -253,6 +266,16 @@ const CestasPage = () => {
         visible={showWelcomeToast}
         onClose={() => setShowWelcomeToast(false)}
         autoHideDuration={2000}
+      />
+
+      {/* Exit Confirmation Dialog */}
+      <ExitConfirmDialog
+        isOpen={showExitDialog}
+        onClose={() => setShowExitDialog(false)}
+        onContinueToAuth={() => {
+          setShowExitDialog(false);
+          setShowAuthModal(true);
+        }}
       />
     </div>;
 };

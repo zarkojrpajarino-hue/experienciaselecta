@@ -67,15 +67,15 @@ const Dialog: FC<DialogProps> = ({ open, defaultOpen, modal, onOpenChange, child
     };
   }, [actualOpen]);
 
-  // Close on Escape key
-  useEffect(() => {
-    if (!actualOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [actualOpen, setOpen]);
+  // Close on Escape key - disabled to prevent accidental closes
+  // useEffect(() => {
+  //   if (!actualOpen) return;
+  //   const onKeyDown = (e: KeyboardEvent) => {
+  //     if (e.key === "Escape") setOpen(false);
+  //   };
+  //   document.addEventListener("keydown", onKeyDown);
+  //   return () => document.removeEventListener("keydown", onKeyDown);
+  // }, [actualOpen, setOpen]);
 
   return <DialogContext.Provider value={value}>{children}</DialogContext.Provider>;
 };
