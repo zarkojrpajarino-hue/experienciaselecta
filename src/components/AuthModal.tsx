@@ -128,12 +128,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto" hideClose={true}>
           {onBack && (
             <Button
               variant="ghost"
               onClick={onBack}
-              className="absolute left-4 top-4 text-black hover:text-black/70 p-0"
+              className="absolute right-4 top-4 text-black hover:text-black/70 hover:bg-transparent p-2"
             >
               ← Volver
             </Button>
