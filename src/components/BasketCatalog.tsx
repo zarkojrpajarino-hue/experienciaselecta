@@ -1384,6 +1384,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                   <img
                     src={basket.imagen}
                     alt={basket.nombre}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover rounded-3xl"
                   />
                       </div>
@@ -1453,6 +1455,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       <img 
                         src={basket.imagen}
                         alt={basket.nombre}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover rounded-3xl"
                       />
                     </div>

@@ -24,17 +24,21 @@ const CestasPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Prevent auto-scroll on mount and check auth
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Force scroll to top immediately
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
         setShowWelcomeToast(true);
+        setIsLoading(false);
       } else {
         setShowAuthModal(true);
+        setIsLoading(false);
       }
     });
 
@@ -43,6 +47,8 @@ const CestasPage = () => {
         setUser(session.user);
         setShowAuthModal(false);
         setShowWelcomeToast(true);
+        // Scroll to top after auth
+        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
       }
     });
 
@@ -87,6 +93,19 @@ const CestasPage = () => {
       }
     }, 500);
   }, []);
+
+  // Don't render catalog until user is authenticated
+  if (isLoading) {
+    return (
+      <div className="min-h-screen font-work-sans bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
+          <p className="text-black font-poppins">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return <div className="min-h-screen font-work-sans bg-background">
       {/* Add Navbar */}
       <Navbar />
@@ -97,8 +116,10 @@ const CestasPage = () => {
         <ScrollIndicator />
       </div>
       
-      {/* Header Section */}
-      <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
+      {/* Header Section - Only show if authenticated */}
+      {user && (
+        <>
+          <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start mb-4">
             <Button variant="link" onClick={() => {
@@ -208,16 +229,23 @@ const CestasPage = () => {
           <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
         </div>
       </section>
+    </>
+  )}
 
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={() => {
-          setShowAuthModal(false);
-          setShowWelcomeToast(true);
-        }}
-      />
+  {/* Auth Modal - No se puede cerrar sin autenticarse */}
+  <AuthModal 
+    isOpen={showAuthModal} 
+    onClose={() => {
+      // No permitir cerrar sin autenticarse
+      if (user) {
+        setShowAuthModal(false);
+      }
+    }}
+    onSuccess={() => {
+      setShowAuthModal(false);
+      setShowWelcomeToast(true);
+    }}
+  />
 
       {/* Welcome Toast */}
       <StickyToast
