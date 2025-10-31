@@ -33,7 +33,7 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
     <div className="fixed inset-0 z-[9999]" aria-modal="true" role="dialog">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/50 transition-opacity animate-in fade-in-0"
+        className="absolute inset-0 bg-black/60"
         onClick={() => onOpenChange(false)}
         aria-hidden="true"
       />
@@ -42,7 +42,6 @@ const SideSheet: React.FC<SideSheetProps> = ({ open, onOpenChange, title, classN
       <div
         className={cn(
           "absolute right-0 top-0 h-full w-full sm:max-w-2xl bg-background shadow-xl border-l",
-          "animate-in slide-in-from-right duration-300",
           className
         )}
       >
