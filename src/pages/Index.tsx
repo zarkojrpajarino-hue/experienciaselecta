@@ -364,9 +364,9 @@ const Index = () => {
         // Limpiar flags
         sessionStorage.removeItem('hasClosedAuthModal');
       } else {
-        // Usuario NO tiene sesión: mostrar modal inmediatamente al entrar
+        // Usuario NO tiene sesión: NO mostrar modal automáticamente
         setIsAuthenticated(false);
-        setShowAuthModal(true);
+        setShowAuthModal(false);
       }
     };
     checkAuth();
