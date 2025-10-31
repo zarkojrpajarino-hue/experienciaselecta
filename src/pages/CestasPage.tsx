@@ -1,12 +1,13 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import PageNavigation from "@/components/PageNavigation";
 import Navbar from "@/components/Navbar";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useLocation } from "react-router-dom";
+
 const CestasPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
