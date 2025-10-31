@@ -85,7 +85,7 @@ const BasketCategories = () => {
   }, []);
 
   const handleCategoryClick = (categoryTitle: string) => {
-    navigate('/cestas', { state: { selectedCategory: categoryTitle } });
+    navigate('/comprar-cestas', { state: { selectedCategory: categoryTitle } });
   };
   // Animated Title Component
   const AnimatedTitle = ({ text, index }: { text: string; index: number }) => {

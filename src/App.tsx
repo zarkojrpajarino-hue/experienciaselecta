@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Lazy load pages for better performance
 import Index from "./pages/Index";
 import CestasPage from "./pages/CestasPage";
+import ComprarCestasPage from "./pages/ComprarCestasPage";
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
@@ -69,6 +70,7 @@ const App = () => (
                 <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
                 <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
                 <Route path="/cestas" element={<CestasPage />} />
+                <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
                 <Route path="/experiencia" element={<ExperienciaPage />} />
                 <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
                 <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
