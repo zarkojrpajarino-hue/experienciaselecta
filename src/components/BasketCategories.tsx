@@ -377,7 +377,7 @@ const BasketCategories = () => {
 
       {/* Sheet lateral para el catálogo de cestas */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto animate-slide-in-right">
           <SheetHeader>
             <SheetTitle className="text-2xl font-bold">
               Catálogo de {selectedCatalogCategory}
