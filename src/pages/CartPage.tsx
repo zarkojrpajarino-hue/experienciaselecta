@@ -114,7 +114,7 @@ const CartPage = () => {
                   Seguir comprando regalos
                 </Button>
                 
-                <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
+                <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-2 sm:gap-3">
                   🎁 Cestas que vas a regalar
                 </h1>
                 
@@ -128,88 +128,83 @@ const CartPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, x: -100 }}
                       >
-                        <Card>
-                          <CardContent className="p-6">
-                            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                              {/* Imagen de la cesta */}
-                              <div 
-                                className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                                onClick={() => setExpandedImage(item.imagen)}
-                              >
-                                <img 
-                                  src={item.imagen} 
-                                  alt={item.nombre}
-                                  loading="lazy"
-                                  decoding="async"
-                                  className="w-full h-auto object-cover rounded-2xl"
-                                />
-                              </div>
-
-                              <div className="flex-1">
-                                <h3 className="text-lg font-poppins font-bold text-black">
-                                  {item.nombre}
-                                </h3>
-                                <p className="text-sm text-gray-600 capitalize">
-                                  {item.categoria}
-                                </p>
-                                <p className="text-xl font-poppins font-bold text-gold mt-2">
-                                  {item.precio.toFixed(2)}€
-                                </p>
-                              </div>
-
-                              <div className="flex items-center gap-4">
-                                {/* Quantity Controls */}
-                                <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => {
-                                      if (item.quantity > 1) {
-                                        updateQuantity(item.id, item.quantity - 1, item.isGift);
-                                      }
-                                    }}
-                                    disabled={item.quantity <= 1}
-                                    className="h-8 w-8 text-black hover:text-gold"
-                                  >
-                                    <Minus className="w-4 h-4" />
-                                  </Button>
-                                  
-                                  <span className="w-8 text-center font-poppins font-bold text-black">
-                                    {item.quantity}
-                                  </span>
-                                  
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1, item.isGift)}
-                                    className="h-8 w-8 text-black hover:text-gold"
-                                  >
-                                    <Plus className="w-4 h-4" />
-                                  </Button>
+                         <Card>
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex flex-col gap-4">
+                              {/* Fila superior: Imagen + Info básica + Botón eliminar */}
+                              <div className="flex gap-3 items-start">
+                                {/* Imagen de la cesta */}
+                                <div 
+                                  className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => setExpandedImage(item.imagen)}
+                                >
+                                  <img 
+                                    src={item.imagen} 
+                                    alt={item.nombre}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover rounded-2xl"
+                                  />
                                 </div>
 
-                                {/* Remove Button */}
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="text-base sm:text-lg font-poppins font-bold text-black mb-1 truncate">
+                                    {item.nombre}
+                                  </h3>
+                                  <p className="text-sm text-gray-600 mb-2">
+                                    {item.categoria}
+                                  </p>
+                                  <p className="text-lg sm:text-xl font-bold text-gold">
+                                    {item.precio.toFixed(2)}€
+                                  </p>
+                                </div>
+
+                                {/* Botón eliminar */}
                                 <Button
-                                  size="icon"
                                   variant="ghost"
-                                  onClick={() => removeFromCart(item.id, item.isGift)}
-                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  size="icon"
+                                  onClick={() => removeFromCart(item.id)}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
                                 >
-                                  <Trash2 className="w-5 h-5" />
+                                  <Trash2 className="w-4 h-4" />
                                 </Button>
+                              </div>
+
+                              {/* Fila inferior: Controles de cantidad */}
+                              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                                <span className="text-sm font-medium text-gray-600">Cantidad:</span>
+                                <div className="flex items-center gap-3">
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                                    className="h-8 w-8 rounded-full"
+                                  >
+                                    <Minus className="w-3 h-3" />
+                                  </Button>
+                                  <span className="text-base font-bold w-8 text-center">{item.quantity}</span>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                    className="h-8 w-8 rounded-full"
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           </CardContent>
-                        </Card>
+                         </Card>
                       </motion.div>
                     ))}
                   </div>
 
                   {/* Order Summary for Gifts */}
                   <div className="lg:col-span-1">
-                    <Card className="sticky top-24">
+                    <Card className="lg:sticky lg:top-24">
                       <CardHeader>
-                        <CardTitle className="font-poppins text-black">
+                        <CardTitle className="font-poppins text-black text-lg sm:text-xl">
                           Resumen de regalos
                         </CardTitle>
                       </CardHeader>
@@ -217,11 +212,11 @@ const CartPage = () => {
                         {/* Items breakdown */}
                         <div className="space-y-2">
                           {giftItems.map((item) => (
-                            <div key={item.id} className="flex justify-between text-sm">
-                              <span className="text-gray-600">
+                            <div key={item.id} className="flex justify-between text-xs sm:text-sm gap-2">
+                              <span className="text-gray-600 truncate flex-1">
                                 {item.nombre} x{item.quantity}
                               </span>
-                              <span className="font-poppins font-bold text-black">
+                              <span className="font-poppins font-bold text-black flex-shrink-0">
                                 {(item.precio * item.quantity).toFixed(2)}€
                               </span>
                             </div>
@@ -246,7 +241,7 @@ const CartPage = () => {
 
                         <Button
                           onClick={() => openCheckout(giftItems, true)}
-                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base sm:text-lg py-5 sm:py-6"
                         >
                           Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
                         </Button>
@@ -274,8 +269,8 @@ const CartPage = () => {
                   Seguir comprando
                 </Button>
                 
-                <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
-                  <ShoppingCart className="w-8 h-8 text-gold" />
+                <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-2 sm:gap-3">
+                  <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-gold" />
                   Tus cestas
                 </h1>
                 
@@ -290,74 +285,69 @@ const CartPage = () => {
                         exit={{ opacity: 0, x: -100 }}
                       >
                         <Card>
-                          <CardContent className="p-6">
-                            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                              {/* Imagen de la cesta */}
-                              <div 
-                                className="w-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                                onClick={() => setExpandedImage(item.imagen)}
-                              >
-                                <img 
-                                  src={item.imagen} 
-                                  alt={item.nombre}
-                                  loading="lazy"
-                                  decoding="async"
-                                  className="w-full h-auto object-cover rounded-2xl"
-                                />
-                              </div>
-
-                              <div className="flex-1">
-                                <h3 className="text-lg font-poppins font-bold text-black">
-                                  {item.nombre}
-                                </h3>
-                                <p className="text-sm text-gray-600 capitalize">
-                                  {item.categoria}
-                                </p>
-                                <p className="text-xl font-poppins font-bold text-gold mt-2">
-                                  {item.precio.toFixed(2)}€
-                                </p>
-                              </div>
-
-                              <div className="flex items-center gap-4">
-                                {/* Quantity Controls */}
-                                <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => {
-                                      if (item.quantity > 1) {
-                                        updateQuantity(item.id, item.quantity - 1, item.isGift);
-                                      }
-                                    }}
-                                    disabled={item.quantity <= 1}
-                                    className="h-8 w-8 text-black hover:text-gold"
-                                  >
-                                    <Minus className="w-4 h-4" />
-                                  </Button>
-                                  
-                                  <span className="w-8 text-center font-poppins font-bold text-black">
-                                    {item.quantity}
-                                  </span>
-                                  
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1, item.isGift)}
-                                    className="h-8 w-8 text-black hover:text-gold"
-                                  >
-                                    <Plus className="w-4 h-4" />
-                                  </Button>
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex flex-col gap-4">
+                              {/* Fila superior: Imagen + Info básica + Botón eliminar */}
+                              <div className="flex gap-3 items-start">
+                                {/* Imagen de la cesta */}
+                                <div 
+                                  className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => setExpandedImage(item.imagen)}
+                                >
+                                  <img 
+                                    src={item.imagen} 
+                                    alt={item.nombre}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover rounded-2xl"
+                                  />
                                 </div>
 
-                                {/* Remove Button */}
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="text-base sm:text-lg font-poppins font-bold text-black mb-1 truncate">
+                                    {item.nombre}
+                                  </h3>
+                                  <p className="text-sm text-gray-600 mb-2">
+                                    {item.categoria}
+                                  </p>
+                                  <p className="text-lg sm:text-xl font-bold text-gold">
+                                    {item.precio.toFixed(2)}€
+                                  </p>
+                                </div>
+
+                                {/* Botón eliminar */}
                                 <Button
-                                  size="icon"
                                   variant="ghost"
-                                  onClick={() => removeFromCart(item.id, item.isGift)}
-                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  size="icon"
+                                  onClick={() => removeFromCart(item.id)}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
                                 >
-                                  <Trash2 className="w-5 h-5" />
+                                  <Trash2 className="w-4 h-4" />
                                 </Button>
+                              </div>
+
+                              {/* Fila inferior: Controles de cantidad */}
+                              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                                <span className="text-sm font-medium text-gray-600">Cantidad:</span>
+                                <div className="flex items-center gap-3">
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                                    className="h-8 w-8 rounded-full"
+                                  >
+                                    <Minus className="w-3 h-3" />
+                                  </Button>
+                                  <span className="text-base font-bold w-8 text-center">{item.quantity}</span>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                    className="h-8 w-8 rounded-full"
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           </CardContent>
@@ -368,9 +358,9 @@ const CartPage = () => {
 
                   {/* Order Summary for Personal */}
                   <div className="lg:col-span-1">
-                    <Card className="sticky top-24">
+                    <Card className="lg:sticky lg:top-24">
                       <CardHeader>
-                        <CardTitle className="font-poppins text-black">
+                        <CardTitle className="font-poppins text-black text-lg sm:text-xl">
                           Resumen del pedido
                         </CardTitle>
                       </CardHeader>
@@ -378,11 +368,11 @@ const CartPage = () => {
                         {/* Items breakdown */}
                         <div className="space-y-2">
                           {personalItems.map((item) => (
-                            <div key={item.id} className="flex justify-between text-sm">
-                              <span className="text-gray-600">
+                            <div key={item.id} className="flex justify-between text-xs sm:text-sm gap-2">
+                              <span className="text-gray-600 truncate flex-1">
                                 {item.nombre} x{item.quantity}
                               </span>
-                              <span className="font-poppins font-bold text-black">
+                              <span className="font-poppins font-bold text-black flex-shrink-0">
                                 {(item.precio * item.quantity).toFixed(2)}€
                               </span>
                             </div>
@@ -407,7 +397,7 @@ const CartPage = () => {
 
                         <Button
                           onClick={() => openCheckout(personalItems, false)}
-                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base sm:text-lg py-5 sm:py-6"
                         >
                           Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
                         </Button>
@@ -465,23 +455,23 @@ const CartPage = () => {
 
                   {/* Resumen y botón de pago */}
                   <div className="lg:col-span-1">
-                    <Card className="sticky top-24">
+                    <Card className="lg:sticky lg:top-24">
                       <CardHeader>
-                        <CardTitle className="font-poppins text-black">
+                        <CardTitle className="font-poppins text-black text-lg sm:text-xl">
                           Resumen total
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
+                          <div className="flex justify-between text-xs sm:text-sm gap-2">
                             <span className="text-gray-600">Cestas de regalo</span>
-                            <span className="font-poppins font-bold text-black">
+                            <span className="font-poppins font-bold text-black flex-shrink-0">
                               {getGiftTotal().toFixed(2)}€
                             </span>
                           </div>
-                          <div className="flex justify-between text-sm">
+                          <div className="flex justify-between text-xs sm:text-sm gap-2">
                             <span className="text-gray-600">Tus cestas</span>
-                            <span className="font-poppins font-bold text-black">
+                            <span className="font-poppins font-bold text-black flex-shrink-0">
                               {getPersonalTotal().toFixed(2)}€
                             </span>
                           </div>
@@ -489,9 +479,9 @@ const CartPage = () => {
 
                         <Separator />
 
-                        <div className="flex justify-between text-lg">
+                        <div className="flex justify-between text-base sm:text-lg">
                           <span className="font-poppins font-bold text-black">Total</span>
-                          <span className="font-poppins font-bold text-gold text-xl">
+                          <span className="font-poppins font-bold text-gold text-xl sm:text-2xl">
                             {getTotalAmount().toFixed(2)}€
                           </span>
                         </div>
@@ -504,7 +494,7 @@ const CartPage = () => {
 
                         <Button
                           onClick={() => openCheckout(cart, giftItems.length > 0)}
-                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                          className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base sm:text-lg py-5 sm:py-6"
                         >
                           Continuar al pago ({getTotalAmount().toFixed(2)}€)
                         </Button>

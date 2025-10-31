@@ -8,10 +8,10 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, D
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
-import { toast } from "sonner";
 import { useNavigate, useLocation } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
+import StickyToast from "./StickyToast";
 
 // Import images - Pareja
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -107,6 +107,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const { cart: globalCart, addToCart: addToGlobalCart, getTotalAmount, getTotalItems, clearCart, removeMultipleItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Estado para el toast sticky
+  const [showAddedToast, setShowAddedToast] = useState(false);
+  const [addedBasketName, setAddedBasketName] = useState("");
   
   // Callback optimizado para abrir imagen
   const handleOpenImage = useCallback((imageSrc: string) => {
@@ -218,12 +222,10 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       setCart([...cart, { ...basket, quantity: 1 }]);
     }
 
-    // Show custom toast with catalog type
+    // Show sticky toast with cart type
     const cartType = isGiftCatalog ? "carrito de regalos" : "carrito de cestas";
-    toast.success(`${basket.nombre}`, {
-      description: `Añadida al ${cartType}`,
-      duration: 3000,
-    });
+    setAddedBasketName(`${basket.nombre} - Añadida al ${cartType}`);
+    setShowAddedToast(true);
 
     // Scroll to top of the sheet/container to show cart summary
     const sheetContent = document.querySelector('[role="dialog"]');
@@ -1703,6 +1705,14 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           setCart([]); // Clear local cart
         }}
         onRemoveItems={removeMultipleItems}
+      />
+
+      {/* Toast para añadir al carrito */}
+      <StickyToast
+        message={addedBasketName}
+        visible={showAddedToast}
+        onClose={() => setShowAddedToast(false)}
+        autoHideDuration={3000}
       />
     </div>
   );
