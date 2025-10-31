@@ -12,9 +12,10 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onBack?: () => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -128,6 +129,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
+          {onBack && (
+            <Button
+              variant="ghost"
+              onClick={onBack}
+              className="absolute left-4 top-4 text-black hover:text-black/70 p-0"
+            >
+              ← Volver
+            </Button>
+          )}
           <DialogHeader className="text-center">
             <DialogTitle className="text-xl font-semibold">
               Accede a tu cuenta

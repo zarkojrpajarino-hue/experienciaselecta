@@ -232,24 +232,10 @@ const CestasPage = () => {
         </>
       )}
 
-      {/* Botón volver si no autenticado */}
-      {!user && (
-        <div className="pt-24 px-4">
-          <Button 
-            variant="link" 
-            onClick={() => setShowExitDialog(true)} 
-            className="text-black hover:text-black/80"
-          >
-            ← Volver
-          </Button>
-        </div>
-      )}
-
-  {/* Auth Modal - No se puede cerrar sin autenticarse */}
+  {/* Auth Modal */}
   <AuthModal 
     isOpen={showAuthModal} 
     onClose={() => {
-      // No permitir cerrar sin autenticarse
       if (user) {
         setShowAuthModal(false);
       }
@@ -258,6 +244,7 @@ const CestasPage = () => {
       setShowAuthModal(false);
       setShowWelcomeToast(true);
     }}
+    onBack={() => setShowExitDialog(true)}
   />
 
       {/* Welcome Toast */}
