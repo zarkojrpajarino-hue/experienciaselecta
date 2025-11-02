@@ -778,12 +778,12 @@ const CheckoutPage = () => {
             transition={{ duration: 0.3, type: 'spring' }}
             style={{ 
               position: 'fixed', 
-              top: window.innerWidth < 768 ? '50%' : `${infoPopover.top}px`, 
-              left: window.innerWidth < 768 ? '50%' : `${infoPopover.left}px`, 
-              transform: window.innerWidth < 768 ? 'translate(-50%, -50%)' : 'translateY(-50%)',
+              top: `${infoPopover.top}px`, 
+              left: `${infoPopover.left}px`, 
+              transform: 'translateY(-50%)',
               zIndex: 110
             }}
-            className="max-w-[90vw] md:max-w-md"
+            className="max-w-[85vw] md:max-w-md"
           >
             <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4">
               <button
@@ -818,9 +818,9 @@ const CheckoutPage = () => {
             transition={{ duration: 0.3, type: 'spring' }}
             style={{ 
               position: 'fixed', 
-              top: window.innerWidth < 768 ? `${imagePreview.top}px` : `${imagePreview.top}px`, 
-              left: window.innerWidth < 768 ? `${imagePreview.left + 10}px` : `${imagePreview.left}px`, 
-              transform: window.innerWidth < 768 ? 'translateY(-50%)' : 'translateY(-50%)',
+              top: `${imagePreview.top}px`, 
+              left: `${imagePreview.left}px`, 
+              transform: 'translateY(-50%)',
               zIndex: 110
             }}
           >
