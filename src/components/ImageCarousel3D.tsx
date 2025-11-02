@@ -16,7 +16,7 @@ interface ImageCarousel3DProps {
 const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
-  const [imagePosition, setImagePosition] = useState<{ top: number; bottom: number } | null>(null);
+  const [imagePosition, setImagePosition] = useState<{ top: number; centerX: number } | null>(null);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -30,7 +30,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     if (event) {
       const target = event.currentTarget as HTMLElement;
       const rect = target.getBoundingClientRect();
-      setImagePosition({ top: rect.top, bottom: rect.bottom });
+      setImagePosition({ top: rect.top, centerX: rect.left + rect.width / 2 });
     }
     setSelectedImage(index);
   };
@@ -203,7 +203,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
             style={{
               position: 'fixed',
               top: `${Math.max(8, imagePosition.top - 8)}px`,
-              left: '50%',
+              left: `${imagePosition.centerX}px`,
               transform: 'translate(-50%, -100%)',
               zIndex: 9999,
               maxWidth: '360px',
