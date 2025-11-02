@@ -139,8 +139,25 @@ const ComprarCestasPage = () => {
               Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
             </p>
 
+            {/* Indicador del modo actual */}
             <motion.div 
-              onClick={() => setIsGiftMode(!isGiftMode)}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              key={isGiftMode ? 'gift' : 'normal'}
+              className={`mb-3 px-4 py-2 rounded-xl font-bold text-sm inline-block ${
+                isGiftMode 
+                  ? 'bg-purple-100 text-purple-700 border-2 border-purple-400' 
+                  : 'bg-blue-100 text-blue-700 border-2 border-blue-400'
+              }`}
+            >
+              {isGiftMode ? '🎁 Modo Regalo Activo' : '🛒 Modo Compra Normal'}
+            </motion.div>
+
+            <motion.div 
+              onClick={() => {
+                console.log('Cambiando modo de:', isGiftMode ? 'regalo' : 'normal', 'a:', !isGiftMode ? 'regalo' : 'normal');
+                setIsGiftMode(!isGiftMode);
+              }}
               className="flex justify-center items-center gap-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
