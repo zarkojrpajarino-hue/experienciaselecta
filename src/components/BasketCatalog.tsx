@@ -12,7 +12,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
 import StickyToast from "./StickyToast";
-import FloatingToast from "./FloatingToast";
 
 // Import images - Pareja
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -110,10 +109,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Estado para el toast sticky
-  const [showAddedToast, setShowAddedToast] = useState(false);
-  const [addedBasketName, setAddedBasketName] = useState("");
-  const [toastPosition, setToastPosition] = useState<{ top: number; left: number } | null>(null);
+  // Estado para el mensaje de cesta añadida (por ID de cesta)
+  const [addedBasketId, setAddedBasketId] = useState<number | null>(null);
   
   // Callback optimizado para abrir imagen
   const handleOpenImage = useCallback((imageSrc: string) => {
@@ -225,25 +222,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       setCart([...cart, { ...basket, quantity: 1 }]);
     }
 
-    // Posicionar toast junto al título de la tarjeta (si existe); si no, junto al botón
-    const buttonRect = event.currentTarget.getBoundingClientRect();
-    let top = buttonRect.top + (buttonRect.height / 2);
-    let left = buttonRect.right + 12;
-
-    const cardElement = document.querySelector(`[data-basket-id="${basket.id}"]`);
-    const titleEl = (cardElement?.querySelector('[data-basket-title]') as HTMLElement | null) 
-      || (cardElement?.querySelector('.basket-title') as HTMLElement | null);
-    if (titleEl) {
-      const titleRect = titleEl.getBoundingClientRect();
-      top = titleRect.top + (titleRect.height / 2);
-      left = titleRect.right + 12;
-    }
-
-    setToastPosition({ top, left });
-
-    // Show toast with cart type
-    setAddedBasketName(`✓ ${basket.nombre} añadida`);
-    setShowAddedToast(true);
+    // Mostrar mensaje inline
+    setAddedBasketId(basket.id);
+    
+    // Ocultar mensaje después de 3 segundos
+    setTimeout(() => {
+      setAddedBasketId(null);
+    }, 3000);
 
     // Scroll to top of the sheet/container to show cart summary
     const sheetContent = document.querySelector('[role="dialog"]');
@@ -1686,12 +1671,24 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             )}
 
                             <div className="flex flex-col gap-2">
-                              <div className="flex justify-center">
+                              <div className="flex justify-center items-center gap-3">
                                 <AddToCartButton 
                                   onClick={(e) => handleAddToCart(basket, e)}
                                   price={basket.precio}
                                   className={colorCombo.text}
                                 />
+                                {addedBasketId === basket.id && (
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="flex items-center gap-2 bg-green-500 text-white px-3 py-1 rounded-lg shadow-lg font-bold text-sm whitespace-nowrap"
+                                  >
+                                    <span>✓</span>
+                                    <span>{basket.nombre} añadida</span>
+                                  </motion.div>
+                                )}
                               </div>
                             </div>
                           </motion.div>
@@ -1762,14 +1759,6 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         onRemoveItems={removeMultipleItems}
       />
 
-      {/* Toast flotante para añadir al carrito */}
-      <FloatingToast
-        message={addedBasketName}
-        visible={showAddedToast}
-        onClose={() => setShowAddedToast(false)}
-        autoHideDuration={3000}
-        position={toastPosition}
-      />
     </div>
   );
 };
