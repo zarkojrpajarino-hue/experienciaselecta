@@ -794,15 +794,9 @@ const CheckoutPage = () => {
                 <X className="h-3 w-3 md:h-4 md:w-4" />
               </button>
               <div className="space-y-2 text-xs md:text-sm leading-relaxed text-center">
-                <h3 className="text-sm md:text-base font-semibold mb-1">¿Cómo funciona?</h3>
-                <div className="space-y-1">
-                  <p><span className="font-bold">1.</span> Enviamos enlace por email/móvil a esta web</p>
-                  <p><span className="font-bold">2.</span> Destinatario entra y confirma dirección de envío y fecha</p>
-                  <p><span className="font-bold">3.</span> Recibe su regalo</p>
-                </div>
-                <p className="text-[10px] md:text-xs text-muted-foreground pt-1">
-                  💡 Pagas ahora, el destinatario decide cuándo y dónde.
-                </p>
+                <h3 className="text-sm md:text-base font-semibold mb-1">Información de contacto</h3>
+                <p>Introduce tu email o tu teléfono.</p>
+                <p className="font-semibold">Solo uno de los dos es obligatorio.</p>
               </div>
             </div>
           </motion.div>
