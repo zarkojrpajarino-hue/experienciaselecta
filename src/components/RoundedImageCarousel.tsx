@@ -80,7 +80,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         {!hideMainTitle && (
           <div className="text-center mb-2">
             <div className="flex items-center justify-center gap-1 sm:gap-2">
-              <h2 className="text-xs sm:text-lg md:text-xl lg:text-2xl font-poppins font-bold text-black tracking-wide">
+              <h2 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-poppins font-bold text-black tracking-wide">
                 ¿Por qué no vendemos cestas y cómo te entendemos?
               </h2>
               <TooltipProvider delayDuration={0}>
