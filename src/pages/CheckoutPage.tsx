@@ -849,7 +849,7 @@ const CheckoutPage = () => {
               >
                 <X className="h-3 w-3 md:h-4 md:w-4" />
               </button>
-              <img src={imagePreview.src} alt="Vista ampliada" className="w-32 h-32 md:w-80 md:h-80 object-cover rounded-md" />
+              <img src={imagePreview.src} alt="Vista ampliada" className="w-40 h-40 md:w-80 md:h-80 object-cover rounded-md" />
             </div>
           </motion.div>
         </AnimatePresence>
