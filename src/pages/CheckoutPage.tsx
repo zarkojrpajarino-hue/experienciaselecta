@@ -28,11 +28,28 @@ interface CartItem {
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { giftItems, personalItems, total } = location.state as {
-    giftItems: CartItem[];
-    personalItems: CartItem[];
-    total: number;
-  };
+  
+  // Validar que location.state existe, si no redirigir
+  React.useEffect(() => {
+    if (!location.state) {
+      navigate('/carrito', { replace: true });
+    }
+  }, [location.state, navigate]);
+
+  // Manejar el caso donde state es null con valores por defecto
+  const { giftItems = [], personalItems = [], total = 0 } = location.state || {};
+
+  // Si no hay state, mostrar loading mientras redirige
+  if (!location.state) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
+          <p className="text-black font-poppins">Redirigiendo...</p>
+        </div>
+      </div>
+    );
+  }
 
   // State para controlar qué sección está abierta (solo una a la vez)
   const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>('personal');
