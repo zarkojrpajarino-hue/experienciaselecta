@@ -56,6 +56,18 @@ const queryClient = new QueryClient({
 // Scroll to top on every route change
 const ScrollToTopOnRouteChange = () => {
   const location = useLocation();
+
+  // Disable browser scroll restoration to avoid keeping previous scroll on route changes
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      const prev = window.history.scrollRestoration;
+      window.history.scrollRestoration = 'manual';
+      return () => {
+        window.history.scrollRestoration = prev as ScrollRestoration;
+      };
+    }
+  }, []);
+
   useEffect(() => {
     // Force immediate scroll to top on route change - multiple approaches for reliability
     window.scrollTo(0, 0);

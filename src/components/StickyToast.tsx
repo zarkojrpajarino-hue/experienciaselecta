@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -22,7 +23,7 @@ const StickyToast: React.FC<StickyToastProps> = ({
     }
   }, [visible, autoHideDuration, onClose]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {visible && (
         <motion.div
@@ -48,7 +49,8 @@ const StickyToast: React.FC<StickyToastProps> = ({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
