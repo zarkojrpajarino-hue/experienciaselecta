@@ -30,7 +30,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     if (event) {
       const target = event.currentTarget as HTMLElement;
       const rect = target.getBoundingClientRect();
-      setImagePosition({ top: rect.top, centerX: rect.left + rect.width / 2 });
+      setImagePosition({ top: rect.top + window.scrollY, centerX: rect.left + rect.width / 2 + window.scrollX });
     }
     setSelectedImage(index);
   };
