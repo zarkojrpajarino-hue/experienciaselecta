@@ -1362,15 +1362,52 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                 <DialogContent className="max-w-2xl">
                                   <DialogTitle>¿Por qué no vendemos cestas?</DialogTitle>
                                   <DialogDescription className="text-base leading-relaxed">
-                                    <p className="mb-4">
-                                      En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
-                                    </p>
-                                    <p className="mb-4">
-                                      Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
-                                    </p>
-                                    <p>
-                                      Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold" style={{ color: '#D4AF37' }}>acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
-                                    </p>
+                                    <div className="space-y-4">
+                                      <p>
+                                        En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
+                                      </p>
+                                      <p>
+                                        Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
+                                      </p>
+                                      <p>
+                                        Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold" style={{ color: '#D4AF37' }}>acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
+                                      </p>
+                                      
+                                      {isGiftCatalog && (
+                                        <div className="mt-6 pt-4 border-t border-gray-200">
+                                          <p className="font-semibold text-base mb-3">¿Cómo funciona el proceso de regalo?</p>
+                                          
+                                          <div className="space-y-3 text-sm">
+                                            <div>
+                                              <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                                              <ul className="list-disc pl-5 space-y-1 mt-1">
+                                                <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                                                <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                                              </ul>
+                                            </div>
+
+                                            <div>
+                                              <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                                              <p className="pl-5 mt-1">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                                            </div>
+
+                                            <div>
+                                              <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                                              <ul className="list-disc pl-5 space-y-1 mt-1">
+                                                <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                                                <li>Confirma o introduce su dirección de envío</li>
+                                                <li>Selecciona su fecha preferida de entrega</li>
+                                                <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                                              </ul>
+                                            </div>
+
+                                            <p className="text-xs text-muted-foreground pt-2">
+                                              💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                                            </p>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
                                   </DialogDescription>
                                 </DialogContent>
                               </Dialog>

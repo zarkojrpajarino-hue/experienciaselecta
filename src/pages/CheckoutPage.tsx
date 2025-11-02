@@ -225,12 +225,35 @@ const CheckoutPage = () => {
                               <DialogContent className="max-w-2xl">
                                 <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
                                 <DialogDescription asChild>
-                                  <div className="space-y-3 text-sm">
-                                    <p className="font-bold">Puedes elegir entre email o móvil:</p>
-                                    <ul className="list-disc pl-5 space-y-1">
-                                      <li><span className="font-bold">Por email:</span> Enviamos un correo con un enlace para reclamar el regalo.</li>
-                                      <li><span className="font-bold">Por móvil:</span> Enviamos un SMS con el enlace de reclamación.</li>
-                                    </ul>
+                                  <div className="space-y-3 text-sm leading-relaxed">
+                                    <p className="font-semibold text-base">Proceso paso a paso:</p>
+                                    
+                                    <div className="space-y-2">
+                                      <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                                      <ul className="list-disc pl-5 space-y-1">
+                                        <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                                        <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                                      </ul>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                                      <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                      <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                                      <ul className="list-disc pl-5 space-y-1">
+                                        <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                                        <li>Confirma o introduce su dirección de envío</li>
+                                        <li>Selecciona su fecha preferida de entrega</li>
+                                        <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                                      </ul>
+                                    </div>
+
+                                    <p className="text-xs text-muted-foreground pt-2">
+                                      💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                                    </p>
                                   </div>
                                 </DialogDescription>
                               </DialogContent>

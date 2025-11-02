@@ -3,17 +3,30 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, X } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, X, Info } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateQuantity, clearCart, removeMultipleItems } = useCart();
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Estado para asignación de regalos en pago conjunto
+  const [giftAssignment, setGiftAssignment] = useState({
+    senderName: "",
+    senderEmail: "",
+    recipients: [
+      { recipientName: "", recipientEmail: "", recipientPhone: "", personalNote: "", basketIds: [] as string[] }
+    ]
+  });
 
   // Scroll al inicio al montar el componente
   useEffect(() => {
@@ -32,6 +45,18 @@ const CartPage = () => {
   const getPersonalTotal = () => {
     return personalItems.reduce((total, item) => total + (item.precio * item.quantity), 0);
   };
+
+  // Expandir items de regalo por cantidad para asignación individual
+  const expandedGiftItems = React.useMemo(() => {
+    const out: Array<typeof cart[0] & { uniqueId: string }> = [];
+    giftItems.forEach((it) => {
+      const qty = it.quantity || 1;
+      for (let i = 0; i < qty; i++) {
+        out.push({ ...it, uniqueId: `${it.id}-${i}` });
+      }
+    });
+    return out;
+  }, [giftItems]);
 
   const getTotalAmount = () => {
     return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
@@ -106,29 +131,30 @@ const CartPage = () => {
           </Button>
 
           <div className="space-y-8">
-            {/* Cestas para Regalar Section */}
-            {giftItems.length > 0 && (
+            {/* Tus Cestas Section (PRIMERO) */}
+            {personalItems.length > 0 && (
               <div>
-                {/* Botón seguir comprando regalos */}
+                {/* Botón seguir comprando */}
                 <Button
-                  onClick={() => navigate('/cestas')}
+                  onClick={() => navigate('/#categoria-cestas')}
                   variant="ghost"
                   className="text-black hover:text-gold bg-transparent hover:bg-transparent mb-4"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Seguir comprando regalos
+                  Seguir comprando
                 </Button>
                 
                 <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-2 sm:gap-3">
-                  🎁 Cestas que vas a regalar
+                  <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-gold" />
+                  Tus cestas
                 </h1>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* Products List */}
                   <div className="lg:col-span-2 space-y-4">
-                    {giftItems.map((item) => (
+                    {personalItems.map((item) => (
                       <motion.div
-                        key={`gift-${item.id}`}
+                        key={`personal-${item.id}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, x: -100 }}
@@ -205,18 +231,18 @@ const CartPage = () => {
                     ))}
                   </div>
 
-                  {/* Order Summary for Gifts */}
+                  {/* Order Summary for Personal */}
                   <div className="lg:col-span-1">
                     <Card className="lg:sticky lg:top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black text-lg sm:text-xl">
-                          Resumen de regalos
+                          Resumen del pedido
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Items breakdown */}
                         <div className="space-y-2">
-                          {giftItems.map((item) => (
+                          {personalItems.map((item) => (
                             <div key={item.id} className="flex justify-between text-xs sm:text-sm gap-2">
                               <span className="text-gray-600 truncate flex-1">
                                 {item.nombre} x{item.quantity}
@@ -234,7 +260,7 @@ const CartPage = () => {
                         <div className="flex justify-between text-lg">
                           <span className="font-poppins font-bold text-black">Subtotal</span>
                           <span className="font-poppins font-bold text-gold text-xl">
-                            {getGiftTotal().toFixed(2)}€
+                            {getPersonalTotal().toFixed(2)}€
                           </span>
                         </div>
 
@@ -245,10 +271,10 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => openCheckout(giftItems, true)}
+                          onClick={() => openCheckout(personalItems, false)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base sm:text-lg py-5 sm:py-6"
                         >
-                          Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
+                          Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
                         </Button>
 
                         <p className="text-xs text-gray-500 text-center">
@@ -261,30 +287,29 @@ const CartPage = () => {
               </div>
             )}
 
-            {/* Tus Cestas Section */}
-            {personalItems.length > 0 && (
+            {/* Cestas para Regalar Section (SEGUNDO) */}
+            {giftItems.length > 0 && (
               <div>
-                {/* Botón seguir comprando */}
+                {/* Botón seguir comprando regalos */}
                 <Button
-                  onClick={() => navigate('/#categoria-cestas')}
+                  onClick={() => navigate('/cestas')}
                   variant="ghost"
                   className="text-black hover:text-gold bg-transparent hover:bg-transparent mb-4"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Seguir comprando
+                  Seguir comprando regalos
                 </Button>
                 
                 <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-2 sm:gap-3">
-                  <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-gold" />
-                  Tus cestas
+                  🎁 Cestas que vas a regalar
                 </h1>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   {/* Products List */}
                   <div className="lg:col-span-2 space-y-4">
-                    {personalItems.map((item) => (
+                    {giftItems.map((item) => (
                       <motion.div
-                        key={`personal-${item.id}`}
+                        key={`gift-${item.id}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, x: -100 }}
@@ -361,18 +386,18 @@ const CartPage = () => {
                     ))}
                   </div>
 
-                  {/* Order Summary for Personal */}
+                  {/* Order Summary for Gifts */}
                   <div className="lg:col-span-1">
                     <Card className="lg:sticky lg:top-24">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black text-lg sm:text-xl">
-                          Resumen del pedido
+                          Resumen de regalos
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Items breakdown */}
                         <div className="space-y-2">
-                          {personalItems.map((item) => (
+                          {giftItems.map((item) => (
                             <div key={item.id} className="flex justify-between text-xs sm:text-sm gap-2">
                               <span className="text-gray-600 truncate flex-1">
                                 {item.nombre} x{item.quantity}
@@ -390,7 +415,7 @@ const CartPage = () => {
                         <div className="flex justify-between text-lg">
                           <span className="font-poppins font-bold text-black">Subtotal</span>
                           <span className="font-poppins font-bold text-gold text-xl">
-                            {getPersonalTotal().toFixed(2)}€
+                            {getGiftTotal().toFixed(2)}€
                           </span>
                         </div>
 
@@ -401,10 +426,10 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => openCheckout(personalItems, false)}
+                          onClick={() => openCheckout(giftItems, true)}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base sm:text-lg py-5 sm:py-6"
                         >
-                          Pagar solo tus cestas ({getPersonalTotal().toFixed(2)}€)
+                          Pagar solo regalos ({getGiftTotal().toFixed(2)}€)
                         </Button>
 
                         <p className="text-xs text-gray-500 text-center">
@@ -417,7 +442,7 @@ const CartPage = () => {
               </div>
             )}
 
-            {/* Tarjeta de pago conjunto cuando hay ambos tipos */}
+            {/* Tarjeta de pago conjunto cuando hay ambos tipos (TERCERO) */}
             {hasBothTypes && (
               <div className="mt-8">
                 <h1 className="text-3xl font-poppins font-bold text-black mb-6 flex items-center gap-3">
@@ -425,13 +450,14 @@ const CartPage = () => {
                 </h1>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Descripción */}
-                  <div className="lg:col-span-2">
+                  {/* Formulario de asignación de regalos */}
+                  <div className="lg:col-span-2 space-y-6">
+                    {/* Resumen visual */}
                     <Card>
                       <CardContent className="p-6">
                         <div className="space-y-4">
                           <p className="text-lg font-poppins text-black">
-                            Puedes pagar todas tus cestas (regalos y personales) en un solo proceso.
+                            Para completar el pago conjunto, asigna los regalos a sus destinatarios.
                           </p>
                           <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 bg-gold/10 rounded-lg">
@@ -456,11 +482,235 @@ const CartPage = () => {
                         </div>
                       </CardContent>
                     </Card>
+
+                    {/* Datos del remitente */}
+                    <Card className="border-2 border-black">
+                      <CardHeader>
+                        <CardTitle className="text-xl font-poppins font-bold">Datos del remitente</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="senderName">Tu nombre *</Label>
+                            <Input
+                              id="senderName"
+                              value={giftAssignment.senderName}
+                              onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderName: e.target.value }))}
+                              placeholder="¿Quién regala?"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="senderEmail">Tu email *</Label>
+                            <Input
+                              id="senderEmail"
+                              type="email"
+                              value={giftAssignment.senderEmail}
+                              onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderEmail: e.target.value }))}
+                              placeholder="tu@email.com"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Asignación de destinatarios */}
+                    <div className="space-y-4">
+                      {giftAssignment.recipients.map((recipient, index) => (
+                        <Card key={index} className="border-2 border-black">
+                          <CardHeader>
+                            <div className="flex justify-between items-center">
+                              <CardTitle className="text-lg">Regalo {index + 1}</CardTitle>
+                              {giftAssignment.recipients.length > 1 && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newRecipients = giftAssignment.recipients.filter((_, i) => i !== index);
+                                    setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                  }}
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div>
+                              <Label htmlFor={`recipientName-${index}`}>Nombre destinatario *</Label>
+                              <Input
+                                id={`recipientName-${index}`}
+                                value={recipient.recipientName}
+                                onChange={(e) => {
+                                  const newRecipients = [...giftAssignment.recipients];
+                                  newRecipients[index].recipientName = e.target.value;
+                                  setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                }}
+                                placeholder="¿A quién se lo regalas?"
+                                className="border-2 border-black"
+                              />
+                            </div>
+
+                            <div className="flex items-center justify-center gap-2">
+                              <p className="text-center text-xs text-muted-foreground">(solo uno de los dos obligatorio)</p>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full hover:bg-black/10">
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl">
+                                  <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
+                                  <DialogDescription asChild>
+                                    <div className="space-y-3 text-sm leading-relaxed">
+                                      <p className="font-semibold text-base">Proceso paso a paso:</p>
+                                      
+                                      <div className="space-y-2">
+                                        <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                          <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                                          <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                                        </ul>
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                                        <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                          <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                                          <li>Confirma o introduce su dirección de envío</li>
+                                          <li>Selecciona su fecha preferida de entrega</li>
+                                          <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                                        </ul>
+                                      </div>
+
+                                      <p className="text-xs text-muted-foreground pt-2">
+                                        💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                                      </p>
+                                    </div>
+                                  </DialogDescription>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor={`recipientEmail-${index}`}>Email destinatario</Label>
+                                <Input
+                                  id={`recipientEmail-${index}`}
+                                  type="email"
+                                  value={recipient.recipientEmail}
+                                  onChange={(e) => {
+                                    const newRecipients = [...giftAssignment.recipients];
+                                    newRecipients[index].recipientEmail = e.target.value;
+                                    setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                  }}
+                                  placeholder="email@ejemplo.com"
+                                  className="border-2 border-black"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`recipientPhone-${index}`}>Número destinatario</Label>
+                                <Input
+                                  id={`recipientPhone-${index}`}
+                                  type="tel"
+                                  value={recipient.recipientPhone}
+                                  onChange={(e) => {
+                                    const newRecipients = [...giftAssignment.recipients];
+                                    newRecipients[index].recipientPhone = e.target.value;
+                                    setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                  }}
+                                  placeholder="+34 600 000 000"
+                                  className="border-2 border-black"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`personalNote-${index}`}>Nota personal</Label>
+                              <Textarea
+                                id={`personalNote-${index}`}
+                                value={recipient.personalNote}
+                                onChange={(e) => {
+                                  const newRecipients = [...giftAssignment.recipients];
+                                  newRecipients[index].personalNote = e.target.value;
+                                  setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                }}
+                                placeholder="Escribe una nota..."
+                                rows={2}
+                                className="border-2 border-black"
+                              />
+                            </div>
+
+                            <div>
+                              <Label>Asignar cestas de regalo</Label>
+                              <p className="text-xs text-muted-foreground mb-2">Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}</p>
+                              <div className="space-y-2">
+                                {expandedGiftItems
+                                  .filter((it) => {
+                                    const assignedElsewhere = giftAssignment.recipients
+                                      .filter((_, i) => i !== index)
+                                      .some((r) => r.basketIds.includes(it.uniqueId));
+                                    return !assignedElsewhere;
+                                  })
+                                  .map((it) => (
+                                    <div key={it.uniqueId} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded">
+                                      <div className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          id={`basket-${it.uniqueId}-recipient-${index}`}
+                                          checked={recipient.basketIds.includes(it.uniqueId)}
+                                          onChange={(e) => {
+                                            const newRecipients = [...giftAssignment.recipients];
+                                            if (e.target.checked) {
+                                              newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
+                                            } else {
+                                              newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id) => id !== it.uniqueId);
+                                            }
+                                            setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                          }}
+                                          className="w-4 h-4"
+                                        />
+                                        <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className="text-sm cursor-pointer">
+                                          {it.nombre}
+                                        </label>
+                                      </div>
+                                      <span className="text-sm font-semibold">{it.precio.toFixed(2)}€</span>
+                                    </div>
+                                  ))}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+
+                      {(() => {
+                        const assigned = new Set(giftAssignment.recipients.flatMap((r) => r.basketIds));
+                        const remaining = expandedGiftItems.filter((it) => !assigned.has(it.uniqueId)).length;
+                        return remaining > 0 && (
+                          <Button 
+                            variant="outline" 
+                            className="w-full" 
+                            onClick={() => setGiftAssignment((prev) => ({ 
+                              ...prev, 
+                              recipients: [...prev.recipients, { recipientName: "", recipientEmail: "", recipientPhone: "", personalNote: "", basketIds: [] }] 
+                            }))}
+                          >
+                            <Plus className="w-4 h-4 mr-2" /> Añadir otro destinatario ({remaining} restante{remaining !== 1 ? 's' : ''})
+                          </Button>
+                        );
+                      })()}
+                    </div>
                   </div>
 
                   {/* Resumen y botón de pago */}
                   <div className="lg:col-span-1">
-                    <Card className="lg:sticky lg:top-24">
+                    <Card className="lg:sticky lg:top-24 border-2 border-black">
                       <CardHeader>
                         <CardTitle className="font-poppins text-black text-lg sm:text-xl">
                           Resumen total
@@ -498,7 +748,26 @@ const CartPage = () => {
                         </p>
 
                         <Button
-                          onClick={() => openCheckout(cart, giftItems.length > 0)}
+                          onClick={() => {
+                            // Validar asignación de regalos
+                            const assigned = giftAssignment.recipients.flatMap((r) => r.basketIds);
+                            if (assigned.length === 0) {
+                              toast.error("Debes asignar al menos una cesta a un destinatario.");
+                              return;
+                            }
+                            for (const r of giftAssignment.recipients) {
+                              if (!r.recipientName || (!r.recipientEmail && !r.recipientPhone)) {
+                                toast.error("Cada destinatario debe tener nombre y email o móvil.");
+                                return;
+                              }
+                            }
+                            if (!giftAssignment.senderName || !giftAssignment.senderEmail) {
+                              toast.error("Debes completar tus datos como remitente.");
+                              return;
+                            }
+                            // Proceder al checkout combinado
+                            openCheckout(cart, true);
+                          }}
                           className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-base sm:text-lg py-5 sm:py-6"
                         >
                           Continuar al pago ({getTotalAmount().toFixed(2)}€)
