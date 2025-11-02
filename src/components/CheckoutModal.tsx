@@ -1017,64 +1017,80 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         />
                       </div>
 
-                      <div>
-                        <Label>Asignar cestas de regalo</Label>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
-                        </p>
-                        <div className="space-y-2">
-                          {expandedBasketItems.slice(0, giftItemsCount).map((item) => (
-                            <div key={item.uniqueId} className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                id={`basket-${item.uniqueId}-recipient-${index}`}
-                                checked={recipient.basketIds.includes(item.uniqueId)}
-                                onChange={(e) => {
-                                  const newRecipients = [...giftData.recipients];
-                                  if (e.target.checked) {
-                                    newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
-                                  } else {
-                                    newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
-                                  }
-                                  setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                                }}
-                                className="rounded border-gray-300"
-                              />
-                              <label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="text-sm cursor-pointer">
-                                {item.name} - {item.price.toFixed(2)}€
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                       <div>
+                         <Label>Asignar cestas de regalo</Label>
+                         <p className="text-xs text-muted-foreground mb-2">
+                           Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
+                         </p>
+                         <div className="space-y-2">
+                           {expandedBasketItems
+                             .filter(item => isMixedMode ? item.isGift : true)
+                             .filter(item => {
+                               // Solo mostrar cestas NO asignadas a otros destinatarios
+                               const alreadyAssigned = giftData.recipients
+                                 .filter((_, i) => i !== index)
+                                 .some(r => r.basketIds.includes(item.uniqueId));
+                               return !alreadyAssigned;
+                             })
+                             .map((item) => (
+                             <div key={item.uniqueId} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded">
+                               <div className="flex items-center space-x-2">
+                                 <input
+                                   type="checkbox"
+                                   id={`basket-${item.uniqueId}-recipient-${index}`}
+                                   checked={recipient.basketIds.includes(item.uniqueId)}
+                                   onChange={(e) => {
+                                     const newRecipients = [...giftData.recipients];
+                                     if (e.target.checked) {
+                                       newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
+                                     } else {
+                                       newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
+                                     }
+                                     setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                   }}
+                                   className="rounded border-gray-300"
+                                 />
+                                 <label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="text-sm cursor-pointer">
+                                   {item.name}
+                                 </label>
+                               </div>
+                               <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
                     </div>
                   ))}
 
-                  {expandedBasketItems.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        if (giftData.recipients.length >= expandedBasketItems.length) {
-                          toast({
-                            variant: "destructive",
-                            title: "Límite alcanzado",
-                            description: "No puedes añadir más destinatarios que cestas disponibles",
-                          });
-                          return;
-                        }
-                        setGiftData(prev => ({
-                          ...prev,
-                          recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
-                        }));
-                      }}
-                      disabled={giftData.recipients.length >= expandedBasketItems.length}
-                      className="w-full"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Añadir otro destinatario
-                    </Button>
-                  )}
+                  {(() => {
+                    const giftBasketCount = isMixedMode 
+                      ? expandedBasketItems.filter(item => item.isGift).length
+                      : expandedBasketItems.length;
+                    
+                    // Calcular cestas disponibles (no asignadas aún)
+                    const assignedIds = new Set(giftData.recipients.flatMap(r => r.basketIds));
+                    const availableCount = expandedBasketItems
+                      .filter(item => isMixedMode ? item.isGift : true)
+                      .filter(item => !assignedIds.has(item.uniqueId))
+                      .length;
+                    
+                    return availableCount > 0 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setGiftData(prev => ({
+                            ...prev,
+                            recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
+                          }));
+                        }}
+                        className="w-full"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Añadir otro destinatario ({availableCount} cesta{availableCount !== 1 ? 's' : ''} disponible{availableCount !== 1 ? 's' : ''})
+                      </Button>
+                    );
+                  })()}
                 </div>
 
                 <Separator className="my-6" />
@@ -1358,76 +1374,80 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       </p>
                     </div>
 
-                    <div>
-                      <Label htmlFor={`basketAssignment-${index}`}>
-                        Asignar cestas a este destinatario
-                      </Label>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
-                      </p>
-                      <div className="space-y-2">
-                        {expandedBasketItems
-                          .filter(item => !isMixedMode || item.isGift) // Only show gift items in mixed mode
-                          .map((item) => (
-                            <div key={item.uniqueId} className="flex items-center justify-between space-x-2">
-                              <div className="flex items-center space-x-2">
-                                <input
-                                  type="checkbox"
-                                  id={`basket-${item.uniqueId}-recipient-${index}`}
-                                  checked={recipient.basketIds.includes(item.uniqueId)}
-                                  onChange={(e) => {
-                                    const newRecipients = [...giftData.recipients];
-                                    if (e.target.checked) {
-                                      newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
-                                    } else {
-                                      newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
-                                    }
-                                    setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                                  }}
-                                  className="rounded border-gray-300"
-                                />
-                                <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
-                                  {item.name}
-                                </Label>
-                              </div>
-                              <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
-                            </div>
-                        ))}
-                      </div>
-                    </div>
+                     <div>
+                       <Label htmlFor={`basketAssignment-${index}`}>
+                         Asignar cestas a este destinatario
+                       </Label>
+                       <p className="text-xs text-muted-foreground mb-2">
+                         Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}
+                       </p>
+                       <div className="space-y-2">
+                         {expandedBasketItems
+                           .filter(item => !isMixedMode || item.isGift)
+                           .filter(item => {
+                             // Solo mostrar cestas NO asignadas a otros destinatarios
+                             const alreadyAssigned = giftData.recipients
+                               .filter((_, i) => i !== index)
+                               .some(r => r.basketIds.includes(item.uniqueId));
+                             return !alreadyAssigned;
+                           })
+                           .map((item) => (
+                             <div key={item.uniqueId} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded">
+                               <div className="flex items-center space-x-2">
+                                 <input
+                                   type="checkbox"
+                                   id={`basket-${item.uniqueId}-recipient-${index}`}
+                                   checked={recipient.basketIds.includes(item.uniqueId)}
+                                   onChange={(e) => {
+                                     const newRecipients = [...giftData.recipients];
+                                     if (e.target.checked) {
+                                       newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
+                                     } else {
+                                       newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
+                                     }
+                                     setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                   }}
+                                   className="rounded border-gray-300"
+                                 />
+                                 <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
+                                   {item.name}
+                                 </Label>
+                               </div>
+                               <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
+                             </div>
+                         ))}
+                       </div>
+                     </div>
                   </div>
                 ))}
 
                 {(() => {
-                  // Only count gift baskets for recipient limit
                   const giftBasketCount = isMixedMode 
                     ? expandedBasketItems.filter(item => item.isGift).length
                     : expandedBasketItems.length;
                   
-                  return giftBasketCount > 1 && (
+                  // Calcular cestas disponibles (no asignadas aún)
+                  const assignedIds = new Set(giftData.recipients.flatMap(r => r.basketIds));
+                  const availableCount = expandedBasketItems
+                    .filter(item => isMixedMode ? item.isGift : true)
+                    .filter(item => !assignedIds.has(item.uniqueId))
+                    .length;
+                  
+                  return availableCount > 0 && (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        if (giftData.recipients.length >= giftBasketCount) {
-                          toast({
-                            variant: "destructive",
-                            title: "Límite alcanzado",
-                            description: "No puedes añadir más destinatarios que cestas de regalo disponibles",
-                          });
-                          return;
-                        }
                         setGiftData(prev => ({
                           ...prev,
                           recipients: [...prev.recipients, { recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
                         }));
                       }}
-                      disabled={giftData.recipients.length >= giftBasketCount}
                       className="w-full font-bold tracking-[0.15em] uppercase"
                       style={{ fontFamily: 'Boulder, sans-serif' }}
                     >
                       <Plus className="w-4 h-4 mr-2" />
-                      Añadir otro destinatario
+                      Añadir otro destinatario ({availableCount} cesta{availableCount !== 1 ? 's' : ''} disponible{availableCount !== 1 ? 's' : ''})
                     </Button>
                   );
                 })()}
