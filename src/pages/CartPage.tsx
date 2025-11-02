@@ -17,6 +17,7 @@ const CartPage = () => {
       const personalItems = cart.filter(item => !item.isGift);
       const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
       
+      // Immediate redirect without showing cart page
       navigate('/checkout', {
         replace: true,
         state: {
@@ -29,6 +30,10 @@ const CartPage = () => {
   }, [cart, navigate]);
 
   // Solo mostrar cuando el carrito está vacío
+  if (cart.length > 0) {
+    return null; // No mostrar nada mientras se redirige
+  }
+
   return (
     <>
       <Navbar />

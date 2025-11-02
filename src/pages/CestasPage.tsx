@@ -56,13 +56,8 @@ const CestasPage = () => {
         setUser(session.user);
         setShowAuthModal(false);
         setShowWelcomeToast(true);
-        // Asegurar que estamos en /cestas tras login (catálogo de regalos)
-        if (window.location.pathname !== '/cestas') {
-          window.location.href = '/cestas';
-        } else {
-          // Scroll to top after auth
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
-        }
+        // Scroll to top after auth without page reload
+        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
       }
     });
 

@@ -56,13 +56,8 @@ const ComprarCestasPage = () => {
         setUser(session.user);
         setShowAuthModal(false);
         setShowWelcomeToast(true);
-        // Asegurar que estamos en /comprar-cestas tras login
-        if (window.location.pathname !== '/comprar-cestas') {
-          window.location.href = '/comprar-cestas';
-        } else {
-          // Scroll to top after auth
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
-        }
+        // Scroll to top after auth without page reload
+        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
       }
     });
 
