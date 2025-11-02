@@ -260,17 +260,11 @@ const CheckoutPage = () => {
                     {currentPersonalItems.length > 0 && (
                       <button
                         onClick={() => toggleSection('personal')}
-                        className="p-1.5 md:p-2 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
+                        className="p-2 md:p-3 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
                       >
-                        <p className="text-[9px] md:text-[10px] text-gray-600 mb-0.5">Tus cestas</p>
-                        <p className="text-[8px] text-gray-500 mb-0.5 line-clamp-1">
-                          {currentPersonalItems.map(item => `${item.nombre} (x${item.quantity})`).join(', ')}
-                        </p>
-                        <p className="text-sm md:text-base font-poppins font-bold text-black">
-                          {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0)} {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
-                        </p>
-                        <p className="text-lg font-poppins font-bold text-gold mt-1">
-                          {getCurrentPersonalTotal().toFixed(2)}€
+                        <p className="text-sm md:text-base font-bold text-black mb-1">Tus cestas</p>
+                        <p className="text-2xl md:text-3xl font-poppins font-bold text-gold">
+                          {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0)}
                         </p>
                       </button>
                     )}
@@ -278,19 +272,11 @@ const CheckoutPage = () => {
                     {giftItems.length > 0 && (
                       <button
                         onClick={() => toggleSection('gift')}
-                        className="p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
+                        className="p-2 md:p-3 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors text-left border-2 border-black"
                       >
-                        <p className="text-sm text-gray-600 mb-1">Regalos</p>
-                        <p className="text-xs text-gray-500 mb-2">
-                          {giftAssignment.recipients
-                            .flatMap(r => r.basketIds.map(id => expandedGiftItems.find(it => it.uniqueId === id)?.nombre).filter(Boolean))
-                            .join(', ') || 'Sin asignar'}
-                        </p>
-                        <p className="text-2xl font-poppins font-bold text-black">
-                          {giftItems.reduce((sum, item) => sum + item.quantity, 0)} {giftItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
-                        </p>
-                        <p className="text-lg font-poppins font-bold text-gold mt-1">
-                          {getAssignedGiftTotal().toFixed(2)}€
+                        <p className="text-sm md:text-base font-bold text-black mb-1">Regalos</p>
+                        <p className="text-2xl md:text-3xl font-poppins font-bold text-purple-700">
+                          {giftItems.reduce((sum, item) => sum + item.quantity, 0)}
                         </p>
                       </button>
                     )}
@@ -308,7 +294,7 @@ const CheckoutPage = () => {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Formulario de datos personales */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-2 md:gap-4">
                           <div>
                             <Label htmlFor="personalName">Nombre completo *</Label>
                             <Input
@@ -463,7 +449,7 @@ const CheckoutPage = () => {
                           <CardTitle className="text-xl font-poppins font-bold">Datos del remitente</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="grid grid-cols-2 gap-2 md:gap-4">
                             <div>
                               <Label htmlFor="senderName">Tu nombre *</Label>
                               <Input
@@ -541,7 +527,7 @@ const CheckoutPage = () => {
                                 </Button>
                               </div>
 
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="grid grid-cols-2 gap-2 md:gap-4">
                                 <div>
                                   <Label htmlFor={`recipientEmail-${index}`}>Email destinatario</Label>
                                   <Input
@@ -696,16 +682,52 @@ const CheckoutPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-2 md:space-y-3 text-[10px] md:text-xs px-2 md:px-4">
                   {currentPersonalItems.length > 0 && (
-                    <div className="flex justify-between items-center py-1">
-                      <span className="text-[10px] md:text-xs">Tus cestas</span>
-                      <span className="font-semibold text-[10px] md:text-xs">{getCurrentPersonalTotal().toFixed(2)}€</span>
-                    </div>
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex justify-between items-center py-1 hover:bg-gray-50 rounded">
+                          <span className="text-[10px] md:text-xs">Tus cestas</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-[10px] md:text-xs">{getCurrentPersonalTotal().toFixed(2)}€</span>
+                            <ChevronDown className="w-3 h-3" />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-1 space-y-1 pl-2">
+                        {currentPersonalItems.map((item) => (
+                          <div key={item.id} className="flex justify-between text-[9px] md:text-[10px] text-gray-600">
+                            <span>{item.nombre} (x{item.quantity})</span>
+                            <span>{(item.precio * item.quantity).toFixed(2)}€</span>
+                          </div>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
                   )}
                   {giftItems.length > 0 && (
-                    <div className="flex justify-between items-center py-1">
-                      <span className="text-[10px] md:text-xs">Cestas para regalar (asignadas)</span>
-                      <span className="font-semibold text-[10px] md:text-xs">{getAssignedGiftTotal().toFixed(2)}€</span>
-                    </div>
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex justify-between items-center py-1 hover:bg-gray-50 rounded">
+                          <span className="text-[10px] md:text-xs">Cestas para regalar</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-[10px] md:text-xs">{getAssignedGiftTotal().toFixed(2)}€</span>
+                            <ChevronDown className="w-3 h-3" />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-1 space-y-1 pl-2">
+                        {giftAssignment.recipients.map((recipient, recipientIdx) =>
+                          recipient.basketIds.map((uniqueId) => {
+                            const basketItem = expandedGiftItems.find(it => it.uniqueId === uniqueId);
+                            if (!basketItem) return null;
+                            return (
+                              <div key={uniqueId} className="flex justify-between text-[9px] md:text-[10px] text-gray-600">
+                                <span>{basketItem.nombre} → {recipient.recipientName || 'Sin nombre'}</span>
+                                <span>{basketItem.precio.toFixed(2)}€</span>
+                              </div>
+                            );
+                          })
+                        )}
+                      </CollapsibleContent>
+                    </Collapsible>
                   )}
                   <Separator />
                   <div className="flex justify-between items-center">
