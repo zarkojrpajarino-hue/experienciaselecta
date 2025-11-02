@@ -108,7 +108,7 @@ const ComprarCestasPage = () => {
             viewport={{ once: true }}
             className="text-center mb-8 gpu-accelerated"
           >
-            <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
+            <div className="flex justify-center items-center gap-2 mb-3 flex-wrap">
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={isGiftMode ? 'gift' : 'normal'}
@@ -116,7 +116,7 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.4 }}
-                  className="text-base sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black whitespace-nowrap"
+                  className="text-base sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center break-words"
                 >
                   <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
                     {isGiftMode ? 'REGALA' : 'COMPRA'}
