@@ -2,13 +2,12 @@ import React, { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load pages for better performance
 import Index from "./pages/Index";
-import CestasPage from "./pages/CestasPage";
 import ComprarCestasPage from "./pages/ComprarCestasPage";
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
@@ -92,7 +91,7 @@ const App = () => (
               <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
               <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
               <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-              <Route path="/cestas" element={<CestasPage />} />
+              <Route path="/cestas" element={<Navigate to="/comprar-cestas" replace />} />
               <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
               <Route path="/experiencia" element={<ExperienciaPage />} />
               <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
