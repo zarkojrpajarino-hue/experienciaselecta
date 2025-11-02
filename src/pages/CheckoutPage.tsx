@@ -779,13 +779,13 @@ const CheckoutPage = () => {
             style={{ 
               position: 'fixed', 
               top: `${infoPopover.top}px`, 
-              left: `${infoPopover.left}px`, 
+              left: '50%',
               transform: 'translateX(-50%)',
               zIndex: 110
             }}
-            className="max-w-[85vw] md:max-w-md"
+            className="w-[280px] aspect-square"
           >
-            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4">
+            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4 h-full flex flex-col items-center justify-center">
               <button
                 onClick={() => setInfoPopover(null)}
                 className="absolute -top-3 -right-3 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
@@ -793,7 +793,7 @@ const CheckoutPage = () => {
               >
                 <X className="h-3 w-3 md:h-4 md:w-4" />
               </button>
-              <div className="space-y-2 text-xs md:text-sm leading-relaxed">
+              <div className="space-y-2 text-xs md:text-sm leading-relaxed text-center">
                 <h3 className="text-sm md:text-base font-semibold mb-1">¿Cómo funciona?</h3>
                 <div className="space-y-1">
                   <p><span className="font-bold">1.</span> Enviamos enlace por email/móvil a esta web</p>
