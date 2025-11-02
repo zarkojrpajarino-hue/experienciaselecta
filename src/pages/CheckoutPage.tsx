@@ -294,68 +294,72 @@ const CheckoutPage = () => {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {/* Formulario de datos personales */}
-                        <div className="grid grid-cols-2 gap-2 md:gap-4">
+                        <div className="grid grid-cols-1 gap-2 md:gap-4">
                           <div>
-                            <Label htmlFor="personalName">Nombre completo *</Label>
+                            <Label htmlFor="personalName" className="text-xs md:text-sm">Nombre completo *</Label>
                             <Input
                               id="personalName"
                               value={personalData.name}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, name: e.target.value }))}
                               placeholder="Tu nombre"
-                              className={`border-2 ${attemptedSubmit && !personalData.name.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
+                              className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.name.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
-                          <div>
-                            <Label htmlFor="personalEmail">Email *</Label>
-                            <Input
-                              id="personalEmail"
-                              type="email"
-                              value={personalData.email}
-                              onChange={(e) => setPersonalData((prev) => ({ ...prev, email: e.target.value }))}
-                              placeholder="tu@email.com"
-                              className={`border-2 ${attemptedSubmit && (!personalData.email.trim() || !validateEmail(personalData.email)) ? 'border-red-600 animate-shake' : 'border-black'}`}
-                            />
+                          <div className="grid grid-cols-2 gap-2 md:gap-4">
+                            <div>
+                              <Label htmlFor="personalEmail" className="text-xs md:text-sm">Email *</Label>
+                              <Input
+                                id="personalEmail"
+                                type="email"
+                                value={personalData.email}
+                                onChange={(e) => setPersonalData((prev) => ({ ...prev, email: e.target.value }))}
+                                placeholder="tu@email.com"
+                                className={`border-2 text-xs md:text-sm ${attemptedSubmit && (!personalData.email.trim() || !validateEmail(personalData.email)) ? 'border-red-600 animate-shake' : 'border-black'}`}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="personalPhone" className="text-xs md:text-sm">Teléfono *</Label>
+                              <Input
+                                id="personalPhone"
+                                type="tel"
+                                value={personalData.phone}
+                                onChange={(e) => setPersonalData((prev) => ({ ...prev, phone: e.target.value }))}
+                                placeholder="+34 600 000 000"
+                                className={`border-2 text-xs md:text-sm ${attemptedSubmit && (!personalData.phone.trim() || !validatePhone(personalData.phone)) ? 'border-red-600 animate-shake' : 'border-black'}`}
+                              />
+                            </div>
                           </div>
                           <div>
-                            <Label htmlFor="personalPhone">Teléfono *</Label>
-                            <Input
-                              id="personalPhone"
-                              type="tel"
-                              value={personalData.phone}
-                              onChange={(e) => setPersonalData((prev) => ({ ...prev, phone: e.target.value }))}
-                              placeholder="+34 600 000 000"
-                              className={`border-2 ${attemptedSubmit && (!personalData.phone.trim() || !validatePhone(personalData.phone)) ? 'border-red-600 animate-shake' : 'border-black'}`}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="personalAddress">Dirección *</Label>
+                            <Label htmlFor="personalAddress" className="text-xs md:text-sm">Dirección *</Label>
                             <Input
                               id="personalAddress"
                               value={personalData.address}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, address: e.target.value }))}
                               placeholder="Calle, número, piso..."
-                              className={`border-2 ${attemptedSubmit && !personalData.address.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
+                              className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.address.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
-                          <div>
-                            <Label htmlFor="personalCity">Ciudad *</Label>
-                            <Input
-                              id="personalCity"
-                              value={personalData.city}
-                              onChange={(e) => setPersonalData((prev) => ({ ...prev, city: e.target.value }))}
-                              placeholder="Tu ciudad"
-                              className={`border-2 ${attemptedSubmit && !personalData.city.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="personalPostalCode">Código postal *</Label>
-                            <Input
-                              id="personalPostalCode"
-                              value={personalData.postalCode}
-                              onChange={(e) => setPersonalData((prev) => ({ ...prev, postalCode: e.target.value }))}
-                              placeholder="28001"
-                              className={`border-2 ${attemptedSubmit && !personalData.postalCode.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
-                            />
+                          <div className="grid grid-cols-2 gap-2 md:gap-4">
+                            <div>
+                              <Label htmlFor="personalCity" className="text-xs md:text-sm">Ciudad *</Label>
+                              <Input
+                                id="personalCity"
+                                value={personalData.city}
+                                onChange={(e) => setPersonalData((prev) => ({ ...prev, city: e.target.value }))}
+                                placeholder="Tu ciudad"
+                                className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.city.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="personalPostalCode" className="text-xs md:text-sm">Código postal *</Label>
+                              <Input
+                                id="personalPostalCode"
+                                value={personalData.postalCode}
+                                onChange={(e) => setPersonalData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                                placeholder="28001"
+                                className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.postalCode.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
+                              />
+                            </div>
                           </div>
                         </div>
 
@@ -366,23 +370,23 @@ const CheckoutPage = () => {
                           <h4 className="font-semibold mb-2">Cestas seleccionadas:</h4>
                           <div className="space-y-2">
                             {currentPersonalItems.map((item) => (
-                              <div key={item.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                                <div className="flex items-center gap-2">
+                              <div key={item.id} className="flex flex-col md:flex-row md:items-center justify-between p-1.5 md:p-2 bg-white rounded border gap-2">
+                                <div className="flex items-center gap-1.5 md:gap-2 flex-1 min-w-0">
                                    <img 
                                     src={item.imagen} 
                                     alt={item.nombre} 
-                                    className="w-8 h-8 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                    className="w-10 h-10 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
                                     onClick={(e) => {
                                       const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
                                       setImagePreview({ src: item.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
                                     }}
                                   />
-                                  <div>
-                                    <p className="font-medium text-[10px] md:text-xs">{item.nombre}</p>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-medium text-[11px] md:text-xs truncate">{item.nombre}</p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                  <div className="flex items-center gap-2">
+                                <div className="flex items-center justify-between md:justify-end gap-2 md:gap-3">
+                                  <div className="flex items-center gap-1 md:gap-2">
                                     <Button
                                       variant="outline"
                                       size="sm"
@@ -396,11 +400,11 @@ const CheckoutPage = () => {
                                         );
                                       }}
                                       disabled={item.quantity <= 1}
-                                      className="h-8 w-8 p-0"
+                                      className="h-6 w-6 md:h-8 md:w-8 p-0 text-xs"
                                     >
                                       -
                                     </Button>
-                                    <span className="text-sm font-medium min-w-[2rem] text-center">{item.quantity}</span>
+                                    <span className="text-xs md:text-sm font-medium min-w-[1.5rem] md:min-w-[2rem] text-center">{item.quantity}</span>
                                     <Button
                                       variant="outline"
                                       size="sm"
@@ -413,19 +417,19 @@ const CheckoutPage = () => {
                                           )
                                         );
                                       }}
-                                      className="h-8 w-8 p-0"
+                                      className="h-6 w-6 md:h-8 md:w-8 p-0 text-xs"
                                     >
                                       +
                                     </Button>
                                   </div>
-                                  <span className="font-bold text-gold min-w-[4rem] text-right">{(item.precio * item.quantity).toFixed(2)}€</span>
+                                  <span className="font-bold text-gold text-xs md:text-sm min-w-[3rem] md:min-w-[4rem] text-right">{(item.precio * item.quantity).toFixed(2)}€</span>
                                   <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => handleRemovePersonalItem(item.id)}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 h-6 w-6 md:h-8 md:w-8 p-0"
                                   >
-                                    <X className="w-4 h-4" />
+                                    <X className="w-3 h-3 md:w-4 md:h-4" />
                                   </Button>
                                 </div>
                               </div>
@@ -736,7 +740,7 @@ const CheckoutPage = () => {
                   </div>
                   <Button
                     onClick={handleContinueToPayment}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-[10px] md:text-xs py-2 md:py-3"
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3"
                   >
                     Continuar al pago ({getTotalAmount().toFixed(2)}€)
                   </Button>
