@@ -280,8 +280,8 @@ const CestasPage = () => {
     onBack={() => setShowExitDialog(true)}
   />
 
-      {/* Welcome Toast - Esquina inferior derecha */}
-      <div className="fixed bottom-4 right-4 z-[200] max-w-md">
+      {/* Welcome Toast - Esquina superior derecha */}
+      <div className="fixed top-4 right-4 z-[200] max-w-md">
         <StickyToast
           message={`¡Bienvenido, ${user?.email?.split('@')[0] || 'Usuario'}!`}
           visible={showWelcomeToast}

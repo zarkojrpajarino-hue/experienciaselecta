@@ -36,12 +36,17 @@ const Navbar = () => {
       setUser(session?.user ?? null);
 
       // Redirigir a la ruta/intención original tras login o restauración de sesión
+      // EXCEPTO para /cestas y /comprar-cestas que manejan su propia redirección
       if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
         const intended = localStorage.getItem('intendedRoute');
-        if (intended) {
+        const current = window.location.pathname;
+        
+        // Si estamos en páginas de catálogo, dejar que ellas manejen la redirección
+        if (current === '/cestas' || current === '/comprar-cestas') {
           localStorage.removeItem('intendedRoute');
-          const current = window.location.pathname + window.location.search + window.location.hash;
-          if (current !== intended) {
+        } else if (intended && !intended.includes('/cestas') && !intended.includes('/comprar-cestas')) {
+          localStorage.removeItem('intendedRoute');
+          if (current !== intended.split('?')[0].split('#')[0]) {
             navigate(intended);
           }
         }
@@ -59,15 +64,21 @@ const Navbar = () => {
       setUser(session?.user ?? null);
 
       // Si ya hay sesión al cargar, aplicar intendedRoute si existe
+      // EXCEPTO para /cestas y /comprar-cestas que manejan su propia redirección
       if (session?.user) {
         const intended = localStorage.getItem('intendedRoute');
-        if (intended) {
+        const current = window.location.pathname;
+        
+        // Si estamos en páginas de catálogo, dejar que ellas manejen la redirección
+        if (current === '/cestas' || current === '/comprar-cestas') {
           localStorage.removeItem('intendedRoute');
-          const current = window.location.pathname + window.location.search + window.location.hash;
-          if (current !== intended) {
+        } else if (intended && !intended.includes('/cestas') && !intended.includes('/comprar-cestas')) {
+          localStorage.removeItem('intendedRoute');
+          if (current !== intended.split('?')[0].split('#')[0]) {
             navigate(intended);
           }
         }
+        
         checkPendingGifts(session.user.email!);
         checkPendingReviews(session.user.id);
       }
