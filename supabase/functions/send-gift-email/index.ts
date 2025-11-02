@@ -68,7 +68,7 @@ serve(async (req) => {
         ?.filter((item: any) => recipient.basketIds.includes(item.id))
         ?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0) || 0;
 
-      // Send email if email is provided
+      // Prioritize email over SMS: if both are provided, only send email
       if (recipient.recipientEmail) {
         const recipientEmailResponse = await resend.emails.send({
           from: 'Experiencias Selecta <onboarding@resend.dev>',
@@ -125,10 +125,9 @@ Experiencias Selecta - Momentos que perduran
         });
 
         console.log('Recipient email sent:', recipientEmailResponse);
-      }
-      
-      // Send SMS if phone is provided
-      if (recipient.recipientPhone) {
+      } 
+      // Only send SMS if email is NOT provided
+      else if (recipient.recipientPhone) {
         const personalNoteText = recipient.personalNote ? `\n\nMensaje: "${recipient.personalNote}"` : '';
         const smsMessage = `Hola ${recipient.recipientName}, ${validatedData.senderName} te ha regalado una experiencia única. Reclama tu regalo: https://experienciaselecta.com/regalos${personalNoteText}`;
         

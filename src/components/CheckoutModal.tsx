@@ -490,21 +490,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Debes asignar al menos una cesta a un destinatario",
-        });
-        return;
-      }
-      
-      // In mixed mode, verify all gift items are assigned
-      const giftBasketCount = isMixedMode 
-        ? expandedBasketItems.filter(item => item.isGift).length
-        : expandedBasketItems.length;
-        
-      if (assignedBaskets.length < giftBasketCount) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: `Debes asignar todas las ${giftBasketCount} cestas de regalo a destinatarios`,
+          description: "Debes asignar al menos una cesta a un destinatario para continuar",
         });
         return;
       }
@@ -791,7 +777,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <p className="text-xs text-muted-foreground">
                   {isMixedMode 
                     ? 'Incluye cestas de regalo asignadas y cestas personales' 
-                    : 'Solo se cobrarán las cestas que asignes a destinatarios'}
+                    : 'Solo pagarás las cestas que asignes. Las no asignadas quedarán en tu carrito.'}
                 </p>
               </>
             )}
@@ -970,32 +956,33 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor={`recipientEmail-${index}`}>Email destinatario</Label>
-                          <Input
-                            id={`recipientEmail-${index}`}
-                            type="email"
-                            value={recipient.recipientEmail}
-                            onChange={(e) => {
-                              const newRecipients = [...giftData.recipients];
-                              newRecipients[index].recipientEmail = e.target.value;
-                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                            }}
-                            placeholder="email@ejemplo.com"
-                            required
-                          />
+                         <Input
+                           id={`recipientEmail-${index}`}
+                           type="email"
+                           value={recipient.recipientEmail}
+                           onChange={(e) => {
+                             const newRecipients = [...giftData.recipients];
+                             newRecipients[index].recipientEmail = e.target.value;
+                             setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                           }}
+                           placeholder="email@ejemplo.com"
+                           required={!recipient.recipientPhone}
+                         />
                         </div>
                         <div>
                           <Label htmlFor={`recipientPhone-${index}`}>Número destinatario</Label>
-                          <Input
-                            id={`recipientPhone-${index}`}
-                            type="tel"
-                            value={recipient.recipientPhone || ''}
-                            onChange={(e) => {
-                              const newRecipients = [...giftData.recipients];
-                              newRecipients[index].recipientPhone = e.target.value;
-                              setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                            }}
-                            placeholder="+34 600 000 000"
-                          />
+                         <Input
+                           id={`recipientPhone-${index}`}
+                           type="tel"
+                           value={recipient.recipientPhone || ''}
+                           onChange={(e) => {
+                             const newRecipients = [...giftData.recipients];
+                             newRecipients[index].recipientPhone = e.target.value;
+                             setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                           }}
+                           placeholder="+34 600 000 000"
+                           required={!recipient.recipientEmail}
+                         />
                         </div>
                       </div>
 
