@@ -35,8 +35,8 @@ const Navbar = () => {
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Mantener al usuario en la página/intención original tras login
-      if (event === 'SIGNED_IN') {
+      // Redirigir a la ruta/intención original tras login o restauración de sesión
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
         const intended = localStorage.getItem('intendedRoute');
         if (intended) {
           localStorage.removeItem('intendedRoute');
@@ -57,7 +57,17 @@ const Navbar = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+
+      // Si ya hay sesión al cargar, aplicar intendedRoute si existe
       if (session?.user) {
+        const intended = localStorage.getItem('intendedRoute');
+        if (intended) {
+          localStorage.removeItem('intendedRoute');
+          const current = window.location.pathname + window.location.search + window.location.hash;
+          if (current !== intended) {
+            navigate(intended);
+          }
+        }
         checkPendingGifts(session.user.email!);
         checkPendingReviews(session.user.id);
       }
