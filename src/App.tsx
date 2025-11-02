@@ -90,7 +90,7 @@ const App = () => (
     <CartProvider>
       <TooltipProvider>
         <Toaster />
-        <Sonner />
+        <Sonner position="bottom-right" />
         <AutoUpdater />
         <BrowserRouter>
           <ScrollToTopOnRouteChange />

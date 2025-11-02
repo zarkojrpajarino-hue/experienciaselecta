@@ -280,7 +280,7 @@ const CestasPage = () => {
         message={`¡Bienvenido, ${user?.email?.split('@')[0] || 'Usuario'}!`}
         visible={showWelcomeToast}
         onClose={() => setShowWelcomeToast(false)}
-        autoHideDuration={2000}
+        autoHideDuration={3000}
       />
 
       {/* Exit Confirmation Dialog */}

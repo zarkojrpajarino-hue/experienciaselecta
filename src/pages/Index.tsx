@@ -322,26 +322,6 @@ const Index = () => {
           sessionStorage.removeItem('hasClosedAuthModal');
           localStorage.removeItem('pendingCheckout');
           
-          // Show welcome toast for new login (not on page load)
-          if (!wasAuthenticated && event === 'SIGNED_IN') {
-            // Defer Supabase calls with setTimeout to prevent deadlock
-            setTimeout(() => {
-              supabase
-                .from('profiles')
-                .select('name')
-                .eq('user_id', session.user.id)
-                .single()
-                .then(({ data: profile }) => {
-                  const userName = profile?.name || session.user.email;
-                  import("sonner").then(({ toast }) => {
-                    toast.success(`¡Bienvenido, ${userName}!`, {
-                      position: "bottom-right",
-                      duration: 4000,
-                    });
-                  });
-                });
-            }, 0);
-          }
         } else {
           // No hay sesión
           setShowAuthModal(false);

@@ -27,11 +27,11 @@ const StickyToast: React.FC<StickyToastProps> = ({
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
+          exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="fixed top-24 left-1/2 -translate-x-1/2 z-[200] bg-white border-2 border-black rounded-xl shadow-2xl p-4 max-w-sm w-auto"
+          className="fixed bottom-6 right-6 z-[200] bg-white border-2 border-black rounded-xl shadow-2xl p-4 max-w-sm w-auto"
           style={{ willChange: "transform" }}
         >
           <div className="flex items-center gap-3">
