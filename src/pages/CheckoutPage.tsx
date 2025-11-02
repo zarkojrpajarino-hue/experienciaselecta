@@ -68,6 +68,9 @@ const CheckoutPage = () => {
     ]
   });
 
+  // Preview de imagen anclada a la miniatura
+  const [imagePreview, setImagePreview] = useState<{ src: string; top: number; left: number } | null>(null);
+
   // Datos personales para cestas propias
   const [personalData, setPersonalData] = useState({
     name: "",
@@ -360,36 +363,15 @@ const CheckoutPage = () => {
                             {currentPersonalItems.map((item) => (
                               <div key={item.id} className="flex items-center justify-between p-2 bg-white rounded border">
                                 <div className="flex items-center gap-2">
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <img 
-                                        src={item.imagen} 
-                                        alt={item.nombre} 
-                                        className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
-                                      />
-                                    </PopoverTrigger>
-                                    <PopoverContent side="right" align="center" sideOffset={10} avoidCollisions={false} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          const trigger = e.currentTarget.closest('[data-radix-popper-content-wrapper]');
-                                          if (trigger) {
-                                            const escEvent = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
-                                            trigger.dispatchEvent(escEvent);
-                                          }
-                                        }}
-                                        className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30 flex items-center justify-center"
-                                        aria-label="Cerrar imagen"
-                                      >
-                                        <X className="h-4 w-4" />
-                                      </button>
-                                      <img 
-                                        src={item.imagen} 
-                                        alt={item.nombre} 
-                                        className="w-64 h-64 object-cover rounded-lg" 
-                                      />
-                                    </PopoverContent>
-                                  </Popover>
+                                  <img 
+                                    src={item.imagen} 
+                                    alt={item.nombre} 
+                                    className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                    onClick={(e) => {
+                                      const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
+                                      setImagePreview({ src: item.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
+                                    }}
+                                  />
                                   <div>
                                     <p className="font-medium text-sm">{item.nombre}</p>
                                   </div>
@@ -663,37 +645,16 @@ const CheckoutPage = () => {
                                               onChange={() => {}} // Handled by parent div onClick
                                               onClick={(e) => e.stopPropagation()}
                                             />
-                                            <Popover>
-                                              <PopoverTrigger asChild>
-                                                <img 
-                                                  src={it.imagen} 
-                                                  alt={it.nombre} 
-                                                  className="w-10 h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
-                                                  onClick={(e) => e.stopPropagation()}
-                                                />
-                                              </PopoverTrigger>
-                                              <PopoverContent side="right" align="center" sideOffset={10} avoidCollisions={false} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
-                                                <button
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    const trigger = e.currentTarget.closest('[data-radix-popper-content-wrapper]');
-                                                    if (trigger) {
-                                                      const escEvent = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
-                                                      trigger.dispatchEvent(escEvent);
-                                                    }
-                                                  }}
-                                                  className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30 flex items-center justify-center"
-                                                  aria-label="Cerrar imagen"
-                                                >
-                                                  <X className="h-4 w-4" />
-                                                </button>
-                                                <img 
-                                                  src={it.imagen} 
-                                                  alt={it.nombre} 
-                                                  className="w-64 h-64 object-cover rounded-lg" 
-                                                />
-                                              </PopoverContent>
-                                            </Popover>
+                                            <img 
+                                              src={it.imagen} 
+                                              alt={it.nombre} 
+                                              className="w-10 h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
+                                                setImagePreview({ src: it.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
+                                              }}
+                                            />
                                             <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-sm ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
                                               {it.nombre}
                                             </label>
@@ -791,6 +752,24 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
+
+      {imagePreview && (
+        <div
+          style={{ position: 'fixed', top: `${imagePreview.top}px`, left: `${imagePreview.left}px`, transform: 'translateY(-50%)' }}
+          className="z-[110]"
+        >
+          <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
+            <button
+              onClick={() => setImagePreview(null)}
+              className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30 flex items-center justify-center"
+              aria-label="Cerrar imagen"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <img src={imagePreview.src} alt="Vista ampliada" className="w-64 h-64 object-cover rounded-md" />
+          </div>
+        </div>
+      )}
 
     </>
   );

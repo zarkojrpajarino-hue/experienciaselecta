@@ -224,12 +224,20 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       setCart([...cart, { ...basket, quantity: 1 }]);
     }
 
-    // Calculate position next to the button
+    // Posicionar toast junto al título de la tarjeta (si existe); si no, junto al botón
     const buttonRect = event.currentTarget.getBoundingClientRect();
-    const toastTop = buttonRect.top + (buttonRect.height / 2); // center vertically
-    const toastLeft = buttonRect.right + 12; // a la derecha con margen
-    
-    setToastPosition({ top: toastTop, left: toastLeft });
+    let top = buttonRect.top + (buttonRect.height / 2);
+    let left = buttonRect.right + 12;
+
+    const cardElement = document.querySelector(`[data-basket-id="${basket.id}"]`);
+    const titleEl = cardElement?.querySelector('.basket-title') as HTMLElement | null;
+    if (titleEl) {
+      const titleRect = titleEl.getBoundingClientRect();
+      top = titleRect.top + (titleRect.height / 2);
+      left = titleRect.right + 12;
+    }
+
+    setToastPosition({ top, left });
 
     // Show toast with cart type
     setAddedBasketName(`✓ ${basket.nombre} añadida`);
