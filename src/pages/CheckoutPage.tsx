@@ -213,40 +213,40 @@ const CheckoutPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen pt-24 pb-12 px-4 bg-white">
+      <div className="min-h-screen pt-20 sm:pt-24 pb-8 sm:pb-12 px-2 sm:px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
           {/* Botón volver a la página principal */}
           <Button
             onClick={() => navigate('/')}
             variant="link"
-            className="text-black hover:text-gold mb-6 p-0"
+            className="text-black hover:text-gold mb-4 sm:mb-6 p-0 text-sm sm:text-base"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Volver a la página principal
           </Button>
 
-          <h1 className="text-3xl font-poppins font-bold text-black mb-6">
+          <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-black mb-4 sm:mb-6">
             💳 Checkout
           </h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
             {/* Formulario de asignación */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4 md:space-y-6">
               {/* Resumen visual - Tus cestas PRIMERO */}
               <Card>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-2 gap-4">
+                <CardContent className="p-3 sm:p-4 md:p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                     {/* TUS CESTAS (primero) */}
                     {currentPersonalItems.length > 0 && (
                       <button
                         onClick={() => toggleSection('personal')}
-                        className="p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
+                        className="p-3 sm:p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
                       >
-                        <p className="text-sm text-gray-600 mb-1">Tus cestas</p>
-                        <p className="text-xs text-gray-500 mb-2">
+                        <p className="text-xs sm:text-sm text-gray-600 mb-1">Tus cestas</p>
+                        <p className="text-xs text-gray-500 mb-2 line-clamp-1">
                           {currentPersonalItems.map(item => `${item.nombre} (x${item.quantity})`).join(', ')}
                         </p>
-                        <p className="text-2xl font-poppins font-bold text-black">
+                        <p className="text-xl sm:text-2xl font-poppins font-bold text-black">
                           {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0)} {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
                         </p>
                         <p className="text-lg font-poppins font-bold text-gold mt-1">
@@ -362,17 +362,17 @@ const CheckoutPage = () => {
                             {currentPersonalItems.map((item) => (
                               <div key={item.id} className="flex items-center justify-between p-2 bg-white rounded border">
                                 <div className="flex items-center gap-2">
-                                  <img 
+                                   <img 
                                     src={item.imagen} 
                                     alt={item.nombre} 
-                                    className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                    className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
                                     onClick={(e) => {
                                       const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
                                       setImagePreview({ src: item.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
                                     }}
                                   />
                                   <div>
-                                    <p className="font-medium text-sm">{item.nombre}</p>
+                                    <p className="font-medium text-xs sm:text-sm">{item.nombre}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -724,9 +724,10 @@ const CheckoutPage = () => {
                   </div>
                   <Button
                     onClick={handleContinueToPayment}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-lg py-6"
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm sm:text-base md:text-lg py-4 sm:py-6"
                   >
-                    Continuar al pago ({getTotalAmount().toFixed(2)}€)
+                    <span className="hidden sm:inline">Continuar al pago ({getTotalAmount().toFixed(2)}€)</span>
+                    <span className="sm:hidden">Pagar {getTotalAmount().toFixed(2)}€</span>
                   </Button>
                   
                   {/* Error message toast */}
@@ -754,21 +755,32 @@ const CheckoutPage = () => {
       </div>
 
       {imagePreview && (
-        <div
-          style={{ position: 'fixed', top: `${imagePreview.top}px`, left: `${imagePreview.left}px`, transform: 'translateY(-50%)' }}
-          className="z-[110]"
-        >
-          <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
-            <button
-              onClick={() => setImagePreview(null)}
-              className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30 flex items-center justify-center"
-              aria-label="Cerrar imagen"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            <img src={imagePreview.src} alt="Vista ampliada" className="w-64 h-64 object-cover rounded-md" />
-          </div>
-        </div>
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, x: -20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: -20 }}
+            transition={{ duration: 0.3, type: 'spring' }}
+            style={{ 
+              position: 'fixed', 
+              top: `${imagePreview.top}px`, 
+              left: `${imagePreview.left}px`, 
+              transform: 'translateY(-50%)' 
+            }}
+            className="z-[110] hidden md:block"
+          >
+            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
+              <button
+                onClick={() => setImagePreview(null)}
+                className="absolute -top-2 -right-2 z-50 h-8 w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                aria-label="Cerrar imagen"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <img src={imagePreview.src} alt="Vista ampliada" className="w-80 h-80 object-cover rounded-md" />
+            </div>
+          </motion.div>
+        </AnimatePresence>
       )}
 
     </>
