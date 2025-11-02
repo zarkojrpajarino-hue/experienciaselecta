@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { toast } from "sonner";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface CheckoutState {
   items: any[];
@@ -29,10 +30,9 @@ const CheckoutPage = () => {
     ciudad: "",
     notas: ""
   });
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
 
   const state = location.state as CheckoutState;
-  
-  // Scroll al inicio al montar el componente
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);

@@ -381,6 +381,21 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   });
   const { toast } = useToast();
 
+  // Total dinámico: cestas personales + (solo cestas de regalo asignadas)
+  const payableTotal = useMemo(() => {
+    if (isGiftMode || isMixedMode) {
+      const assigned = new Set(giftData.recipients.flatMap(r => r.basketIds));
+      const giftTotal = expandedBasketItems
+        .filter(item => (!isMixedMode || item.isGift) && assigned.has(item.uniqueId))
+        .reduce((sum, it) => sum + it.price, 0);
+      const personalTotal = isMixedMode
+        ? expandedBasketItems.filter(it => !it.isGift).reduce((s, it) => s + it.price, 0)
+        : 0;
+      return giftTotal + personalTotal;
+    }
+    return totalAmount;
+  }, [giftData, expandedBasketItems, isGiftMode, isMixedMode, totalAmount]);
+
   // Validation schemas
   const customerSchema = z.object({
     name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
@@ -653,7 +668,49 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             )}
             
-            {/* Gift items section */}
+            {/* Personal items section FIRST */}
+            {isMixedMode && (
+              <>
+                {expandedBasketItems.filter(item => !item.isGift).map((item) => (
+                  <div key={item.uniqueId} className="flex justify-between items-center">
+                    <div className="flex items-center gap-3 flex-1">
+                      {item.imagen && <BasketImageThumbnail src={item.imagen} alt={item.name} />}
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">{item.category}</Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">{item.price.toFixed(2)}€</p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
+                        onClick={() => {
+                          // Mark as removed immediately for UI update
+                          setRemovedItemIds(prev => [...prev, item.uniqueId]);
+                          // Remove from cart
+                          if (onRemoveItems) {
+                            onRemoveItems([{ id: item.id, isGift: false, quantityToRemove: 1 }]);
+                          }
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                <Separator className="my-2" />
+                <div className="mb-2 p-3 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium">Cestas para regalar:</p>
+                </div>
+              </>
+            )}
+
+            {/* Gift items section SECOND */}
             {isMixedMode && expandedBasketItems.filter(item => item.isGift).map((item) => (
               <div key={item.uniqueId} className="flex justify-between items-center">
                 <div className="flex items-center gap-3 flex-1">
@@ -692,48 +749,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
               </div>
             ))}
-            
-            {/* Personal items section */}
-            {isMixedMode && (
-              <>
-                <Separator />
-                <div className="mb-2 p-3 bg-muted/50 rounded-lg">
-                  <p className="text-sm font-medium">Cestas personales:</p>
-                </div>
-                {expandedBasketItems.filter(item => !item.isGift).map((item) => (
-                  <div key={item.uniqueId} className="flex justify-between items-center">
-                    <div className="flex items-center gap-3 flex-1">
-                      {item.imagen && <BasketImageThumbnail src={item.imagen} alt={item.name} />}
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary">{item.category}</Badge>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{item.price.toFixed(2)}€</p>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
-                        onClick={() => {
-                          // Mark as removed immediately for UI update
-                          setRemovedItemIds(prev => [...prev, item.uniqueId]);
-                          // Remove from cart
-                          if (onRemoveItems) {
-                            onRemoveItems([{ id: item.id, isGift: false, quantityToRemove: 1 }]);
-                          }
-                        }}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </>
-            )}
             
             {/* Pure gift mode or pure personal mode */}
             {!isMixedMode && expandedBasketItems.map((item) => (
@@ -1160,7 +1175,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
                 <Button type="submit" className="w-full" size="lg">
                   <CreditCard className="w-4 h-4 mr-2" />
-                  Continuar al pago
+                  Proceder al pago • {payableTotal.toFixed(2)}€
                 </Button>
               </>
             ) : isGiftMode ? (
@@ -1515,7 +1530,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             <Button type="submit" className="w-full" size="lg">
               {isGiftMode || isMixedMode ? (
-                <>Continuar al pago ({totalAmount.toFixed(2)}€)</>
+                <>Proceder al pago • {payableTotal.toFixed(2)}€</>
               ) : (
                 <>
                   <Truck className="w-4 h-4 mr-2" />
