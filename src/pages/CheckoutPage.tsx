@@ -785,10 +785,10 @@ const CheckoutPage = () => {
             }}
             className="max-w-[90vw] md:max-w-md"
           >
-            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4 max-h-[70vh] md:max-h-[80vh] overflow-y-auto">
+            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4">
               <button
                 onClick={() => setInfoPopover(null)}
-                className="absolute -top-2 -right-2 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                className="absolute -top-3 -right-3 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
                 aria-label="Cerrar información"
               >
                 <X className="h-3 w-3 md:h-4 md:w-4" />
@@ -796,9 +796,9 @@ const CheckoutPage = () => {
               <div className="space-y-2 text-xs md:text-sm leading-relaxed">
                 <h3 className="text-sm md:text-base font-semibold mb-1">¿Cómo funciona?</h3>
                 <div className="space-y-1">
-                  <p><span className="font-bold">1.</span> Enviamos enlace por email/móvil</p>
-                  <p><span className="font-bold">2.</span> Destinatario confirma dirección y fecha</p>
-                  <p><span className="font-bold">3.</span> Recibe su cesta cuando prefiera</p>
+                  <p><span className="font-bold">1.</span> Enviamos enlace por email/móvil a esta web</p>
+                  <p><span className="font-bold">2.</span> Destinatario entra y confirma dirección de envío y fecha</p>
+                  <p><span className="font-bold">3.</span> Recibe su regalo</p>
                 </div>
                 <p className="text-[10px] md:text-xs text-muted-foreground pt-1">
                   💡 Pagas ahora, el destinatario decide cuándo y dónde.
@@ -818,21 +818,21 @@ const CheckoutPage = () => {
             transition={{ duration: 0.3, type: 'spring' }}
             style={{ 
               position: 'fixed', 
-              top: window.innerWidth < 768 ? '50%' : `${imagePreview.top}px`, 
-              left: window.innerWidth < 768 ? '50%' : `${imagePreview.left}px`, 
-              transform: window.innerWidth < 768 ? 'translate(-50%, -50%)' : 'translateY(-50%)',
+              top: window.innerWidth < 768 ? `${imagePreview.top}px` : `${imagePreview.top}px`, 
+              left: window.innerWidth < 768 ? `${imagePreview.left + 10}px` : `${imagePreview.left}px`, 
+              transform: window.innerWidth < 768 ? 'translateY(-50%)' : 'translateY(-50%)',
               zIndex: 110
             }}
           >
             <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
               <button
                 onClick={() => setImagePreview(null)}
-                className="absolute -top-2 -right-2 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                className="absolute -top-3 -right-3 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
                 aria-label="Cerrar imagen"
               >
                 <X className="h-3 w-3 md:h-4 md:w-4" />
               </button>
-              <img src={imagePreview.src} alt="Vista ampliada" className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-md" />
+              <img src={imagePreview.src} alt="Vista ampliada" className="w-32 h-32 md:w-80 md:h-80 object-cover rounded-md" />
             </div>
           </motion.div>
         </AnimatePresence>
