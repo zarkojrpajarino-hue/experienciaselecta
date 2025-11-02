@@ -376,9 +376,9 @@ const CheckoutPage = () => {
                                     src={item.imagen} 
                                     alt={item.nombre} 
                                     className="w-10 h-10 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
-                                    onClick={(e) => {
-                                      const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
-                                      setImagePreview({ src: item.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
+                                     onClick={(e) => {
+                                       const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
+                                       setImagePreview({ src: item.imagen, top: rect.top, left: rect.right + 10 });
                                     }}
                                   />
                                   <div className="flex-1 min-w-0">
@@ -524,7 +524,7 @@ const CheckoutPage = () => {
                                   className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
                                   onClick={(e) => {
                                     const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
-                                    setInfoPopover({ top: rect.top + rect.height / 2, left: rect.right + 10 });
+                                    setInfoPopover({ top: rect.bottom + 10, left: rect.left + rect.width / 2 });
                                   }}
                                 >
                                   <Info className="h-4 w-4" />
@@ -629,10 +629,10 @@ const CheckoutPage = () => {
                                               src={it.imagen} 
                                               alt={it.nombre} 
                                               className="w-10 h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
-                                                setImagePreview({ src: it.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
+                                               onClick={(e) => {
+                                                 e.stopPropagation();
+                                                 const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
+                                                 setImagePreview({ src: it.imagen, top: rect.top, left: rect.right + 10 });
                                               }}
                                             />
                                             <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-sm ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
@@ -780,7 +780,7 @@ const CheckoutPage = () => {
               position: 'fixed', 
               top: `${infoPopover.top}px`, 
               left: `${infoPopover.left}px`, 
-              transform: 'translateY(-50%)',
+              transform: 'translateX(-50%)',
               zIndex: 110
             }}
             className="max-w-[85vw] md:max-w-md"
@@ -820,7 +820,6 @@ const CheckoutPage = () => {
               position: 'fixed', 
               top: `${imagePreview.top}px`, 
               left: `${imagePreview.left}px`, 
-              transform: 'translateY(-50%)',
               zIndex: 110
             }}
           >
