@@ -202,13 +202,12 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
             transition={{ duration: 0.25 }}
             style={{
               position: 'fixed',
-              top: imagePosition.top > window.innerHeight / 2 ? 'auto' : `${imagePosition.bottom + 10}px`,
-              bottom: imagePosition.top > window.innerHeight / 2 ? `${window.innerHeight - imagePosition.top + 10}px` : 'auto',
+              top: `${Math.max(8, imagePosition.top - 8)}px`,
               left: '50%',
-              transform: 'translateX(-50%)',
+              transform: 'translate(-50%, -100%)',
               zIndex: 9999,
-              maxWidth: '400px',
-              width: '90%'
+              maxWidth: '360px',
+              width: '92vw'
             }}
             className="pointer-events-auto"
           >
