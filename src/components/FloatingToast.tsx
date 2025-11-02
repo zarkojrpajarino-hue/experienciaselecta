@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, X } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface FloatingToastProps {
   position: { top: number; left: number } | null;
 }
 
-const FloatingToast = ({ 
+const FloatingToast: React.FC<FloatingToastProps> = ({ 
   message, 
   visible, 
   onClose, 
