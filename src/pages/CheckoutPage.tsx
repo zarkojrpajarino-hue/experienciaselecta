@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
