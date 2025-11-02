@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
@@ -109,9 +109,20 @@ const ComprarCestasPage = () => {
             className="text-center mb-8 gpu-accelerated"
           >
             <div className="flex justify-center items-center gap-2 mb-3 flex-nowrap">
-              <h2 className="text-base sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black whitespace-nowrap">
-                <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>COMPRA</span> tu experiencia personalizada.
-              </h2>
+              <AnimatePresence mode="wait">
+                <motion.h2 
+                  key={isGiftMode ? 'gift' : 'normal'}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-base sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black whitespace-nowrap"
+                >
+                  <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
+                    {isGiftMode ? 'REGALA' : 'COMPRA'}
+                  </span> tu experiencia personalizada.
+                </motion.h2>
+              </AnimatePresence>
               
               <TooltipProvider delayDuration={80}>
                 <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
@@ -139,19 +150,23 @@ const ComprarCestasPage = () => {
               Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
             </p>
 
-            {/* Indicador del modo actual */}
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              key={isGiftMode ? 'gift' : 'normal'}
-              className={`mb-3 px-4 py-2 rounded-xl font-bold text-sm inline-block ${
-                isGiftMode 
-                  ? 'bg-purple-100 text-purple-700 border-2 border-purple-400' 
-                  : 'bg-blue-100 text-blue-700 border-2 border-blue-400'
-              }`}
-            >
-              {isGiftMode ? '🎁 Modo Regalo Activo' : '🛒 Modo Compra Normal'}
-            </motion.div>
+            {/* Indicador del modo actual con animación */}
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={isGiftMode ? 'gift-indicator' : 'normal-indicator'}
+                initial={{ opacity: 0, scale: 0.8, x: isGiftMode ? 100 : -100 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.8, x: isGiftMode ? -100 : 100 }}
+                transition={{ duration: 0.5, type: "spring" }}
+                className={`mb-3 px-4 py-2 rounded-xl font-bold text-sm inline-block ${
+                  isGiftMode 
+                    ? 'bg-purple-100 text-purple-700 border-2 border-purple-400' 
+                    : 'bg-blue-100 text-blue-700 border-2 border-blue-400'
+                }`}
+              >
+                {isGiftMode ? '🎁 Modo Regalo' : '🛒 Modo Compra'}
+              </motion.div>
+            </AnimatePresence>
 
             <motion.div 
               onClick={() => {

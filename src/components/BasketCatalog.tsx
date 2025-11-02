@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -1671,24 +1671,26 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             )}
 
                             <div className="flex flex-col gap-2">
-                              <div className="flex justify-center items-center gap-3">
+                              <div className="flex justify-center items-center gap-3 flex-wrap">
                                 <AddToCartButton 
                                   onClick={(e) => handleAddToCart(basket, e)}
                                   price={basket.precio}
                                   className={colorCombo.text}
                                 />
-                                {addedBasketId === basket.id && (
-                                  <motion.div
-                                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
-                                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="flex items-center gap-2 bg-green-500 text-white px-3 py-1 rounded-lg shadow-lg font-bold text-sm whitespace-nowrap"
-                                  >
-                                    <span>✓</span>
-                                    <span>{basket.nombre} añadida</span>
-                                  </motion.div>
-                                )}
+                                <AnimatePresence>
+                                  {addedBasketId === basket.id && (
+                                    <motion.div
+                                      initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                                      animate={{ opacity: 1, scale: 1, x: 0 }}
+                                      exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                                      transition={{ duration: 0.3 }}
+                                      className="flex items-center gap-2 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg font-bold text-xs sm:text-sm whitespace-nowrap"
+                                    >
+                                      <span>✓</span>
+                                      <span>{basket.nombre} añadida</span>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </div>
                             </div>
                           </motion.div>
