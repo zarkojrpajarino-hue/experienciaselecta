@@ -73,54 +73,73 @@ serve(async (req) => {
         const recipientEmailResponse = await resend.emails.send({
           from: 'Experiencias Selecta <onboarding@resend.dev>',
           to: [recipient.recipientEmail],
-          subject: '🎁 ¡Te han regalado una experiencia!',
+          subject: '🎁 ¡' + validatedData.senderName + ' te ha enviado una experiencia única!',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h1 style="color: #D4AF37; text-align: center;">🎁 ¡Tienes un regalo!</h1>
+              <h1 style="color: #8B4513; text-align: center;">🎁 ¡Hola ${escapeHtml(recipient.recipientName)}!</h1>
               
               ${basketImage ? `<img src="${escapeHtml(basketImage)}" alt="Cesta de regalo" style="width: 100%; max-width: 400px; margin: 20px auto; display: block; border-radius: 8px;" />` : ''}
               
               <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h2 style="color: #333; margin-top: 0;">¡${escapeHtml(recipient.recipientName)}, ${escapeHtml(validatedData.senderName)} te ha regalado algo especial!</h2>
+                <h2 style="color: #333; margin-top: 0;">${escapeHtml(validatedData.senderName)} te ha enviado algo especial: una experiencia única y personalizada.</h2>
+                
+                <h3 style="color: #8B4513;">🎁 Tu regalo: ${escapeHtml(basketNames)}</h3>
+                
+                <p style="color: #666;">Un recuerdo inolvidable para que lo disfrutes con tus seres queridos.</p>
                 
                 ${recipient.personalNote ? `
-                  <div style="background-color: #fff; padding: 15px; border-left: 4px solid #D4AF37; margin: 15px 0;">
+                  <div style="background-color: #fff; padding: 15px; border-left: 4px solid #8B4513; margin: 15px 0;">
+                    <p style="color: #666; font-weight: bold; margin: 0 0 5px 0;">💌 ${escapeHtml(validatedData.senderName)} te dice:</p>
                     <p style="color: #666; font-style: italic; margin: 0;">"${escapeHtml(recipient.personalNote)}"</p>
-                    <p style="color: #999; font-size: 12px; margin-top: 10px; margin-bottom: 0;">- ${escapeHtml(validatedData.senderName)}</p>
                   </div>
                 ` : ''}
                 
-                <h3 style="color: #D4AF37;">Tu regalo:</h3>
-                <p style="font-size: 18px; color: #333; font-weight: bold;">${escapeHtml(basketNames)}</p>
-                
-                <p style="color: #666;">Para recibir tu regalo, necesitamos que nos proporciones tu dirección de envío.</p>
-                
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://experienciaselecta.com/regalos" style="background-color: #D4AF37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                    Proporcionar dirección de envío
+                  <a href="https://experienciaselecta.com/regalos" style="background-color: #8B4513; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                    Reclamar mi regalo
                   </a>
                 </div>
                 
-                <p style="color: #999; font-size: 12px;">Si no tienes cuenta, puedes crear una con este email para reclamar tu regalo.</p>
+                <p style="color: #666; font-size: 14px;">Solo necesitamos saber dónde enviártelo.</p>
+                
+                <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 4px;">
+                  <p style="color: #856404; margin: 0; font-weight: bold;">✨ Pero espera, hay más...</p>
+                  <p style="color: #856404; margin: 10px 0 0 0;">
+                    Con este regalo no solo recibirás productos ibéricos premium. También tendrás acceso exclusivo a <strong>paragenteselecta.com</strong>, donde tu cesta se convierte en una experiencia personalizada de 24 horas.
+                  </p>
+                </div>
+                
+                <p style="color: #666; text-align: center; font-style: italic;">Reclama tu regalo ahora y prepárate para vivir algo único.</p>
               </div>
               
               <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-                <p style="color: #999; font-size: 12px;">Experiencias Selecta - Momentos que perduran</p>
+                <p style="color: #999; font-size: 12px;">Con cariño,<br>El equipo de Experiencia Selecta</p>
               </div>
             </div>
           `,
           text: `
-¡${recipient.recipientName}, ${validatedData.senderName} te ha regalado algo especial!
+¡Hola ${recipient.recipientName}!
 
-${recipient.personalNote ? `Mensaje: "${recipient.personalNote}"\n- ${validatedData.senderName}\n\n` : ''}
+${validatedData.senderName} te ha enviado algo especial: una experiencia única y personalizada.
 
-Tu regalo: ${basketNames}
+🎁 Tu regalo: ${basketNames}
 
-Para recibir tu regalo, visita: https://experienciaselecta.com/regalos
+Un recuerdo inolvidable para que lo disfrutes con tus seres queridos.
 
-Si no tienes cuenta, puedes crear una con este email para reclamar tu regalo.
+${recipient.personalNote ? `💌 ${validatedData.senderName} te dice:\n"${recipient.personalNote}"\n\n` : ''}
 
-Experiencias Selecta - Momentos que perduran
+Reclama tu regalo aquí: https://experienciaselecta.com/regalos
+
+Solo necesitamos saber dónde enviártelo.
+
+✨ Pero espera, hay más...
+
+Con este regalo no solo recibirás productos ibéricos premium. También tendrás acceso exclusivo a paragenteselecta.com, donde tu cesta se convierte en una experiencia personalizada de 24 horas.
+
+Reclama tu regalo ahora y prepárate para vivir algo único.
+
+Con cariño,
+El equipo de Experiencia Selecta
           `
         });
 
@@ -128,8 +147,8 @@ Experiencias Selecta - Momentos que perduran
       } 
       // Only send SMS if email is NOT provided
       else if (recipient.recipientPhone) {
-        const personalNoteText = recipient.personalNote ? `\n\nMensaje: "${recipient.personalNote}"` : '';
-        const smsMessage = `Hola ${recipient.recipientName}, ${validatedData.senderName} te ha regalado una experiencia única. Reclama tu regalo: https://experienciaselecta.com/regalos${personalNoteText}`;
+        const personalNoteText = recipient.personalNote ? `\n\nNota personal del comprador` : '';
+        const smsMessage = `🎁 ¡${validatedData.senderName} te ha enviado un regalo de Experiencia Selecta!${personalNoteText}\nReclámalo aquí: https://experienciaselecta.com/regalos`;
         
         console.log('Sending SMS to', recipient.recipientPhone);
         
@@ -164,65 +183,73 @@ Experiencias Selecta - Momentos que perduran
     const senderEmailResponse = await resend.emails.send({
       from: 'Experiencias Selecta <onboarding@resend.dev>',
       to: [validatedData.senderEmail],
-      subject: '✅ Tu regalo ha sido enviado',
+      subject: '💝 ¡Regalo enviado! ' + validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ') + ' recibirá tu sorpresa',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #D4AF37; text-align: center;">✅ ¡Regalo enviado con éxito!</h1>
+          <h1 style="color: #8B4513; text-align: center;">💝 ¡Enhorabuena ${escapeHtml(validatedData.senderName)}!</h1>
           
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h2 style="color: #333; margin-top: 0;">Hola ${escapeHtml(validatedData.senderName)},</h2>
+            <p style="color: #666;">Has regalado <strong>${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')}</strong>.</p>
             
-            <p style="color: #666;">Tu regalo ha sido enviado correctamente a:</p>
+            <h3 style="color: #8B4513;">🎁 Tu regalo está listo para ser reclamado</h3>
             
-            ${validatedData.recipients.map((recipient: z.infer<typeof recipientSchema>) => `
-              <div style="background-color: #fff; padding: 15px; border-radius: 5px; margin: 10px 0;">
-                <p style="margin: 5px 0;"><strong>${escapeHtml(recipient.recipientName)}</strong></p>
-                <p style="margin: 5px 0; color: #666;">${recipient.recipientEmail ? escapeHtml(recipient.recipientEmail) : ''}</p>
-                ${recipient.recipientPhone ? `<p style="margin: 5px 0; color: #666;">${escapeHtml(recipient.recipientPhone)}</p>` : ''}
-                ${recipient.personalNote ? `<p style="margin: 5px 0; color: #999; font-style: italic; font-size: 14px;">"${escapeHtml(recipient.personalNote)}"</p>` : ''}
+            <p style="color: #666;">Hemos enviado una notificación a ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientEmail || r.recipientPhone).join(', ')} para que complete${validatedData.recipients.length === 1 ? '' : 'n'} su${validatedData.recipients.length === 1 ? '' : 's'} dirección${validatedData.recipients.length === 1 ? '' : 'es'} de envío.</p>
+            
+            <p style="color: #666;">Una vez que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => escapeHtml(r.recipientName)).join(', ')} nos ${validatedData.recipients.length === 1 ? 'indique' : 'indiquen'} dónde enviar su regalo, prepararemos el pedido y te avisaremos.</p>
+            
+            ${validatedData.recipients.some((r: z.infer<typeof recipientSchema>) => r.personalNote) ? `
+              <div style="background-color: #fff; padding: 15px; border-left: 4px solid #8B4513; margin: 15px 0;">
+                <p style="color: #666; font-weight: bold; margin: 0 0 10px 0;">💌 Tus mensajes personales:</p>
+                ${validatedData.recipients.filter((r: z.infer<typeof recipientSchema>) => r.personalNote).map((r: z.infer<typeof recipientSchema>) => 
+                  `<p style="color: #666; margin: 5px 0;"><strong>${escapeHtml(r.recipientName)}:</strong> "${escapeHtml(r.personalNote!)}"</p>`
+                ).join('')}
               </div>
-            `).join('')}
+            ` : ''}
             
-            <p style="color: #666; margin-top: 20px;">Los destinatarios recibirán un correo o mensaje SMS con las instrucciones para reclamar su regalo y proporcionar su dirección de envío.</p>
+            <h3 style="color: #8B4513;">¿Qué pasa ahora?</h3>
+            <ol style="color: #666; margin: 15px 0; padding-left: 20px; line-height: 1.8;">
+              <li>${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => escapeHtml(r.recipientName)).join(', ')} recibirá${validatedData.recipients.length === 1 ? '' : 'n'} un email/SMS con la notificación</li>
+              <li>Completará${validatedData.recipients.length === 1 ? '' : 'n'} su${validatedData.recipients.length === 1 ? '' : 's'} dirección${validatedData.recipients.length === 1 ? '' : 'es'} de envío en nuestra web</li>
+              <li>Prepararemos y enviaremos el pedido</li>
+              <li>Te avisaremos cuando esté en camino</li>
+            </ol>
             
-            <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 4px;">
-              <p style="color: #856404; margin: 0; font-weight: bold;">⏰ Recordatorio importante:</p>
-              <p style="color: #856404; margin: 10px 0 0 0;">
-                Solo queda que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => escapeHtml(r.recipientName)).join(', ')} 
-                ${validatedData.recipients.length === 1 ? 'entre' : 'entren'} en ${validatedData.recipients.length === 1 ? 'su correo, vea su regalo' : 'sus correos, vean sus regalos'} 
-                y nos ${validatedData.recipients.length === 1 ? 'diga' : 'digan'} dónde ${validatedData.recipients.length === 1 ? 'quiere' : 'quieren'} que ${validatedData.recipients.length === 1 ? 'entreguemos su pedido' : 'entreguemos sus pedidos'}.
-                <br><br>
-                <strong>Pasadas 72 horas, si aún no ${validatedData.recipients.length === 1 ? 'ha' : 'han'} entrado en ${validatedData.recipients.length === 1 ? 'el correo' : 'los correos'}, volveremos a enviarlo, pero este será el último que enviemos.</strong>
-              </p>
-            </div>
-            
-            <p style="color: #666;">Una vez que proporcionen su dirección, prepararemos las cestas con cariño y las enviaremos.</p>
+            <p style="color: #666;">Gracias por elegir Experiencia Selecta para crear momentos inolvidables.</p>
           </div>
           
           <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-            <p style="color: #999; font-size: 12px;">Gracias por regalar momentos especiales con Experiencias Selecta</p>
+            <p style="color: #999; font-size: 12px;">Un abrazo,<br>El equipo de Experiencia Selecta</p>
           </div>
         </div>
       `,
       text: `
-¡Hola ${validatedData.senderName}!
+¡Enhorabuena ${validatedData.senderName}!
 
-Tu regalo ha sido enviado correctamente a:
+Has regalado ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')}.
 
-${validatedData.recipients.map((recipient: z.infer<typeof recipientSchema>) => 
-  `- ${recipient.recipientName} (${recipient.recipientEmail || recipient.recipientPhone})${recipient.personalNote ? `\n  Nota: "${recipient.personalNote}"` : ''}`
+🎁 Tu regalo está listo para ser reclamado
+
+Hemos enviado una notificación a ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientEmail || r.recipientPhone).join(', ')} para que complete${validatedData.recipients.length === 1 ? '' : 'n'} su${validatedData.recipients.length === 1 ? '' : 's'} dirección${validatedData.recipients.length === 1 ? '' : 'es'} de envío.
+
+Una vez que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')} nos ${validatedData.recipients.length === 1 ? 'indique' : 'indiquen'} dónde enviar su regalo, prepararemos el pedido y te avisaremos.
+
+${validatedData.recipients.some((r: z.infer<typeof recipientSchema>) => r.personalNote) ? `
+💌 Tus mensajes personales:
+${validatedData.recipients.filter((r: z.infer<typeof recipientSchema>) => r.personalNote).map((r: z.infer<typeof recipientSchema>) => 
+  `${r.recipientName}: "${r.personalNote}"`
 ).join('\n')}
+` : ''}
 
-Los destinatarios recibirán un correo o mensaje SMS con las instrucciones para reclamar su regalo.
+¿Qué pasa ahora?
+1. ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')} recibirá${validatedData.recipients.length === 1 ? '' : 'n'} un email/SMS con la notificación
+2. Completará${validatedData.recipients.length === 1 ? '' : 'n'} su${validatedData.recipients.length === 1 ? '' : 's'} dirección${validatedData.recipients.length === 1 ? '' : 'es'} de envío en nuestra web
+3. Prepararemos y enviaremos el pedido
+4. Te avisaremos cuando esté en camino
 
-⏰ RECORDATORIO IMPORTANTE:
-Solo queda que ${validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ')} 
-${validatedData.recipients.length === 1 ? 'entre' : 'entren'} en ${validatedData.recipients.length === 1 ? 'su correo, vea su regalo' : 'sus correos, vean sus regalos'} 
-y nos ${validatedData.recipients.length === 1 ? 'diga' : 'digan'} dónde ${validatedData.recipients.length === 1 ? 'quiere' : 'quieren'} que ${validatedData.recipients.length === 1 ? 'entreguemos su pedido' : 'entreguemos sus pedidos'}.
+Gracias por elegir Experiencia Selecta para crear momentos inolvidables.
 
-Pasadas 72 horas, si aún no ${validatedData.recipients.length === 1 ? 'ha' : 'han'} entrado en ${validatedData.recipients.length === 1 ? 'el correo' : 'los correos'}, volveremos a enviarlo, pero este será el último que enviemos.
-
-Gracias por regalar momentos especiales con Experiencias Selecta
+Un abrazo,
+El equipo de Experiencia Selecta
       `
     });
 

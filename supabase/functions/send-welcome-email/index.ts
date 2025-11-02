@@ -70,134 +70,122 @@ serve(async (req) => {
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
     const emailContent = `
-¡Hola ${userName || 'amigo/a'}!
+¡Bienvenido ${userName || 'amigo'}!
 
-Bienvenido/a a Experiencia Selecta 🌟
+Acabas de dar el primer paso hacia experiencias inolvidables.
 
-Nos alegra mucho que estés aquí. Has dado el primer paso hacia experiencias gastronómicas únicas que transformarán tus momentos especiales.
+En Experiencia Selecta no vendemos cestas. Creamos momentos.
 
-¿Qué te espera en Experiencia Selecta?
+✨ ¿Qué hace únicas nuestras experiencias?
 
-✨ Cestas gourmet premium con productos ibéricos de la más alta calidad
-🎯 Experiencias personalizadas diseñadas especialmente para ti
-💝 La posibilidad de regalar momentos inolvidables
-🌐 Acceso exclusivo a paragenteselecta.com con cada compra
+Cada cesta incluye:
+• Productos ibéricos premium seleccionados
+• 24 horas de experiencia personalizada en paragenteselecta.com
+• Contenido exclusivo diseñado para crear recuerdos
 
-Cada una de nuestras cestas viene con 24 horas de experiencia digital personalizada. No es solo una compra, es el inicio de un viaje sensorial.
+No es solo lo que comes. Es cómo lo vives.
 
-¿Listo/a para empezar?
+Explora experiencias: https://experienciaselecta.com
 
-👉 Explora nuestras cestas: https://experienciaselecta.com
+💝 ¿Es un regalo?
 
-Si tienes alguna pregunta, estamos aquí para ayudarte.
+Nuestras cestas son perfectas para sorprender. El destinatario no solo recibe productos premium, sino una experiencia completa que recordará siempre.
 
-¡Bienvenido/a a la familia Selecta!
+Estamos aquí para ayudarte a crear momentos especiales.
 
+Un abrazo,
 El equipo de Experiencia Selecta
+
+PD: ¿Tienes dudas? Solo responde a este email. Nos encantará ayudarte.
     `;
 
     const htmlContent = `
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .header {
-      background: linear-gradient(135deg, #8B4513, #2F4F2F);
-      color: white;
-      padding: 40px 20px;
-      text-align: center;
-      border-radius: 10px 10px 0 0;
-    }
-    .content {
-      background: #ffffff;
-      padding: 40px 30px;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .cta-button {
-      display: inline-block;
-      background: #8B4513;
-      color: white;
-      padding: 15px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin: 20px 0;
-      font-weight: bold;
-    }
-    .features {
-      background: linear-gradient(135deg, rgba(139,69,19,0.1), rgba(47,79,47,0.1));
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-      border-left: 4px solid #8B4513;
-    }
-    .features ul {
-      margin: 10px 0;
-      padding-left: 20px;
-    }
-    .features li {
-      margin-bottom: 10px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #666;
-      font-size: 12px;
-    }
-  </style>
 </head>
-<body>
-  <div class="header">
-    <h1>¡Bienvenido/a a Experiencia Selecta! ✨</h1>
-  </div>
-  <div class="content">
-    <p>¡Hola ${userName || 'amigo/a'}!</p>
-    
-    <p>Nos alegra mucho que estés aquí. Has dado el primer paso hacia <strong>experiencias gastronómicas únicas</strong> que transformarán tus momentos especiales.</p>
-    
-    <div class="features">
-      <p style="margin: 0 0 10px 0; font-size: 18px; color: #8B4513;"><strong>¿Qué te espera en Experiencia Selecta?</strong></p>
-      <ul>
-        <li><strong>✨ Cestas gourmet premium</strong> con productos ibéricos de la más alta calidad</li>
-        <li><strong>🎯 Experiencias personalizadas</strong> diseñadas especialmente para ti</li>
-        <li><strong>💝 La posibilidad de regalar</strong> momentos inolvidables</li>
-        <li><strong>🌐 Acceso exclusivo</strong> a paragenteselecta.com con cada compra</li>
-      </ul>
-    </div>
-
-    <p>Cada una de nuestras cestas viene con <strong>24 horas de experiencia digital personalizada</strong>. No es solo una compra, es el inicio de un viaje sensorial.</p>
-    
-    <p style="text-align: center; font-size: 18px; margin: 30px 0;">
-      <strong>¿Listo/a para empezar?</strong>
-    </p>
-    
-    <p style="text-align: center;">
-      <a href="https://experienciaselecta.com" class="cta-button">Explora Nuestras Cestas</a>
-    </p>
-    
-    <p>Si tienes alguna pregunta, estamos aquí para ayudarte.</p>
-    
-    <p style="text-align: center; color: #8B4513; font-size: 18px; margin-top: 40px;">
-      <strong>¡Bienvenido/a a la familia Selecta!</strong>
-    </p>
-    
-    <p style="margin-top: 30px;"><strong>El equipo de Experiencia Selecta</strong></p>
-  </div>
-  <div class="footer">
-    <p>Experiencia Selecta - Experiencias gastronómicas únicas</p>
-    <p>© 2025 Experiencia Selecta. Todos los derechos reservados.</p>
-  </div>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td align="center" style="padding: 40px 0;">
+        <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <tr>
+            <td style="padding: 40px 30px; text-align: center; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">Experiencia Selecta</h1>
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="padding: 40px 30px;">
+              <h2 style="margin: 0 0 20px 0; color: #333333; font-size: 24px;">¡Bienvenido ${userName || 'amigo'}!</h2>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                Acabas de dar el primer paso hacia experiencias inolvidables.
+              </p>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                En <strong>Experiencia Selecta</strong> no vendemos cestas. Creamos momentos.
+              </p>
+              
+              <h3 style="margin: 30px 0 15px 0; color: #8B4513; font-size: 20px;">✨ ¿Qué hace únicas nuestras experiencias?</h3>
+              
+              <p style="margin: 0 0 10px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                Cada cesta incluye:
+              </p>
+              <ul style="margin: 0 0 20px 0; padding-left: 20px; color: #666666; font-size: 16px; line-height: 1.8;">
+                <li>Productos ibéricos premium seleccionados</li>
+                <li>24 horas de experiencia personalizada en paragenteselecta.com</li>
+                <li>Contenido exclusivo diseñado para crear recuerdos</li>
+              </ul>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6; font-style: italic; text-align: center;">
+                No es solo lo que comes. Es cómo lo vives.
+              </p>
+              
+              <table role="presentation" style="margin: 30px 0; width: 100%;">
+                <tr>
+                  <td align="center">
+                    <a href="https://experienciaselecta.com" style="display: inline-block; padding: 15px 40px; background-color: #8B4513; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold;">
+                      Explorar experiencias
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              
+              <h3 style="margin: 30px 0 15px 0; color: #8B4513; font-size: 20px;">💝 ¿Es un regalo?</h3>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                Nuestras cestas son perfectas para sorprender. El destinatario no solo recibe productos premium, sino una experiencia completa que recordará siempre.
+              </p>
+              
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                Estamos aquí para ayudarte a crear momentos especiales.
+              </p>
+              
+              <p style="margin: 10px 0 0 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                Un abrazo,<br>
+                El equipo de Experiencia Selecta
+              </p>
+              
+              <p style="margin: 20px 0 0 0; color: #999999; font-size: 14px; line-height: 1.6; font-style: italic;">
+                PD: ¿Tienes dudas? Solo responde a este email. Nos encantará ayudarte.
+              </p>
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="padding: 30px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #e0e0e0;">
+              <p style="margin: 0; color: #999999; font-size: 14px;">
+                © 2024 Experiencia Selecta. Todos los derechos reservados.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
     `;
@@ -205,7 +193,7 @@ El equipo de Experiencia Selecta
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [userEmail],
-      subject: '✨ ¡Bienvenido/a a Experiencia Selecta! Tu viaje comienza aquí',
+      subject: '✨ Bienvenido a Experiencia Selecta, ' + (userName || 'amigo'),
       text: emailContent,
       html: htmlContent,
     });

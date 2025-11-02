@@ -70,17 +70,19 @@ serve(async (req) => {
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
     const emailContent = `
-¡Hola ${userName || 'amigo/a'}!
+Hola ${userName || 'amigo'},
 
-¿Estás listo/a para vivir una experiencia inolvidable?
+¿Estás listo para vivir una experiencia inolvidable?
 
-¿Quieres romper con la monotonía? ¿Tener un plan diferente, lleno de valor? ¿Conectar con las personas que más quieres y conocerte a ti mismo?
+¿Quieres romper con la monotonía? ¿Tener un plan diferente, lleno de valor? ¿Conocer mejor a las personas que más quieres y conocerte a ti mismo?
 
-🌟 Entra en experienciaselecta.com y descubre una nueva forma de disfrutar.
+En Experiencia Selecta transformamos momentos ordinarios en recuerdos extraordinarios.
 
-Cada momento cuenta. Hazlo especial.
+Descubre nuestras experiencias: https://experienciaselecta.com
 
-Saludos,
+Cada cesta es única. Cada experiencia, personalizada. Cada momento, inolvidable.
+
+Un abrazo,
 El equipo de Experiencia Selecta
 `;
 
@@ -88,87 +90,68 @@ El equipo de Experiencia Selecta
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .header {
-      background: linear-gradient(135deg, #8B4513, #2F4F2F);
-      color: white;
-      padding: 40px 20px;
-      text-align: center;
-      border-radius: 10px 10px 0 0;
-    }
-    .content {
-      background: #ffffff;
-      padding: 40px 30px;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .cta-button {
-      display: inline-block;
-      background: #8B4513;
-      color: white;
-      padding: 15px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin: 20px 0;
-      font-weight: bold;
-    }
-    .highlight {
-      background: linear-gradient(135deg, rgba(139,69,19,0.1), rgba(47,79,47,0.1));
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-      border-left: 4px solid #8B4513;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #666;
-      font-size: 12px;
-    }
-  </style>
 </head>
-<body>
-  <div class="header">
-    <h1>¿Estás listo/a para vivir una experiencia inolvidable? ✨</h1>
-  </div>
-  <div class="content">
-    <p>Hola ${userName || 'amigo/a'},</p>
-    
-    <div class="highlight">
-      <p style="margin: 0; font-size: 18px; color: #8B4513;"><strong>¿Quieres romper con la monotonía?</strong></p>
-      <p style="margin: 10px 0 0 0;">¿Tener un plan diferente, lleno de valor?</p>
-      <p style="margin: 5px 0 0 0;">¿Conectar con las personas que más quieres y conocerte a ti mismo?</p>
-    </div>
-
-    <p style="text-align: center; font-size: 18px; margin: 30px 0;">
-      <strong>Descubre una nueva forma de disfrutar.</strong>
-    </p>
-    
-    <p style="text-align: center;">
-      <a href="https://experienciaselecta.com" class="cta-button">Entra en experienciaselecta.com</a>
-    </p>
-    
-    <p style="text-align: center; color: #8B4513; font-size: 16px; margin-top: 30px;">
-      <em>Cada momento cuenta. Hazlo especial.</em>
-    </p>
-    
-    <p style="margin-top: 40px;"><strong>El equipo de Experiencia Selecta</strong></p>
-  </div>
-  <div class="footer">
-    <p>Experiencia Selecta - Experiencias gastronómicas únicas</p>
-    <p>© 2025 Experiencia Selecta. Todos los derechos reservados.</p>
-  </div>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td align="center" style="padding: 40px 0;">
+        <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <tr>
+            <td style="padding: 40px 30px; text-align: center; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">Experiencia Selecta</h1>
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="padding: 40px 30px;">
+              <h2 style="margin: 0 0 20px 0; color: #333333; font-size: 24px;">Hola ${userName || 'amigo'},</h2>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                ¿Estás listo para vivir una experiencia inolvidable?
+              </p>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                ¿Quieres romper con la monotonía? ¿Tener un plan diferente, lleno de valor? ¿Conocer mejor a las personas que más quieres y conocerte a ti mismo?
+              </p>
+              
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                En <strong>Experiencia Selecta</strong> transformamos momentos ordinarios en recuerdos extraordinarios.
+              </p>
+              
+              <table role="presentation" style="margin: 30px 0; width: 100%;">
+                <tr>
+                  <td align="center">
+                    <a href="https://experienciaselecta.com" style="display: inline-block; padding: 15px 40px; background-color: #8B4513; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold;">
+                      Descubre nuestras experiencias
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="margin: 20px 0 5px 0; color: #666666; font-size: 16px; line-height: 1.6; font-style: italic;">
+                Cada cesta es única. Cada experiencia, personalizada. Cada momento, inolvidable.
+              </p>
+              
+              <p style="margin: 20px 0 0 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                Un abrazo,<br>
+                El equipo de Experiencia Selecta
+              </p>
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="padding: 30px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #e0e0e0;">
+              <p style="margin: 0; color: #999999; font-size: 14px;">
+                © 2024 Experiencia Selecta. Todos los derechos reservados.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 `;
@@ -176,7 +159,7 @@ El equipo de Experiencia Selecta
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [userEmail],
-      subject: '✨ ¿Estás listo/a para vivir una experiencia inolvidable?',
+      subject: '¿Listo para romper con la rutina? Tu experiencia te espera 🎁',
       text: emailContent,
       html: htmlContent,
     });

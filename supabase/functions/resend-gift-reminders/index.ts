@@ -130,20 +130,21 @@ serve(async (req) => {
           continue;
         }
 
-        // Reminder to recipient
         const recipientEmailContent = `
-¡Hola ${escapeHtml(gift.recipient_name)}!
+Hola ${escapeHtml(gift.recipient_name)},
 
-No olvides dejar tu dirección de envío en nuestra web oficial para recibir tu regalo de ${escapeHtml(gift.sender_name)}.
+Tienes un regalo esperándote 🎁
 
-🎁 Tu regalo: ${escapeHtml(gift.basket_name)}
+${escapeHtml(gift.sender_name)} te envió ${escapeHtml(gift.basket_name)} hace unos días, pero aún no has dejado tu dirección de envío.
 
-👉 Entra aquí para completar tus datos: https://experienciaselecta.com/regalos
+Solo te llevará un minuto y tu regalo estará en camino: https://experienciaselecta.com/regalos
 
-¡No dejes pasar esta oportunidad!
+No dejes pasar esta experiencia única que ${escapeHtml(gift.sender_name)} ha preparado para ti.
 
-Gracias,
+Un abrazo,
 El equipo de Experiencia Selecta
+
+PD: Si tienes alguna duda, solo responde a este email.
         `;
 
         const recipientHtmlContent = `
@@ -187,17 +188,19 @@ El equipo de Experiencia Selecta
 </head>
 <body>
   <div class="header">
-    <h1>⏰ Recordatorio de Regalo</h1>
+    <h1>⏰ No olvides reclamar tu regalo de ${escapeHtml(gift.sender_name)}</h1>
   </div>
   <div class="content">
-    <p>¡Hola ${escapeHtml(gift.recipient_name)}!</p>
-    <p>No olvides dejar tu dirección de envío en nuestra web oficial para recibir tu regalo de <strong>${escapeHtml(gift.sender_name)}</strong>.</p>
-    <p><strong>🎁 Tu regalo:</strong> ${escapeHtml(gift.basket_name)}</p>
+    <p>Hola ${escapeHtml(gift.recipient_name)},</p>
+    <p>Tienes un regalo esperándote 🎁</p>
+    <p>${escapeHtml(gift.sender_name)} te envió <strong>${escapeHtml(gift.basket_name)}</strong> hace unos días, pero aún no has dejado tu dirección de envío.</p>
     <p style="text-align: center;">
-      <a href="https://experienciaselecta.com/regalos" class="cta-button">Completar Dirección de Envío</a>
+      <a href="https://experienciaselecta.com/regalos" class="cta-button">Reclamar ahora</a>
     </p>
-    <p>¡No dejes pasar esta oportunidad!</p>
-    <p><strong>El equipo de Experiencia Selecta</strong></p>
+    <p>Solo te llevará un minuto y tu regalo estará en camino.</p>
+    <p>No dejes pasar esta experiencia única que ${escapeHtml(gift.sender_name)} ha preparado para ti.</p>
+    <p><strong>Un abrazo,<br>El equipo de Experiencia Selecta</strong></p>
+    <p style="font-size: 12px; color: #999;">PD: Si tienes alguna duda, solo responde a este email.</p>
   </div>
 </body>
 </html>
@@ -206,7 +209,7 @@ El equipo de Experiencia Selecta
         await resend.emails.send({
           from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
           to: [gift.recipient_email],
-          subject: '⏰ No olvides reclamar tu regalo - Experiencia Selecta',
+          subject: '⏰ No olvides reclamar tu regalo de ' + gift.sender_name,
           text: recipientEmailContent,
           html: recipientHtmlContent,
         });
@@ -230,11 +233,17 @@ El equipo de Experiencia Selecta
             const senderEmailContent = `
 Hola ${escapeHtml(customerData.name)},
 
-El usuario ${escapeHtml(gift.recipient_name)} no ha entrado a la web oficial experienciaselecta.com a reclamar su regalo.
+${escapeHtml(gift.recipient_name)} aún no ha entrado a experienciaselecta.com a reclamar su regalo.
 
-¿Puedes ayudarnos a recordárselo por favor?
+¿Puedes ayudarnos a recordárselo?
 
-Gracias por tu colaboración,
+A veces los emails se pierden entre la bandeja de entrada. Un mensaje tuyo puede hacer la diferencia para que disfrute de tu regalo.
+
+Si necesitas reenviar el enlace:
+→ https://experienciaselecta.com/regalos
+
+Gracias por tu ayuda 💝
+
 El equipo de Experiencia Selecta
             `;
 
@@ -269,13 +278,16 @@ El equipo de Experiencia Selecta
 </head>
 <body>
   <div class="header">
-    <h1>Recordatorio Pendiente</h1>
+    <h1>💭 Ayúdanos a recordarle a ${escapeHtml(gift.recipient_name)}</h1>
   </div>
   <div class="content">
     <p>Hola ${escapeHtml(customerData.name)},</p>
-    <p>El usuario <strong>${escapeHtml(gift.recipient_name)}</strong> no ha entrado a la web oficial experienciaselecta.com a reclamar su regalo.</p>
-    <p>¿Puedes ayudarnos a recordárselo por favor?</p>
-    <p>Gracias por tu colaboración,</p>
+    <p><strong>${escapeHtml(gift.recipient_name)}</strong> aún no ha entrado a experienciaselecta.com a reclamar su regalo.</p>
+    <p>¿Puedes ayudarnos a recordárselo?</p>
+    <p>A veces los emails se pierden entre la bandeja de entrada. Un mensaje tuyo puede hacer la diferencia para que disfrute de tu regalo.</p>
+    <p>Si necesitas reenviar el enlace:<br>
+    → <a href="https://experienciaselecta.com/regalos">https://experienciaselecta.com/regalos</a></p>
+    <p>Gracias por tu ayuda 💝</p>
     <p><strong>El equipo de Experiencia Selecta</strong></p>
   </div>
 </body>
@@ -285,7 +297,7 @@ El equipo de Experiencia Selecta
             await resend.emails.send({
               from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
               to: [customerData.email],
-              subject: 'Ayúdanos a recordar a tu destinatario - Experiencia Selecta',
+              subject: '💭 Ayúdanos a recordar a ' + gift.recipient_name,
               text: senderEmailContent,
               html: senderHtmlContent,
             });

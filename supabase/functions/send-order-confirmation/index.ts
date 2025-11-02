@@ -78,7 +78,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Experiencia Selecta <onboarding@resend.dev>",
       to: [email],
-      subject: "✅ Confirmación de tu pedido - Experiencia Selecta",
+      subject: "🎉 ¡Enhorabuena! Tu experiencia única te está esperando",
       html: `
         <!DOCTYPE html>
         <html>
@@ -99,51 +99,41 @@ const handler = async (req: Request): Promise<Response> => {
           <body>
             <div class="container">
               <div class="header">
-                <h1>¡Enhorabuena por tu compra! 🎉</h1>
+                <h1>🎉 ¡Enhorabuena ${customerName}!</h1>
               </div>
               <div class="content">
-                <p>Hola ${customerName},</p>
-                <p>¡Gracias por confiar en nosotros! Has adquirido nuestras exclusivas cestas gourmet que te darán acceso a una experiencia única en <strong>paragenteselecta.com</strong>.</p>
+                <p>Has adquirido <strong>${items.map(item => `${item.quantity}x ${item.basketName}`).join(', ')}</strong>.</p>
+                
+                <p style="font-style: italic; color: #8B4513;">Pero esto es solo el comienzo...</p>
                 
                 <div class="highlight">
-                  <p style="margin: 0 0 10px 0;"><strong>✨ ¿Qué incluye tu compra?</strong></p>
-                  <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li>Productos ibéricos premium de la más alta calidad</li>
-                    <li>Acceso exclusivo a <strong>paragenteselecta.com</strong></li>
-                    <li><strong>24 horas de experiencia personalizada</strong> por cada cesta</li>
-                    <li>Un viaje sensorial único diseñado especialmente para ti</li>
-                  </ul>
-                  <p style="margin: 10px 0 0 0;"><strong>⚠️ Importante:</strong> Utiliza tus 24 horas de acceso <strong>solo cuando vayas a consumir cada cesta</strong>. Así podrás vivir la experiencia completa.</p>
+                  <h3 style="margin: 0 0 10px 0; color: #8B4513;">✨ Tu acceso exclusivo a paragenteselecta.com</h3>
+                  <p style="margin: 0 0 10px 0;">Con tu compra, tienes acceso a nuestra plataforma exclusiva donde cada cesta cobra vida con una experiencia personalizada y única.</p>
+                  
+                  <h3 style="margin: 20px 0 10px 0; color: #8B4513;">🕐 24 horas de experiencia por cada cesta</h3>
+                  <p style="margin: 0;"><strong>Importante:</strong> Cada cesta te da 24 horas de acceso activo. Te recomendamos activarlas solo cuando vayas a consumirlas con tus seres queridos para disfrutar de la experiencia completa.</p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="https://paragenteselecta.com" style="display: inline-block; background-color: #8B4513; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                    Acceder a mi experiencia
+                  </a>
                 </div>
                 
                 <div class="order-summary">
-                  <h2>Resumen de tu pedido</h2>
-                  <p><strong>ID del pedido:</strong> ${orderId}</p>
-                  
-                  <table>
-                    <thead>
-                      <tr style="background: #f8f9fa;">
-                        <th style="padding: 10px; text-align: left;">Producto</th>
-                        <th style="padding: 10px; text-align: center;">Cantidad</th>
-                        <th style="padding: 10px; text-align: right;">Precio</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${itemsHtml}
-                    </tbody>
-                  </table>
-                  
-                  <p class="total">Total: ${(totalAmount / 100).toFixed(2)}€</p>
+                  <h2>📦 Tu pedido:</h2>
+                  <p><strong>Número de orden:</strong> #${orderId}</p>
+                  <p><strong>Total:</strong> ${(totalAmount / 100).toFixed(2)}€</p>
+                  <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
                 </div>
 
-                <p>Recibirás otro correo cuando tu pedido sea enviado.</p>
-                
-                <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+                <p style="font-style: italic; text-align: center; margin: 30px 0;">Mientras tanto, prepárate para vivir algo único.</p>
                 
                 <p>Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
               </div>
               <div class="footer">
-                <p>Experiencia selecta, personas auténticas.</p>
+                <p>¿Necesitas ayuda? Responde a este email, estamos aquí para ti.</p>
+                <p>© 2024 Experiencia Selecta. Todos los derechos reservados.</p>
               </div>
             </div>
           </body>
