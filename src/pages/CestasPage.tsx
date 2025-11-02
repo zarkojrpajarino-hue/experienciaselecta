@@ -280,13 +280,15 @@ const CestasPage = () => {
     onBack={() => setShowExitDialog(true)}
   />
 
-      {/* Welcome Toast */}
-      <StickyToast
-        message={`¡Bienvenido, ${user?.email?.split('@')[0] || 'Usuario'}!`}
-        visible={showWelcomeToast}
-        onClose={() => setShowWelcomeToast(false)}
-        autoHideDuration={3000}
-      />
+      {/* Welcome Toast - Esquina inferior derecha */}
+      <div className="fixed bottom-4 right-4 z-[200] max-w-md">
+        <StickyToast
+          message={`¡Bienvenido, ${user?.email?.split('@')[0] || 'Usuario'}!`}
+          visible={showWelcomeToast}
+          onClose={() => setShowWelcomeToast(false)}
+          autoHideDuration={3000}
+        />
+      </div>
 
       {/* Exit Confirmation Dialog */}
       <ExitConfirmDialog

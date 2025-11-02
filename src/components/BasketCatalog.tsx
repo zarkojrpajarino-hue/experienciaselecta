@@ -12,6 +12,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
 import StickyToast from "./StickyToast";
+import FloatingToast from "./FloatingToast";
 
 // Import images - Pareja
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -111,6 +112,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   // Estado para el toast sticky
   const [showAddedToast, setShowAddedToast] = useState(false);
   const [addedBasketName, setAddedBasketName] = useState("");
+  const [toastPosition, setToastPosition] = useState<{ top: number; left: number } | null>(null);
   
   // Callback optimizado para abrir imagen
   const handleOpenImage = useCallback((imageSrc: string) => {
@@ -199,7 +201,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   // Local cart for checkout modal compatibility
   const [cart, setCart] = useState<Basket[]>([]);
 
-  const handleAddToCart = useCallback((basket: Basket) => {
+  const handleAddToCart = useCallback((basket: Basket, event: React.MouseEvent<HTMLButtonElement>) => {
     // Add to global cart with isGift flag if from gift catalog
     addToGlobalCart({
       id: basket.id,
@@ -222,9 +224,15 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       setCart([...cart, { ...basket, quantity: 1 }]);
     }
 
-    // Show sticky toast with cart type
-    const cartType = isGiftCatalog ? "carrito de regalos" : "carrito de cestas";
-    setAddedBasketName(`${basket.nombre} - Añadida al ${cartType}`);
+    // Calculate position next to the button
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    const toastTop = buttonRect.top + (buttonRect.height / 2) - 20; // Center vertically with button
+    const toastLeft = buttonRect.right + 20; // 20px to the right of button
+    
+    setToastPosition({ top: toastTop, left: toastLeft });
+
+    // Show toast with cart type
+    setAddedBasketName(`✓ ${basket.nombre} añadida`);
     setShowAddedToast(true);
 
     // Scroll to top of the sheet/container to show cart summary
@@ -1435,7 +1443,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       
                       {/* Añadir al carrito - Justo debajo de la imagen */}
                       <AddToCartButton 
-                        onClick={() => handleAddToCart(basket)}
+                        onClick={(e) => handleAddToCart(basket, e)}
                         price={basket.precio}
                         className="text-black text-xs sm:text-sm"
                       />
@@ -1670,7 +1678,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             <div className="flex flex-col gap-2">
                               <div className="flex justify-center">
                                 <AddToCartButton 
-                                  onClick={() => handleAddToCart(basket)}
+                                  onClick={(e) => handleAddToCart(basket, e)}
                                   price={basket.precio}
                                   className={colorCombo.text}
                                 />
@@ -1744,12 +1752,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         onRemoveItems={removeMultipleItems}
       />
 
-      {/* Toast para añadir al carrito */}
-      <StickyToast
+      {/* Toast flotante para añadir al carrito */}
+      <FloatingToast
         message={addedBasketName}
         visible={showAddedToast}
         onClose={() => setShowAddedToast(false)}
         autoHideDuration={3000}
+        position={toastPosition}
       />
     </div>
   );

@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CartItem {
   id: string;
@@ -36,11 +38,12 @@ const CheckoutPage = () => {
   // State para controlar qué sección está abierta (solo una a la vez)
   const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>('personal');
   
-  // State para imagen expandida
-  const [expandedImage, setExpandedImage] = useState<string | null>(null);
-  
   // State para rastrear si se intentó enviar (para validación visual)
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  
+  // State para mostrar mensaje de error personalizado
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Estado para items personales (puede eliminar cestas)
   const [currentPersonalItems, setCurrentPersonalItems] = useState(personalItems);
@@ -99,13 +102,54 @@ const CheckoutPage = () => {
     toast.success("Cesta eliminada");
   };
 
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    return /^[\d\s\+\-\(\)]{9,}$/.test(phone);
+  };
+
   const handleContinueToPayment = () => {
     setAttemptedSubmit(true);
+    setShowErrorMessage(false);
     
     // Validar datos personales si hay cestas propias
     if (currentPersonalItems.length > 0) {
-      if (!personalData.name || !personalData.email || !personalData.phone || !personalData.address || !personalData.city || !personalData.postalCode) {
-        toast.error("Debes completar todos tus datos personales para las cestas propias.");
+      if (!personalData.name.trim()) {
+        setErrorMessage("Completa tu nombre en 'Tus datos de envío'");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
+        return;
+      }
+      if (!personalData.email.trim() || !validateEmail(personalData.email)) {
+        setErrorMessage("Introduce un email válido en 'Tus datos de envío'");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
+        return;
+      }
+      if (!personalData.phone.trim() || !validatePhone(personalData.phone)) {
+        setErrorMessage("Introduce un teléfono válido en 'Tus datos de envío'");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
+        return;
+      }
+      if (!personalData.address.trim()) {
+        setErrorMessage("Completa tu dirección en 'Tus datos de envío'");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
+        return;
+      }
+      if (!personalData.city.trim()) {
+        setErrorMessage("Completa tu ciudad en 'Tus datos de envío'");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
+        return;
+      }
+      if (!personalData.postalCode.trim()) {
+        setErrorMessage("Completa tu código postal en 'Tus datos de envío'");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
         return;
       }
     }
@@ -116,14 +160,36 @@ const CheckoutPage = () => {
       // Validar solo los destinatarios que tienen cestas asignadas
       for (const r of giftAssignment.recipients) {
         if (r.basketIds.length > 0) {
-          if (!r.recipientName || (!r.recipientEmail && !r.recipientPhone)) {
-            toast.error("Cada destinatario con cestas asignadas debe tener nombre y email o móvil.");
+          if (!r.recipientName.trim() || (!r.recipientEmail.trim() && !r.recipientPhone.trim())) {
+            setErrorMessage("Completa los datos obligatorios de los destinatarios con cestas asignadas");
+            setShowErrorMessage(true);
+            setTimeout(() => setShowErrorMessage(false), 5000);
+            return;
+          }
+          if (r.recipientEmail.trim() && !validateEmail(r.recipientEmail)) {
+            setErrorMessage("El email del destinatario no es válido");
+            setShowErrorMessage(true);
+            setTimeout(() => setShowErrorMessage(false), 5000);
+            return;
+          }
+          if (r.recipientPhone.trim() && !validatePhone(r.recipientPhone)) {
+            setErrorMessage("El teléfono del destinatario no es válido");
+            setShowErrorMessage(true);
+            setTimeout(() => setShowErrorMessage(false), 5000);
             return;
           }
         }
       }
-      if (!giftAssignment.senderName || !giftAssignment.senderEmail) {
-        toast.error("Debes completar tus datos como remitente para los regalos.");
+      if (!giftAssignment.senderName.trim() || !giftAssignment.senderEmail.trim()) {
+        setErrorMessage("Completa tus datos como remitente para los regalos");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
+        return;
+      }
+      if (!validateEmail(giftAssignment.senderEmail)) {
+        setErrorMessage("Tu email como remitente no es válido");
+        setShowErrorMessage(true);
+        setTimeout(() => setShowErrorMessage(false), 5000);
         return;
       }
     }
@@ -228,7 +294,7 @@ const CheckoutPage = () => {
                               value={personalData.name}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, name: e.target.value }))}
                               placeholder="Tu nombre"
-                              className={`border-2 ${attemptedSubmit && !personalData.name ? 'border-red-500' : 'border-black'}`}
+                              className={`border-2 ${attemptedSubmit && !personalData.name.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
                           <div>
@@ -239,7 +305,7 @@ const CheckoutPage = () => {
                               value={personalData.email}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, email: e.target.value }))}
                               placeholder="tu@email.com"
-                              className={`border-2 ${attemptedSubmit && !personalData.email ? 'border-red-500' : 'border-black'}`}
+                              className={`border-2 ${attemptedSubmit && (!personalData.email.trim() || !validateEmail(personalData.email)) ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
                           <div>
@@ -250,7 +316,7 @@ const CheckoutPage = () => {
                               value={personalData.phone}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, phone: e.target.value }))}
                               placeholder="+34 600 000 000"
-                              className={`border-2 ${attemptedSubmit && !personalData.phone ? 'border-red-500' : 'border-black'}`}
+                              className={`border-2 ${attemptedSubmit && (!personalData.phone.trim() || !validatePhone(personalData.phone)) ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
                           <div>
@@ -260,7 +326,7 @@ const CheckoutPage = () => {
                               value={personalData.address}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, address: e.target.value }))}
                               placeholder="Calle, número, piso..."
-                              className={`border-2 ${attemptedSubmit && !personalData.address ? 'border-red-500' : 'border-black'}`}
+                              className={`border-2 ${attemptedSubmit && !personalData.address.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
                           <div>
@@ -270,7 +336,7 @@ const CheckoutPage = () => {
                               value={personalData.city}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, city: e.target.value }))}
                               placeholder="Tu ciudad"
-                              className={`border-2 ${attemptedSubmit && !personalData.city ? 'border-red-500' : 'border-black'}`}
+                              className={`border-2 ${attemptedSubmit && !personalData.city.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
                           <div>
@@ -280,7 +346,7 @@ const CheckoutPage = () => {
                               value={personalData.postalCode}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, postalCode: e.target.value }))}
                               placeholder="28001"
-                              className={`border-2 ${attemptedSubmit && !personalData.postalCode ? 'border-red-500' : 'border-black'}`}
+                              className={`border-2 ${attemptedSubmit && !personalData.postalCode.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
                           </div>
                         </div>
@@ -294,12 +360,22 @@ const CheckoutPage = () => {
                             {currentPersonalItems.map((item) => (
                               <div key={item.id} className="flex items-center justify-between p-2 bg-white rounded border">
                                 <div className="flex items-center gap-2">
-                                  <img 
-                                    src={item.imagen} 
-                                    alt={item.nombre} 
-                                    className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity" 
-                                    onClick={() => setExpandedImage(item.imagen)}
-                                  />
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <img 
+                                        src={item.imagen} 
+                                        alt={item.nombre} 
+                                        className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                      />
+                                    </PopoverTrigger>
+                                    <PopoverContent side="right" className="w-auto p-0 border-none shadow-2xl">
+                                      <img 
+                                        src={item.imagen} 
+                                        alt={item.nombre} 
+                                        className="w-64 h-64 object-cover rounded-lg" 
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
                                   <div>
                                     <p className="font-medium text-sm">{item.nombre}</p>
                                   </div>
@@ -437,48 +513,46 @@ const CheckoutPage = () => {
 
                               <div className="flex items-center justify-center gap-2">
                                 <p className="text-center text-xs text-muted-foreground">(solo uno de los dos obligatorio)</p>
-                                <Dialog>
-                                  <DialogTrigger asChild>
+                                <Popover>
+                                  <PopoverTrigger asChild>
                                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full hover:bg-black/10">
                                       <Info className="h-4 w-4" />
                                     </Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
-                                    <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
-                                    <DialogDescription asChild>
-                                      <div className="space-y-3 text-sm leading-relaxed">
-                                        <p className="font-semibold text-base">Proceso paso a paso:</p>
-                                        
-                                        <div className="space-y-2">
-                                          <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
-                                          <ul className="list-disc pl-5 space-y-1">
-                                            <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-                                            <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
-                                          </ul>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                          <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
-                                          <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                          <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
-                                          <ul className="list-disc pl-5 space-y-1">
-                                            <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
-                                            <li>Confirma o introduce su dirección de envío</li>
-                                            <li>Selecciona su fecha preferida de entrega</li>
-                                            <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
-                                          </ul>
-                                        </div>
-
-                                        <p className="text-xs text-muted-foreground pt-2">
-                                          💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
-                                        </p>
+                                  </PopoverTrigger>
+                                  <PopoverContent side="right" align="start" className="w-[500px] max-h-[600px] overflow-y-auto">
+                                    <div className="space-y-3 text-sm leading-relaxed">
+                                      <p className="font-semibold text-base">¿Cómo funciona el proceso de regalo?</p>
+                                      <p className="font-semibold">Proceso paso a paso:</p>
+                                      
+                                      <div className="space-y-2">
+                                        <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                          <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                                          <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                                        </ul>
                                       </div>
-                                    </DialogDescription>
-                                  </DialogContent>
-                                </Dialog>
+
+                                      <div className="space-y-2">
+                                        <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                                        <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                          <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                                          <li>Confirma o introduce su dirección de envío</li>
+                                          <li>Selecciona su fecha preferida de entrega</li>
+                                          <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                                        </ul>
+                                      </div>
+
+                                      <p className="text-xs text-muted-foreground pt-2">
+                                        💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                                      </p>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
                               </div>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -566,7 +640,7 @@ const CheckoutPage = () => {
                                             setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                           }}
                                         >
-                                          <div className="flex items-center space-x-2">
+                                         <div className="flex items-center space-x-2">
                                             <input
                                               type="checkbox"
                                               id={`basket-${it.uniqueId}-recipient-${index}`}
@@ -575,15 +649,23 @@ const CheckoutPage = () => {
                                               onChange={() => {}} // Handled by parent div onClick
                                               onClick={(e) => e.stopPropagation()}
                                             />
-                                            <img 
-                                              src={it.imagen} 
-                                              alt={it.nombre} 
-                                              className="w-10 h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity" 
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                setExpandedImage(it.imagen);
-                                              }}
-                                            />
+                                            <Popover>
+                                              <PopoverTrigger asChild>
+                                                <img 
+                                                  src={it.imagen} 
+                                                  alt={it.nombre} 
+                                                  className="w-10 h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                                  onClick={(e) => e.stopPropagation()}
+                                                />
+                                              </PopoverTrigger>
+                                              <PopoverContent side="right" className="w-auto p-0 border-none shadow-2xl">
+                                                <img 
+                                                  src={it.imagen} 
+                                                  alt={it.nombre} 
+                                                  className="w-64 h-64 object-cover rounded-lg" 
+                                                />
+                                              </PopoverContent>
+                                            </Popover>
                                             <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-sm ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
                                               {it.nombre}
                                             </label>
@@ -657,6 +739,21 @@ const CheckoutPage = () => {
                   >
                     Continuar al pago ({getTotalAmount().toFixed(2)}€)
                   </Button>
+                  
+                  {/* Error message toast */}
+                  <AnimatePresence>
+                    {showErrorMessage && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="mt-2 p-3 bg-red-50 border-2 border-red-600 rounded-lg text-center"
+                      >
+                        <p className="text-sm font-medium text-red-600">{errorMessage}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  
                   <p className="text-xs text-gray-500 text-center">
                     Pago seguro con Stripe
                   </p>
@@ -667,28 +764,6 @@ const CheckoutPage = () => {
         </div>
       </div>
 
-      {/* Imagen Expandida Modal */}
-      {expandedImage && (
-        <Dialog open={true} onOpenChange={() => setExpandedImage(null)}>
-          <DialogContent className="max-w-4xl w-full p-0 bg-black/95 border-none animate-fade-in-up" hideClose>
-            <DialogTitle className="sr-only">Imagen ampliada</DialogTitle>
-            <div className="relative w-full h-full flex items-center justify-center p-4">
-              <img
-                src={expandedImage}
-                alt="Imagen ampliada"
-                className="max-w-full max-h-[90vh] object-contain rounded-lg"
-              />
-              <Button
-                onClick={() => setExpandedImage(null)}
-                className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2"
-                size="icon"
-              >
-                <X className="w-6 h-6" />
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </>
   );
 };
