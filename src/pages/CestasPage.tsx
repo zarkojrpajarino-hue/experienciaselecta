@@ -35,8 +35,10 @@ const CestasPage = () => {
 
   // Prevent auto-scroll on mount and check auth
   useEffect(() => {
-    // Force scroll to top immediately
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    // Force scroll to top immediately with multiple methods for reliability
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {

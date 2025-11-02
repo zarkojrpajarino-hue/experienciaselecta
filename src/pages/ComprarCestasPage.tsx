@@ -34,8 +34,10 @@ const ComprarCestasPage = () => {
   }, [selectedCategory]);
 
   useEffect(() => {
-    // Force scroll to top immediately
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    // Force scroll to top immediately with multiple methods for reliability
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     
     // Check auth status
     supabase.auth.getSession().then(({ data: { session } }) => {
