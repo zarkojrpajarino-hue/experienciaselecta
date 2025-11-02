@@ -206,16 +206,18 @@ DialogOverlay.displayName = "DialogOverlay";
 // Content
 interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
   hideClose?: boolean;
+  overlayClassName?: string;
+  overlayStyle?: React.CSSProperties;
 }
 
-const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, style, ...props }, ref) => {
+const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(({ className, children, hideClose = false, style, overlayClassName, overlayStyle, ...props }, ref) => {
   const ctx = useContext(DialogContext);
 
   if (!ctx || !ctx.open) return null;
 
   return (
     <DialogPortal>
-      <DialogOverlay data-state="open">
+      <DialogOverlay data-state="open" className={overlayClassName} style={overlayStyle}>
         <div
           role="dialog"
           aria-modal="true"

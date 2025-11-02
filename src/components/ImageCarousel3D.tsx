@@ -184,9 +184,9 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         </AnimatePresence>
       </div>
 
-      {/* Modal enlarge - same style as FAQ/Testimonios */}
+      {/* Modal enlarge - same style as FAQ/Testimonios, sin fondo negro */}
       <Dialog open={selectedImage !== null} onOpenChange={closeImage}>
-        <DialogContent className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] overflow-hidden">
+        <DialogContent overlayStyle={{ backgroundColor: 'transparent' }} className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] overflow-hidden">
           <AnimatePresence mode="wait">
             {selectedImage !== null && (
               <motion.div
