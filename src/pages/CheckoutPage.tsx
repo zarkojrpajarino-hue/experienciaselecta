@@ -222,7 +222,7 @@ const CheckoutPage = () => {
                                   </svg>
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
+                              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                                 <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
                                 <DialogDescription asChild>
                                   <div className="space-y-3 text-sm leading-relaxed">
@@ -323,22 +323,28 @@ const CheckoutPage = () => {
                                     .some((r: any) => r.basketIds.includes(it.uniqueId));
                                   return !assignedElsewhere;
                                 })
-                                .map((it) => (
-                                  <div key={it.uniqueId} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded">
+                                 .map((it) => (
+                                  <div 
+                                    key={it.uniqueId} 
+                                    className="flex items-center justify-between p-2 hover:bg-muted/50 rounded cursor-pointer"
+                                    onClick={() => {
+                                      const newRecipients = [...(giftData as any).recipients];
+                                      const isChecked = recipient.basketIds.includes(it.uniqueId);
+                                      if (!isChecked) {
+                                        newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
+                                      } else {
+                                        newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id: string) => id !== it.uniqueId);
+                                      }
+                                      setGiftData((prev: any) => ({ ...prev, recipients: newRecipients }));
+                                    }}
+                                  >
                                     <div className="flex items-center space-x-2">
                                       <input
                                         type="checkbox"
                                         id={`basket-${it.uniqueId}-recipient-${index}`}
                                         checked={recipient.basketIds.includes(it.uniqueId)}
-                                        onChange={(e) => {
-                                          const newRecipients = [...(giftData as any).recipients];
-                                          if (e.target.checked) {
-                                            newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
-                                          } else {
-                                            newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id: string) => id !== it.uniqueId);
-                                          }
-                                          setGiftData((prev: any) => ({ ...prev, recipients: newRecipients }));
-                                        }}
+                                        onChange={() => {}} // Handled by parent div onClick
+                                        onClick={(e) => e.stopPropagation()}
                                       />
                                       <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className="text-sm cursor-pointer">
                                         {(it.nombre || it.name)}

@@ -500,7 +500,7 @@ const CartPage = () => {
       {/* Imagen Expandida Modal */}
       {expandedImage && (
         <Dialog open={true} onOpenChange={() => setExpandedImage(null)}>
-          <DialogContent className="max-w-4xl w-full p-0 bg-black/95 border-none">
+          <DialogContent className="max-w-4xl w-full p-0 bg-black/95 border-none fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <DialogTitle className="sr-only">Imagen ampliada</DialogTitle>
             <div className="relative w-full h-full flex items-center justify-center p-4">
               <img
