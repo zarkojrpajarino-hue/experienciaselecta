@@ -378,7 +378,7 @@ const CheckoutPage = () => {
                                     className="w-10 h-10 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
                                      onClick={(e) => {
                                        const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
-                                       setImagePreview({ src: item.imagen, top: rect.top, left: rect.right + 10 });
+                                       setImagePreview({ src: item.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
                                     }}
                                   />
                                   <div className="flex-1 min-w-0">
@@ -838,6 +838,7 @@ const CheckoutPage = () => {
               position: 'fixed', 
               top: `${imagePreview.top}px`, 
               left: `${imagePreview.left}px`, 
+              transform: 'translateY(-50%)',
               zIndex: 110
             }}
           >
