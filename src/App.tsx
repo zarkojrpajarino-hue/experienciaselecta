@@ -57,7 +57,10 @@ const queryClient = new QueryClient({
 const ScrollToTopOnRouteChange = () => {
   const location = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    // Use requestAnimationFrame to ensure scroll happens after render
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    });
   }, [location.pathname]);
   return null;
 };

@@ -142,7 +142,7 @@ const ComprarCestasPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <p className="text-sm sm:text-base md:text-lg font-inter text-black">
+              <p className="text-sm sm:text-base md:text-lg font-poppins font-bold text-black">
                 ¿Quieres regalar algo original?
               </p>
               <motion.svg 
