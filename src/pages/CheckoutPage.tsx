@@ -70,6 +70,9 @@ const CheckoutPage = () => {
   // Preview de imagen anclada a la miniatura
   const [imagePreview, setImagePreview] = useState<{ src: string; top: number; left: number } | null>(null);
 
+  // Preview de información anclada al botón
+  const [infoPopover, setInfoPopover] = useState<{ top: number; left: number } | null>(null);
+
   // Datos personales para cestas propias
   const [personalData, setPersonalData] = useState({
     name: "",
@@ -213,40 +216,40 @@ const CheckoutPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen pt-20 sm:pt-24 pb-8 sm:pb-12 px-2 sm:px-4 bg-white">
+      <div className="min-h-screen pt-20 pb-8 px-3 bg-white">
         <div className="container mx-auto max-w-6xl">
           {/* Botón volver a la página principal */}
           <Button
             onClick={() => navigate('/')}
             variant="link"
-            className="text-black hover:text-gold mb-4 sm:mb-6 p-0 text-sm sm:text-base"
+            className="text-black hover:text-gold mb-3 p-0 text-xs"
           >
-            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <ArrowLeft className="w-3 h-3 mr-1" />
             Volver a la página principal
           </Button>
 
-          <h1 className="text-2xl sm:text-3xl font-poppins font-bold text-black mb-4 sm:mb-6">
+          <h1 className="text-xl md:text-2xl font-poppins font-bold text-black mb-3">
             💳 Checkout
           </h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
             {/* Formulario de asignación */}
-            <div className="lg:col-span-2 space-y-4 md:space-y-6">
+            <div className="lg:col-span-2 space-y-3 md:space-y-4">
               {/* Resumen visual - Tus cestas PRIMERO */}
               <Card>
-                <CardContent className="p-3 sm:p-4 md:p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <CardContent className="p-3 md:p-4">
+                  <div className="grid grid-cols-2 gap-2 md:gap-3">
                     {/* TUS CESTAS (primero) */}
                     {currentPersonalItems.length > 0 && (
                       <button
                         onClick={() => toggleSection('personal')}
-                        className="p-3 sm:p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
+                        className="p-2 md:p-3 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
                       >
-                        <p className="text-xs sm:text-sm text-gray-600 mb-1">Tus cestas</p>
-                        <p className="text-xs text-gray-500 mb-2 line-clamp-1">
+                        <p className="text-[10px] md:text-xs text-gray-600 mb-1">Tus cestas</p>
+                        <p className="text-[10px] text-gray-500 mb-1 line-clamp-1">
                           {currentPersonalItems.map(item => `${item.nombre} (x${item.quantity})`).join(', ')}
                         </p>
-                        <p className="text-xl sm:text-2xl font-poppins font-bold text-black">
+                        <p className="text-base md:text-lg font-poppins font-bold text-black">
                           {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0)} {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
                         </p>
                         <p className="text-lg font-poppins font-bold text-gold mt-1">
@@ -508,47 +511,17 @@ const CheckoutPage = () => {
 
                               <div className="flex items-center justify-center gap-2">
                                 <p className="text-center text-xs text-muted-foreground">(solo uno de los dos obligatorio)</p>
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full hover:bg-black/10">
-                                      <Info className="h-4 w-4" />
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="max-w-[600px] bg-white border-2 border-black">
-                                    <DialogTitle className="text-base font-semibold">¿Cómo funciona el proceso de regalo?</DialogTitle>
-                                    <div className="space-y-3 text-sm leading-relaxed">
-                                      <p className="font-semibold">Proceso paso a paso:</p>
-                                      <div className="space-y-2">
-                                        <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
-                                        <ul className="list-disc pl-5 space-y-1">
-                                          <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-
-                                          <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-                                          <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
-                                        </ul>
-                                      </div>
-
-                                      <div className="space-y-2">
-                                        <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
-                                        <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
-                                      </div>
-
-                                      <div className="space-y-2">
-                                        <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
-                                        <ul className="list-disc pl-5 space-y-1">
-                                          <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
-                                          <li>Confirma o introduce su dirección de envío</li>
-                                          <li>Selecciona su fecha preferida de entrega</li>
-                                          <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
-                                        </ul>
-                                      </div>
-
-                                      <p className="text-xs text-muted-foreground pt-2">
-                                        💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
-                                      </p>
-                                    </div>
-                                  </DialogContent>
-                                </Dialog>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                                  onClick={(e) => {
+                                    const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                                    setInfoPopover({ top: rect.top + rect.height / 2, left: rect.right + 10 });
+                                  }}
+                                >
+                                  <Info className="h-4 w-4" />
+                                </Button>
                               </div>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -724,10 +697,9 @@ const CheckoutPage = () => {
                   </div>
                   <Button
                     onClick={handleContinueToPayment}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm sm:text-base md:text-lg py-4 sm:py-6"
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-xs md:text-sm py-3 md:py-4"
                   >
-                    <span className="hidden sm:inline">Continuar al pago ({getTotalAmount().toFixed(2)}€)</span>
-                    <span className="sm:hidden">Pagar {getTotalAmount().toFixed(2)}€</span>
+                    Continuar al pago ({getTotalAmount().toFixed(2)}€)
                   </Button>
                   
                   {/* Error message toast */}
@@ -753,6 +725,61 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
+
+      {infoPopover && (
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, x: -20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: -20 }}
+            transition={{ duration: 0.3, type: 'spring' }}
+            style={{ 
+              position: 'fixed', 
+              top: `${infoPopover.top}px`, 
+              left: `${infoPopover.left}px`, 
+              transform: 'translateY(-50%)' 
+            }}
+            className="z-[110] max-w-md hidden md:block"
+          >
+            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-4 max-h-[80vh] overflow-y-auto">
+              <button
+                onClick={() => setInfoPopover(null)}
+                className="absolute -top-2 -right-2 z-50 h-8 w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                aria-label="Cerrar información"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="space-y-3 text-sm leading-relaxed">
+                <h3 className="text-base font-semibold">¿Cómo funciona el proceso de regalo?</h3>
+                <p className="font-semibold">Proceso paso a paso:</p>
+                <div className="space-y-2">
+                  <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                    <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                  <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                </div>
+                <div className="space-y-2">
+                  <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                    <li>Confirma o introduce su dirección de envío</li>
+                    <li>Selecciona su fecha preferida de entrega</li>
+                    <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                  </ul>
+                </div>
+                <p className="text-xs text-muted-foreground pt-2">
+                  💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      )}
 
       {imagePreview && (
         <AnimatePresence>
