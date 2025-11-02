@@ -34,6 +34,19 @@ const Navbar = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+
+      // Mantener al usuario en la página/intención original tras login
+      if (event === 'SIGNED_IN') {
+        const intended = localStorage.getItem('intendedRoute');
+        if (intended) {
+          localStorage.removeItem('intendedRoute');
+          const current = window.location.pathname + window.location.search + window.location.hash;
+          if (current !== intended) {
+            navigate(intended);
+          }
+        }
+      }
+
       if (session?.user) {
         checkPendingGifts(session.user.email!);
         checkPendingReviews(session.user.id);

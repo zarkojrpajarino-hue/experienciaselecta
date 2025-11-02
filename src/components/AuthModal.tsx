@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const [verificationCode, setVerificationCode] = useState("");
   const [showCodeInput, setShowCodeInput] = useState(false);
   const { toast } = useToast();
+
+  // Guardar la ruta/intención actual al abrir el modal
+  useEffect(() => {
+    if (isOpen) {
+      const intended = window.location.pathname + window.location.search + window.location.hash;
+      localStorage.setItem('intendedRoute', intended);
+    }
+  }, [isOpen]);
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
