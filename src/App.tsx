@@ -2,7 +2,6 @@ import React, { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -40,18 +39,8 @@ const PageLoader = () => (
   </div>
 );
 
-// Configure QueryClient with optimized defaults for better performance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      gcTime: 5 * 60 * 1000, // 5 minutes (formerly cacheTime)
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: 'always',
-      retry: 1,
-    },
-  },
-});
+// (React Query deshabilitado temporalmente para evitar error de hook)
+
 
 // Scroll to top on every route change
 const ScrollToTopOnRouteChange = () => {
@@ -86,41 +75,39 @@ const ScrollToTopOnRouteChange = () => {
 
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <CartProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner position="bottom-right" />
-        <AutoUpdater />
-        <BrowserRouter>
-          <ScrollToTopOnRouteChange />
-          <div className="min-h-screen bg-background gpu-accelerated">
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/perfil" element={<ProfilePage />} />
-                <Route path="/carrito" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
-                <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-                <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-                <Route path="/cestas" element={<CestasPage />} />
-                <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
-                <Route path="/experiencia" element={<ExperienciaPage />} />
-                <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-                <Route path="/regalos" element={<RegalosPage />} />
-                <Route path="/feedback" element={<FeedbackPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <CookieBanner />
-            </Suspense>
-          </div>
-        </BrowserRouter>
-      </TooltipProvider>
-    </CartProvider>
-  </QueryClientProvider>
+  <CartProvider>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner position="bottom-right" />
+      <AutoUpdater />
+      <BrowserRouter>
+        <ScrollToTopOnRouteChange />
+        <div className="min-h-screen bg-background gpu-accelerated">
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/perfil" element={<ProfilePage />} />
+              <Route path="/carrito" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
+              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
+              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+              <Route path="/cestas" element={<CestasPage />} />
+              <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
+              <Route path="/experiencia" element={<ExperienciaPage />} />
+              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
+              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+              <Route path="/regalos" element={<RegalosPage />} />
+              <Route path="/feedback" element={<FeedbackPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <CookieBanner />
+          </Suspense>
+        </div>
+      </BrowserRouter>
+    </TooltipProvider>
+  </CartProvider>
 );
 
 export default App;
