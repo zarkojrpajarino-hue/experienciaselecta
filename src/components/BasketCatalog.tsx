@@ -200,6 +200,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [cart, setCart] = useState<Basket[]>([]);
 
   const handleAddToCart = useCallback((basket: Basket, event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('🛒 Añadiendo cesta:', basket.nombre, 'ID:', basket.id);
+    
     // Add to global cart with isGift flag if from gift catalog
     addToGlobalCart({
       id: basket.id,
@@ -223,10 +225,12 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     }
 
     // Mostrar mensaje inline
+    console.log('✅ Mostrando mensaje para cesta ID:', basket.id);
     setAddedBasketId(basket.id);
     
     // Ocultar mensaje después de 3 segundos
     setTimeout(() => {
+      console.log('❌ Ocultando mensaje para cesta ID:', basket.id);
       setAddedBasketId(null);
     }, 3000);
 
@@ -1677,17 +1681,23 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                   price={basket.precio}
                                   className={colorCombo.text}
                                 />
-                                <AnimatePresence>
+                                <AnimatePresence mode="wait">
                                   {addedBasketId === basket.id && (
                                     <motion.div
-                                      initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                                      key={`added-${basket.id}`}
+                                      initial={{ opacity: 0, scale: 0.5, x: -20 }}
                                       animate={{ opacity: 1, scale: 1, x: 0 }}
-                                      exit={{ opacity: 0, scale: 0.8, x: -10 }}
-                                      transition={{ duration: 0.3 }}
-                                      className="flex items-center gap-2 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg font-bold text-xs sm:text-sm whitespace-nowrap"
+                                      exit={{ opacity: 0, scale: 0.5, x: -20 }}
+                                      transition={{ 
+                                        duration: 0.3,
+                                        type: "spring",
+                                        stiffness: 300,
+                                        damping: 20
+                                      }}
+                                      className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-xl shadow-xl font-bold text-xs sm:text-sm whitespace-nowrap border-2 border-green-400"
                                     >
-                                      <span>✓</span>
-                                      <span>{basket.nombre} añadida</span>
+                                      <span className="text-lg">✓</span>
+                                      <span>¡{basket.nombre} añadida!</span>
                                     </motion.div>
                                   )}
                                 </AnimatePresence>
