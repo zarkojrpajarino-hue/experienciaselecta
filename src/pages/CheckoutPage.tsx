@@ -782,7 +782,7 @@ const CheckoutPage = () => {
               left: `${infoPopover.left}px`, 
               transform: 'translateY(-50%)' 
             }}
-            className="z-[110] max-w-md hidden md:block"
+            className="z-[110] max-w-md"
           >
             <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-4 max-h-[80vh] overflow-y-auto">
               <button
@@ -792,31 +792,15 @@ const CheckoutPage = () => {
               >
                 <X className="h-4 w-4" />
               </button>
-              <div className="space-y-3 text-sm leading-relaxed">
-                <h3 className="text-base font-semibold">¿Cómo funciona el proceso de regalo?</h3>
-                <p className="font-semibold">Proceso paso a paso:</p>
-                <div className="space-y-2">
-                  <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-                    <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
-                  </ul>
+              <div className="space-y-2 text-sm leading-relaxed">
+                <h3 className="text-base font-semibold mb-2">¿Cómo funciona?</h3>
+                <div className="space-y-1.5">
+                  <p><span className="font-bold">1. Canal de envío:</span> Email o móvil con enlace seguro.</p>
+                  <p><span className="font-bold">2. El destinatario:</span> Confirma dirección y elige fecha de entrega.</p>
+                  <p><span className="font-bold">3. Resultado:</span> Recibe su cesta en el momento perfecto.</p>
                 </div>
-                <div className="space-y-2">
-                  <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
-                  <p className="pl-5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
-                </div>
-                <div className="space-y-2">
-                  <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
-                    <li>Confirma o introduce su dirección de envío</li>
-                    <li>Selecciona su fecha preferida de entrega</li>
-                    <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
-                  </ul>
-                </div>
-                <p className="text-xs text-muted-foreground pt-2">
-                  💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                <p className="text-xs text-muted-foreground pt-1">
+                  💡 Tú pagas ahora, el destinatario decide cuándo y dónde recibe su regalo.
                 </p>
               </div>
             </div>
@@ -837,7 +821,7 @@ const CheckoutPage = () => {
               left: `${imagePreview.left}px`, 
               transform: 'translateY(-50%)' 
             }}
-            className="z-[110] hidden md:block"
+            className="z-[110]"
           >
             <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
               <button

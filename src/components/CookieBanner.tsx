@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "react-router-dom";
 
 const CookieBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,13 +11,18 @@ const CookieBanner = () => {
   const [analytics, setAnalytics] = useState(false);
   const [marketing, setMarketing] = useState(false);
   const { toast } = useToast();
+  const location = useLocation();
 
   useEffect(() => {
-    // Siempre mostrar el banner de cookies al entrar
-    setIsVisible(true);
+    // Solo mostrar en la página principal y si no hay consentimiento previo
+    const stored = localStorage.getItem("cookieConsent");
+    const isHomePage = location.pathname === "/";
+    
+    if (isHomePage && !stored) {
+      setIsVisible(true);
+    }
     
     // Cargar preferencias guardadas si existen
-    const stored = localStorage.getItem("cookieConsent");
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -24,7 +30,7 @@ const CookieBanner = () => {
         setMarketing(!!parsed.marketing);
       } catch {}
     }
-  }, []);
+  }, [location.pathname]);
 
   const persistConsent = (prefs: { analytics: boolean; marketing: boolean }) => {
     const payload = {
