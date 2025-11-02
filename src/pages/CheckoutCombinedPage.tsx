@@ -430,7 +430,7 @@ const CheckoutCombinedPage = () => {
                                       <Info className="h-4 w-4" />
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
                                     <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
                                     <DialogDescription asChild>
                                       <div className="space-y-3 text-sm leading-relaxed">
