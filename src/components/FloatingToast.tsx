@@ -30,18 +30,19 @@ const FloatingToast: React.FC<FloatingToastProps> = ({
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, x: -20, scale: 0.9 }}
+          initial={{ opacity: 0, x: 20, scale: 0.9 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={{ opacity: 0, x: -20, scale: 0.9 }}
-          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0, x: 20, scale: 0.9 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           style={{
             position: 'fixed',
-            top: position.top,
-            left: position.left,
+            top: `${position.top}px`,
+            left: `${position.left}px`,
             zIndex: 9999,
-            pointerEvents: 'auto'
+            pointerEvents: 'auto',
+            transform: 'translateY(-50%)'
           }}
-          className="bg-green-500 text-white rounded-lg shadow-xl p-3 max-w-xs"
+          className="bg-green-500 text-white rounded-lg shadow-2xl p-3 max-w-xs border-2 border-green-600"
         >
           <div className="flex items-center gap-2">
             <CheckCircle className="w-5 h-5 flex-shrink-0" />

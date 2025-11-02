@@ -368,7 +368,21 @@ const CheckoutPage = () => {
                                         className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
                                       />
                                     </PopoverTrigger>
-                                    <PopoverContent side="right" className="w-auto p-0 border-none shadow-2xl">
+                                    <PopoverContent side="right" align="center" sideOffset={10} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          const trigger = e.currentTarget.closest('[data-radix-popper-content-wrapper]');
+                                          if (trigger) {
+                                            const escEvent = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+                                            trigger.dispatchEvent(escEvent);
+                                          }
+                                        }}
+                                        className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30 flex items-center justify-center"
+                                        aria-label="Cerrar imagen"
+                                      >
+                                        <X className="h-4 w-4" />
+                                      </button>
                                       <img 
                                         src={item.imagen} 
                                         alt={item.nombre} 
@@ -519,7 +533,7 @@ const CheckoutPage = () => {
                                       <Info className="h-4 w-4" />
                                     </Button>
                                   </PopoverTrigger>
-                                  <PopoverContent side="right" align="start" className="w-[500px] max-h-[600px] overflow-y-auto">
+                                  <PopoverContent side="right" align="center" sideOffset={15} className="w-[500px] max-h-[600px] overflow-y-auto bg-white border-2 border-black z-[100]">
                                     <div className="space-y-3 text-sm leading-relaxed">
                                       <p className="font-semibold text-base">¿Cómo funciona el proceso de regalo?</p>
                                       <p className="font-semibold">Proceso paso a paso:</p>
@@ -658,7 +672,21 @@ const CheckoutPage = () => {
                                                   onClick={(e) => e.stopPropagation()}
                                                 />
                                               </PopoverTrigger>
-                                              <PopoverContent side="right" className="w-auto p-0 border-none shadow-2xl">
+                                              <PopoverContent side="right" align="center" sideOffset={10} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
+                                                <button
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const trigger = e.currentTarget.closest('[data-radix-popper-content-wrapper]');
+                                                    if (trigger) {
+                                                      const escEvent = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+                                                      trigger.dispatchEvent(escEvent);
+                                                    }
+                                                  }}
+                                                  className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30 flex items-center justify-center"
+                                                  aria-label="Cerrar imagen"
+                                                >
+                                                  <X className="h-4 w-4" />
+                                                </button>
                                                 <img 
                                                   src={it.imagen} 
                                                   alt={it.nombre} 
