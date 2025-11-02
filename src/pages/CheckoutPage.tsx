@@ -772,35 +772,36 @@ const CheckoutPage = () => {
       {infoPopover && (
         <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: -20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: -20 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3, type: 'spring' }}
             style={{ 
               position: 'fixed', 
-              top: `${infoPopover.top}px`, 
-              left: `${infoPopover.left}px`, 
-              transform: 'translateY(-50%)' 
+              top: window.innerWidth < 768 ? '50%' : `${infoPopover.top}px`, 
+              left: window.innerWidth < 768 ? '50%' : `${infoPopover.left}px`, 
+              transform: window.innerWidth < 768 ? 'translate(-50%, -50%)' : 'translateY(-50%)',
+              zIndex: 110
             }}
-            className="z-[110] max-w-md"
+            className="max-w-[90vw] md:max-w-md"
           >
-            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-4 max-h-[80vh] overflow-y-auto">
+            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4 max-h-[70vh] md:max-h-[80vh] overflow-y-auto">
               <button
                 onClick={() => setInfoPopover(null)}
-                className="absolute -top-2 -right-2 z-50 h-8 w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                className="absolute -top-2 -right-2 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
                 aria-label="Cerrar información"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3 md:h-4 md:w-4" />
               </button>
-              <div className="space-y-2 text-sm leading-relaxed">
-                <h3 className="text-base font-semibold mb-2">¿Cómo funciona?</h3>
-                <div className="space-y-1.5">
-                  <p><span className="font-bold">1. Canal de envío:</span> Email o móvil con enlace seguro.</p>
-                  <p><span className="font-bold">2. El destinatario:</span> Confirma dirección y elige fecha de entrega.</p>
-                  <p><span className="font-bold">3. Resultado:</span> Recibe su cesta en el momento perfecto.</p>
+              <div className="space-y-2 text-xs md:text-sm leading-relaxed">
+                <h3 className="text-sm md:text-base font-semibold mb-1">¿Cómo funciona?</h3>
+                <div className="space-y-1">
+                  <p><span className="font-bold">1.</span> Enviamos enlace por email/móvil</p>
+                  <p><span className="font-bold">2.</span> Destinatario confirma dirección y fecha</p>
+                  <p><span className="font-bold">3.</span> Recibe su cesta cuando prefiera</p>
                 </div>
-                <p className="text-xs text-muted-foreground pt-1">
-                  💡 Tú pagas ahora, el destinatario decide cuándo y dónde recibe su regalo.
+                <p className="text-[10px] md:text-xs text-muted-foreground pt-1">
+                  💡 Pagas ahora, el destinatario decide cuándo y dónde.
                 </p>
               </div>
             </div>
@@ -811,27 +812,27 @@ const CheckoutPage = () => {
       {imagePreview && (
         <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: -20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: -20 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3, type: 'spring' }}
             style={{ 
               position: 'fixed', 
-              top: `${imagePreview.top}px`, 
-              left: `${imagePreview.left}px`, 
-              transform: 'translateY(-50%)' 
+              top: window.innerWidth < 768 ? '50%' : `${imagePreview.top}px`, 
+              left: window.innerWidth < 768 ? '50%' : `${imagePreview.left}px`, 
+              transform: window.innerWidth < 768 ? 'translate(-50%, -50%)' : 'translateY(-50%)',
+              zIndex: 110
             }}
-            className="z-[110]"
           >
             <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
               <button
                 onClick={() => setImagePreview(null)}
-                className="absolute -top-2 -right-2 z-50 h-8 w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                className="absolute -top-2 -right-2 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
                 aria-label="Cerrar imagen"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3 md:h-4 md:w-4" />
               </button>
-              <img src={imagePreview.src} alt="Vista ampliada" className="w-80 h-80 object-cover rounded-md" />
+              <img src={imagePreview.src} alt="Vista ampliada" className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-md" />
             </div>
           </motion.div>
         </AnimatePresence>
