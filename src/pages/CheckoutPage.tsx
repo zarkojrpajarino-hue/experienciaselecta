@@ -377,8 +377,16 @@ const CheckoutPage = () => {
                                     alt={item.nombre} 
                                     className="w-10 h-10 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
                                      onClick={(e) => {
-                                       const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
-                                       setImagePreview({ src: item.imagen, top: rect.top, left: rect.right + 10 });
+                                       const el = e.currentTarget as HTMLImageElement;
+                                       const rect = el.getBoundingClientRect();
+                                       const gap = 8;
+                                       const previewSize = window.innerWidth < 768 ? 160 : 320; // w-40 / w-80
+                                       let left = rect.right + gap;
+                                       if (left + previewSize > window.innerWidth - gap) {
+                                         left = rect.left - previewSize - gap; // si no cabe a la derecha, pon a la izquierda
+                                       }
+                                       const top = rect.top + rect.height / 2; // centra verticalmente respecto a la miniatura
+                                       setImagePreview({ src: item.imagen, top, left });
                                     }}
                                   />
                                   <div className="flex-1 min-w-0">
@@ -838,6 +846,7 @@ const CheckoutPage = () => {
               position: 'fixed', 
               top: `${imagePreview.top}px`, 
               left: `${imagePreview.left}px`, 
+              transform: 'translateY(-50%)',
               zIndex: 110
             }}
           >
