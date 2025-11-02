@@ -341,34 +341,52 @@ const ProfilePage = () => {
       <div 
         className="min-h-screen pt-24 pb-12 px-4 relative overflow-hidden"
       >
-        {/* Background images with smooth transitions */}
+        {/* Background images with smooth transitions - separate layers */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={profileBgImg} 
-            alt="Fondo mis pedidos" 
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
-            style={{ 
-              objectPosition: 'center 40%',
+          {/* Imagen de fondo para Mis Pedidos */}
+          <div 
+            className="absolute inset-0 transition-all duration-700 ease-in-out"
+            style={{
               opacity: activeTab === 'orders' ? 1 : 0,
-              pointerEvents: activeTab === 'orders' ? 'auto' : 'none'
-            }} 
-            loading="eager"
-          />
-          <img 
-            src={valoracionesBgImg} 
-            alt="Fondo mis valoraciones" 
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
-            style={{ 
-              objectPosition: 'center 40%',
+              visibility: activeTab === 'orders' ? 'visible' : 'hidden',
+              zIndex: activeTab === 'orders' ? 1 : 0
+            }}
+          >
+            <img 
+              src={profileBgImg} 
+              alt="Fondo mis pedidos" 
+              className="w-full h-full object-cover"
+              style={{ 
+                objectPosition: 'center center'
+              }} 
+              loading="eager"
+            />
+          </div>
+          
+          {/* Imagen de fondo para Mis Valoraciones */}
+          <div 
+            className="absolute inset-0 transition-all duration-700 ease-in-out"
+            style={{
               opacity: activeTab === 'reviews' ? 1 : 0,
-              pointerEvents: activeTab === 'reviews' ? 'auto' : 'none'
-            }} 
-            loading="eager"
-          />
+              visibility: activeTab === 'reviews' ? 'visible' : 'hidden',
+              zIndex: activeTab === 'reviews' ? 1 : 0
+            }}
+          >
+            <img 
+              src={valoracionesBgImg} 
+              alt="Fondo mis valoraciones" 
+              className="w-full h-full object-cover"
+              style={{ 
+                objectPosition: 'center center'
+              }} 
+              loading="eager"
+            />
+          </div>
         </div>
+        
         {/* Overlay oscuro para mejorar legibilidad */}
-        <div className="absolute inset-0 bg-black/65 z-[1]" />
-        <div className="container mx-auto max-w-6xl relative z-[2]">
+        <div className="absolute inset-0 bg-black/65 z-[2]" />
+        <div className="container mx-auto max-w-6xl relative z-[3]">
           {/* User Profile Avatar - moved to top */}
           <div className="mb-4 flex justify-center">
             <UserProfileDropdown 
