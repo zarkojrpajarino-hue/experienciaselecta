@@ -531,6 +531,30 @@ const CheckoutPage = () => {
                                 </Button>
                               </div>
 
+                              {/* Info inline para móvil */}
+                              {infoPopover && (
+                                <div className="md:hidden mt-2">
+                                  <div className="relative mx-auto w-full max-w-[92vw] rounded-lg border-2 border-black bg-white shadow-2xl p-3">
+                                    <button
+                                      onClick={() => setInfoPopover(null)}
+                                      className="absolute -top-3 -right-3 z-50 h-7 w-7 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
+                                      aria-label="Cerrar información"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </button>
+                                    <div className="space-y-2 text-xs leading-relaxed text-center">
+                                      <h3 className="text-sm font-semibold mb-1">¿Cómo funciona?</h3>
+                                      <div className="space-y-1">
+                                        <p><span className="font-bold">1.</span> Enviamos enlace por email/móvil a esta web</p>
+                                        <p><span className="font-bold">2.</span> Destinatario entra y confirma dirección de envío y fecha</p>
+                                        <p><span className="font-bold">3.</span> Recibe su regalo</p>
+                                      </div>
+                                      <p className="text-[10px] text-muted-foreground pt-1">💡 Pagas ahora, el destinatario decide cuándo y dónde.</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
                               <div className="grid grid-cols-2 gap-2 md:gap-4">
                                 <div>
                                   <Label htmlFor={`recipientEmail-${index}`}>Email destinatario</Label>
@@ -779,11 +803,11 @@ const CheckoutPage = () => {
             style={{ 
               position: 'fixed', 
               top: `${infoPopover.top}px`, 
-              left: '50%',
+              left: `${infoPopover.left}px`, 
               transform: 'translateX(-50%)',
               zIndex: 110
             }}
-            className="w-[280px] aspect-square"
+            className="hidden md:block max-w-md"
           >
             <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-3 md:p-4 h-full flex flex-col items-center justify-center">
               <button
