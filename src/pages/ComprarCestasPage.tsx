@@ -137,6 +137,27 @@ const ComprarCestasPage = () => {
             </p>
 
             <motion.div 
+              onClick={() => navigate('/cestas')}
+              className="flex justify-center items-center gap-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <p className="text-sm sm:text-base md:text-lg font-inter text-black">
+                ¿Quieres regalar algo original?
+              </p>
+              <motion.svg 
+                className="w-5 h-5 sm:w-6 sm:h-6 text-[#D4AF37]" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </motion.svg>
+            </motion.div>
+
+            <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="flex justify-center mb-6 gpu-accelerated"
