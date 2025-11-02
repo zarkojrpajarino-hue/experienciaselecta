@@ -1,8 +1,8 @@
-import { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -80,7 +80,7 @@ const App = () => (
       <Toaster />
       <Sonner position="bottom-right" />
       <AutoUpdater />
-      <HashRouter>
+      <BrowserRouter>
         <ScrollToTopOnRouteChange />
         <div className="min-h-screen bg-background gpu-accelerated">
           <Suspense fallback={<PageLoader />}>
@@ -105,7 +105,7 @@ const App = () => (
             <CookieBanner />
           </Suspense>
         </div>
-      </HashRouter>
+      </BrowserRouter>
     </TooltipProvider>
   </CartProvider>
 );
