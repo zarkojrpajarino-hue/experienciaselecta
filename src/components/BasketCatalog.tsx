@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -14,7 +13,6 @@ import CheckoutModal from "./CheckoutModal";
 import AddToCartButton from "./AddToCartButton";
 import StickyToast from "./StickyToast";
 import FloatingToast from "./FloatingToast";
-import ClickableImage from "./ClickableImage";
 
 // Import images - Pareja
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -99,6 +97,7 @@ interface BasketCatalogProps {
 }
 
 const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeChange, initialBasketId }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [openCard, setOpenCard] = useState<number | null>(null);
   const [openProducts, setOpenProducts] = useState<{ [key: number]: boolean }>({});
@@ -114,6 +113,16 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [showAddedToast, setShowAddedToast] = useState(false);
   const [addedBasketName, setAddedBasketName] = useState("");
   const [toastPosition, setToastPosition] = useState<{ top: number; left: number } | null>(null);
+  
+  // Callback optimizado para abrir imagen
+  const handleOpenImage = useCallback((imageSrc: string) => {
+    setSelectedImage(imageSrc);
+  }, []);
+  
+  // Callback optimizado para cerrar imagen
+  const handleCloseImage = useCallback(() => {
+    setSelectedImage(null);
+  }, []);
   
   // Detectar si estamos en la página de regalo
   const isGiftCatalog = location.pathname === '/cestas';
@@ -1352,62 +1361,64 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                               <p className="text-center text-gold font-bungee text-xs sm:text-sm tracking-[0.15em] mb-2">
                                 ACCESO A EXPERIENCIA ÚNICA
                               </p>
-                              <Popover>
-                                <PopoverTrigger asChild>
+                              <Dialog>
+                                <DialogTrigger asChild>
                                   <Button variant="ghost" size="sm" className="text-xs bg-transparent text-foreground hover:bg-foreground/5">
                                     ℹ️ Info
                                   </Button>
-                                </PopoverTrigger>
-                                <PopoverContent side="bottom" align="center" className="w-96 max-w-[90vw]" sideOffset={10}>
-                                  <div className="space-y-3">
-                                    <h4 className="font-bold text-base">¿Por qué no vendemos cestas?</h4>
-                                    <p className="text-sm leading-relaxed">
-                                      En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
-                                    </p>
-                                    <p className="text-sm leading-relaxed">
-                                      Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
-                                    </p>
-                                    <p className="text-sm leading-relaxed">
-                                      Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold" style={{ color: '#D4AF37' }}>acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
-                                    </p>
-                                    
-                                    {isGiftCatalog && (
-                                      <div className="mt-4 pt-3 border-t border-gray-200">
-                                        <p className="font-semibold text-sm mb-2">¿Cómo funciona el proceso de regalo?</p>
-                                        
-                                        <div className="space-y-2 text-xs">
-                                          <div>
-                                            <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
-                                            <ul className="list-disc pl-4 space-y-0.5 mt-0.5">
-                                              <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-                                              <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
-                                            </ul>
-                                          </div>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl">
+                                  <DialogTitle>¿Por qué no vendemos cestas?</DialogTitle>
+                                  <DialogDescription className="text-base leading-relaxed">
+                                    <div className="space-y-4">
+                                      <p>
+                                        En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
+                                      </p>
+                                      <p>
+                                        Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
+                                      </p>
+                                      <p>
+                                        Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold" style={{ color: '#D4AF37' }}>acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
+                                      </p>
+                                      
+                                      {isGiftCatalog && (
+                                        <div className="mt-6 pt-4 border-t border-gray-200">
+                                          <p className="font-semibold text-base mb-3">¿Cómo funciona el proceso de regalo?</p>
+                                          
+                                          <div className="space-y-3 text-sm">
+                                            <div>
+                                              <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                                              <ul className="list-disc pl-5 space-y-1 mt-1">
+                                                <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                                                <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                                              </ul>
+                                            </div>
 
-                                          <div>
-                                            <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
-                                            <p className="pl-4 mt-0.5">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
-                                          </div>
+                                            <div>
+                                              <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                                              <p className="pl-5 mt-1">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                                            </div>
 
-                                          <div>
-                                            <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
-                                            <ul className="list-disc pl-4 space-y-0.5 mt-0.5">
-                                              <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
-                                              <li>Confirma o introduce su dirección de envío</li>
-                                              <li>Selecciona su fecha preferida de entrega</li>
-                                              <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
-                                            </ul>
-                                          </div>
+                                            <div>
+                                              <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                                              <ul className="list-disc pl-5 space-y-1 mt-1">
+                                                <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                                                <li>Confirma o introduce su dirección de envío</li>
+                                                <li>Selecciona su fecha preferida de entrega</li>
+                                                <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                                              </ul>
+                                            </div>
 
-                                          <p className="text-[10px] text-muted-foreground pt-1">
-                                            💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
-                                          </p>
+                                            <p className="text-xs text-muted-foreground pt-2">
+                                              💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                                            </p>
+                                          </div>
                                         </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                </PopoverContent>
-                              </Popover>
+                                      )}
+                                    </div>
+                                  </DialogDescription>
+                                </DialogContent>
+                              </Dialog>
                             </div>
                           </div>
                         )}
@@ -1417,14 +1428,18 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
                     {/* Center: Imagen centrada */}
                     <div className="col-span-2 flex flex-col items-center my-2 gap-2">
-                      <ClickableImage
-                        src={basket.imagen}
-                        alt={basket.nombre}
-                        className="w-full h-full object-cover"
-                        containerClassName="relative w-32 h-24 sm:w-40 sm:h-32"
-                        rounded={true}
-                        shadow={true}
-                      />
+                      <div 
+                        className="relative w-32 h-24 sm:w-40 sm:h-32 overflow-hidden rounded-lg shadow-lg cursor-pointer fast-transition hover-lift gpu-accelerated"
+                        onClick={() => handleOpenImage(basket.imagen)}
+                      >
+                  <img
+                    src={basket.imagen}
+                    alt={basket.nombre}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover rounded-3xl"
+                  />
+                      </div>
                       
                       {/* Añadir al carrito - Justo debajo de la imagen */}
                       <AddToCartButton 
@@ -1482,14 +1497,20 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                   <div 
                     className={`flex-shrink-0 w-24 h-24 md:w-auto md:h-auto ${index % 2 === 1 ? 'md:col-start-2' : ''}`}
                   >
-                    <ClickableImage
-                      src={basket.imagen}
-                      alt={basket.nombre}
-                      className="w-full h-full object-cover"
-                      containerClassName={`relative w-full ${isCardOpen ? 'h-24 md:h-48' : 'h-24 md:h-64'}`}
-                      rounded={true}
-                      shadow={true}
-                    />
+                    <div 
+                      className={`relative w-full overflow-hidden rounded-lg shadow-lg cursor-pointer fast-transition hover-lift gpu-accelerated ${
+                        isCardOpen ? 'h-24 md:h-48' : 'h-24 md:h-64'
+                      }`}
+                      onClick={() => handleOpenImage(basket.imagen)}
+                    >
+                      <img 
+                        src={basket.imagen}
+                        alt={basket.nombre}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover rounded-3xl"
+                      />
+                    </div>
                   </div>
 
                   {/* DIV Contenido - Ajustado para móvil */}
@@ -1573,8 +1594,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                       >
                                         ACCESO A EXPERIENCIA ÚNICA
                                       </p>
-                                      <Popover>
-                                        <PopoverTrigger asChild>
+                                      <Dialog>
+                                        <DialogTrigger asChild>
                                           <Button 
                                             variant="ghost" 
                                             size="sm"
@@ -1596,22 +1617,24 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                               <path d="M12 8h.01"/>
                                             </svg>
                                           </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent side="left" align="start" className="w-80 max-w-[90vw]" sideOffset={10}>
-                                          <div className="space-y-3 text-sm">
-                                            <h4 className="font-bold text-base">¿Por qué no vendemos cestas?</h4>
-                                            <p className="leading-relaxed">
-                                              En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
-                                            </p>
-                                            <p className="leading-relaxed">
-                                              Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.
-                                            </p>
-                                            <p className="leading-relaxed">
-                                              Es una forma diferente de disfrutar, compartir y crear recuerdos que van más allá de una simple comida.
-                                            </p>
-                                          </div>
-                                        </PopoverContent>
-                                      </Popover>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-2xl">
+                                          <DialogTitle>¿Por qué no vendemos cestas?</DialogTitle>
+                                          <DialogDescription asChild>
+                                            <div className="space-y-4 text-base">
+                                              <p>
+                                                En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold" style={{ color: '#D4AF37' }}>experiencias únicas y personalizadas</span>.
+                                              </p>
+                                              <p>
+                                                Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.
+                                              </p>
+                                              <p>
+                                                Es una forma diferente de disfrutar, compartir y crear recuerdos que van más allá de una simple comida.
+                                              </p>
+                                            </div>
+                                          </DialogDescription>
+                                        </DialogContent>
+                                      </Dialog>
                                     </div>
                                   </div>
                                 </CollapsibleContent>
@@ -1673,6 +1696,43 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         })}
       </div>
 
+
+      {/* Image Dialog */}
+      <Dialog open={!!selectedImage} onOpenChange={handleCloseImage}>
+        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-0 shadow-none rounded-3xl overflow-hidden">
+          <DialogTitle className="sr-only">Vista previa de cesta</DialogTitle>
+          <DialogDescription className="sr-only">
+            Imagen ampliada de la cesta seleccionada
+          </DialogDescription>
+          <DialogClose asChild>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCloseImage();
+              }}
+              className="absolute top-2 right-2 z-[70] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110 pointer-events-auto flex items-center justify-center"
+              aria-label="Cerrar imagen"
+            >
+              <X className="h-5 w-5 sm:h-6 sm:w-6" />
+            </button>
+          </DialogClose>
+          {selectedImage && (
+            <div 
+              className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white p-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img 
+                src={selectedImage} 
+                alt="Cesta completa"
+                className="w-full h-auto max-h-[85vh] object-contain rounded-xl"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Checkout Modal */}
       <CheckoutModal
