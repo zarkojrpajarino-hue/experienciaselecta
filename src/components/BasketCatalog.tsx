@@ -226,8 +226,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
     // Calculate position next to the button
     const buttonRect = event.currentTarget.getBoundingClientRect();
-    const toastTop = buttonRect.top + (buttonRect.height / 2) - 20; // Center vertically with button
-    const toastLeft = buttonRect.right + 20; // 20px to the right of button
+    const toastTop = buttonRect.top + (buttonRect.height / 2); // center vertically
+    const toastLeft = buttonRect.right + 12; // a la derecha con margen
     
     setToastPosition({ top: toastTop, left: toastLeft });
 

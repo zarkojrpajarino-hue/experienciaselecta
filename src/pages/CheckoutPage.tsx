@@ -368,7 +368,7 @@ const CheckoutPage = () => {
                                         className="w-12 h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
                                       />
                                     </PopoverTrigger>
-                                    <PopoverContent side="right" align="center" sideOffset={10} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
+                                    <PopoverContent side="right" align="center" sideOffset={10} avoidCollisions={false} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -672,7 +672,7 @@ const CheckoutPage = () => {
                                                   onClick={(e) => e.stopPropagation()}
                                                 />
                                               </PopoverTrigger>
-                                              <PopoverContent side="right" align="center" sideOffset={10} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
+                                              <PopoverContent side="right" align="center" sideOffset={10} avoidCollisions={false} className="w-auto p-1 border-2 border-black shadow-2xl bg-white relative">
                                                 <button
                                                   onClick={(e) => {
                                                     e.stopPropagation();
