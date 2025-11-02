@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-
+import { Button } from "@/components/ui/button";
 interface CarouselSlide {
   image: string;
   text: JSX.Element;
@@ -184,25 +184,34 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         </AnimatePresence>
       </div>
 
-      {/* Modal for enlarged image */}
+      {/* Modal enlarge - same style as FAQ/Testimonios */}
       <Dialog open={selectedImage !== null} onOpenChange={closeImage}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 bg-transparent border-none">
+        <DialogContent className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] overflow-hidden">
           <AnimatePresence mode="wait">
             {selectedImage !== null && (
               <motion.div
                 key={selectedImage}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25 }}
                 className="relative"
               >
-                {/* Image */}
-                <img
-                  src={slides[selectedImage].image}
-                  alt={`${title} ${selectedImage + 1}`}
-                  className="max-w-full max-h-[90vh] w-auto h-auto rounded-2xl shadow-2xl"
-                />
+                <Button 
+                  onClick={closeImage} 
+                  className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+                  size="icon"
+                  aria-label="Cerrar imagen"
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+                <div className="rounded-[2rem] overflow-hidden">
+                  <img
+                    src={slides[selectedImage].image}
+                    alt={`${title ?? 'Imagen'} ${selectedImage + 1}`}
+                    className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]"
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
