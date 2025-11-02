@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, X, Info } from "lucide-react";
+import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface CartItem {
   id: string;
@@ -52,6 +53,19 @@ const CheckoutCombinedPage = () => {
     ]
   });
 
+  const [personalDataOpen, setPersonalDataOpen] = useState(false);
+  const [giftDataOpen, setGiftDataOpen] = useState(false);
+
+  // Datos personales para cestas propias
+  const [personalData, setPersonalData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    postalCode: ""
+  });
+
   const getGiftTotal = () => {
     return giftItems.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
   };
@@ -60,22 +74,39 @@ const CheckoutCombinedPage = () => {
     return personalItems.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
   };
 
+  const getAssignedGiftTotal = () => {
+    const assignedIds = new Set(giftAssignment.recipients.flatMap((r) => r.basketIds));
+    return expandedGiftItems
+      .filter((it) => assignedIds.has(it.uniqueId))
+      .reduce((sum, item) => sum + item.precio, 0);
+  };
+
   const handleContinueToPayment = () => {
-    // Validar asignación de regalos
-    const assigned = giftAssignment.recipients.flatMap((r) => r.basketIds);
-    if (assigned.length === 0) {
-      toast.error("Debes asignar al menos una cesta a un destinatario.");
-      return;
-    }
-    for (const r of giftAssignment.recipients) {
-      if (!r.recipientName || (!r.recipientEmail && !r.recipientPhone)) {
-        toast.error("Cada destinatario debe tener nombre y email o móvil.");
+    // Validar datos personales
+    if (personalItems.length > 0) {
+      if (!personalData.name || !personalData.email || !personalData.phone || !personalData.address || !personalData.city || !personalData.postalCode) {
+        toast.error("Debes completar todos tus datos personales para las cestas propias.");
         return;
       }
     }
-    if (!giftAssignment.senderName || !giftAssignment.senderEmail) {
-      toast.error("Debes completar tus datos como remitente.");
-      return;
+
+    // Validar asignación de regalos
+    if (giftItems.length > 0) {
+      const assigned = giftAssignment.recipients.flatMap((r) => r.basketIds);
+      if (assigned.length === 0) {
+        toast.error("Debes asignar al menos una cesta a un destinatario.");
+        return;
+      }
+      for (const r of giftAssignment.recipients) {
+        if (!r.recipientName || (!r.recipientEmail && !r.recipientPhone)) {
+          toast.error("Cada destinatario debe tener nombre y email o móvil.");
+          return;
+        }
+      }
+      if (!giftAssignment.senderName || !giftAssignment.senderEmail) {
+        toast.error("Debes completar tus datos como remitente.");
+        return;
+      }
     }
 
     // Navegar al checkout con todos los items
@@ -85,7 +116,8 @@ const CheckoutCombinedPage = () => {
         items: allItems,
         isGiftMode: true,
         total,
-        giftAssignment
+        giftAssignment,
+        personalData
       }
     });
   };
@@ -117,10 +149,13 @@ const CheckoutCombinedPage = () => {
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <p className="text-lg font-poppins text-black">
-                      Para completar el pago conjunto, asigna los regalos a sus destinatarios.
+                      Para completar el pago conjunto, completa los datos necesarios.
                     </p>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 bg-gold/10 rounded-lg">
+                      <button
+                        onClick={() => setGiftDataOpen(!giftDataOpen)}
+                        className="p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left"
+                      >
                         <p className="text-sm text-gray-600 mb-1">Cestas para regalar</p>
                         <p className="text-2xl font-poppins font-bold text-black">
                           {giftItems.reduce((sum, item) => sum + item.quantity, 0)} {giftItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
@@ -128,8 +163,11 @@ const CheckoutCombinedPage = () => {
                         <p className="text-lg font-poppins font-bold text-gold mt-1">
                           {getGiftTotal().toFixed(2)}€
                         </p>
-                      </div>
-                      <div className="p-4 bg-gold/10 rounded-lg">
+                      </button>
+                      <button
+                        onClick={() => setPersonalDataOpen(!personalDataOpen)}
+                        className="p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left"
+                      >
                         <p className="text-sm text-gray-600 mb-1">Tus cestas</p>
                         <p className="text-2xl font-poppins font-bold text-black">
                           {personalItems.reduce((sum, item) => sum + item.quantity, 0)} {personalItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
@@ -137,46 +175,130 @@ const CheckoutCombinedPage = () => {
                         <p className="text-lg font-poppins font-bold text-gold mt-1">
                           {getPersonalTotal().toFixed(2)}€
                         </p>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Datos del remitente */}
-              <Card className="border-2 border-black">
-                <CardHeader>
-                  <CardTitle className="text-xl font-poppins font-bold">Datos del remitente</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="senderName">Tu nombre *</Label>
-                      <Input
-                        id="senderName"
-                        value={giftAssignment.senderName}
-                        onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderName: e.target.value }))}
-                        placeholder="¿Quién regala?"
-                        className="border-2 border-black"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="senderEmail">Tu email *</Label>
-                      <Input
-                        id="senderEmail"
-                        type="email"
-                        value={giftAssignment.senderEmail}
-                        onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderEmail: e.target.value }))}
-                        placeholder="tu@email.com"
-                        className="border-2 border-black"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Datos personales para cestas propias */}
+              {personalItems.length > 0 && (
+                <Collapsible open={personalDataOpen} onOpenChange={setPersonalDataOpen}>
+                  <CollapsibleContent>
+                    <Card className="border-2 border-black">
+                      <CardHeader>
+                        <CardTitle className="text-xl font-poppins font-bold">Tus datos de envío</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="personalName">Nombre completo *</Label>
+                            <Input
+                              id="personalName"
+                              value={personalData.name}
+                              onChange={(e) => setPersonalData((prev) => ({ ...prev, name: e.target.value }))}
+                              placeholder="Tu nombre"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="personalEmail">Email *</Label>
+                            <Input
+                              id="personalEmail"
+                              type="email"
+                              value={personalData.email}
+                              onChange={(e) => setPersonalData((prev) => ({ ...prev, email: e.target.value }))}
+                              placeholder="tu@email.com"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="personalPhone">Teléfono *</Label>
+                            <Input
+                              id="personalPhone"
+                              type="tel"
+                              value={personalData.phone}
+                              onChange={(e) => setPersonalData((prev) => ({ ...prev, phone: e.target.value }))}
+                              placeholder="+34 600 000 000"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="personalAddress">Dirección *</Label>
+                            <Input
+                              id="personalAddress"
+                              value={personalData.address}
+                              onChange={(e) => setPersonalData((prev) => ({ ...prev, address: e.target.value }))}
+                              placeholder="Calle, número, piso..."
+                              className="border-2 border-black"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="personalCity">Ciudad *</Label>
+                            <Input
+                              id="personalCity"
+                              value={personalData.city}
+                              onChange={(e) => setPersonalData((prev) => ({ ...prev, city: e.target.value }))}
+                              placeholder="Tu ciudad"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="personalPostalCode">Código postal *</Label>
+                            <Input
+                              id="personalPostalCode"
+                              value={personalData.postalCode}
+                              onChange={(e) => setPersonalData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                              placeholder="28001"
+                              className="border-2 border-black"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
 
-              {/* Asignación de destinatarios */}
-              <div className="space-y-4">
+              {/* Asignación de destinatarios para regalos */}
+              {giftItems.length > 0 && (
+                <Collapsible open={giftDataOpen} onOpenChange={setGiftDataOpen}>
+                  <CollapsibleContent>
+                    <div className="space-y-4">
+                      {/* Datos del remitente */}
+                      <Card className="border-2 border-black">
+                        <CardHeader>
+                          <CardTitle className="text-xl font-poppins font-bold">Datos del remitente</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="senderName">Tu nombre *</Label>
+                              <Input
+                                id="senderName"
+                                value={giftAssignment.senderName}
+                                onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderName: e.target.value }))}
+                                placeholder="¿Quién regala?"
+                                className="border-2 border-black"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="senderEmail">Tu email *</Label>
+                              <Input
+                                id="senderEmail"
+                                type="email"
+                                value={giftAssignment.senderEmail}
+                                onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderEmail: e.target.value }))}
+                                placeholder="tu@email.com"
+                                className="border-2 border-black"
+                              />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Asignación de destinatarios */}
+                      <div className="space-y-4">
                 {giftAssignment.recipients.map((recipient, index) => (
                   <Card key={index} className="border-2 border-black">
                     <CardHeader>
@@ -220,7 +342,7 @@ const CheckoutCombinedPage = () => {
                               <Info className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-2xl">
+                          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                             <DialogTitle>¿Cómo funciona el proceso de regalo?</DialogTitle>
                             <DialogDescription asChild>
                               <div className="space-y-3 text-sm leading-relaxed">
@@ -365,7 +487,23 @@ const CheckoutCombinedPage = () => {
                     </Button>
                   );
                 })()}
-              </div>
+
+                        {/* Botón de total de regalos asignados */}
+                        <Card className="border-2 border-gold bg-gold/5">
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <span className="font-poppins font-bold text-black">Total cestas asignadas</span>
+                              <span className="font-poppins font-bold text-gold text-2xl">
+                                {getAssignedGiftTotal().toFixed(2)}€
+                              </span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
             </div>
 
             {/* Resumen y botón de pago */}
