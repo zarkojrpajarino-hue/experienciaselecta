@@ -233,40 +233,40 @@ const CheckoutPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen pt-20 pb-8 px-3 bg-white">
+      <div className="min-h-screen pt-16 pb-6 px-2 bg-white">
         <div className="container mx-auto max-w-6xl">
           {/* Botón volver a la página principal */}
           <Button
             onClick={() => navigate('/')}
             variant="link"
-            className="text-black hover:text-gold mb-3 p-0 text-xs"
+            className="text-black hover:text-gold mb-2 p-0 text-[10px]"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Volver a la página principal
           </Button>
 
-          <h1 className="text-xl md:text-2xl font-poppins font-bold text-black mb-3">
+          <h1 className="text-base md:text-xl font-poppins font-bold text-black mb-2">
             💳 Checkout
           </h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
             {/* Formulario de asignación */}
-            <div className="lg:col-span-2 space-y-3 md:space-y-4">
+            <div className="lg:col-span-2 space-y-2 md:space-y-3">
               {/* Resumen visual - Tus cestas PRIMERO */}
               <Card>
-                <CardContent className="p-3 md:p-4">
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
+                <CardContent className="p-2 md:p-3">
+                  <div className="grid grid-cols-2 gap-1.5 md:gap-2">
                     {/* TUS CESTAS (primero) */}
                     {currentPersonalItems.length > 0 && (
                       <button
                         onClick={() => toggleSection('personal')}
-                        className="p-2 md:p-3 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
+                        className="p-1.5 md:p-2 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
                       >
-                        <p className="text-[10px] md:text-xs text-gray-600 mb-1">Tus cestas</p>
-                        <p className="text-[10px] text-gray-500 mb-1 line-clamp-1">
+                        <p className="text-[9px] md:text-[10px] text-gray-600 mb-0.5">Tus cestas</p>
+                        <p className="text-[8px] text-gray-500 mb-0.5 line-clamp-1">
                           {currentPersonalItems.map(item => `${item.nombre} (x${item.quantity})`).join(', ')}
                         </p>
-                        <p className="text-base md:text-lg font-poppins font-bold text-black">
+                        <p className="text-sm md:text-base font-poppins font-bold text-black">
                           {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0)} {currentPersonalItems.reduce((sum, item) => sum + item.quantity, 0) === 1 ? 'cesta' : 'cestas'}
                         </p>
                         <p className="text-lg font-poppins font-bold text-gold mt-1">
@@ -385,14 +385,14 @@ const CheckoutPage = () => {
                                    <img 
                                     src={item.imagen} 
                                     alt={item.nombre} 
-                                    className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                    className="w-8 h-8 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
                                     onClick={(e) => {
                                       const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
                                       setImagePreview({ src: item.imagen, top: rect.top + rect.height / 2, left: rect.right + 10 });
                                     }}
                                   />
                                   <div>
-                                    <p className="font-medium text-xs sm:text-sm">{item.nombre}</p>
+                                    <p className="font-medium text-[10px] md:text-xs">{item.nombre}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -690,31 +690,31 @@ const CheckoutPage = () => {
 
             {/* Resumen del pedido */}
             <div className="lg:col-span-1">
-              <Card className="border-2 border-black sticky top-24">
-                <CardHeader>
-                  <CardTitle className="text-xl font-poppins font-bold">Resumen Total</CardTitle>
+              <Card className="border-2 border-black sticky top-16 md:top-20">
+                <CardHeader className="pb-2 md:pb-3 px-2 md:px-4">
+                  <CardTitle className="text-sm md:text-base font-poppins font-bold">Resumen Total</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2 md:space-y-3 text-[10px] md:text-xs px-2 md:px-4">
                   {currentPersonalItems.length > 0 && (
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm">Tus cestas</span>
-                      <span className="font-semibold">{getCurrentPersonalTotal().toFixed(2)}€</span>
+                    <div className="flex justify-between items-center py-1">
+                      <span className="text-[10px] md:text-xs">Tus cestas</span>
+                      <span className="font-semibold text-[10px] md:text-xs">{getCurrentPersonalTotal().toFixed(2)}€</span>
                     </div>
                   )}
                   {giftItems.length > 0 && (
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm">Cestas para regalar (asignadas)</span>
-                      <span className="font-semibold">{getAssignedGiftTotal().toFixed(2)}€</span>
+                    <div className="flex justify-between items-center py-1">
+                      <span className="text-[10px] md:text-xs">Cestas para regalar (asignadas)</span>
+                      <span className="font-semibold text-[10px] md:text-xs">{getAssignedGiftTotal().toFixed(2)}€</span>
                     </div>
                   )}
                   <Separator />
                   <div className="flex justify-between items-center">
-                    <span className="text-xl font-poppins font-bold">Total</span>
-                    <span className="text-2xl font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>
+                    <span className="text-sm md:text-base font-poppins font-bold">Total</span>
+                    <span className="text-base md:text-lg font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>
                   </div>
                   <Button
                     onClick={handleContinueToPayment}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-xs md:text-sm py-3 md:py-4"
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-[10px] md:text-xs py-2 md:py-3"
                   >
                     Continuar al pago ({getTotalAmount().toFixed(2)}€)
                   </Button>
