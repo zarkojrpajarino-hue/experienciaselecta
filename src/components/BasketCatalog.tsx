@@ -230,7 +230,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     let left = buttonRect.right + 12;
 
     const cardElement = document.querySelector(`[data-basket-id="${basket.id}"]`);
-    const titleEl = cardElement?.querySelector('.basket-title') as HTMLElement | null;
+    const titleEl = (cardElement?.querySelector('[data-basket-title]') as HTMLElement | null) 
+      || (cardElement?.querySelector('.basket-title') as HTMLElement | null);
     if (titleEl) {
       const titleRect = titleEl.getBoundingClientRect();
       top = titleRect.top + (titleRect.height / 2);
@@ -1284,7 +1285,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     {/* Top Left: Título, Descripción y Maridaje */}
                   <div className="col-span-1">
                     <div className="flex items-start gap-1 mb-1 relative">
-                      <h3 className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-black whitespace-nowrap">
+                      <h3 data-basket-title className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-black whitespace-nowrap">
                         {basket.nombre}
                       </h3>
                       <button 
@@ -1531,7 +1532,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           className="flex items-center justify-between w-full mb-1 md:mb-2 cursor-pointer group"
                           onClick={() => handleCardToggle(basket.id)}
                         >
-                          <h3 className={`font-poppins font-bold text-base md:text-2xl transition-colors basket-title ${colorCombo.text} hover:${colorCombo.important}`}>
+                          <h3 data-basket-title className={`font-poppins font-bold text-base md:text-2xl transition-colors basket-title ${colorCombo.text} hover:${colorCombo.important}`}>
                             {basket.nombre}
                           </h3>
                           <div className="group-hover:translate-x-1 transition-transform duration-200">
