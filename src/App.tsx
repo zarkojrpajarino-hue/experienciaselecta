@@ -14,7 +14,6 @@ import ComprarCestasPage from "./pages/ComprarCestasPage";
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
-const CheckoutCombinedPage = lazy(() => import("./pages/CheckoutCombinedPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
 const SobreNosotrosDetalle = lazy(() => import("./pages/SobreNosotrosDetalle"));
 const NuestrosClientesPage = lazy(() => import("./pages/NuestrosClientesPage"));
@@ -102,7 +101,6 @@ const App = () => (
                 <Route path="/perfil" element={<ProfilePage />} />
                 <Route path="/carrito" element={<CartPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/checkout-combined" element={<CheckoutCombinedPage />} />
                 <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
                 <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
                 <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
