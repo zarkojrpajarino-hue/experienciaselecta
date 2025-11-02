@@ -559,7 +559,7 @@ const Navbar = () => {
                     }} 
                     onClick={() => {
                       setIsMobileMenuOpen(false);
-                      navigate('/cestas');
+                      navigate('/comprar-cestas');
                     }}
                     className="group relative w-full px-4 py-2.5 text-center font-playfair font-bold text-sm tracking-wide text-black hover:text-[hsl(45,100%,50%)] transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 whitespace-nowrap"
                   >
