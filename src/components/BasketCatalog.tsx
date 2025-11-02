@@ -1441,11 +1441,28 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       </div>
                       
                       {/* Añadir al carrito - Justo debajo de la imagen */}
-                      <AddToCartButton 
-                        onClick={(e) => handleAddToCart(basket, e)}
-                        price={basket.precio}
-                        className="text-black text-xs sm:text-sm"
-                      />
+                      <div className="flex items-center gap-2">
+                        <AddToCartButton 
+                          onClick={(e) => handleAddToCart(basket, e)}
+                          price={basket.precio}
+                          className="text-black text-xs sm:text-sm"
+                        />
+                        <AnimatePresence mode="wait">
+                          {addedBasketId === basket.id && (
+                            <motion.div
+                              key={`added-top-${basket.id}`}
+                              initial={{ opacity: 0, scale: 0.5, x: -20 }}
+                              animate={{ opacity: 1, scale: 1, x: 0 }}
+                              exit={{ opacity: 0, scale: 0.5, x: -20 }}
+                              transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
+                              className="flex items-center gap-2 bg-green-500 text-white px-3 py-1.5 rounded-lg shadow-lg font-bold text-xs whitespace-nowrap border border-green-400"
+                            >
+                              <span>✓</span>
+                              <span>{basket.nombre} añadida</span>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
 
                     {/* Center: Coste por persona - Desplegable */}
