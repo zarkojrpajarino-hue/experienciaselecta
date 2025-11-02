@@ -509,20 +509,21 @@ const CheckoutPage = () => {
 
                               <div className="flex items-center justify-center gap-2">
                                 <p className="text-center text-xs text-muted-foreground">(solo uno de los dos obligatorio)</p>
-                                <Popover>
-                                  <PopoverTrigger asChild>
+                                <Dialog>
+                                  <DialogTrigger asChild>
                                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full hover:bg-black/10">
                                       <Info className="h-4 w-4" />
                                     </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent side="right" align="center" sideOffset={15} className="w-[500px] max-h-[600px] overflow-y-auto bg-white border-2 border-black z-[100]">
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-[600px] bg-white border-2 border-black">
+                                    <DialogTitle className="text-base font-semibold">¿Cómo funciona el proceso de regalo?</DialogTitle>
                                     <div className="space-y-3 text-sm leading-relaxed">
-                                      <p className="font-semibold text-base">¿Cómo funciona el proceso de regalo?</p>
                                       <p className="font-semibold">Proceso paso a paso:</p>
-                                      
                                       <div className="space-y-2">
                                         <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
                                         <ul className="list-disc pl-5 space-y-1">
+                                          <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+
                                           <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
                                           <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
                                         </ul>
@@ -547,8 +548,8 @@ const CheckoutPage = () => {
                                         💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
                                       </p>
                                     </div>
-                                  </PopoverContent>
-                                </Popover>
+                                  </DialogContent>
+                                </Dialog>
                               </div>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
