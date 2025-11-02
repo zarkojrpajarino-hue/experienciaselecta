@@ -94,9 +94,10 @@ interface BasketCatalogProps {
   categoria: string;
   onGroupSizeChange?: (size: '3-4' | '5-6' | '7-8') => void;
   initialBasketId?: number;
+  isGiftMode?: boolean;
 }
 
-const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeChange, initialBasketId }) => {
+const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeChange, initialBasketId, isGiftMode = false }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [openCard, setOpenCard] = useState<number | null>(null);
@@ -124,8 +125,8 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
     setSelectedImage(null);
   }, []);
   
-  // Detectar si estamos en la página de regalo
-  const isGiftCatalog = location.pathname === '/cestas';
+  // Usar el modo regalo pasado como prop
+  const isGiftCatalog = isGiftMode;
 
   // Reset all collapsibles when changing group size
   React.useEffect(() => {

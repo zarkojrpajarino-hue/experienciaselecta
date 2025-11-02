@@ -27,6 +27,7 @@ const ComprarCestasPage = () => {
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [isGiftMode, setIsGiftMode] = useState(false);
 
   // Scroll al inicio en cambio de categoría
   useEffect(() => {
@@ -139,13 +140,13 @@ const ComprarCestasPage = () => {
             </p>
 
             <motion.div 
-              onClick={() => navigate('/cestas')}
+              onClick={() => setIsGiftMode(!isGiftMode)}
               className="flex justify-center items-center gap-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <p className="text-sm sm:text-base md:text-lg font-poppins font-bold text-black">
-                ¿Quieres regalar algo original?
+                {isGiftMode ? '¿Prefieres compra normal?' : '¿Quieres regalar algo original?'}
               </p>
               <motion.svg 
                 className="w-5 h-5 sm:w-6 sm:h-6 text-[#D4AF37]" 
@@ -217,7 +218,11 @@ const ComprarCestasPage = () => {
           {/* Basket Catalog Section */}
           <section className="py-8 md:py-10">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <BasketCatalog categoria={selectedCategory} onGroupSizeChange={setGroupSize} />
+              <BasketCatalog 
+                categoria={selectedCategory} 
+                onGroupSizeChange={setGroupSize}
+                isGiftMode={isGiftMode}
+              />
             </div>
           </section>
         </>
