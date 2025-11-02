@@ -94,7 +94,7 @@ const CheckoutCombinedPage = () => {
   };
 
   const handleContinueToPayment = () => {
-    // Validar datos personales
+    // Validar datos personales si hay cestas propias
     if (currentPersonalItems.length > 0) {
       if (!personalData.name || !personalData.email || !personalData.phone || !personalData.address || !personalData.city || !personalData.postalCode) {
         toast.error("Debes completar todos tus datos personales para las cestas propias.");
@@ -102,27 +102,32 @@ const CheckoutCombinedPage = () => {
       }
     }
 
-    // Validar asignación de regalos
-    if (giftItems.length > 0) {
-      const assigned = giftAssignment.recipients.flatMap((r) => r.basketIds);
-      if (assigned.length === 0) {
-        toast.error("Debes asignar al menos una cesta a un destinatario.");
-        return;
-      }
+    // Validar asignación de regalos solo si hay cestas asignadas
+    const assignedGiftBaskets = giftAssignment.recipients.flatMap((r) => r.basketIds);
+    if (assignedGiftBaskets.length > 0) {
+      // Validar solo los destinatarios que tienen cestas asignadas
       for (const r of giftAssignment.recipients) {
-        if (!r.recipientName || (!r.recipientEmail && !r.recipientPhone)) {
-          toast.error("Cada destinatario debe tener nombre y email o móvil.");
-          return;
+        if (r.basketIds.length > 0) {
+          if (!r.recipientName || (!r.recipientEmail && !r.recipientPhone)) {
+            toast.error("Cada destinatario con cestas asignadas debe tener nombre y email o móvil.");
+            return;
+          }
         }
       }
       if (!giftAssignment.senderName || !giftAssignment.senderEmail) {
-        toast.error("Debes completar tus datos como remitente.");
+        toast.error("Debes completar tus datos como remitente para los regalos.");
         return;
       }
     }
 
     toast.success("Preparando pago...");
     // Aquí iría la lógica de pago (Stripe)
+  };
+
+  // Función para verificar si un destinatario puede marcar cestas
+  const canSelectBasketsForRecipient = (index: number) => {
+    const recipient = giftAssignment.recipients[index];
+    return recipient.recipientName && (recipient.recipientEmail || recipient.recipientPhone);
   };
 
   const toggleSection = (section: 'personal' | 'gift') => {
@@ -154,9 +159,6 @@ const CheckoutCombinedPage = () => {
               {/* Resumen visual - Tus cestas PRIMERO */}
               <Card>
                 <CardContent className="p-6">
-                  <p className="text-lg font-poppins text-black mb-4">
-                    Para completar el pago conjunto, completa los datos necesarios.
-                  </p>
                   <div className="grid grid-cols-2 gap-4">
                     {/* TUS CESTAS (primero) */}
                     {currentPersonalItems.length > 0 && (
@@ -182,7 +184,7 @@ const CheckoutCombinedPage = () => {
                         onClick={() => toggleSection('gift')}
                         className="p-4 bg-gold/10 rounded-lg hover:bg-gold/20 transition-colors text-left border-2 border-black"
                       >
-                        <p className="text-sm text-gray-600 mb-1">Cestas para regalar</p>
+                        <p className="text-sm text-gray-600 mb-1">Regalos</p>
                         <p className="text-xs text-gray-500 mb-2">
                           {giftAssignment.recipients
                             .flatMap(r => r.basketIds.map(id => expandedGiftItems.find(it => it.uniqueId === id)?.nombre).filter(Boolean))
@@ -209,37 +211,6 @@ const CheckoutCombinedPage = () => {
                         <CardTitle className="text-xl font-poppins font-bold">Tus datos de envío</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {/* Desglose de cestas con opción de eliminar */}
-                        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                          <h4 className="font-semibold mb-2">Cestas seleccionadas:</h4>
-                          <div className="space-y-2">
-                            {currentPersonalItems.map((item) => (
-                              <div key={item.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                                <div className="flex items-center gap-2">
-                                  <img src={item.imagen} alt={item.nombre} className="w-12 h-12 object-cover rounded" />
-                                  <div>
-                                    <p className="font-medium text-sm">{item.nombre}</p>
-                                    <p className="text-xs text-gray-500">Cantidad: {item.quantity}</p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                  <span className="font-bold text-gold">{(item.precio * item.quantity).toFixed(2)}€</span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleRemovePersonalItem(item.id)}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <Separator />
-
                         {/* Formulario de datos personales */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
@@ -303,6 +274,72 @@ const CheckoutCombinedPage = () => {
                               placeholder="28001"
                               className="border-2 border-black"
                             />
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Desglose de cestas con opción de añadir/quitar */}
+                        <div className="p-4 bg-gray-50 rounded-lg">
+                          <h4 className="font-semibold mb-2">Cestas seleccionadas:</h4>
+                          <div className="space-y-2">
+                            {currentPersonalItems.map((item) => (
+                              <div key={item.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                                <div className="flex items-center gap-2">
+                                  <img src={item.imagen} alt={item.nombre} className="w-12 h-12 object-cover rounded" />
+                                  <div>
+                                    <p className="font-medium text-sm">{item.nombre}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        setCurrentPersonalItems(prev => 
+                                          prev.map(it => 
+                                            it.id === item.id && it.quantity > 1 
+                                              ? { ...it, quantity: it.quantity - 1 } 
+                                              : it
+                                          )
+                                        );
+                                      }}
+                                      disabled={item.quantity <= 1}
+                                      className="h-8 w-8 p-0"
+                                    >
+                                      -
+                                    </Button>
+                                    <span className="text-sm font-medium min-w-[2rem] text-center">{item.quantity}</span>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        setCurrentPersonalItems(prev => 
+                                          prev.map(it => 
+                                            it.id === item.id 
+                                              ? { ...it, quantity: it.quantity + 1 } 
+                                              : it
+                                          )
+                                        );
+                                      }}
+                                      className="h-8 w-8 p-0"
+                                    >
+                                      +
+                                    </Button>
+                                  </div>
+                                  <span className="font-bold text-gold min-w-[4rem] text-right">{(item.precio * item.quantity).toFixed(2)}€</span>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemovePersonalItem(item.id)}
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </CardContent>
@@ -482,7 +519,11 @@ const CheckoutCombinedPage = () => {
 
                               <div>
                                 <Label>Asignar cestas de regalo</Label>
-                                <p className="text-xs text-muted-foreground mb-2">Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}</p>
+                                {!canSelectBasketsForRecipient(index) ? (
+                                  <p className="text-xs text-amber-600 mb-2">⚠️ Completa los datos obligatorios (nombre y email/móvil) para poder asignar cestas</p>
+                                ) : (
+                                  <p className="text-xs text-muted-foreground mb-2">Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}</p>
+                                )}
                                 <div className="space-y-2">
                                   {expandedGiftItems
                                     .filter((it) => {
@@ -492,36 +533,43 @@ const CheckoutCombinedPage = () => {
                                         .some((r) => r.basketIds.includes(it.uniqueId));
                                       return !assignedElsewhere;
                                     })
-                                    .map((it) => (
-                                      <div 
-                                        key={it.uniqueId} 
-                                        className="flex items-center justify-between p-2 hover:bg-muted/50 rounded cursor-pointer"
-                                        onClick={() => {
-                                          const newRecipients = [...giftAssignment.recipients];
-                                          const isChecked = recipient.basketIds.includes(it.uniqueId);
-                                          if (!isChecked) {
-                                            newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
-                                          } else {
-                                            newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id: string) => id !== it.uniqueId);
-                                          }
-                                          setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
-                                        }}
-                                      >
-                                        <div className="flex items-center space-x-2">
-                                          <input
-                                            type="checkbox"
-                                            id={`basket-${it.uniqueId}-recipient-${index}`}
-                                            checked={recipient.basketIds.includes(it.uniqueId)}
-                                            onChange={() => {}} // Handled by parent div onClick
-                                            onClick={(e) => e.stopPropagation()}
-                                          />
-                                          <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className="text-sm cursor-pointer">
-                                            {it.nombre}
-                                          </label>
+                                    .map((it) => {
+                                      const canSelect = canSelectBasketsForRecipient(index);
+                                      return (
+                                        <div 
+                                          key={it.uniqueId} 
+                                          className={`flex items-center justify-between p-2 rounded ${
+                                            canSelect ? 'hover:bg-muted/50 cursor-pointer' : 'opacity-50 cursor-not-allowed bg-gray-100'
+                                          }`}
+                                          onClick={() => {
+                                            if (!canSelect) return;
+                                            const newRecipients = [...giftAssignment.recipients];
+                                            const isChecked = recipient.basketIds.includes(it.uniqueId);
+                                            if (!isChecked) {
+                                              newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
+                                            } else {
+                                              newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id: string) => id !== it.uniqueId);
+                                            }
+                                            setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                          }}
+                                        >
+                                          <div className="flex items-center space-x-2">
+                                            <input
+                                              type="checkbox"
+                                              id={`basket-${it.uniqueId}-recipient-${index}`}
+                                              checked={recipient.basketIds.includes(it.uniqueId)}
+                                              disabled={!canSelect}
+                                              onChange={() => {}} // Handled by parent div onClick
+                                              onClick={(e) => e.stopPropagation()}
+                                            />
+                                            <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-sm ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+                                              {it.nombre}
+                                            </label>
+                                          </div>
+                                          <span className="text-sm font-semibold">{it.precio.toFixed(2)}€</span>
                                         </div>
-                                        <span className="text-sm font-semibold">{it.precio.toFixed(2)}€</span>
-                                      </div>
-                                    ))}
+                                      );
+                                    })}
                                 </div>
                               </div>
                             </CardContent>
