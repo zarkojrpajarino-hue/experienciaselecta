@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 interface CarouselSlide {
   image: string;
   text: JSX.Element;
@@ -121,7 +119,6 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
                   key={index}
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[35%] md:w-[25%] max-w-xs"
                   style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
-                  onClick={(e) => isActive && openImage(index, e)}
                 >
                   <motion.div
                     animate={{
@@ -191,44 +188,6 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         </AnimatePresence>
       </div>
 
-      {/* Modal enlarge - imagen pequeña posicionada encima/debajo */}
-      {selectedImage !== null && imagePosition && (
-        <AnimatePresence>
-          <motion.div
-            key={selectedImage}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.25 }}
-            style={{
-              position: 'fixed',
-              top: `${Math.max(8, imagePosition.top - 8)}px`,
-              left: `${imagePosition.centerX}px`,
-              transform: 'translate(-50%, -100%)',
-              zIndex: 9999,
-              maxWidth: '360px',
-              width: '92vw'
-            }}
-            className="pointer-events-auto"
-          >
-            <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-black/10">
-              <Button 
-                onClick={closeImage} 
-                className="absolute top-2 right-2 z-50 h-8 w-8 rounded-full bg-white/95 hover:bg-white text-black shadow-lg transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-                size="icon"
-                aria-label="Cerrar imagen"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              <img
-                src={slides[selectedImage].image}
-                alt={`${title ?? 'Imagen'} ${selectedImage + 1}`}
-                className="w-full h-auto max-h-[40vh] object-contain"
-              />
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      )}
     </>
   );
 };
