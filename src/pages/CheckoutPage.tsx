@@ -10,8 +10,10 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } 
 import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
+import AuthModal from "@/components/AuthModal";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CartItem {
   id: string;
@@ -114,6 +116,94 @@ const CheckoutPage = () => {
   const [howFoundUs, setHowFoundUs] = useState("");
   const [howFoundUsOpen, setHowFoundUsOpen] = useState(false);
 
+  // Authentication
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+
+  // Check auth status
+  React.useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      // Load profile data when user logs in
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      // Load profile data if user is already logged in
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Load user profile data
+  const loadUserProfile = async (userId: string) => {
+    setIsLoadingProfile(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userEmail = sessionData?.session?.user?.email || "";
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (!error && data) {
+        // Auto-fill personal data from profile
+        setPersonalData({
+          name: data.name || "",
+          email: userEmail,
+          phone: data.phone || "",
+          address: data.address_line1 || "",
+          city: data.city || "",
+          postalCode: data.postal_code || ""
+        });
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
+  // Save profile data
+  const saveProfileData = async () => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: user.id,
+          name: personalData.name,
+          phone: personalData.phone,
+          address_line1: personalData.address,
+          city: personalData.city,
+          postal_code: personalData.postalCode,
+          country: 'España'
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (error) throw error;
+      console.log('Profile data saved successfully');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    }
+  };
+
   // Cerrar dropdown cuando se hace clic fuera
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -159,9 +249,18 @@ const CheckoutPage = () => {
     return /^[\d\s\+\-\(\)]{9,}$/.test(phone);
   };
 
-  const handleContinueToPayment = () => {
+  const handleContinueToPayment = async () => {
     setAttemptedSubmit(true);
     setShowErrorMessage(false);
+    
+    // Require authentication
+    if (!user) {
+      setShowAuthModal(true);
+      setErrorMessage("Debes iniciar sesión para continuar");
+      setShowErrorMessage(true);
+      setTimeout(() => setShowErrorMessage(false), 5000);
+      return;
+    }
     
     // Validar "Cómo nos has conocido"
     if (!howFoundUs) {
@@ -251,6 +350,9 @@ const CheckoutPage = () => {
       }
     }
 
+    // Save profile data before continuing to payment
+    await saveProfileData();
+
     toast.success("Preparando pago...");
     // Aquí iría la lógica de pago (Stripe)
   };
@@ -262,6 +364,13 @@ const CheckoutPage = () => {
   };
 
   const toggleSection = (section: 'personal' | 'gift') => {
+    // Require authentication before allowing to fill forms
+    if (!user) {
+      setShowAuthModal(true);
+      toast.error("Inicia sesión para continuar con tu pedido");
+      return;
+    }
+    
     setActiveSection(activeSection === section ? null : section);
   };
 
@@ -956,6 +1065,16 @@ const CheckoutPage = () => {
           </motion.div>
         </AnimatePresence>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => {
+          setShowAuthModal(false);
+          toast.success("¡Bienvenido! Ahora puedes continuar con tu pedido");
+        }}
+      />
 
     </>
   );
