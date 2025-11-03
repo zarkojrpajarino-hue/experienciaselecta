@@ -54,10 +54,8 @@ const CheckoutPage = () => {
   }
 
   // State para controlar qué sección está abierta (solo una a la vez)
-  // Si solo hay cestas de regalo, abrir 'gift' por defecto; si hay personales, abrir 'personal'
-  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(
-    personalItems.length > 0 ? 'personal' : (giftItems.length > 0 ? 'gift' : null)
-  );
+  // Ambas secciones siempre abiertas por defecto
+  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(null);
   
   // State para rastrear si se intentó enviar (para validación visual)
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
@@ -68,13 +66,15 @@ const CheckoutPage = () => {
 
   // Estado para items personales (puede eliminar cestas)
   const [currentPersonalItems, setCurrentPersonalItems] = useState(personalItems);
+  
+  // Mantener ambas secciones abiertas siempre
+  const isPersonalOpen = currentPersonalItems.length > 0;
+  const isGiftOpen = giftItems.length > 0;
 
   // Ajustar activeSection cuando se eliminan todos los items personales
   React.useEffect(() => {
-    if (currentPersonalItems.length === 0 && giftItems.length > 0 && activeSection === 'personal') {
-      setActiveSection('gift');
-    }
-  }, [currentPersonalItems.length, giftItems.length, activeSection]);
+    // No necesitamos ajustar activeSection ya que las secciones están siempre abiertas
+  }, [currentPersonalItems.length, giftItems.length]);
 
   // Expandir items de regalo por cantidad para asignación individual
   const expandedGiftItems = React.useMemo(() => {
@@ -364,14 +364,18 @@ const CheckoutPage = () => {
   };
 
   const toggleSection = (section: 'personal' | 'gift') => {
-    // Require authentication before allowing to fill forms
+    // Las secciones siempre están abiertas, no hacemos nada
+    return;
+  };
+
+  // Handler para verificar auth antes de permitir editar campos
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!user) {
+      e.preventDefault();
+      e.target.blur();
       setShowAuthModal(true);
-      toast.error("Inicia sesión para continuar con tu pedido");
-      return;
+      toast.error("Inicia sesión para rellenar los datos de envío");
     }
-    
-    setActiveSection(activeSection === section ? null : section);
   };
 
   return (
@@ -428,9 +432,9 @@ const CheckoutPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Datos personales para cestas propias (ABIERTO POR DEFECTO) */}
+              {/* Datos personales para cestas propias (SIEMPRE ABIERTO) */}
               {currentPersonalItems.length > 0 && (
-                <Collapsible open={activeSection === 'personal'} onOpenChange={() => toggleSection('personal')}>
+                <Collapsible open={isPersonalOpen}>
                   <CollapsibleContent>
                     <Card className="border-2 border-black">
                       <CardHeader>
@@ -445,6 +449,7 @@ const CheckoutPage = () => {
                               id="personalName"
                               value={personalData.name}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, name: e.target.value }))}
+                              onFocus={handleInputFocus}
                               placeholder="Tu nombre"
                               className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.name.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
@@ -457,6 +462,7 @@ const CheckoutPage = () => {
                                 type="email"
                                 value={personalData.email}
                                 onChange={(e) => setPersonalData((prev) => ({ ...prev, email: e.target.value }))}
+                                onFocus={handleInputFocus}
                                 placeholder="tu@email.com"
                                 className={`border-2 text-xs md:text-sm ${attemptedSubmit && (!personalData.email.trim() || !validateEmail(personalData.email)) ? 'border-red-600 animate-shake' : 'border-black'}`}
                               />
@@ -468,6 +474,7 @@ const CheckoutPage = () => {
                                 type="tel"
                                 value={personalData.phone}
                                 onChange={(e) => setPersonalData((prev) => ({ ...prev, phone: e.target.value }))}
+                                onFocus={handleInputFocus}
                                 placeholder="+34 600 000 000"
                                 className={`border-2 text-xs md:text-sm ${attemptedSubmit && (!personalData.phone.trim() || !validatePhone(personalData.phone)) ? 'border-red-600 animate-shake' : 'border-black'}`}
                               />
@@ -479,6 +486,7 @@ const CheckoutPage = () => {
                               id="personalAddress"
                               value={personalData.address}
                               onChange={(e) => setPersonalData((prev) => ({ ...prev, address: e.target.value }))}
+                              onFocus={handleInputFocus}
                               placeholder="Calle, número, piso..."
                               className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.address.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                             />
@@ -490,6 +498,7 @@ const CheckoutPage = () => {
                                 id="personalCity"
                                 value={personalData.city}
                                 onChange={(e) => setPersonalData((prev) => ({ ...prev, city: e.target.value }))}
+                                onFocus={handleInputFocus}
                                 placeholder="Tu ciudad"
                                 className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.city.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                               />
@@ -500,6 +509,7 @@ const CheckoutPage = () => {
                                 id="personalPostalCode"
                                 value={personalData.postalCode}
                                 onChange={(e) => setPersonalData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                                onFocus={handleInputFocus}
                                 placeholder="28001"
                                 className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.postalCode.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
                               />
@@ -594,9 +604,9 @@ const CheckoutPage = () => {
                 </Collapsible>
               )}
 
-              {/* Asignación de destinatarios para regalos */}
+              {/* Asignación de regalos (SIEMPRE ABIERTO) */}
               {giftItems.length > 0 && (
-                <Collapsible open={activeSection === 'gift'} onOpenChange={() => toggleSection('gift')}>
+                <Collapsible open={isGiftOpen}>
                   <CollapsibleContent>
                     <div className="space-y-4">
                       {/* Datos del remitente */}
@@ -612,6 +622,7 @@ const CheckoutPage = () => {
                                 id="senderName"
                                 value={giftAssignment.senderName}
                                 onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderName: e.target.value }))}
+                                onFocus={handleInputFocus}
                                 placeholder="¿Quién regala?"
                                 className="border-2 border-black"
                               />
@@ -623,6 +634,7 @@ const CheckoutPage = () => {
                                 type="email"
                                 value={giftAssignment.senderEmail}
                                 onChange={(e) => setGiftAssignment((prev) => ({ ...prev, senderEmail: e.target.value }))}
+                                onFocus={handleInputFocus}
                                 placeholder="tu@email.com"
                                 className="border-2 border-black"
                               />
@@ -663,6 +675,7 @@ const CheckoutPage = () => {
                                     newRecipients[index].recipientName = e.target.value;
                                     setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                   }}
+                                  onFocus={handleInputFocus}
                                   placeholder="¿A quién se lo regalas?"
                                   className="border-2 border-black"
                                 />
@@ -719,6 +732,7 @@ const CheckoutPage = () => {
                                       newRecipients[index].recipientEmail = e.target.value;
                                       setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                     }}
+                                    onFocus={handleInputFocus}
                                     placeholder="email@ejemplo.com"
                                     className="border-2 border-black"
                                   />
@@ -734,6 +748,7 @@ const CheckoutPage = () => {
                                       newRecipients[index].recipientPhone = e.target.value;
                                       setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                     }}
+                                    onFocus={handleInputFocus}
                                     placeholder="+34 600 000 000"
                                     className="border-2 border-black"
                                   />
@@ -750,6 +765,7 @@ const CheckoutPage = () => {
                                     newRecipients[index].personalNote = e.target.value;
                                     setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                   }}
+                                  onFocus={handleInputFocus}
                                   placeholder="Escribe una nota..."
                                   rows={2}
                                   className="border-2 border-black"
