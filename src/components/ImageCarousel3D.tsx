@@ -188,7 +188,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
               y: '-50%'
             }}
             animate={{ 
-              scale: 2,
+              scale: 1.5,
               opacity: 1,
               position: 'fixed',
               left: imagePosition.left,
