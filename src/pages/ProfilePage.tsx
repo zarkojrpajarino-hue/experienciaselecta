@@ -22,7 +22,7 @@ import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-clean.
 import granTertuliaImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
 import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
 import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
-import profileBgImg from "@/assets/amigos-celebracion.png";
+import profileBgImg from "@/assets/profile-bg-orders.png";
 import valoracionesBgImg from "@/assets/familia-terraza-nueva.png";
 
 // Mapeo de cestas a imágenes y precios correctos del catálogo actual

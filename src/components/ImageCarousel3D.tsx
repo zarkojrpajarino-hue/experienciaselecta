@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 interface CarouselSlide {
   image: string;
   text: JSX.Element;
@@ -13,8 +15,7 @@ interface ImageCarousel3DProps {
 
 const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
-  const [imagePosition, setImagePosition] = useState<{ top: number; centerX: number } | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -24,34 +25,8 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const openImage = (index: number, event?: React.MouseEvent) => {
-    if (event) {
-      const target = event.currentTarget as HTMLElement;
-      const rect = target.getBoundingClientRect();
-      setImagePosition({ top: rect.top + window.scrollY, centerX: rect.left + rect.width / 2 + window.scrollX });
-    }
-    setSelectedImage(index);
-  };
-
-  const closeImage = () => {
-    setSelectedImage(null);
-    setImagePosition(null);
-  };
-
-  const nextImageModal = () => {
-    if (selectedImage !== null) {
-      const newIndex = (selectedImage + 1) % slides.length;
-      setSelectedImage(newIndex);
-      setCurrentIndex(newIndex);
-    }
-  };
-
-  const prevImageModal = () => {
-    if (selectedImage !== null) {
-      const newIndex = (selectedImage - 1 + slides.length) % slides.length;
-      setSelectedImage(newIndex);
-      setCurrentIndex(newIndex);
-    }
+  const openModal = () => {
+    setModalOpen(true);
   };
 
   const getCardPosition = (index: number) => {
@@ -130,7 +105,8 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
                     }}
                     transition={{ duration: 0.6, ease: 'easeInOut' }}
                     style={{ transformStyle: 'preserve-3d' }}
-                    className="cursor-pointer"
+                    className="cursor-zoom-in"
+                    onClick={isActive ? openModal : undefined}
                   >
                     <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
                       <img
@@ -188,6 +164,27 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         </AnimatePresence>
       </div>
 
+      {/* Modal to enlarge image */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-0 shadow-none rounded-[2rem] overflow-hidden">
+          <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
+          <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
+          <Button 
+            onClick={() => setModalOpen(false)} 
+            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+            size="icon"
+          >
+            <X className="h-6 w-6" />
+          </Button>
+          <div className="rounded-[2rem] overflow-hidden bg-white">
+            <img
+              src={slides[currentIndex].image}
+              alt={`${title} ${currentIndex + 1} - Vista ampliada`}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
