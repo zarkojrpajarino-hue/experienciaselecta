@@ -205,7 +205,7 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
               y: '-50%'
             }}
             animate={{ 
-              scale: 1.5,
+              scale: 1.0,
               opacity: 1,
               position: 'fixed',
               left: imagePosition.left,
@@ -218,7 +218,7 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
               opacity: 0
             }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-[300px] md:w-[400px]"
+            className="w-[50vw] max-w-[360px] md:w-[400px]"
             onClick={(e) => e.stopPropagation()}
           >
             <Button 
