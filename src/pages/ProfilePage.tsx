@@ -309,49 +309,18 @@ const ProfilePage = () => {
       <div 
         className="min-h-screen pt-24 pb-12 px-4 relative overflow-hidden"
       >
-        {/* Background images with smooth transitions - separate layers */}
+        {/* Background images with smooth transitions - same image for both */}
         <div className="absolute inset-0 z-0">
-          {/* Imagen de fondo para Mis Pedidos */}
-          <div 
-            className="absolute inset-0 transition-all duration-700 ease-in-out"
-            style={{
-              opacity: activeTab === 'orders' ? 1 : 0,
-              visibility: activeTab === 'orders' ? 'visible' : 'hidden',
-              zIndex: activeTab === 'orders' ? 1 : 0
-            }}
-          >
-            <img 
-              src={profileBgImg} 
-              alt="Fondo mis pedidos" 
-              className="w-full h-full object-cover"
-              style={{ 
-                objectPosition: 'center center'
-              }} 
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          
-          {/* Imagen de fondo para Mis Valoraciones */}
-          <div 
-            className="absolute inset-0 transition-all duration-700 ease-in-out"
-            style={{
-              opacity: activeTab === 'reviews' ? 1 : 0,
-              visibility: activeTab === 'reviews' ? 'visible' : 'hidden',
-              zIndex: activeTab === 'reviews' ? 1 : 0
-            }}
-          >
-            <img 
-              src={valoracionesBgImg} 
-              alt="Fondo mis valoraciones" 
-              className="w-full h-full object-cover"
-              style={{ 
-                objectPosition: 'center center'
-              }} 
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+          <img 
+            src={valoracionesBgImg} 
+            alt="Fondo de perfil" 
+            className="w-full h-full object-cover"
+            style={{ 
+              objectPosition: 'center center'
+            }} 
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         
         {/* Overlay oscuro para mejorar legibilidad */}
@@ -390,13 +359,13 @@ const ProfilePage = () => {
           {/* Tabs */}
           <Tabs defaultValue="orders" className="w-full" onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 mb-8 bg-transparent">
-              <TabsTrigger value="orders" className="gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
-                <Package className="w-4 h-4" />
-                <span className="font-bungee tracking-wider">Mis pedidos.</span>
+              <TabsTrigger value="orders" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
+                <Package className="w-3 h-3 md:w-4 md:h-4" />
+                <span className="font-bungee tracking-wider text-xs md:text-base">Mis pedidos.</span>
               </TabsTrigger>
-              <TabsTrigger value="reviews" className="gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
-                <Star className="w-4 h-4" />
-                <span className="font-bungee tracking-wider">Mis valoraciones.</span>
+              <TabsTrigger value="reviews" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
+                <Star className="w-3 h-3 md:w-4 md:h-4" />
+                <span className="font-bungee tracking-wider text-xs md:text-base">Mis valoraciones.</span>
               </TabsTrigger>
             </TabsList>
 
