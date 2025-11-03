@@ -114,9 +114,11 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
                     transition={{ duration: 0.6, ease: 'easeInOut' }}
                     style={{ transformStyle: 'preserve-3d' }}
                     className="cursor-zoom-in"
-                    onClick={isActive ? openModal : undefined}
                   >
-                    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+                    <div 
+                      className="relative bg-white rounded-3xl shadow-2xl overflow-hidden"
+                      onClick={isActive ? openModal : undefined}
+                    >
                       <img
                         src={slide.image}
                         alt={`${title} ${index + 1}`}
