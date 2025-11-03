@@ -1,7 +1,7 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -24,10 +24,13 @@ interface RoundedImageCarouselProps {
 const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, hideMainTitle = false, titleBold = true }: RoundedImageCarouselProps) => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [open, setOpen] = useState(false);
+  
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [arrowTooltipOpen, setArrowTooltipOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [imagePosition, setImagePosition] = useState({ top: 0, left: 0 });
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
@@ -70,6 +73,16 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
     const id = setInterval(() => setIndex((p) => (p + 1) % slides.length), autoPlayDelay);
     return () => clearInterval(id);
   }, [autoPlay, autoPlayDelay, paused, slides.length]);
+
+  const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = (e.currentTarget as HTMLElement);
+    const container = containerRef.current || target.closest('[data-rounded-carousel-root]') as HTMLElement | null;
+    const rect = (container || target).getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    setImagePosition({ top: centerY, left: centerX });
+    setModalOpen(true);
+  };
 
   const current = slides[index];
 
@@ -188,6 +201,8 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
 
         {/* Image */}
         <div 
+          ref={containerRef}
+          data-rounded-carousel-root
           className="w-full max-w-2xl md:max-w-3xl mx-auto h-[25vh] md:h-[30vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -201,7 +216,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               transition={{ duration: 0.6 }}
               className="absolute inset-0 cursor-zoom-in rounded-[2rem] overflow-hidden"
               style={{ pointerEvents: index === i ? "auto" : "none" }}
-              onClick={() => setOpen(true)}
+              onClick={openModal}
             >
               <img
                 src={s.image}
@@ -215,27 +230,55 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         </div>
       </div>
 
-      {/* Modal enlarge */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-background border-0 p-0 shadow-none rounded-[2rem] sm:rounded-[2rem] md:rounded-[2rem] lg:rounded-[2rem] xl:rounded-[2rem] overflow-hidden">
-          <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
-          <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
-          <Button 
-            onClick={() => setOpen(false)} 
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-            size="icon"
+      {/* Modal enlarge anchored to container center */}
+      {modalOpen && (
+        <div 
+          className="fixed inset-0 z-[9999]" 
+          style={{ pointerEvents: 'auto' }} 
+          onClick={() => setModalOpen(false)}
+        >
+          <motion.div
+            initial={{ 
+              scale: 0.5,
+              opacity: 0,
+              position: 'fixed',
+              left: imagePosition.left,
+              top: imagePosition.top,
+              x: '-50%',
+              y: '-50%'
+            }}
+            animate={{ 
+              scale: 1.5,
+              opacity: 1,
+              position: 'fixed',
+              left: imagePosition.left,
+              top: imagePosition.top,
+              x: '-50%',
+              y: '-50%'
+            }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="w-[300px] md:w-[400px]"
+            onClick={(e) => e.stopPropagation()}
           >
-            <X className="h-6 w-6" />
-          </Button>
-          <div className="rounded-[2rem] overflow-hidden">
-            <img
-              src={current.image}
-              alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
-              className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]"
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+            <Button 
+              onClick={() => setModalOpen(false)} 
+              className="absolute -top-4 -right-4 z-50 h-10 w-10 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              size="icon"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
+              <img
+                src={current.image}
+                alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
+                className="w-full h-auto object-contain rounded-[2rem]"
+              />
+            </div>
+          </motion.div>
+        </div>
+      )}
+
     </section>
   );
 };
