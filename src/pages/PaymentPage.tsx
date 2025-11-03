@@ -127,26 +127,29 @@ const PaymentPage = () => {
   const location = useLocation();
   const { clientSecret, orderId, totalAmount } = location.state || {};
   const [isStripeReady, setIsStripeReady] = useState(false);
+  const [stripeInstance, setStripeInstance] = useState<Promise<Stripe | null> | null>(null);
 
   useEffect(() => {
-    if (!stripePromise) {
-      (async () => {
-        try {
+    const initStripe = async () => {
+      try {
+        if (!stripePromise) {
           const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
           if (error) throw error;
           const key = (data as any)?.publishableKey;
           if (!key) throw new Error('Missing Stripe publishable key');
           stripePromise = loadStripe(key);
-          setIsStripeReady(true);
-        } catch (err) {
-          console.error('Error loading Stripe key:', err);
-          toast.error('No se pudo inicializar el pago. Inténtalo de nuevo.');
         }
-      })();
-    } else {
-      setIsStripeReady(true);
-    }
-  }, []);
+        setStripeInstance(stripePromise);
+        setIsStripeReady(true);
+      } catch (err) {
+        console.error('Error loading Stripe key:', err);
+        toast.error('No se pudo inicializar el pago. Inténtalo de nuevo.');
+        navigate('/checkout', { replace: true });
+      }
+    };
+
+    initStripe();
+  }, [navigate]);
 
   useEffect(() => {
     if (!clientSecret || !orderId || !totalAmount) {
@@ -155,12 +158,12 @@ const PaymentPage = () => {
     }
   }, [clientSecret, orderId, totalAmount, navigate]);
 
-  if (!clientSecret || !orderId || !totalAmount || !isStripeReady) {
+  if (!clientSecret || !orderId || !totalAmount || !isStripeReady || !stripeInstance) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto mb-4"></div>
-          <p className="text-black font-poppins">Redirigiendo...</p>
+          <p className="text-black font-poppins">Cargando sistema de pago...</p>
         </div>
       </div>
     );
@@ -196,7 +199,7 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <Elements stripe={stripeInstance} options={{ clientSecret }}>
                 <PaymentForm 
                   clientSecret={clientSecret} 
                   orderId={orderId}
