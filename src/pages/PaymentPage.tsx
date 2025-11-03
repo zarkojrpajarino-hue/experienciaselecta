@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 
 // Stripe publishable key will be loaded dynamically
+let stripePromise: Promise<Stripe | null> | null = null;
 
 interface PaymentFormProps {
   clientSecret: string;
@@ -125,24 +126,26 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { clientSecret, orderId, totalAmount } = location.state || {};
-  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
+  const [isStripeReady, setIsStripeReady] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
-        if (error) throw error;
-        const key = (data as any)?.publishableKey;
-        if (!key) throw new Error('Missing Stripe publishable key');
-        const promise = loadStripe(key);
-        if (isMounted) setStripePromise(promise);
-      } catch (err) {
-        console.error('Error loading Stripe key:', err);
-        toast.error('No se pudo inicializar el pago. Inténtalo de nuevo.');
-      }
-    })();
-    return () => { isMounted = false };
+    if (!stripePromise) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
+          if (error) throw error;
+          const key = (data as any)?.publishableKey;
+          if (!key) throw new Error('Missing Stripe publishable key');
+          stripePromise = loadStripe(key);
+          setIsStripeReady(true);
+        } catch (err) {
+          console.error('Error loading Stripe key:', err);
+          toast.error('No se pudo inicializar el pago. Inténtalo de nuevo.');
+        }
+      })();
+    } else {
+      setIsStripeReady(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -152,7 +155,7 @@ const PaymentPage = () => {
     }
   }, [clientSecret, orderId, totalAmount, navigate]);
 
-  if (!clientSecret || !orderId || !totalAmount || !stripePromise) {
+  if (!clientSecret || !orderId || !totalAmount || !isStripeReady) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
