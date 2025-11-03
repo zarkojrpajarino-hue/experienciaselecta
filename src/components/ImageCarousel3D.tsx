@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 interface CarouselSlide {
@@ -29,9 +28,11 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
 
   const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
     setImagePosition({
-      top: rect.top,
-      left: rect.left + rect.width / 2
+      top: centerY,
+      left: centerX
     });
     setModalOpen(true);
   };
@@ -155,60 +156,67 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
         </div>
 
         {/* Text Below Navigation */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className="text-center px-4 md:px-12 mt-4"
-          >
-            <div className="font-poppins text-base md:text-lg text-black leading-relaxed max-w-3xl mx-auto">
-              {slides[currentIndex].text}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4 }}
+          className="text-center px-4 md:px-12 mt-4"
+        >
+          <div className="font-poppins text-base md:text-lg text-black leading-relaxed max-w-3xl mx-auto">
+            {slides[currentIndex].text}
+          </div>
+        </motion.div>
       </div>
 
       {/* Modal to enlarge image */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent 
-          hideClose 
-          className="max-w-3xl bg-transparent border-0 p-0 shadow-none rounded-[2rem] overflow-visible"
-          overlayStyle={{ backgroundColor: 'transparent', alignItems: 'flex-start', justifyContent: 'center' }}
-          style={{
-            position: 'fixed',
-            top: `${imagePosition.top}px`,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            margin: 0
-          }}
+      {modalOpen && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{ pointerEvents: 'auto' }}
+          onClick={() => setModalOpen(false)}
         >
-          <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
-          <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
-          <Button 
-            onClick={() => setModalOpen(false)} 
-            className="absolute -top-2 -right-2 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-            size="icon"
+          <motion.div
+            initial={{ 
+              scale: 0.3,
+              opacity: 0,
+              x: imagePosition.left - window.innerWidth / 2,
+              y: imagePosition.top - window.innerHeight / 2
+            }}
+            animate={{ 
+              scale: 1,
+              opacity: 1,
+              x: 0,
+              y: 0
+            }}
+            exit={{ 
+              scale: 0.3,
+              opacity: 0,
+              x: imagePosition.left - window.innerWidth / 2,
+              y: imagePosition.top - window.innerHeight / 2
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="relative max-w-4xl w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
           >
-            <X className="h-6 w-6" />
-          </Button>
-          <motion.div 
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="rounded-[2rem] overflow-hidden bg-white shadow-2xl"
-          >
-            <img
-              src={slides[currentIndex].image}
-              alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-              className="w-full h-auto max-h-[60vh] object-contain rounded-[2rem]"
-            />
+            <Button 
+              onClick={() => setModalOpen(false)} 
+              className="absolute -top-4 -right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              size="icon"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+            <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
+              <img
+                src={slides[currentIndex].image}
+                alt={`${title} ${currentIndex + 1} - Vista ampliada`}
+                className="w-full h-auto max-h-[70vh] object-contain rounded-[2rem]"
+              />
+            </div>
           </motion.div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </>
   );
 };
