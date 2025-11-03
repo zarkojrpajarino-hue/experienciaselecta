@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -113,6 +112,20 @@ const CheckoutPage = () => {
 
   // Cómo nos has conocido
   const [howFoundUs, setHowFoundUs] = useState("");
+  const [howFoundUsOpen, setHowFoundUsOpen] = useState(false);
+
+  // Cerrar dropdown cuando se hace clic fuera
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (howFoundUsOpen && !target.closest('.how-found-us-dropdown')) {
+        setHowFoundUsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [howFoundUsOpen]);
 
   const getCurrentPersonalTotal = () => {
     return currentPersonalItems.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
@@ -739,19 +752,55 @@ const CheckoutPage = () => {
                   <CardTitle className="text-sm md:text-base font-poppins font-bold">¿Cómo nos has conocido?</CardTitle>
                 </CardHeader>
                 <CardContent className="px-2 md:px-4">
-                  <Select value={howFoundUs} onValueChange={setHowFoundUs}>
-                    <SelectTrigger className={`border-2 ${attemptedSubmit && !howFoundUs ? 'border-red-600 animate-shake' : 'border-black'}`}>
-                      <SelectValue placeholder="Selecciona una opción" />
-                    </SelectTrigger>
-                    <SelectContent className="z-[100] bg-white border-2 border-black shadow-xl">
-                      <SelectItem value="instagram">Instagram</SelectItem>
-                      <SelectItem value="facebook">Facebook</SelectItem>
-                      <SelectItem value="google">Google</SelectItem>
-                      <SelectItem value="recomendacion">Recomendación de un amigo</SelectItem>
-                      <SelectItem value="prensa">Prensa o artículos</SelectItem>
-                      <SelectItem value="otro">Otro</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="relative how-found-us-dropdown">
+                    <button
+                      type="button"
+                      onClick={() => setHowFoundUsOpen(!howFoundUsOpen)}
+                      className={`w-full flex items-center justify-between rounded-md border-2 ${
+                        attemptedSubmit && !howFoundUs ? 'border-red-600 animate-shake' : 'border-black'
+                      } bg-white px-3 py-2 text-sm hover:bg-gray-50 transition-colors`}
+                    >
+                      <span className={howFoundUs ? 'text-black' : 'text-gray-500'}>
+                        {howFoundUs 
+                          ? howFoundUs === 'instagram' ? 'Instagram'
+                          : howFoundUs === 'facebook' ? 'Facebook'
+                          : howFoundUs === 'google' ? 'Google'
+                          : howFoundUs === 'recomendacion' ? 'Recomendación de un amigo'
+                          : howFoundUs === 'prensa' ? 'Prensa o artículos'
+                          : 'Otro'
+                          : 'Selecciona una opción'
+                        }
+                      </span>
+                      <ChevronDown className={`h-4 w-4 transition-transform ${howFoundUsOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {howFoundUsOpen && (
+                      <div className="mt-2 border-2 border-black rounded-md bg-white overflow-hidden">
+                        {[
+                          { value: 'instagram', label: 'Instagram' },
+                          { value: 'facebook', label: 'Facebook' },
+                          { value: 'google', label: 'Google' },
+                          { value: 'recomendacion', label: 'Recomendación de un amigo' },
+                          { value: 'prensa', label: 'Prensa o artículos' },
+                          { value: 'otro', label: 'Otro' }
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => {
+                              setHowFoundUs(option.value);
+                              setHowFoundUsOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 text-sm hover:bg-gold/20 transition-colors ${
+                              howFoundUs === option.value ? 'bg-gold/10 font-semibold' : ''
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
