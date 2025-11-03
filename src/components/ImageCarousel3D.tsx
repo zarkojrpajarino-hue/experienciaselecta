@@ -33,12 +33,17 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
     let centerX = rect.left + rect.width / 2;
     let centerY = rect.top + rect.height / 2;
 
-    // Anclar al contenedor raíz del carrusel más cercano
-    const root = (e.currentTarget.closest('[data-carousel-root]') as HTMLElement | null) || containerRef.current;
+    // Anclar al contenedor raíz del carrusel específico
+    const root = containerRef.current;
     if (root) {
       const carouselRect = root.getBoundingClientRect();
       centerX = carouselRect.left + carouselRect.width / 2;
-      centerY = carouselRect.top + carouselRect.height / 2;
+      // Si es el carrusel de selecta, posicionar el modal más abajo
+      if (carouselId === 'selecta') {
+        centerY = carouselRect.top + carouselRect.height / 2 + 100;
+      } else {
+        centerY = carouselRect.top + carouselRect.height / 2;
+      }
     }
 
     setImagePosition({
