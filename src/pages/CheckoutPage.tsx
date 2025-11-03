@@ -262,56 +262,46 @@ const CheckoutPage = () => {
     // Require authentication
     if (!user) {
       setShowAuthModal(true);
-      setErrorMessage("Debes iniciar sesión para continuar");
-      setShowErrorMessage(true);
-      setTimeout(() => setShowErrorMessage(false), 5000);
+      toast.error("Debes iniciar sesión para continuar");
       return;
     }
     
     // Validar "Cómo nos has conocido"
     if (!howFoundUs) {
-      setErrorMessage("Por favor, selecciona cómo nos has conocido");
-      setShowErrorMessage(true);
-      setTimeout(() => setShowErrorMessage(false), 5000);
+      toast.error("Por favor, selecciona cómo nos has conocido");
       return;
     }
     
     // Validar datos personales si hay cestas propias
     if (currentPersonalItems.length > 0) {
       if (!personalData.name.trim()) {
-        setErrorMessage("Completa tu nombre en 'Tus datos de envío'");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Completa tu nombre en 'Tus datos de envío'");
+        setActiveSection('personal');
         return;
       }
       if (!personalData.email.trim() || !validateEmail(personalData.email)) {
-        setErrorMessage("Introduce un email válido en 'Tus datos de envío'");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Introduce un email válido en 'Tus datos de envío'");
+        setActiveSection('personal');
         return;
       }
       if (!personalData.phone.trim() || !validatePhone(personalData.phone)) {
-        setErrorMessage("Introduce un teléfono válido en 'Tus datos de envío'");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Introduce un teléfono válido en 'Tus datos de envío'");
+        setActiveSection('personal');
         return;
       }
       if (!personalData.address.trim()) {
-        setErrorMessage("Completa tu dirección en 'Tus datos de envío'");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Completa tu dirección en 'Tus datos de envío'");
+        setActiveSection('personal');
         return;
       }
       if (!personalData.city.trim()) {
-        setErrorMessage("Completa tu ciudad en 'Tus datos de envío'");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Completa tu ciudad en 'Tus datos de envío'");
+        setActiveSection('personal');
         return;
       }
       if (!personalData.postalCode.trim()) {
-        setErrorMessage("Completa tu código postal en 'Tus datos de envío'");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Completa tu código postal en 'Tus datos de envío'");
+        setActiveSection('personal');
         return;
       }
     }
@@ -323,35 +313,30 @@ const CheckoutPage = () => {
       for (const r of giftAssignment.recipients) {
         if (r.basketIds.length > 0) {
           if (!r.recipientName.trim() || (!r.recipientEmail.trim() && !r.recipientPhone.trim())) {
-            setErrorMessage("Completa los datos obligatorios de los destinatarios con cestas asignadas");
-            setShowErrorMessage(true);
-            setTimeout(() => setShowErrorMessage(false), 5000);
+            toast.error("Completa los datos obligatorios de los destinatarios con cestas asignadas");
+            setActiveSection('gift');
             return;
           }
           if (r.recipientEmail.trim() && !validateEmail(r.recipientEmail)) {
-            setErrorMessage("El email del destinatario no es válido");
-            setShowErrorMessage(true);
-            setTimeout(() => setShowErrorMessage(false), 5000);
+            toast.error("El email del destinatario no es válido");
+            setActiveSection('gift');
             return;
           }
           if (r.recipientPhone.trim() && !validatePhone(r.recipientPhone)) {
-            setErrorMessage("El teléfono del destinatario no es válido");
-            setShowErrorMessage(true);
-            setTimeout(() => setShowErrorMessage(false), 5000);
+            toast.error("El teléfono del destinatario no es válido");
+            setActiveSection('gift');
             return;
           }
         }
       }
       if (!giftAssignment.senderName.trim() || !giftAssignment.senderEmail.trim()) {
-        setErrorMessage("Completa tus datos como remitente para los regalos");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Completa tus datos como remitente para los regalos");
+        setActiveSection('gift');
         return;
       }
       if (!validateEmail(giftAssignment.senderEmail)) {
-        setErrorMessage("Tu email como remitente no es válido");
-        setShowErrorMessage(true);
-        setTimeout(() => setShowErrorMessage(false), 5000);
+        toast.error("Tu email como remitente no es válido");
+        setActiveSection('gift');
         return;
       }
     }
