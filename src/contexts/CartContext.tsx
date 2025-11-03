@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import * as React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface CartItem {
@@ -22,7 +22,7 @@ interface CartContextType {
   getTotalAmount: () => number;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+const CartContext = React.createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'shopping-cart';
 
@@ -31,14 +31,14 @@ const getCartStorageKey = (userId: string | null) => {
   return userId ? `${CART_STORAGE_KEY}-${userId}` : CART_STORAGE_KEY;
 };
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
   
   // Initialize cart from localStorage
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = React.useState<CartItem[]>([]);
 
   // Load user session and cart on mount
-  useEffect(() => {
+  React.useEffect(() => {
     const loadUserCart = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const userId = session?.user?.id || null;
@@ -84,7 +84,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Save cart to localStorage with debounce to improve performance
-  useEffect(() => {
+  React.useEffect(() => {
     const timeoutId = setTimeout(() => {
       try {
         const storageKey = getCartStorageKey(currentUserId);
@@ -97,7 +97,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return () => clearTimeout(timeoutId);
   }, [cart, currentUserId]);
 
-  const addToCart = useCallback((item: Omit<CartItem, 'quantity'>) => {
+  const addToCart = React.useCallback((item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
       // Buscar item con mismo id y mismo tipo (regalo o personal)
       const existingItem = prevCart.find(
@@ -114,11 +114,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  const removeFromCart = useCallback((id: number, isGift?: boolean) => {
+  const removeFromCart = React.useCallback((id: number, isGift?: boolean) => {
     setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
   }, []);
 
-  const updateQuantity = useCallback((id: number, quantity: number, isGift?: boolean) => {
+  const updateQuantity = React.useCallback((id: number, quantity: number, isGift?: boolean) => {
     if (quantity <= 0) {
       setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isGift === isGift)));
       return;
@@ -130,11 +130,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   }, []);
 
-  const clearCart = useCallback(() => {
+  const clearCart = React.useCallback(() => {
     setCart([]);
   }, []);
 
-  const removeMultipleItems = useCallback((itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
+  const removeMultipleItems = React.useCallback((itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => {
     setCart(prevCart => {
       let newCart = [...prevCart];
       
@@ -161,11 +161,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  const getTotalItems = useCallback(() => {
+  const getTotalItems = React.useCallback(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
 
-  const getTotalAmount = useCallback(() => {
+  const getTotalAmount = React.useCallback(() => {
     return cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
   }, [cart]);
 
@@ -188,7 +188,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useCart = () => {
-  const context = useContext(CartContext);
+  const context = React.useContext(CartContext);
   if (!context) {
     throw new Error('useCart must be used within a CartProvider');
   }
