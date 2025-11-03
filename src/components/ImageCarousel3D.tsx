@@ -167,7 +167,11 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
 
       {/* Modal to enlarge image */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-0 shadow-none rounded-[2rem] overflow-hidden">
+        <DialogContent 
+          hideClose 
+          className="max-w-3xl bg-transparent border-0 p-0 shadow-none rounded-[2rem] overflow-hidden mt-20"
+          overlayStyle={{ backgroundColor: 'transparent' }}
+        >
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
@@ -177,11 +181,11 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
           >
             <X className="h-6 w-6" />
           </Button>
-          <div className="rounded-[2rem] overflow-hidden bg-white">
+          <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
             <img
               src={slides[currentIndex].image}
               alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-              className="w-full h-auto max-h-[80vh] object-contain rounded-[2rem]"
+              className="w-full h-auto max-h-[55vh] object-contain rounded-[2rem]"
             />
           </div>
         </DialogContent>
