@@ -173,45 +173,49 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
       {/* Modal to enlarge image */}
       {modalOpen && (
         <div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          className="fixed inset-0 z-[9999]"
           style={{ pointerEvents: 'auto' }}
           onClick={() => setModalOpen(false)}
         >
           <motion.div
             initial={{ 
-              scale: 0.3,
+              scale: 0.5,
               opacity: 0,
-              x: imagePosition.left - window.innerWidth / 2,
-              y: imagePosition.top - window.innerHeight / 2
+              position: 'fixed',
+              left: imagePosition.left,
+              top: imagePosition.top,
+              x: '-50%',
+              y: '-50%'
             }}
             animate={{ 
-              scale: 1,
+              scale: 1.5,
               opacity: 1,
-              x: 0,
-              y: 0
+              position: 'fixed',
+              left: imagePosition.left,
+              top: imagePosition.top,
+              x: '-50%',
+              y: '-50%'
             }}
             exit={{ 
-              scale: 0.3,
-              opacity: 0,
-              x: imagePosition.left - window.innerWidth / 2,
-              y: imagePosition.top - window.innerHeight / 2
+              scale: 0.5,
+              opacity: 0
             }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative max-w-4xl w-full mx-4"
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="w-[300px] md:w-[400px]"
             onClick={(e) => e.stopPropagation()}
           >
             <Button 
               onClick={() => setModalOpen(false)} 
-              className="absolute -top-4 -right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              className="absolute -top-4 -right-4 z-50 h-10 w-10 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
               size="icon"
             >
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5" />
             </Button>
             <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
               <img
                 src={slides[currentIndex].image}
                 alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-                className="w-full h-auto max-h-[70vh] object-contain rounded-[2rem]"
+                className="w-full h-auto object-contain rounded-[2rem]"
               />
             </div>
           </motion.div>
