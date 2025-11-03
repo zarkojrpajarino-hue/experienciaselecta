@@ -180,7 +180,7 @@ const ExperienciaSelectaPage = () => {
                   <ArrowUp className="h-6 w-6 ml-2 rotate-180" />
                 </Button>
               </div>
-              <ImageCarousel3D slides={experienciaSlides} title="Experiencia" />
+              <ImageCarousel3D slides={experienciaSlides} title="Experiencia" carouselId="experiencia" />
             </div>
           </motion.div>
         </div>
@@ -237,7 +237,7 @@ const ExperienciaSelectaPage = () => {
                   Ir a Experiencia
                 </Button>
               </div>
-              <ImageCarousel3D slides={selectaSlides} title="Selecta" />
+              <ImageCarousel3D slides={selectaSlides} title="Selecta" carouselId="selecta" />
             </div>
           </motion.div>
         </div>

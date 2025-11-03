@@ -11,9 +11,10 @@ interface CarouselSlide {
 interface ImageCarousel3DProps {
   slides: CarouselSlide[];
   title?: string;
+  carouselId?: string;
 }
 
-const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
+const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [imagePosition, setImagePosition] = useState({ top: 0, left: 0 });
@@ -28,8 +29,18 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
 
   const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    let centerX = rect.left + rect.width / 2;
+    let centerY = rect.top + rect.height / 2;
+    
+    // Si es el carrusel de Selecta, posicionar la imagen ampliada en la ubicación del carrusel de Selecta
+    if (carouselId === 'selecta') {
+      const selectaCarousel = document.querySelector('#selecta-carousel');
+      if (selectaCarousel) {
+        const carouselRect = selectaCarousel.getBoundingClientRect();
+        centerY = carouselRect.top + carouselRect.height / 2;
+      }
+    }
+    
     setImagePosition({
       top: centerY,
       left: centerX
@@ -86,7 +97,7 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
   return (
     <>
       {/* Carousel */}
-      <div className="relative max-w-6xl mx-auto">
+      <div id={carouselId ? `${carouselId}-carousel` : undefined} className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
           className="relative w-full h-[180px] md:h-[240px] flex items-center justify-center mx-auto mb-12" 
