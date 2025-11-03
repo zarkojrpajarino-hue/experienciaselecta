@@ -67,6 +67,13 @@ const CheckoutPage = () => {
   // Estado para items personales (puede eliminar cestas)
   const [currentPersonalItems, setCurrentPersonalItems] = useState(personalItems);
 
+  // Ajustar activeSection cuando se eliminan todos los items personales
+  React.useEffect(() => {
+    if (currentPersonalItems.length === 0 && giftItems.length > 0 && activeSection === 'personal') {
+      setActiveSection('gift');
+    }
+  }, [currentPersonalItems.length, giftItems.length, activeSection]);
+
   // Expandir items de regalo por cantidad para asignación individual
   const expandedGiftItems = React.useMemo(() => {
     const out: Array<CartItem & { uniqueId: string }> = [];
