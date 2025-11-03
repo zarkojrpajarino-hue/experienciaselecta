@@ -183,38 +183,15 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
         </motion.div>
       </div>
 
-      {/* Modal to enlarge image */}
+      {/* Inline enlarged image below the carousel */}
       {modalOpen && (
-        <div 
-          className="fixed inset-0 z-[9999]"
-          style={{ pointerEvents: 'auto' }}
-          onClick={() => setModalOpen(false)}
-        >
+        <div className="mt-6 flex justify-center">
           <motion.div
-            initial={{ 
-              scale: 0.5,
-              opacity: 0,
-              position: 'fixed',
-              left: imagePosition.left,
-              top: imagePosition.top,
-              x: '-50%',
-              y: '-50%'
-            }}
-            animate={{ 
-              scale: 1.0,
-              opacity: 1,
-              position: 'fixed',
-              left: imagePosition.left,
-              top: imagePosition.top,
-              x: '-50%',
-              y: '-50%'
-            }}
-            exit={{ 
-              scale: 0.5,
-              opacity: 0
-            }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-[50vw] max-w-[360px] md:w-[400px]"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="relative w-[50vw] max-w-[360px] md:w-[400px]"
             onClick={(e) => e.stopPropagation()}
           >
             <Button 
