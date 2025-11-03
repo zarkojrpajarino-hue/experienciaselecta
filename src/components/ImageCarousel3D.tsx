@@ -17,6 +17,7 @@ interface ImageCarousel3DProps {
 const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [imagePosition, setImagePosition] = useState({ top: 0, left: 0 });
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -26,7 +27,12 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const openModal = () => {
+  const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setImagePosition({
+      top: rect.top,
+      left: rect.left + rect.width / 2
+    });
     setModalOpen(true);
   };
 
@@ -169,25 +175,38 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent 
           hideClose 
-          className="max-w-3xl bg-transparent border-0 p-0 shadow-none rounded-[2rem] overflow-hidden mt-20"
-          overlayStyle={{ backgroundColor: 'transparent' }}
+          className="max-w-3xl bg-transparent border-0 p-0 shadow-none rounded-[2rem] overflow-visible"
+          overlayStyle={{ backgroundColor: 'transparent', alignItems: 'flex-start', justifyContent: 'center' }}
+          style={{
+            position: 'fixed',
+            top: `${imagePosition.top}px`,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            margin: 0
+          }}
         >
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
             onClick={() => setModalOpen(false)} 
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+            className="absolute -top-2 -right-2 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
             size="icon"
           >
             <X className="h-6 w-6" />
           </Button>
-          <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
+          <motion.div 
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="rounded-[2rem] overflow-hidden bg-white shadow-2xl"
+          >
             <img
               src={slides[currentIndex].image}
               alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-              className="w-full h-auto max-h-[55vh] object-contain rounded-[2rem]"
+              className="w-full h-auto max-h-[60vh] object-contain rounded-[2rem]"
             />
-          </div>
+          </motion.div>
         </DialogContent>
       </Dialog>
     </>
