@@ -54,8 +54,12 @@ const CheckoutPage = () => {
   }
 
   // State para controlar qué sección está abierta (solo una a la vez)
-  // Ambas secciones siempre abiertas por defecto
-  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(null);
+  // Inicializar con la primera sección que tenga items
+  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(() => {
+    if (personalItems.length > 0) return 'personal';
+    if (giftItems.length > 0) return 'gift';
+    return null;
+  });
   
   // State para rastrear si se intentó enviar (para validación visual)
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
@@ -67,14 +71,16 @@ const CheckoutPage = () => {
   // Estado para items personales (puede eliminar cestas)
   const [currentPersonalItems, setCurrentPersonalItems] = useState(personalItems);
   
-  // Mantener ambas secciones abiertas siempre
-  const isPersonalOpen = currentPersonalItems.length > 0;
-  const isGiftOpen = giftItems.length > 0;
+  // Controlar qué sección está abierta
+  const isPersonalOpen = activeSection === 'personal';
+  const isGiftOpen = activeSection === 'gift';
 
   // Ajustar activeSection cuando se eliminan todos los items personales
   React.useEffect(() => {
-    // No necesitamos ajustar activeSection ya que las secciones están siempre abiertas
-  }, [currentPersonalItems.length, giftItems.length]);
+    if (currentPersonalItems.length === 0 && giftItems.length > 0 && activeSection === 'personal') {
+      setActiveSection('gift');
+    }
+  }, [currentPersonalItems.length, giftItems.length, activeSection]);
 
   // Expandir items de regalo por cantidad para asignación individual
   const expandedGiftItems = React.useMemo(() => {
@@ -364,8 +370,8 @@ const CheckoutPage = () => {
   };
 
   const toggleSection = (section: 'personal' | 'gift') => {
-    // Las secciones siempre están abiertas, no hacemos nada
-    return;
+    // Alternar la sección: si ya está abierta, no hacer nada; si no, abrirla y cerrar la otra
+    setActiveSection(activeSection === section ? section : section);
   };
 
   // Handler para verificar auth antes de permitir editar campos
