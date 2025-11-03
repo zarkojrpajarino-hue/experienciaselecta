@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -110,6 +111,9 @@ const CheckoutPage = () => {
     postalCode: ""
   });
 
+  // Cómo nos has conocido
+  const [howFoundUs, setHowFoundUs] = useState("");
+
   const getCurrentPersonalTotal = () => {
     return currentPersonalItems.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
   };
@@ -145,6 +149,14 @@ const CheckoutPage = () => {
   const handleContinueToPayment = () => {
     setAttemptedSubmit(true);
     setShowErrorMessage(false);
+    
+    // Validar "Cómo nos has conocido"
+    if (!howFoundUs) {
+      setErrorMessage("Por favor, selecciona cómo nos has conocido");
+      setShowErrorMessage(true);
+      setTimeout(() => setShowErrorMessage(false), 5000);
+      return;
+    }
     
     // Validar datos personales si hay cestas propias
     if (currentPersonalItems.length > 0) {
@@ -720,8 +732,30 @@ const CheckoutPage = () => {
               )}
             </div>
 
-            {/* Resumen del pedido */}
+            {/* Cómo nos has conocido */}
             <div className="lg:col-span-1">
+              <Card className="border-2 border-black mb-2 md:mb-3">
+                <CardHeader className="pb-2 md:pb-3 px-2 md:px-4">
+                  <CardTitle className="text-sm md:text-base font-poppins font-bold">¿Cómo nos has conocido?</CardTitle>
+                </CardHeader>
+                <CardContent className="px-2 md:px-4">
+                  <Select value={howFoundUs} onValueChange={setHowFoundUs}>
+                    <SelectTrigger className={`border-2 ${attemptedSubmit && !howFoundUs ? 'border-red-600 animate-shake' : 'border-black'}`}>
+                      <SelectValue placeholder="Selecciona una opción" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="facebook">Facebook</SelectItem>
+                      <SelectItem value="google">Google</SelectItem>
+                      <SelectItem value="recomendacion">Recomendación de un amigo</SelectItem>
+                      <SelectItem value="prensa">Prensa o artículos</SelectItem>
+                      <SelectItem value="otro">Otro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+            {/* Resumen del pedido */}
               <Card className="border-2 border-black sticky top-16 md:top-20">
                 <CardHeader className="pb-2 md:pb-3 px-2 md:px-4">
                   <CardTitle className="text-sm md:text-base font-poppins font-bold">Resumen Total</CardTitle>

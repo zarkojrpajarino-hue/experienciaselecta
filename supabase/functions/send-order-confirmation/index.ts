@@ -20,7 +20,9 @@ const orderConfirmationSchema = z.object({
     basketName: z.string().trim().min(1).max(200),
     quantity: z.number().int().positive().max(100),
     price: z.number().int().positive().max(100000)
-  })).min(1).max(50)
+  })).min(1).max(50),
+  howFoundUs: z.string().optional(),
+  shippingAddress: z.string().optional()
 });
 
 type OrderConfirmationRequest = z.infer<typeof orderConfirmationSchema>;
@@ -63,9 +65,83 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { email, customerName, orderId, items, totalAmount } = validationResult.data;
+    const { email, customerName, orderId, items, totalAmount, howFoundUs, shippingAddress } = validationResult.data;
 
     console.log("Enviando correo de confirmación de pedido a:", email);
+
+    // Send notification to host/admin with order details including "how found us"
+    try {
+      const adminEmailResponse = await resend.emails.send({
+        from: "Experiencia Selecta <onboarding@resend.dev>",
+        to: ["selectaexperiencia@gmail.com"],
+        subject: `🛒 Nuevo pedido de ${customerName} - ${orderId}`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #8B4513 0%, #2F4F2F 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: white; padding: 20px; border: 1px solid #eee; border-top: none; border-radius: 0 0 10px 10px; }
+                table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+                th { background: #f5f5f5; padding: 10px; text-align: left; border-bottom: 2px solid #8B4513; }
+                td { padding: 8px; border-bottom: 1px solid #eee; }
+                .total { font-size: 1.2em; font-weight: bold; color: #8B4513; margin-top: 10px; }
+                .highlight { background: #FFF9E6; padding: 12px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #FFB800; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2>🛒 Nuevo Pedido Recibido</h2>
+                </div>
+                <div class="content">
+                  <p><strong>Cliente:</strong> ${customerName}</p>
+                  <p><strong>Email:</strong> ${email}</p>
+                  <p><strong>Pedido #:</strong> ${orderId}</p>
+                  <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
+                  ${howFoundUs ? `<p><strong>¿Cómo nos conoció?:</strong> ${howFoundUs}</p>` : ''}
+                  ${shippingAddress ? `<p><strong>Dirección de envío:</strong> ${shippingAddress}</p>` : ''}
+                  
+                  <div class="highlight">
+                    <h3 style="margin: 0 0 10px 0;">📦 Artículos del pedido:</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Cesta</th>
+                          <th style="text-align: center;">Cantidad</th>
+                          <th style="text-align: right;">Precio</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${items.map(item => `
+                          <tr>
+                            <td>${item.basketName}</td>
+                            <td style="text-align: center;">${item.quantity}</td>
+                            <td style="text-align: right;">${(item.price / 100).toFixed(2)}€</td>
+                          </tr>
+                        `).join('')}
+                      </tbody>
+                    </table>
+                    <div class="total">Total: ${(totalAmount / 100).toFixed(2)}€</div>
+                  </div>
+                  
+                  <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                    Este es un email automático de notificación de pedido.
+                  </p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+      });
+      console.log("Notificación al admin enviada:", adminEmailResponse);
+    } catch (adminError) {
+      console.error("Error enviando notificación al admin:", adminError);
+      // Non-blocking - continue to send customer email
+    }
 
     const itemsHtml = items.map(item => `
       <tr>
