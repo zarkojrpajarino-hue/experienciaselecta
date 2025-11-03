@@ -52,7 +52,10 @@ const CheckoutPage = () => {
   }
 
   // State para controlar qué sección está abierta (solo una a la vez)
-  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>('personal');
+  // Si solo hay cestas de regalo, abrir 'gift' por defecto; si hay personales, abrir 'personal'
+  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(
+    personalItems.length > 0 ? 'personal' : (giftItems.length > 0 ? 'gift' : null)
+  );
   
   // State para rastrear si se intentó enviar (para validación visual)
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
