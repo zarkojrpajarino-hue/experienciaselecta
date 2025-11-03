@@ -11,7 +11,7 @@ import experiencia1 from "@/assets/experiencia-1-clean.png";
 import experiencia2 from "@/assets/experiencia-2-clean.png";
 import experiencia3 from "@/assets/experiencia-3-clean.png";
 import experiencia4 from "@/assets/proposito-pareja-cocinando-clean.png";
-import experiencia5 from "@/assets/experiencia-5.png";
+import experiencia5 from "@/assets/experiencia-5-clean.png";
 
 // Import Selecta images
 import selecta1 from "@/assets/selecta-1-clean.png";

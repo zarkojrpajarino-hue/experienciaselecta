@@ -100,7 +100,9 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
       <div ref={containerRef} id={carouselId ? `${carouselId}-carousel` : undefined} data-carousel-root="" data-carousel-id={carouselId || 'carousel'} className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
-          className="relative w-full h-[280px] md:h-[340px] flex items-center justify-center mx-auto mb-12" 
+          className={`relative w-full flex items-center justify-center mx-auto mb-12 ${
+            carouselId === 'experiencia' ? 'h-[220px] md:h-[340px]' : 'h-[180px] md:h-[240px]'
+          }`}
           style={{ perspective: '1800px' }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
@@ -111,7 +113,9 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
               return (
                 <div
                   key={index}
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[55%] md:w-[28%] max-w-md"
+                  className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${
+                    carouselId === 'experiencia' ? 'w-[45%] md:w-[28%]' : 'w-[35%] md:w-[25%]'
+                  } max-w-md`}
                   style={{ zIndex: position.zIndex, pointerEvents: isActive ? 'auto' : 'none' }}
                 >
                   <motion.div
