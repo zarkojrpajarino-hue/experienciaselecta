@@ -358,7 +358,7 @@ const ProfilePage = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="orders" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 mb-8 bg-transparent">
+            <TabsList className="grid w-full grid-cols-2 gap-4 md:gap-8 mb-8 bg-transparent">
               <TabsTrigger value="orders" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
                 <Package className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="font-bungee tracking-wider text-xs md:text-base">Mis pedidos.</span>
@@ -528,6 +528,18 @@ const ProfilePage = () => {
                               <div className="flex justify-between items-start">
                                 <div>
                                   <CardTitle className="text-lg text-white font-poppins font-bold">{displayName}.</CardTitle>
+                                  <div className="flex gap-1 mt-2">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star
+                                        key={i}
+                                        className={`w-5 h-5 ${
+                                          i < review.rating
+                                            ? "fill-[hsl(45,100%,65%)] text-[hsl(45,100%,65%)]"
+                                            : "text-white"
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
                                   {precio !== undefined && (
                                     <p className="text-white font-poppins font-bold mt-1">{precio}€.</p>
                                   )}
@@ -536,18 +548,6 @@ const ProfilePage = () => {
                                       Valoración tuya en paragenteselecta.com
                                     </p>
                                   )}
-                                </div>
-                                <div className="flex gap-1">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`w-5 h-5 ${
-                                        i < review.rating
-                                          ? "fill-[hsl(45,100%,65%)] text-[hsl(45,100%,65%)]"
-                                          : "text-white"
-                                      }`}
-                                    />
-                                  ))}
                                 </div>
                               </div>
                               <p className="text-sm text-white font-poppins font-bold">
