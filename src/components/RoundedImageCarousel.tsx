@@ -243,7 +243,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               opacity: 0,
               position: 'fixed',
               left: imagePosition.left,
-              top: imagePosition.top + (window.innerWidth < 768 ? 60 : 40),
+              top: imagePosition.top + (window.innerWidth < 768 ? 120 : 80),
               x: '-50%',
               y: '-50%'
             }}
@@ -252,7 +252,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               opacity: 1,
               position: 'fixed',
               left: imagePosition.left,
-              top: imagePosition.top + (window.innerWidth < 768 ? 60 : 40),
+              top: imagePosition.top + (window.innerWidth < 768 ? 120 : 80),
               x: '-50%',
               y: '-50%'
             }}
