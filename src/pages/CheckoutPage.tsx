@@ -743,7 +743,7 @@ const CheckoutPage = () => {
                     <SelectTrigger className={`border-2 ${attemptedSubmit && !howFoundUs ? 'border-red-600 animate-shake' : 'border-black'}`}>
                       <SelectValue placeholder="Selecciona una opción" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[100] bg-white border-2 border-black shadow-xl">
                       <SelectItem value="instagram">Instagram</SelectItem>
                       <SelectItem value="facebook">Facebook</SelectItem>
                       <SelectItem value="google">Google</SelectItem>
