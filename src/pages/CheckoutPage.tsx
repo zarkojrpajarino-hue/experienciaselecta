@@ -360,7 +360,114 @@ const CheckoutPage = () => {
     await saveProfileData();
 
     toast.success("Preparando pago...");
-    // Aquí iría la lógica de pago (Stripe)
+    
+    // Prepare data for payment intent
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Sesión expirada. Por favor, inicia sesión de nuevo");
+        setShowAuthModal(true);
+        return;
+      }
+
+      // Prepare basket items
+      const basketItems = [];
+      
+      // Add personal items
+      for (const item of currentPersonalItems) {
+        basketItems.push({
+          id: item.id,
+          name: item.nombre || item.name,
+          price: item.precio || item.price,
+          quantity: item.quantity,
+          category: item.categoria || item.category,
+          image: item.imagen
+        });
+      }
+
+      // Add gift items (expanded by recipient assignment)
+      const assignedGiftBaskets = giftAssignment.recipients.flatMap((r) => r.basketIds);
+      for (const uniqueId of assignedGiftBaskets) {
+        const giftItem = expandedGiftItems.find((it) => it.uniqueId === uniqueId);
+        if (giftItem) {
+          basketItems.push({
+            id: uniqueId,
+            name: giftItem.nombre || giftItem.name,
+            price: giftItem.precio || giftItem.price,
+            quantity: 1,
+            category: giftItem.categoria || giftItem.category,
+            image: giftItem.imagen
+          });
+        }
+      }
+
+      const totalToCharge = getTotalAmount();
+
+      // Prepare customer data
+      const customerData = {
+        name: personalData.name,
+        email: personalData.email,
+        phone: personalData.phone || null,
+        address_line1: personalData.address,
+        address_line2: null,
+        city: personalData.city,
+        postal_code: personalData.postalCode,
+        country: 'España'
+      };
+
+      // Check if there are assigned gifts
+      const hasAssignedGifts = assignedGiftBaskets.length > 0;
+
+      // Prepare gift data if applicable
+      const giftData = hasAssignedGifts ? {
+        senderName: giftAssignment.senderName,
+        senderEmail: giftAssignment.senderEmail,
+        recipients: giftAssignment.recipients.filter(r => r.basketIds.length > 0).map(r => ({
+          recipientName: r.recipientName,
+          recipientEmail: r.recipientEmail || null,
+          recipientPhone: r.recipientPhone || null,
+          personalNote: r.personalNote || null,
+          basketIds: r.basketIds
+        }))
+      } : null;
+
+      // Call create-payment-intent edge function
+      const { data, error } = await supabase.functions.invoke('create-payment-intent', {
+        body: {
+          customerData,
+          basketItems,
+          totalAmount: totalToCharge,
+          isGiftMode: hasAssignedGifts,
+          giftData
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (error) {
+        console.error('Error creating payment intent:', error);
+        toast.error("Error al preparar el pago. Inténtalo de nuevo.");
+        return;
+      }
+
+      if (data?.clientSecret && data?.orderId) {
+        // Navigate to payment page with client secret
+        navigate('/pago', {
+          state: {
+            clientSecret: data.clientSecret,
+            orderId: data.orderId,
+            totalAmount: totalToCharge
+          }
+        });
+      } else {
+        toast.error("Error al preparar el pago");
+      }
+    } catch (error: any) {
+      console.error('Payment preparation error:', error);
+      toast.error("Error al preparar el pago");
+    }
   };
 
   // Función para verificar si un destinatario puede marcar cestas
