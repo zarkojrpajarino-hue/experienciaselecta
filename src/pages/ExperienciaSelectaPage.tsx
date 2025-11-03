@@ -239,6 +239,45 @@ const ExperienciaSelectaPage = () => {
               </div>
               <ImageCarousel3D slides={selectaSlides} title="Selecta" carouselId="selecta" />
             </div>
+
+            {/* Selecta Images Gallery */}
+            <div className="mt-16">
+              <h3 className="text-2xl md:text-3xl font-work-sans font-bold text-center mb-8 text-black">
+                Nuestros productos selectos
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-2xl overflow-hidden shadow-lg"
+                >
+                  <img src={selecta1} alt="Selecta 1" className="w-full h-auto object-cover" />
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-2xl overflow-hidden shadow-lg"
+                >
+                  <img src={selecta2} alt="Selecta 2" className="w-full h-auto object-cover" />
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-2xl overflow-hidden shadow-lg"
+                >
+                  <img src={selecta3} alt="Selecta 3" className="w-full h-auto object-cover" />
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-2xl overflow-hidden shadow-lg"
+                >
+                  <img src={selecta4} alt="Selecta 4" className="w-full h-auto object-cover" />
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-2xl overflow-hidden shadow-lg"
+                >
+                  <img src={selecta5} alt="Selecta 5" className="w-full h-auto object-cover" />
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
