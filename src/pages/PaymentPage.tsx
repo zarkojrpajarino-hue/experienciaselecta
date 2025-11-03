@@ -48,6 +48,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
       // Confirm payment
       const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
         elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/pago-exitoso`,
+        },
         redirect: "if_required",
       });
 
@@ -97,6 +100,9 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
           toast.error("Error al confirmar el pago");
           setIsProcessing(false);
         }
+      } else {
+        toast.error("No se pudo confirmar el pago. Revisa los datos o prueba otra tarjeta.");
+        setIsProcessing(false);
       }
     } catch (error: any) {
       console.error('Payment error:', error);
