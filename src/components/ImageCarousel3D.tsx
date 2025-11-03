@@ -114,11 +114,9 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
                     transition={{ duration: 0.6, ease: 'easeInOut' }}
                     style={{ transformStyle: 'preserve-3d' }}
                     className="cursor-zoom-in"
+                    onClick={isActive ? openModal : undefined}
                   >
-                    <div 
-                      className="relative bg-white rounded-3xl shadow-2xl overflow-hidden"
-                      onClick={isActive ? openModal : undefined}
-                    >
+                    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
                       <img
                         src={slide.image}
                         alt={`${title} ${index + 1}`}
@@ -175,49 +173,45 @@ const ImageCarousel3D = ({ slides, title }: ImageCarousel3DProps) => {
       {/* Modal to enlarge image */}
       {modalOpen && (
         <div 
-          className="fixed inset-0 z-[9999]"
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
           style={{ pointerEvents: 'auto' }}
           onClick={() => setModalOpen(false)}
         >
           <motion.div
             initial={{ 
-              scale: 0.5,
+              scale: 0.3,
               opacity: 0,
-              position: 'fixed',
-              left: imagePosition.left,
-              top: imagePosition.top,
-              x: '-50%',
-              y: '-50%'
+              x: imagePosition.left - window.innerWidth / 2,
+              y: imagePosition.top - window.innerHeight / 2
             }}
             animate={{ 
-              scale: 1.5,
+              scale: 1,
               opacity: 1,
-              position: 'fixed',
-              left: imagePosition.left,
-              top: imagePosition.top,
-              x: '-50%',
-              y: '-50%'
+              x: 0,
+              y: 0
             }}
             exit={{ 
-              scale: 0.5,
-              opacity: 0
+              scale: 0.3,
+              opacity: 0,
+              x: imagePosition.left - window.innerWidth / 2,
+              y: imagePosition.top - window.innerHeight / 2
             }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-[300px] md:w-[400px]"
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="relative max-w-4xl w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             <Button 
               onClick={() => setModalOpen(false)} 
-              className="absolute -top-4 -right-4 z-50 h-10 w-10 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              className="absolute -top-4 -right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
               size="icon"
             >
-              <X className="h-5 w-5" />
+              <X className="h-6 w-6" />
             </Button>
             <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
               <img
                 src={slides[currentIndex].image}
                 alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-                className="w-full h-auto object-contain rounded-[2rem]"
+                className="w-full h-auto max-h-[70vh] object-contain rounded-[2rem]"
               />
             </div>
           </motion.div>
