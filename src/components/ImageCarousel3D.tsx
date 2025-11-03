@@ -33,9 +33,10 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
     let centerX = rect.left + rect.width / 2;
     let centerY = rect.top + rect.height / 2;
 
-    // Anclar la ampliación al centro del carrusel actual
-    if (containerRef.current) {
-      const carouselRect = containerRef.current.getBoundingClientRect();
+    // Anclar al contenedor raíz del carrusel más cercano
+    const root = (e.currentTarget.closest('[data-carousel-root]') as HTMLElement | null) || containerRef.current;
+    if (root) {
+      const carouselRect = root.getBoundingClientRect();
       centerX = carouselRect.left + carouselRect.width / 2;
       centerY = carouselRect.top + carouselRect.height / 2;
     }
@@ -96,7 +97,7 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
   return (
     <>
       {/* Carousel */}
-      <div ref={containerRef} id={carouselId ? `${carouselId}-carousel` : undefined} className="relative max-w-6xl mx-auto">
+      <div ref={containerRef} id={carouselId ? `${carouselId}-carousel` : undefined} data-carousel-root="" data-carousel-id={carouselId || 'carousel'} className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
           className="relative w-full h-[180px] md:h-[240px] flex items-center justify-center mx-auto mb-12" 
