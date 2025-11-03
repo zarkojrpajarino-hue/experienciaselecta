@@ -418,6 +418,12 @@ const CheckoutPage = () => {
       } : null;
 
       // Call create-payment-intent edge function
+      console.log('Calling create-payment-intent with:', {
+        totalAmount: totalToCharge,
+        basketItemsCount: basketItems.length,
+        hasGifts: hasAssignedGifts
+      });
+      
       const { data, error } = await supabase.functions.invoke('create-payment-intent', {
         body: {
           customerData,
@@ -431,13 +437,21 @@ const CheckoutPage = () => {
         }
       });
 
+      console.log('create-payment-intent response:', { data, error });
+
       if (error) {
         console.error('Error creating payment intent:', error);
-        toast.error("Error al preparar el pago. Inténtalo de nuevo.");
+        toast.error("Error al preparar el pago: " + (error.message || "Inténtalo de nuevo"));
         return;
       }
 
       if (data?.clientSecret && data?.orderId) {
+        console.log('Navigating to payment page with:', {
+          hasClientSecret: !!data.clientSecret,
+          orderId: data.orderId,
+          totalAmount: totalToCharge
+        });
+        
         // Navigate to payment page with client secret
         navigate('/pago', {
           state: {
@@ -447,7 +461,8 @@ const CheckoutPage = () => {
           }
         });
       } else {
-        toast.error("Error al preparar el pago");
+        console.error('Missing payment data:', data);
+        toast.error("Error al preparar el pago: datos incompletos");
       }
     } catch (error: any) {
       console.error('Payment preparation error:', error);

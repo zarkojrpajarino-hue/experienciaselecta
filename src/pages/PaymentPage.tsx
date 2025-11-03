@@ -128,23 +128,45 @@ const PaymentPage = () => {
   const { clientSecret, orderId, totalAmount } = location.state || {};
   const [isStripeReady, setIsStripeReady] = useState(false);
   const [stripeInstance, setStripeInstance] = useState<Promise<Stripe | null> | null>(null);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('PaymentPage mounted with state:', { clientSecret: !!clientSecret, orderId, totalAmount });
+    
     const initStripe = async () => {
       try {
+        console.log('Initializing Stripe...');
         if (!stripePromise) {
+          console.log('Fetching Stripe publishable key...');
           const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
-          if (error) throw error;
+          
+          if (error) {
+            console.error('Error fetching Stripe key:', error);
+            throw error;
+          }
+          
           const key = (data as any)?.publishableKey;
-          if (!key) throw new Error('Missing Stripe publishable key');
+          console.log('Received Stripe key:', key ? 'pk_***' : 'missing');
+          
+          if (!key) {
+            throw new Error('Missing Stripe publishable key');
+          }
+          
+          console.log('Loading Stripe with key...');
           stripePromise = loadStripe(key);
         }
+        
+        const stripe = await stripePromise;
+        console.log('Stripe loaded:', !!stripe);
+        
         setStripeInstance(stripePromise);
         setIsStripeReady(true);
+        console.log('Stripe initialization complete');
       } catch (err) {
-        console.error('Error loading Stripe key:', err);
-        toast.error('No se pudo inicializar el pago. Inténtalo de nuevo.');
-        navigate('/checkout', { replace: true });
+        console.error('Error loading Stripe:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
+        setLoadingError(errorMessage);
+        toast.error('No se pudo inicializar el sistema de pago: ' + errorMessage);
       }
     };
 
@@ -153,19 +175,53 @@ const PaymentPage = () => {
 
   useEffect(() => {
     if (!clientSecret || !orderId || !totalAmount) {
-      toast.error("Información de pago inválida");
-      navigate('/carrito', { replace: true });
+      console.error('Missing payment info:', { clientSecret: !!clientSecret, orderId, totalAmount });
+      toast.error("Información de pago inválida. Redirigiendo al checkout...");
+      setTimeout(() => navigate('/checkout', { replace: true }), 2000);
     }
   }, [clientSecret, orderId, totalAmount, navigate]);
 
+  if (loadingError) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen pt-24 flex items-center justify-center px-4">
+          <Card className="max-w-md">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <div className="mb-4 text-red-600">
+                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-bold mb-2">Error al inicializar el pago</h2>
+                <p className="text-gray-600 mb-4">{loadingError}</p>
+                <Button onClick={() => navigate('/checkout')} className="bg-gold hover:bg-gold/90 text-black">
+                  Volver al checkout
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </>
+    );
+  }
+
   if (!clientSecret || !orderId || !totalAmount || !isStripeReady || !stripeInstance) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto mb-4"></div>
-          <p className="text-black font-poppins">Cargando sistema de pago...</p>
+      <>
+        <Navbar />
+        <div className="min-h-screen pt-24 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto mb-4"></div>
+            <p className="text-black font-poppins">Cargando sistema de pago...</p>
+            <p className="text-sm text-gray-500 mt-2">
+              {!clientSecret && "Esperando información de pago..."}
+              {!isStripeReady && "Inicializando Stripe..."}
+            </p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
