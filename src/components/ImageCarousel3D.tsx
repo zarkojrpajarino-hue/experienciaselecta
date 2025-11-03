@@ -31,16 +31,17 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
     const rect = e.currentTarget.getBoundingClientRect();
     let centerX = rect.left + rect.width / 2;
     let centerY = rect.top + rect.height / 2;
-    
-    // Si es el carrusel de Selecta, posicionar la imagen ampliada en la ubicación del carrusel de Selecta
+
+    // Si es el carrusel de Selecta, anclar al centro del propio carrusel de Selecta
     if (carouselId === 'selecta') {
-      const selectaCarousel = document.querySelector('#selecta-carousel');
+      const selectaCarousel = document.querySelector('#selecta-carousel') as HTMLElement | null;
       if (selectaCarousel) {
         const carouselRect = selectaCarousel.getBoundingClientRect();
+        centerX = carouselRect.left + carouselRect.width / 2;
         centerY = carouselRect.top + carouselRect.height / 2;
       }
     }
-    
+
     setImagePosition({
       top: centerY,
       left: centerX
