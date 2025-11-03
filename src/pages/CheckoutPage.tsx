@@ -398,7 +398,7 @@ const CheckoutPage = () => {
         address_line2: null,
         city: personalData.city,
         postal_code: personalData.postalCode,
-        country: 'España'
+        country: 'ES'
       };
 
       // Check if there are assigned gifts
