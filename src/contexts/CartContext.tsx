@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface CartItem {
   id: number;
@@ -25,30 +26,76 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'shopping-cart';
 
+// Get cart storage key for current user
+const getCartStorageKey = (userId: string | null) => {
+  return userId ? `${CART_STORAGE_KEY}-${userId}` : CART_STORAGE_KEY;
+};
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  
   // Initialize cart from localStorage
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    try {
-      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-      return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-      console.error('Error loading cart from localStorage:', error);
-      return [];
-    }
-  });
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Load user session and cart on mount
+  useEffect(() => {
+    const loadUserCart = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id || null;
+      setCurrentUserId(userId);
+      
+      // Load cart for this user
+      try {
+        const storageKey = getCartStorageKey(userId);
+        const savedCart = localStorage.getItem(storageKey);
+        setCart(savedCart ? JSON.parse(savedCart) : []);
+      } catch (error) {
+        console.error('Error loading cart from localStorage:', error);
+        setCart([]);
+      }
+    };
+    
+    loadUserCart();
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const newUserId = session?.user?.id || null;
+      
+      // If user changed, load their cart
+      if (newUserId !== currentUserId) {
+        setCurrentUserId(newUserId);
+        try {
+          const storageKey = getCartStorageKey(newUserId);
+          const savedCart = localStorage.getItem(storageKey);
+          setCart(savedCart ? JSON.parse(savedCart) : []);
+        } catch (error) {
+          console.error('Error loading cart for new user:', error);
+          setCart([]);
+        }
+      }
+      
+      // Clear cart on logout
+      if (event === 'SIGNED_OUT') {
+        setCart([]);
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Save cart to localStorage with debounce to improve performance
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+        const storageKey = getCartStorageKey(currentUserId);
+        localStorage.setItem(storageKey, JSON.stringify(cart));
       } catch (error) {
         console.error('Error saving cart to localStorage:', error);
       }
     }, 300);
     
     return () => clearTimeout(timeoutId);
-  }, [cart]);
+  }, [cart, currentUserId]);
 
   const addToCart = useCallback((item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {
