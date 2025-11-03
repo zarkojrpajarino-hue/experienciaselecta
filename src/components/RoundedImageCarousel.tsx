@@ -243,22 +243,22 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               opacity: 0,
               position: 'fixed',
               left: imagePosition.left,
-              top: imagePosition.top,
+              top: imagePosition.top + (window.innerWidth < 768 ? 60 : 40),
               x: '-50%',
               y: '-50%'
             }}
             animate={{ 
-              scale: 1.5,
+              scale: window.innerWidth < 768 ? 1.2 : 1.5,
               opacity: 1,
               position: 'fixed',
               left: imagePosition.left,
-              top: imagePosition.top,
+              top: imagePosition.top + (window.innerWidth < 768 ? 60 : 40),
               x: '-50%',
               y: '-50%'
             }}
             exit={{ scale: 0.5, opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="w-[300px] md:w-[400px]"
+            className="w-[280px] md:w-[400px]"
             onClick={(e) => e.stopPropagation()}
           >
             <Button 

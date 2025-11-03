@@ -26,7 +26,7 @@ import heroEmbrutidoAlmendrasImg from "@/assets/hero-plato-embutido-almendras.pn
 import selectaJamonPizarraImg from "@/assets/selecta-jamon-pizarra-clean.png";
 import nuevaSeccion01Img from "@/assets/nueva-seccion-01-clean.png";
 import nuevaSeccion02Img from "@/assets/nueva-seccion-02-clean.png";
-import nuevaSeccion03Img from "@/assets/nueva-seccion-03.png";
+import nuevaSeccion03Img from "@/assets/nueva-seccion-03-clean.png";
 import nuevaSeccion04Img from "@/assets/nueva-seccion-04-clean.png";
 import nuevaSeccion05Img from "@/assets/nueva-seccion-05-clean.png";
 import nuevaSeccion06Img from "@/assets/nueva-seccion-06-clean.png";
