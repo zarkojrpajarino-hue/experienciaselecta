@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 
-const stripePromise = loadStripe("pk_live_51QVbLmGtD4RCT1lOhzNlWlHVg7ByK6N7QbW7fSLrPL5kLwNtNzgfKN4llSLJz07SDOjYxgcJYyYqQvjqY4woBgQ700dJwlEQr6");
+// Stripe publishable key will be loaded dynamically
 
 interface PaymentFormProps {
   clientSecret: string;
@@ -125,6 +125,25 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { clientSecret, orderId, totalAmount } = location.state || {};
+  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
+        if (error) throw error;
+        const key = (data as any)?.publishableKey;
+        if (!key) throw new Error('Missing Stripe publishable key');
+        const promise = loadStripe(key);
+        if (isMounted) setStripePromise(promise);
+      } catch (err) {
+        console.error('Error loading Stripe key:', err);
+        toast.error('No se pudo inicializar el pago. Inténtalo de nuevo.');
+      }
+    })();
+    return () => { isMounted = false };
+  }, []);
 
   useEffect(() => {
     if (!clientSecret || !orderId || !totalAmount) {
@@ -133,7 +152,7 @@ const PaymentPage = () => {
     }
   }, [clientSecret, orderId, totalAmount, navigate]);
 
-  if (!clientSecret || !orderId || !totalAmount) {
+  if (!clientSecret || !orderId || !totalAmount || !stripePromise) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
