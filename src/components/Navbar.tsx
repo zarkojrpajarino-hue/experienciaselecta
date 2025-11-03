@@ -279,12 +279,13 @@ const Navbar = () => {
       : (currentIndex + 1) % navItems.length;
     handleNavigation(navItems[newIndex]);
   }, [handleNavigation, location.hash]);
-  // Mostrar navbar en la home solo cuando ya se ha revelado por scroll
-  const shouldShowNavbar = location.pathname === '/' && (isScrolled || hasRevealed);
+  
+  // Mostrar navbar siempre en páginas que no son home, o en home cuando se ha revelado por scroll
+  const shouldShowNavbar = location.pathname !== '/' || (isScrolled || hasRevealed);
 
   return <motion.nav initial={{
-    y: -100,
-    opacity: 0
+    y: location.pathname === '/' ? -100 : 0,
+    opacity: location.pathname === '/' ? 0 : 1
   }} animate={{
     y: shouldShowNavbar ? 0 : -100,
     opacity: shouldShowNavbar ? 1 : 0
