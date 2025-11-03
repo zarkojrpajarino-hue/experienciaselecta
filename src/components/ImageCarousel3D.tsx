@@ -29,27 +29,18 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
   };
 
   const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    let centerX = rect.left + rect.width / 2;
-    let centerY = rect.top + rect.height / 2;
-
-    // Anclar al contenedor raíz del carrusel específico
+    // Usar directamente la posición del contenedor del carrusel
     const root = containerRef.current;
     if (root) {
       const carouselRect = root.getBoundingClientRect();
-      centerX = carouselRect.left + carouselRect.width / 2;
-      // Si es el carrusel de selecta, posicionar el modal más abajo
-      if (carouselId === 'selecta') {
-        centerY = carouselRect.top + carouselRect.height / 2 + 100;
-      } else {
-        centerY = carouselRect.top + carouselRect.height / 2;
-      }
-    }
+      const centerX = carouselRect.left + carouselRect.width / 2;
+      const centerY = carouselRect.top + carouselRect.height / 2;
 
-    setImagePosition({
-      top: centerY,
-      left: centerX
-    });
+      setImagePosition({
+        top: centerY,
+        left: centerX
+      });
+    }
     setModalOpen(true);
   };
 
