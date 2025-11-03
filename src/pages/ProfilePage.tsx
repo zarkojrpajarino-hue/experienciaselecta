@@ -22,7 +22,7 @@ import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-clean.
 import granTertuliaImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
 import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
 import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
-import profileBgImg from "@/assets/profile-bg-orders.png";
+import profileBgImg from "@/assets/profile-orders-bg.png";
 import valoracionesBgImg from "@/assets/familia-terraza-nueva.png";
 
 // Mapeo de cestas a imágenes y precios correctos del catálogo actual
@@ -106,51 +106,19 @@ const ProfilePage = () => {
     checkAuthAndLoadData();
   }, []);
 
-  // Real-time subscriptions
+  // Optimized real-time subscriptions - only when user is active
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id || !document.hasFocus()) return;
 
     const ordersChannel = supabase
-      .channel('orders-changes')
+      .channel('profile-changes')
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'orders'
-        },
-        () => {
-          loadUserData(user.id);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'order_items'
-        },
-        () => {
-          loadUserData(user.id);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'reviews'
-        },
-        () => {
-          loadUserData(user.id);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'pending_gifts'
+          table: 'orders',
+          filter: `customer_id=eq.${user.id}`
         },
         () => {
           loadUserData(user.id);
@@ -359,7 +327,8 @@ const ProfilePage = () => {
               style={{ 
                 objectPosition: 'center center'
               }} 
-              loading="eager"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           
@@ -379,7 +348,8 @@ const ProfilePage = () => {
               style={{ 
                 objectPosition: 'center center'
               }} 
-              loading="eager"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>
@@ -447,13 +417,13 @@ const ProfilePage = () => {
                         open={openOrders[order.id]}
                         onOpenChange={() => setOpenOrders(prev => ({ ...prev, [order.id]: !prev[order.id] }))}
                       >
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-start px-4">
-                            <div className="flex-1 text-right pr-4">
-                              <h2 className="text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
+                          <div className="space-y-4">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-2 md:px-4">
+                            <div className="flex-1 text-center md:text-right md:pr-4">
+                              <h2 className="text-xl md:text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
                                 ¡Enhorabuena!
                               </h2>
-                              <p className="text-sm text-white font-poppins font-bold">
+                              <p className="text-xs md:text-sm text-white font-poppins font-bold">
                                 📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
                                   year: "numeric",
                                   month: "long",
@@ -463,15 +433,15 @@ const ProfilePage = () => {
                                 })}.
                               </p>
                             </div>
-                            <div className="flex-1 text-center px-4">
-                              <p className="font-poppins font-bold text-white text-3xl">
+                            <div className="flex-1 text-center px-2 md:px-4">
+                              <p className="font-poppins font-bold text-white text-xl md:text-3xl">
                                 {(
                                   order.items.reduce((sum, i) => sum + ((basketData[i.basket_name]?.precio ? basketData[i.basket_name].precio * 100 : i.price_per_item) * i.quantity), 0) / 100
                                 ).toFixed(2)}€.
                               </p>
                             </div>
                             <div className="flex-1 text-center">
-                              <p className="text-2xl text-green-600 font-poppins font-bold">
+                              <p className="text-lg md:text-2xl text-green-600 font-poppins font-bold">
                                 ✓ Pagado.
                               </p>
                             </div>
