@@ -21,6 +21,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const [verificationCode, setVerificationCode] = useState("");
   const [showCodeInput, setShowCodeInput] = useState(false);
   const { toast } = useToast();
+  const [resendSeconds, setResendSeconds] = useState(0);
+  const [lastEmailSent, setLastEmailSent] = useState<string>("");
 
   // Guardar la ruta/intención actual al abrir el modal
   useEffect(() => {
@@ -29,6 +31,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       localStorage.setItem('intendedRoute', intended);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (resendSeconds <= 0) return;
+    const t = setInterval(() => setResendSeconds((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(t);
+  }, [resendSeconds]);
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +62,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       if (error) throw error;
 
       setShowCodeInput(true);
+      setLastEmailSent(emailClean);
+      setResendSeconds(30);
       toast({
         title: "¡Código enviado!",
         description: "Revisa tu correo e introduce el código de verificación.",
@@ -74,6 +84,35 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
     }
   };
 
+  const handleResendCode = async () => {
+    if (resendSeconds > 0) return;
+    setIsLoading(true);
+    try {
+      const targetEmail = (lastEmailSent || email).trim().toLowerCase();
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(targetEmail);
+      if (!emailValid) {
+        throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
+      }
+      const redirectUrl = `${window.location.origin}/`;
+      const { error } = await supabase.auth.signInWithOtp({
+        email: targetEmail,
+        options: { shouldCreateUser: true, emailRedirectTo: redirectUrl },
+      });
+      if (error) throw error;
+      setLastEmailSent(targetEmail);
+      setResendSeconds(30);
+      toast({ title: "Código reenviado", description: `Hemos reenviado el código a ${targetEmail}.` });
+    } catch (error: any) {
+      console.error('Resend code error:', error);
+      toast({
+        variant: "destructive",
+        title: "No se pudo reenviar",
+        description: error.message || 'Inténtalo de nuevo en unos segundos.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -240,6 +279,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
                       required
                     />
                   </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    Te hemos enviado un código a <span className="font-medium">{lastEmailSent || email}</span>. Revisa la carpeta de spam si no lo encuentras.
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-muted-foreground">¿No te llega?</div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleResendCode}
+                      disabled={isLoading || resendSeconds > 0}
+                      className="h-7 px-2"
+                    >
+                      {resendSeconds > 0 ? `Reenviar en ${resendSeconds}s` : 'Reenviar código'}
+                    </Button>
+                  </div>
+
                   <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
                     {isLoading ? (
                       <>
