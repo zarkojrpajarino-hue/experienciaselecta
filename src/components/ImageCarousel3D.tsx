@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [imagePosition, setImagePosition] = useState({ top: 0, left: 0 });
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -32,14 +33,11 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
     let centerX = rect.left + rect.width / 2;
     let centerY = rect.top + rect.height / 2;
 
-    // Si es el carrusel de Selecta, anclar al centro del propio carrusel de Selecta
-    if (carouselId === 'selecta') {
-      const selectaCarousel = document.querySelector('#selecta-carousel') as HTMLElement | null;
-      if (selectaCarousel) {
-        const carouselRect = selectaCarousel.getBoundingClientRect();
-        centerX = carouselRect.left + carouselRect.width / 2;
-        centerY = carouselRect.top + carouselRect.height / 2;
-      }
+    // Anclar la ampliación al centro del carrusel actual
+    if (containerRef.current) {
+      const carouselRect = containerRef.current.getBoundingClientRect();
+      centerX = carouselRect.left + carouselRect.width / 2;
+      centerY = carouselRect.top + carouselRect.height / 2;
     }
 
     setImagePosition({
@@ -98,7 +96,7 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
   return (
     <>
       {/* Carousel */}
-      <div id={carouselId ? `${carouselId}-carousel` : undefined} className="relative max-w-6xl mx-auto">
+      <div ref={containerRef} id={carouselId ? `${carouselId}-carousel` : undefined} className="relative max-w-6xl mx-auto">
         {/* 3D Carousel Container */}
         <div 
           className="relative w-full h-[180px] md:h-[240px] flex items-center justify-center mx-auto mb-12" 
@@ -126,9 +124,11 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
                     transition={{ duration: 0.6, ease: 'easeInOut' }}
                     style={{ transformStyle: 'preserve-3d' }}
                     className="cursor-zoom-in"
-                    onClick={isActive ? openModal : undefined}
                   >
-                    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+                    <div
+                      className="relative bg-white rounded-3xl shadow-2xl overflow-hidden"
+                      onClick={isActive ? openModal : undefined}
+                    >
                       <img
                         src={slide.image}
                         alt={`${title} ${index + 1}`}
