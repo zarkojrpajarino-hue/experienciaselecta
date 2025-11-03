@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,13 +35,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
     setIsLoading(true);
 
     try {
-      const redirectUrl = window.location.href; // Mantener al usuario en la misma página
+      const emailClean = email.trim().toLowerCase();
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailClean);
+      if (!emailValid) {
+        throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
+      }
+
+      // Usar siempre el origen del sitio para evitar errores de redirección
+      const redirectUrl = `${window.location.origin}/`;
       const { error } = await supabase.auth.signInWithOtp({
-        email,
+        email: emailClean,
         options: {
           shouldCreateUser: true,
-          emailRedirectTo: redirectUrl
-        }
+          emailRedirectTo: redirectUrl,
+        },
       });
 
       if (error) throw error;
@@ -53,10 +60,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       });
     } catch (error: any) {
       console.error('Send code error:', error);
+      const msg = (error?.message || '').toString();
+      const friendly = msg.includes('email')
+        ? 'El email no es válido. Revísalo e inténtalo de nuevo.'
+        : 'No se pudo enviar el código de verificación. Inténtalo de nuevo en unos segundos.';
       toast({
         variant: "destructive",
         title: "Error al enviar el código",
-        description: error.message || "No se pudo enviar el código de verificación.",
+        description: friendly,
       });
     } finally {
       setIsLoading(false);
@@ -68,10 +79,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
     setIsLoading(true);
 
     try {
+      const emailClean = email.trim().toLowerCase();
       const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: verificationCode,
-        type: 'email'
+        email: emailClean,
+        token: verificationCode.trim(),
+        type: 'email',
       });
 
       if (error) throw error;
