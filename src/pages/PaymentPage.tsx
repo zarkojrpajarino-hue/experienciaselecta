@@ -23,6 +23,17 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
   const elements = useElements();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [elementReady, setElementReady] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!elementReady) {
+        console.warn('PaymentElement not ready after timeout');
+        toast.error('No se pudo cargar el formulario de pago. Recarga la página o vuelve al checkout.');
+      }
+    }, 7000);
+    return () => clearTimeout(t);
+  }, [elementReady]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,7 +107,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
+      <PaymentElement onReady={() => setElementReady(true)} />
       
       <div className="flex gap-4">
         <Button
