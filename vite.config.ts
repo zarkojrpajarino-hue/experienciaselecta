@@ -29,6 +29,17 @@ export default defineConfig(({ mode }) => ({
       "react-router-dom",
     ],
   },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+      "react-router",
+      "react-router-dom",
+    ],
+    force: true, // Force re-optimization to clear bad cache
+  },
   build: {
     // Generate unique hashes for each build to force updates
     rollupOptions: {
