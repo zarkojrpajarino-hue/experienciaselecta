@@ -1074,6 +1074,10 @@ const CheckoutPage = () => {
           setShowAuthModal(false);
           toast.success("¡Bienvenido! Ahora puedes continuar con tu pedido");
         }}
+        onBack={() => {
+          setShowAuthModal(false);
+          navigate(-1); // Volver a la página anterior
+        }}
       />
 
     </>
