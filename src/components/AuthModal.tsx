@@ -196,8 +196,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
   const handleGoogleSignIn = async () => {
     try {
-      // Redirigir SIEMPRE al checkout tras login con Google
-      const redirectUrl = `${window.location.origin}/checkout`;
+      // Redirigir a la página actual (mantener al usuario en el mismo lugar, p. ej. /checkout)
+      const redirectUrl = window.location.href;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
