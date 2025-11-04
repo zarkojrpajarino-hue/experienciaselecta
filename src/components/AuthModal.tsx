@@ -211,11 +211,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
   const handleGoogleSignIn = async () => {
     try {
+      // Si estamos en checkout, guardar estado antes de redirigir
+      if (onBack) {
+        localStorage.setItem('pendingCheckout', 'true');
+      }
+      
       const inIframe = window.self !== window.top;
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.href, // Mantener ruta actual tras login
+          redirectTo: window.location.href,
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',

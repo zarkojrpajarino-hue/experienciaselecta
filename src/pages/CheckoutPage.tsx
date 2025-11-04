@@ -128,7 +128,7 @@ const CheckoutPage = () => {
   const [session, setSession] = useState<any>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
-  // Check auth status
+  // Check auth status and handle post-OAuth redirect
   React.useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
@@ -137,6 +137,17 @@ const CheckoutPage = () => {
       // Load profile data when user logs in
       if (session?.user) {
         loadUserProfile(session.user.id);
+        
+        // Si acabamos de hacer login y hay checkout pendiente, no hacer nada más
+        // El usuario ya está en la página de checkout
+        if (event === 'SIGNED_IN') {
+          const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+          if (hasPendingCheckout) {
+            localStorage.removeItem('pendingCheckout');
+            // El usuario ya está autenticado y en checkout, solo necesita ver el mensaje
+            toast.success("¡Sesión iniciada! Ahora completa tus datos de envío.");
+          }
+        }
       }
     });
 
