@@ -46,41 +46,39 @@ const VisualHeader = () => {
           </p>
 
           <div className="flex flex-col items-center gap-4">
-            <motion.button 
-              whileHover={{ color: '#FFD700' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-              onClick={() => {
-                // Intentar scroll inmediato
-                const element = document.getElementById('categoria-cestas');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            <button 
+              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap hover:text-[#FFD700] cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                console.log('Botón clickeado - buscando categoria-cestas');
+                
+                // Buscar el elemento inmediatamente
+                const targetElement = document.getElementById('categoria-cestas');
+                console.log('Elemento encontrado:', targetElement);
+                
+                if (targetElement) {
+                  // Scroll con más offset para compensar el header
+                  const yOffset = -80;
+                  const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                  
+                  window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
+                  });
                 } else {
-                  // Reintentar y, si no existe, navegar con hash para forzar el scroll
-                  setTimeout(() => {
-                    const retryElement = document.getElementById('categoria-cestas');
-                    if (retryElement) {
-                      retryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                      navigate('/#categoria-cestas');
-                    }
-                  }, 120);
+                  console.log('Elemento no encontrado, navegando con hash');
+                  // Si no existe, forzar navegación con hash
+                  window.location.hash = '#categoria-cestas';
                 }
               }}
             >
               ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!{" "}
-              <motion.span
-                className="inline-block ml-2"
-                animate={{ y: [0, 5, 0] }}
-                transition={{ 
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+              <span
+                className="inline-block ml-2 animate-bounce"
               >
                 <ChevronDown className="w-5 h-5 md:w-6 md:h-6" />
-              </motion.span>
-            </motion.button>
+              </span>
+            </button>
             
             <motion.button 
               whileHover={{ color: '#FFD700' }}
