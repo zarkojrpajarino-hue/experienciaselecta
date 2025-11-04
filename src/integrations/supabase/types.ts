@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      basket_catalog: {
+        Row: {
+          category: string
+          created_at: string
+          current_price: number
+          description: string | null
+          display_order: number | null
+          features: string[] | null
+          id: string
+          image_url: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_price: number
+          description?: string | null
+          display_order?: number | null
+          features?: string[] | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_price?: number
+          description?: string | null
+          display_order?: number | null
+          features?: string[] | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cookie_consents: {
         Row: {
           consented_at: string
