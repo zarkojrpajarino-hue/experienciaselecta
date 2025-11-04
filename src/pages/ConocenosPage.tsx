@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Importar imágenes
 import nuevaSeccion01Img from "@/assets/nueva-seccion-01-clean.png";
@@ -21,6 +22,17 @@ import alternativaAsequibleImg from "@/assets/beneficio-tiempo-enrollados.png";
 
 const ConocenosPage = () => {
   const navigate = useNavigate();
+  const [arrowTooltipOpen, setArrowTooltipOpen] = useState(false);
+
+  // Auto-mostrar tooltip cada 8 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setArrowTooltipOpen(true);
+      setTimeout(() => setArrowTooltipOpen(false), 2000);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Scroll al inicio al montar
   useEffect(() => {
@@ -164,20 +176,51 @@ const ConocenosPage = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black">
                 Conócenos.
               </h1>
-              <motion.button
-                onClick={() => {
-                  const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
-                    const svg = btn.querySelector('svg');
-                    return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
-                  }) as HTMLButtonElement | undefined;
-                  hamburgerButton?.click();
-                }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 text-sm sm:text-base font-poppins font-semibold bg-[#D4AF37] text-white rounded-lg hover:bg-[#C4A037] transition-all duration-300"
-              >
-                Haz click
-              </motion.button>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip open={arrowTooltipOpen} onOpenChange={setArrowTooltipOpen}>
+                  <TooltipTrigger asChild>
+                    <motion.button
+                      onClick={() => {
+                        const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
+                          const svg = btn.querySelector('svg');
+                          return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
+                        }) as HTMLButtonElement | undefined;
+                        hamburgerButton?.click();
+                      }}
+                      whileHover={{ scale: 1.15, y: -3 }}
+                      whileTap={{ scale: 0.9 }}
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{
+                        y: {
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        },
+                      }}
+                      onMouseEnter={() => setArrowTooltipOpen(true)}
+                      onMouseLeave={() => setArrowTooltipOpen(false)}
+                      className="p-0 bg-transparent border-0 cursor-pointer"
+                      aria-label="Abrir menú"
+                    >
+                      <svg 
+                        className="w-6 h-6 sm:w-8 sm:h-8" 
+                        fill="none" 
+                        stroke="#D4AF37" 
+                        strokeWidth="3" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                      </svg>
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent 
+                    side="top" 
+                    className="rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2"
+                  >
+                    Haz click
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <p className="text-base sm:text-lg md:text-xl text-black mt-4">
               Descubre quiénes somos y qué nos mueve.
@@ -207,7 +250,6 @@ const ConocenosPage = () => {
           slides={benefitsSlides} 
           titleBold={false} 
           hideMainTitle={true}
-          carouselTitle="Como te entendemos."
           isSecondCarousel={true}
         />
       </div>
