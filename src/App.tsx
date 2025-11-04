@@ -6,10 +6,12 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Lazy load pages for better performance
+// Import critical pages directly (no lazy loading)
 import Index from "./pages/Index";
 import ComprarCestasPage from "./pages/ComprarCestasPage";
 import CartPage from "./pages/CartPage";
+
+// Lazy load non-critical pages for better performance
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const PaymentPage = lazy(() => import("./pages/PaymentPage"));
