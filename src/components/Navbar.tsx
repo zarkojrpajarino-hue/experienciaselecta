@@ -102,7 +102,7 @@ const Navbar = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, getTotalItems]);
+  }, []);
 
   // Listen for pending feedback changes (session-based)
   useEffect(() => {
