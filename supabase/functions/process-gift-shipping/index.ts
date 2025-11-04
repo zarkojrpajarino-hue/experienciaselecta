@@ -194,17 +194,23 @@ Sistema Experiencia Selecta`,
         <p><strong>Estimado:</strong> 3-5 días laborables</p>
       </div>
       
-      <h3 style="color: #8B4513;">✨ Tu acceso exclusivo</h3>
-      <p>Con este regalo no solo recibirás productos ibéricos premium. También tienes acceso a <strong>paragenteselecta.com</strong>, donde tu cesta se convierte en una experiencia única e inolvidable, personalizada para ti.</p>
-      
-      <h3 style="color: #8B4513;">🕐 24 horas de experiencia por cada cesta</h3>
-      <p><strong>Importante:</strong> Activa tu experiencia solo cuando estés listo para consumir la cesta con tus seres queridos. Así disfrutarás de toda la experiencia completa.</p>
-      
-      <div style="text-align: center;">
-        <a href="https://paragenteselecta.com" class="cta-button">Acceder a mi experiencia</a>
+      <div style="background-color: #fff3cd; padding: 20px; border-left: 4px solid #ffc107; margin: 25px 0; border-radius: 4px;">
+        <h3 style="color: #856404; margin-top: 0;">✨ Esto no es solo una cesta, es una experiencia</h3>
+        <p style="color: #856404; margin: 10px 0;">
+          Con este regalo no solo recibirás productos ibéricos premium. También tienes acceso exclusivo a <strong>paragenteselecta.com</strong>, donde tu cesta se convierte en una experiencia única e inolvidable.
+        </p>
       </div>
       
-      <p style="text-align: center; font-style: italic; margin-top: 30px;">Un regalo único. Una experiencia original. Un momento inolvidable.</p>
+      <h3 style="color: #8B4513;">🕐 24 horas de experiencia por cada cesta</h3>
+      <p><strong>Muy importante:</strong> Activa tu experiencia en paragenteselecta.com solo cuando estés listo para consumir la cesta con tus seres queridos. Así disfrutarás de toda la experiencia completa durante 24 horas.</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="https://paragenteselecta.com" class="cta-button">Acceder a paragenteselecta.com</a>
+      </div>
+      
+      <p style="text-align: center; font-style: italic; margin-top: 30px; color: #8B4513; font-size: 18px;">
+        No es solo lo que comes. Es cómo lo vives. 💝
+      </p>
       
       <p style="margin-top: 30px;">Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
     </div>
@@ -220,17 +226,17 @@ Tu regalo ${validatedData.basketName} está reclamado y pronto estará contigo.
 - Dirección: ${validatedData.shippingAddress}
 - Estimado: 3-5 días laborables
 
-✨ Tu acceso exclusivo
+✨ Esto no es solo una cesta, es una experiencia
 
-Con este regalo no solo recibirás productos ibéricos premium. También tienes acceso a paragenteselecta.com, donde tu cesta se convierte en una experiencia única e inolvidable, personalizada para ti.
+Con este regalo no solo recibirás productos ibéricos premium. También tienes acceso exclusivo a paragenteselecta.com, donde tu cesta se convierte en una experiencia única e inolvidable.
 
 🕐 24 horas de experiencia por cada cesta
 
-Importante: Activa tu experiencia solo cuando estés listo para consumir la cesta con tus seres queridos. Así disfrutarás de toda la experiencia completa.
+Muy importante: Activa tu experiencia en paragenteselecta.com solo cuando estés listo para consumir la cesta con tus seres queridos. Así disfrutarás de toda la experiencia completa durante 24 horas.
 
-Acceder a mi experiencia: https://paragenteselecta.com
+Acceder a paragenteselecta.com: https://paragenteselecta.com
 
-Un regalo único. Una experiencia original. Un momento inolvidable.
+No es solo lo que comes. Es cómo lo vives. 💝
 
 Con cariño,
 El equipo de Experiencia Selecta`,

@@ -127,6 +127,38 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       if (error) throw error;
 
+      // Check if it's a new user and send welcome email
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('created_at')
+            .eq('user_id', session.user.id)
+            .single();
+
+          // If profile was just created (within last 5 seconds), send welcome email
+          if (profile?.created_at) {
+            const createdAt = new Date(profile.created_at);
+            const now = new Date();
+            const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
+
+            if (diffSeconds < 5) {
+              // New user, send welcome email
+              await supabase.functions.invoke('send-welcome-email', {
+                body: {
+                  userEmail: session.user.email,
+                  userName: session.user.user_metadata?.name || session.user.user_metadata?.full_name || ''
+                }
+              });
+            }
+          }
+        } catch (emailError) {
+          console.error('Error sending welcome email:', emailError);
+          // Don't fail the login if welcome email fails
+        }
+      }
+
       toast({
         title: "¡Acceso correcto!",
         description: "Has iniciado sesión correctamente.",

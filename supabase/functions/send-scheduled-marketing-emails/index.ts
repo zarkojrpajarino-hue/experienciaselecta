@@ -110,20 +110,21 @@ serve(async (req) => {
         const emailContent = `
 ¡Hola ${userName || 'amigo/a'}!
 
-Bienvenido/a a Experiencia Selecta - el nuevo plan alternativo.
+¿Quieres vivir algo diferente?
 
-🌟 Descubre quiénes somos y por qué estamos revolucionando el mundo de las experiencias gastronómicas.
+En Experiencia Selecta no vendemos cestas, creamos momentos únicos.
 
-¿Quieres probar una experiencia nueva? 
+🌟 Cada experiencia incluye:
+• Productos ibéricos premium
+• 24 horas de contenido exclusivo en paragenteselecta.com
+• Una forma diferente de disfrutar y compartir
 
-Visita nuestra web y descubre todo lo que tenemos para ofrecerte:
+Descubre cómo transformamos productos en experiencias inolvidables:
 👉 https://experienciaselecta.com
 
 Estamos aquí para hacer que cada momento sea especial.
 
-¡Gracias por confiar en nosotros!
-
-Saludos,
+Un abrazo,
 El equipo de Experiencia Selecta
 `;
 
@@ -175,16 +176,24 @@ El equipo de Experiencia Selecta
     <h1>¡Bienvenido/a a Experiencia Selecta!</h1>
   </div>
   <div class="content">
-    <h2>El nuevo plan alternativo 🌟</h2>
+    <h2>¿Quieres vivir algo diferente? 🌟</h2>
     <p>Hola ${userName || 'amigo/a'},</p>
-    <p>Descubre quiénes somos y por qué estamos revolucionando el mundo de las experiencias gastronómicas.</p>
-    <p><strong>¿Quieres probar una experiencia nueva?</strong></p>
-    <p style="text-align: center;">
-      <a href="https://experienciaselecta.com" class="cta-button">Descubre Experiencia Selecta</a>
+    <p>En <strong>Experiencia Selecta</strong> no vendemos cestas, creamos momentos únicos.</p>
+    
+    <h3 style="color: #782C23; margin-top: 25px;">Cada experiencia incluye:</h3>
+    <ul style="line-height: 1.8;">
+      <li>Productos ibéricos premium</li>
+      <li>24 horas de contenido exclusivo en paragenteselecta.com</li>
+      <li>Una forma diferente de disfrutar y compartir</li>
+    </ul>
+    
+    <p style="text-align: center; margin: 30px 0;">
+      <a href="https://experienciaselecta.com" class="cta-button">Descubrir experiencias</a>
     </p>
-    <p>Estamos aquí para hacer que cada momento sea especial.</p>
-    <p>¡Gracias por confiar en nosotros!</p>
-    <p><strong>El equipo de Experiencia Selecta</strong></p>
+    
+    <p style="font-style: italic; text-align: center;">Transformamos productos en experiencias inolvidables.</p>
+    
+    <p style="margin-top: 30px;">Un abrazo,<br><strong>El equipo de Experiencia Selecta</strong></p>
   </div>
   <div class="footer">
     <p>Experiencia Selecta - Experiencias gastronómicas únicas</p>

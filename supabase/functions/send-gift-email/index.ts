@@ -94,13 +94,13 @@ serve(async (req) => {
                   </div>
                 ` : ''}
                 
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Para reclamar tu regalo, solo necesitas entrar en nuestra web y completar tu dirección de envío. ¡Es muy fácil!</p>
+                
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://experienciaselecta.com/regalos" style="background-color: #8B4513; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                    Reclamar mi regalo
+                  <a href="https://experienciaselecta.com" style="background-color: #8B4513; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                    Entrar y reclamar mi regalo
                   </a>
                 </div>
-                
-                <p style="color: #666; font-size: 14px;">Solo necesitamos saber dónde enviártelo.</p>
                 
                 <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 4px;">
                   <p style="color: #856404; margin: 0; font-weight: bold;">✨ Pero espera, hay más...</p>
@@ -128,9 +128,8 @@ Un recuerdo inolvidable para que lo disfrutes con tus seres queridos.
 
 ${recipient.personalNote ? `💌 ${validatedData.senderName} te dice:\n"${recipient.personalNote}"\n\n` : ''}
 
-Reclama tu regalo aquí: https://experienciaselecta.com/regalos
-
-Solo necesitamos saber dónde enviártelo.
+Para reclamar tu regalo, solo necesitas entrar en nuestra web y completar tu dirección de envío:
+https://experienciaselecta.com
 
 ✨ Pero espera, hay más...
 
