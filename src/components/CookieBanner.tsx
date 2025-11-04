@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "react-router-dom";
+import headerBg from "@/assets/iberian-products-background.jpg";
 
 const CookieBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -93,29 +94,37 @@ const CookieBanner = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border shadow-lg animate-slide-in-up">
+    <div 
+      className="fixed bottom-0 left-0 right-0 z-50 shadow-lg animate-slide-in-up"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${headerBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex-1">
             <h2 className="sr-only">Preferencias de cookies</h2>
-            <p className="text-sm text-foreground leading-relaxed">
+            <p className="text-sm text-white leading-relaxed">
               Utilizamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar el marketing.
               Puedes aceptar todas, rechazarlas o personalizarlas según la normativa de España (RGPD/LOPDGDD).
             </p>
             {showPreferences && (
-              <div className="mt-4 p-4 border border-border rounded-lg bg-background">
+              <div className="mt-4 p-4 border border-[hsl(45,100%,65%)]/30 rounded-lg bg-black/50">
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium">Esenciales</p>
-                      <p className="text-sm text-muted-foreground">Siempre activas para el funcionamiento básico del sitio.</p>
+                      <p className="font-medium text-white">Esenciales</p>
+                      <p className="text-sm text-white/70">Siempre activas para el funcionamiento básico del sitio.</p>
                     </div>
                     <input type="checkbox" checked readOnly className="h-4 w-4 opacity-60" aria-label="Cookies esenciales (siempre activas)" />
                   </div>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium">Analíticas</p>
-                      <p className="text-sm text-muted-foreground">Nos ayudan a entender el uso del sitio. Opcionales.</p>
+                      <p className="font-medium text-white">Analíticas</p>
+                      <p className="text-sm text-white/70">Nos ayudan a entender el uso del sitio. Opcionales.</p>
                     </div>
                     <input
                       type="checkbox"
@@ -127,8 +136,8 @@ const CookieBanner = () => {
                   </div>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium">Marketing</p>
-                      <p className="text-sm text-muted-foreground">Personalizan anuncios y ofertas. Opcionales.</p>
+                      <p className="font-medium text-white">Marketing</p>
+                      <p className="text-sm text-white/70">Personalizan anuncios y ofertas. Opcionales.</p>
                     </div>
                     <input
                       type="checkbox"
@@ -140,13 +149,13 @@ const CookieBanner = () => {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Button size="sm" onClick={handleSavePreferences} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button size="sm" onClick={handleSavePreferences} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold">
                     Guardar preferencias
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleAcceptAll} className="text-foreground hover:text-foreground">
+                  <Button variant="outline" size="sm" onClick={handleAcceptAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]">
                     Aceptar todas
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleRejectAll} className="text-muted-foreground hover:text-foreground">
+                  <Button variant="outline" size="sm" onClick={handleRejectAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]">
                     Rechazar todas
                   </Button>
                 </div>
@@ -158,7 +167,7 @@ const CookieBanner = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setShowPreferences((v) => !v)}
-              className="text-foreground hover:text-foreground"
+              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]"
             >
               {showPreferences ? 'Ocultar opciones' : 'Personalizar cookies'}
             </Button>
@@ -166,14 +175,14 @@ const CookieBanner = () => {
               variant="outline" 
               size="sm" 
               onClick={handleRejectAll}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]"
             >
               Rechazar
             </Button>
             <Button 
               onClick={handleAcceptAll}
               size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold"
             >
               Aceptar todas
             </Button>
@@ -181,7 +190,7 @@ const CookieBanner = () => {
               variant="ghost"
               size="icon"
               onClick={handleRejectAll}
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-white hover:text-[hsl(45,100%,65%)]"
               aria-label="Cerrar banner de cookies"
             >
               <X className="h-4 w-4" />
