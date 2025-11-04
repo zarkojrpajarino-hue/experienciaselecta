@@ -196,42 +196,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
   const handleGoogleSignIn = async () => {
     try {
-      console.log('Iniciando login con Google...');
-      
-      // Establecer flag temporal (se limpiará automáticamente o al volver)
-      localStorage.setItem('oauthInProgress', Date.now().toString());
-
-      // Si estamos en checkout, guardar estado antes de redirigir
-      if (onBack) {
-        localStorage.setItem('pendingCheckout', 'true');
-      }
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/checkout`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          skipBrowserRedirect: false
-        }
-      });
-
-      if (error) {
-        console.error('Error OAuth:', error);
-        throw error;
-      }
-      
-      console.log('Redirigiendo a Google...');
-    } catch (error: any) {
-      console.error('Error en handleGoogleSignIn:', error);
-      // Liberar flag para permitir reintentos
+      // Deshabilitado OAuth: ir siempre al checkout
+      try { localStorage.setItem('pendingCheckout', 'true'); } catch {}
       try { localStorage.removeItem('oauthInProgress'); } catch {}
+      window.location.assign('/checkout');
+    } catch (error: any) {
+      console.error('Error en handleGoogleSignIn (redir checkout):', error);
       toast({
         variant: "destructive",
-        title: "Error al iniciar sesión con Google",
-        description: error.message,
+        title: "No se pudo redirigir al checkout",
+        description: error.message || 'Inténtalo de nuevo',
       });
     }
   };
@@ -280,7 +254,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
                 type="button"
               >
                 <Mail className="w-4 h-4 mr-2" />
-                Continuar con Google
+                Ir al checkout
               </Button>
               
               <div className="relative">
