@@ -373,9 +373,17 @@ const ProfilePage = () => {
             <TabsContent value="orders" className="space-y-6 animate-fade-in">
               {/* Active/Paid Orders */}
               {orders.length === 0 ? (
-                <Card className="bg-transparent border-none">
-                  <CardContent className="pt-6 text-center text-white font-poppins font-bold">
-                    No tienes pedidos activos.
+                <Card className="bg-white/10 border-none shadow-lg">
+                  <CardContent className="pt-12 pb-12 text-center space-y-6">
+                    <p className="text-xl md:text-2xl text-white font-poppins font-bold">
+                      Aún no has realizado ninguna experiencia.
+                    </p>
+                    <Button
+                      onClick={() => navigate('/catalogo')}
+                      className="bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-bungee tracking-wider uppercase"
+                    >
+                      Ver catálogo
+                    </Button>
                   </CardContent>
                 </Card>
               ) : (
@@ -578,9 +586,17 @@ const ProfilePage = () => {
                         })}
                 </div>
               ) : (
-                <Card className="bg-transparent border-none">
-                  <CardContent className="pt-6 text-center text-white font-poppins font-bold">
-                    Aún no aparecen valoraciones para tu email de sesión. Si acabas de valorar, espera unos segundos y vuelve a abrir esta pestaña.
+                <Card className="bg-white/10 border-none shadow-lg">
+                  <CardContent className="pt-12 pb-12 text-center space-y-6">
+                    <p className="text-xl md:text-2xl text-white font-poppins font-bold">
+                      Aún no has realizado ninguna experiencia.
+                    </p>
+                    <Button
+                      onClick={() => navigate('/catalogo')}
+                      className="bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-bungee tracking-wider uppercase"
+                    >
+                      Ver catálogo
+                    </Button>
                   </CardContent>
                 </Card>
               )}
