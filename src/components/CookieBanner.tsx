@@ -15,14 +15,19 @@ const CookieBanner = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Verificar si hay una sesión activa
+    // Verificar si hay una sesión activa y si ya se mostró el banner en esta sesión
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const stored = localStorage.getItem("cookieConsent");
+      const shownThisSession = sessionStorage.getItem("cookieBannerShown");
       
-      // Mostrar banner solo si no hay sesión activa Y no hay consentimiento guardado
-      if (!session && !stored) {
+      // Mostrar banner si NO hay sesión Y NO se ha mostrado en esta sesión del navegador
+      if (!session && !shownThisSession) {
         setIsVisible(true);
+      }
+      
+      // Si hay sesión, marcar como mostrado para no volver a aparecer
+      if (session) {
+        sessionStorage.setItem("cookieBannerShown", "true");
       }
     };
 
@@ -53,6 +58,7 @@ const CookieBanner = () => {
 
   const handleAcceptAll = async () => {
     persistConsent({ analytics: true, marketing: true });
+    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     setAnalytics(true);
@@ -74,6 +80,7 @@ const CookieBanner = () => {
 
   const handleRejectAll = () => {
     persistConsent({ analytics: false, marketing: false });
+    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     setAnalytics(false);
@@ -82,6 +89,7 @@ const CookieBanner = () => {
 
   const handleSavePreferences = async () => {
     persistConsent({ analytics, marketing });
+    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     toast({ title: "Preferencias guardadas", description: "Tus ajustes de cookies han sido aplicados." });
