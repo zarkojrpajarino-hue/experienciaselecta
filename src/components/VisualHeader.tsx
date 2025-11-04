@@ -63,10 +63,10 @@ const VisualHeader = () => {
             {/* Animación del cursor en el primer botón */}
             <motion.div
               className="absolute pointer-events-none"
-              initial={{ opacity: 0, x: -20, y: 0 }}
+              initial={{ opacity: 0, x: 20, y: 0 }}
               animate={{
                 opacity: [0, 1, 1, 0],
-                x: [-20, 10, 10, -20],
+                x: [20, -10, -10, 20],
                 y: [0, 0, 0, 0],
                 scale: [1, 1, 0.9, 1]
               }}
@@ -102,10 +102,10 @@ const VisualHeader = () => {
               {/* Animación del cursor en el segundo botón */}
               <motion.div
                 className="absolute pointer-events-none"
-                initial={{ opacity: 0, x: -20, y: 0 }}
+                initial={{ opacity: 0, x: 20, y: 0 }}
                 animate={{
                   opacity: [0, 0, 0, 1, 1, 0],
-                  x: [-20, -20, -20, 10, 10, -20],
+                  x: [20, 20, 20, -10, -10, 20],
                   y: [0, 0, 0, 0, 0, 0],
                   scale: [1, 1, 1, 1, 0.9, 1]
                 }}
