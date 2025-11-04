@@ -67,6 +67,7 @@ const Navbar = () => {
       // Redirigir tras login: SIEMPRE ir a checkout
       if (event === 'SIGNED_IN') {
         try { localStorage.removeItem('pendingCheckout'); } catch {}
+        try { localStorage.removeItem('oauthInProgress'); } catch {}
         navigate('/checkout', { replace: true });
       }
 

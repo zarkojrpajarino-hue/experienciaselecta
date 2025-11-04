@@ -148,6 +148,7 @@ const CheckoutPage = () => {
         
         // Si acabamos de hacer login y hay checkout pendiente, solo informar
         if (event === 'SIGNED_IN') {
+          try { localStorage.removeItem('oauthInProgress'); } catch {}
           const hasPendingCheckout = localStorage.getItem('pendingCheckout');
           if (hasPendingCheckout) {
             localStorage.removeItem('pendingCheckout');

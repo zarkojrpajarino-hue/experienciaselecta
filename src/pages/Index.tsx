@@ -320,7 +320,8 @@ const Index = () => {
           setShowAuthModal(false);
           // Limpiar TODOS los flags cuando el usuario inicia sesión exitosamente
           sessionStorage.removeItem('hasClosedAuthModal');
-          localStorage.removeItem('pendingCheckout');
+          try { localStorage.removeItem('pendingCheckout'); } catch {}
+          try { localStorage.removeItem('oauthInProgress'); } catch {}
           
         } else {
           // No hay sesión

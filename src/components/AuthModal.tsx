@@ -170,6 +170,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         description: "Has iniciado sesión correctamente.",
       });
 
+      // Limpiar flags de progreso
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
+
       setEmail("");
       setVerificationCode("");
       setShowCodeInput(false);
@@ -190,6 +193,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
   const handleGoogleSignIn = async () => {
     try {
+      // Evitar múltiples invocaciones (bucle en móvil)
+      const inProgress = localStorage.getItem('oauthInProgress');
+      if (inProgress === '1') return;
+      localStorage.setItem('oauthInProgress', '1');
+
       // Si estamos en checkout, guardar estado antes de redirigir
       if (onBack) {
         localStorage.setItem('pendingCheckout', 'true');
@@ -208,6 +216,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       if (error) throw error;
     } catch (error: any) {
+      // Liberar flag para permitir reintentos
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
       toast({
         variant: "destructive",
         title: "Error al iniciar sesión con Google",
@@ -215,7 +225,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       });
     }
   };
-
   const handleClose = () => {
     setEmail("");
     setVerificationCode("");
