@@ -80,8 +80,11 @@ const Navbar = () => {
       }
 
       if (session?.user) {
-        checkPendingGifts(session.user.email!);
-        checkPendingReviews(session.user.id);
+        // Defer Supabase calls to next tick to avoid freezes after OAuth
+        setTimeout(() => {
+          checkPendingGifts(session.user!.email!);
+          checkPendingReviews(session.user!.id);
+        }, 0);
       }
     });
 
