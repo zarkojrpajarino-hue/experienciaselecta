@@ -24,11 +24,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const [resendSeconds, setResendSeconds] = useState(0);
   const [lastEmailSent, setLastEmailSent] = useState<string>("");
 
-  // Guardar la ruta/intención actual al abrir el modal
+  // Guardar la ruta/intención actual al abrir el modal y limpiar flags obsoletos
   useEffect(() => {
     if (isOpen) {
       const intended = window.location.pathname + window.location.search + window.location.hash;
       localStorage.setItem('intendedRoute', intended);
+      
+      // Limpiar flag de OAuth al abrir el modal para permitir nuevos intentos
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
     }
   }, [isOpen]);
 
@@ -193,10 +196,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
   const handleGoogleSignIn = async () => {
     try {
-      // Evitar múltiples invocaciones (bucle en móvil)
-      const inProgress = localStorage.getItem('oauthInProgress');
-      if (inProgress === '1') return;
-      localStorage.setItem('oauthInProgress', '1');
+      console.log('Iniciando login con Google...');
+      
+      // Establecer flag temporal (se limpiará automáticamente o al volver)
+      localStorage.setItem('oauthInProgress', Date.now().toString());
 
       // Si estamos en checkout, guardar estado antes de redirigir
       if (onBack) {
@@ -209,13 +212,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
           redirectTo: `${window.location.origin}/checkout`,
           queryParams: {
             access_type: 'offline',
-            prompt: 'select_account',
-          }
+            prompt: 'consent',
+          },
+          skipBrowserRedirect: false
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error OAuth:', error);
+        throw error;
+      }
+      
+      console.log('Redirigiendo a Google...');
     } catch (error: any) {
+      console.error('Error en handleGoogleSignIn:', error);
       // Liberar flag para permitir reintentos
       try { localStorage.removeItem('oauthInProgress'); } catch {}
       toast({

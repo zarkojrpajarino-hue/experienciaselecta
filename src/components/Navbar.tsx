@@ -66,10 +66,16 @@ const Navbar = () => {
 
       // Redirigir tras login: SIEMPRE ir a checkout
       if (event === 'SIGNED_IN') {
+        console.log('SIGNED_IN event detected in Navbar');
         try { localStorage.removeItem('pendingCheckout'); } catch {}
         try { localStorage.removeItem('oauthInProgress'); } catch {}
+        
+        // Solo redirigir si no estamos ya en checkout
         if (location.pathname !== '/checkout') {
-          window.location.assign('/checkout');
+          console.log('Redirecting to /checkout from:', location.pathname);
+          setTimeout(() => {
+            window.location.assign('/checkout');
+          }, 100);
         }
       }
 
