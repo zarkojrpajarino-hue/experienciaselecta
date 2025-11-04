@@ -27,34 +27,23 @@ const VisualHeader = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="px-8 py-4 sm:px-12 sm:py-16"
         >
-          <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 whitespace-nowrap -mt-[20vh] sm:mt-0">
+          <h1 className="font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-12 sm:mb-16 whitespace-nowrap -mt-[20vh] sm:mt-0">
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
           {/* Nueva frase "Crea tu propia experiencia" con flecha */}
-          <div className="relative inline-block">
+          <div className="relative inline-block mb-12 sm:mb-16">
             <motion.button
               onClick={(e) => {
                 e.preventDefault();
                 const el = document.getElementById('categoria-cestas');
-                try { window.location.hash = '#categoria-cestas'; } catch {}
-                if (el?.scrollIntoView) {
+                if (el) {
                   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                  requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }));
-                } else {
-                  const rect = el?.getBoundingClientRect();
-                  if (rect) {
-                    window.scrollTo({
-                      top: rect.top + window.pageYOffset - 80,
-                      behavior: 'smooth'
-                    });
-                  }
                 }
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="font-auto-display text-lg sm:text-xl md:text-2xl text-white mb-8 mx-auto font-medium transition-all duration-300 hover:text-[#FFD700] cursor-pointer flex items-center gap-2 justify-center relative"
+              className="font-auto-display text-lg sm:text-xl md:text-2xl text-white mx-auto font-bold uppercase transition-all duration-300 hover:text-[#FFD700] cursor-pointer flex items-center gap-2 justify-center relative"
             >
               Crea tu propia experiencia
               <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -78,7 +67,7 @@ const VisualHeader = () => {
             </motion.div>
           </div>
           
-          <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold mt-8">
+          <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
             Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
           </p>
 
@@ -88,9 +77,12 @@ const VisualHeader = () => {
                 whileHover={{ color: '#FFD700' }}
                 whileTap={{ scale: 0.95 }}
                 className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   const element = document.getElementById('porque-no-vendemos-cestas');
-                  element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
                 }}
               >
                 Conócenos.
