@@ -14,8 +14,8 @@ const CookieBanner = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Solo mostrar en la página principal y si no hay consentimiento previo
-    const stored = localStorage.getItem("cookieConsent");
+    // Mostrar en cada nueva sesión si no hay consentimiento en sessionStorage
+    const stored = sessionStorage.getItem("cookieConsent");
     const isHomePage = location.pathname === "/";
     
     if (isHomePage && !stored) {
@@ -40,7 +40,8 @@ const CookieBanner = () => {
       timestamp: Date.now(),
       version: "1.0",
     };
-    localStorage.setItem("cookieConsent", JSON.stringify(payload));
+    // Guardar en sessionStorage para que aparezca en cada nueva sesión
+    sessionStorage.setItem("cookieConsent", JSON.stringify(payload));
   };
 
   const handleAcceptAll = async () => {

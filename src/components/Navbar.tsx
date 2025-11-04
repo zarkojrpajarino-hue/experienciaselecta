@@ -31,28 +31,31 @@ const Navbar = () => {
   // Check auth status with proper session persistence
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
 
       // Send welcome email on new login (Google or email/password)
       if (event === 'SIGNED_IN' && session?.user) {
-        try {
-          const { data: profiles } = await supabase
-            .from('profiles')
-            .select('name')
-            .eq('user_id', session.user.id)
-            .single();
+        // Defer to next tick to avoid blocking
+        setTimeout(async () => {
+          try {
+            const { data: profiles } = await supabase
+              .from('profiles')
+              .select('name')
+              .eq('user_id', session.user.id)
+              .single();
 
-          await supabase.functions.invoke('send-welcome-email', {
-            body: {
-              userEmail: session.user.email,
-              userName: profiles?.name || session.user.user_metadata?.name || 'amigo'
-            }
-          });
-        } catch (error) {
-          console.error('Error sending welcome email:', error);
-        }
+            await supabase.functions.invoke('send-welcome-email', {
+              body: {
+                userEmail: session.user.email,
+                userName: profiles?.name || session.user.user_metadata?.name || 'amigo'
+              }
+            });
+          } catch (error) {
+            console.error('Error sending welcome email:', error);
+          }
+        }, 0);
       }
 
       // Redirigir a la ruta/intención original o al checkout si hay items en carrito
