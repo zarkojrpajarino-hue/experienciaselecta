@@ -56,13 +56,15 @@ const VisualHeader = () => {
                 if (element) {
                   element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else {
-                  // Si no existe, esperar un momento y reintentar (por si está cargando)
+                  // Reintentar y, si no existe, navegar con hash para forzar el scroll
                   setTimeout(() => {
                     const retryElement = document.getElementById('categoria-cestas');
                     if (retryElement) {
                       retryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                      navigate('/#categoria-cestas');
                     }
-                  }, 100);
+                  }, 120);
                 }
               }}
             >
