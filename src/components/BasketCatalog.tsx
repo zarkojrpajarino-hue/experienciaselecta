@@ -1378,52 +1378,21 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     </Button>
                                   </CollapsibleTrigger>
                                 </div>
-                                <CollapsibleContent className="mt-3 px-4">
-                                  <div className="bg-white/10 backdrop-blur-sm border border-gold/30 rounded-lg p-4">
-                                    <div className="space-y-3 text-sm text-white">
-                                      <h4 className="font-bold text-base text-gold">¿Por qué no vendemos cestas?</h4>
+                                <CollapsibleContent className="mt-2 px-2 sm:px-4">
+                                  <div className="bg-white border border-gold/30 rounded-lg p-3 sm:p-4">
+                                    <div className="space-y-2 text-xs sm:text-sm text-black">
                                       <p>
-                                        En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
-                                      </p>
-                                      <p>
-                                        Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
-                                      </p>
-                                      <p>
-                                        Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold text-gold">acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
+                                        No vendemos cestas, creamos <span className="font-bold text-gold">experiencias únicas</span>: productos gourmet premium + dinámicas de conexión para momentos inolvidables.
                                       </p>
                                       
                                       {isGiftCatalog && (
-                                        <div className="mt-4 pt-3 border-t border-gold/30">
-                                          <p className="font-semibold text-sm mb-2">¿Cómo funciona el proceso de regalo?</p>
-                                          
-                                          <div className="space-y-2 text-xs">
-                                            <div>
-                                              <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
-                                              <ul className="list-disc pl-4 space-y-1 mt-1">
-                                                <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-                                                <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
-                                              </ul>
-                                            </div>
-
-                                            <div>
-                                              <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
-                                              <p className="pl-4 mt-1">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
-                                            </div>
-
-                                            <div>
-                                              <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
-                                              <ul className="list-disc pl-4 space-y-1 mt-1">
-                                                <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
-                                                <li>Confirma o introduce su dirección de envío</li>
-                                                <li>Selecciona su fecha preferida de entrega</li>
-                                                <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
-                                              </ul>
-                                            </div>
-
-                                            <p className="text-xs text-white/70 pt-2">
-                                              💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
-                                            </p>
-                                          </div>
+                                        <div className="mt-3 pt-2 border-t border-gold/30">
+                                          <p className="font-semibold text-xs mb-1.5">Proceso de regalo:</p>
+                                          <ul className="space-y-1 text-xs">
+                                            <li>• Eliges canal (email/SMS)</li>
+                                            <li>• Destinatario confirma dirección y fecha</li>
+                                            <li>• Recibe su experiencia en 30 días</li>
+                                          </ul>
                                         </div>
                                       )}
                                     </div>
@@ -1639,20 +1608,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                             </Button>
                                           </CollapsibleTrigger>
                                         </div>
-                                        <CollapsibleContent className="mt-3">
-                                          <div className="bg-white/10 backdrop-blur-sm border border-[#FFD700]/30 rounded-lg p-4">
-                                            <div className="space-y-3 text-sm text-white">
-                                              <h4 className="font-bold text-base text-[#FFD700]">¿Por qué no vendemos cestas?</h4>
-                                              <p>
-                                                En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-[#FFD700]">experiencias únicas y personalizadas</span>.
-                                              </p>
-                                              <p>
-                                                Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.
-                                              </p>
-                                              <p>
-                                                Es una forma diferente de disfrutar, compartir y crear recuerdos que van más allá de una simple comida.
-                                              </p>
-                                            </div>
+                                        <CollapsibleContent className="mt-2">
+                                          <div className="bg-white border border-[#FFD700]/30 rounded-lg p-3 sm:p-4">
+                                            <p className="text-xs sm:text-sm text-black">
+                                              No vendemos cestas, creamos <span className="font-bold text-[#FFD700]">experiencias únicas</span>: productos gourmet premium + dinámicas de conexión para momentos inolvidables.
+                                            </p>
                                           </div>
                                         </CollapsibleContent>
                                       </Collapsible>
