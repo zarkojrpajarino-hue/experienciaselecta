@@ -10,10 +10,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Index from "./pages/Index";
 import ComprarCestasPage from "./pages/ComprarCestasPage";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 // Lazy load non-critical pages for better performance
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const PaymentPage = lazy(() => import("./pages/PaymentPage"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
