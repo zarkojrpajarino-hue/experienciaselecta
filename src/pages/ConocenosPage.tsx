@@ -160,10 +160,30 @@ const ConocenosPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-8"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black mb-4">
-              Conócenos.
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-black">
+            <div className="flex items-center justify-center gap-3">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black">
+                Conócenos.
+              </h1>
+              <motion.span 
+                onClick={() => {
+                  const element = document.getElementById('porque-no-vendemos-cestas');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }}
+                className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-3xl sm:text-4xl md:text-5xl font-bold"
+                style={{ color: '#D4AF37' }}
+                animate={{ rotateZ: [0, 180, 0] }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              >
+                ¿?
+              </motion.span>
+            </div>
+            <p className="text-base sm:text-lg md:text-xl text-black mt-4">
               Descubre quiénes somos y qué nos mueve.
             </p>
           </motion.div>
@@ -174,7 +194,7 @@ const ConocenosPage = () => {
       <div className="bg-white py-8"></div>
 
       <div id="porque-no-vendemos-cestas" className="bg-white">
-        <RoundedImageCarousel slides={processSlides} titleBold={false} />
+        <RoundedImageCarousel slides={processSlides} titleBold={false} hideMainTitle={true} />
       </div>
 
       {/* Espaciado blanco */}
@@ -182,7 +202,7 @@ const ConocenosPage = () => {
 
       {/* Sección: Como te entendemos */}
       <div id="como-te-entendemos" className="bg-white">
-        <RoundedImageCarousel slides={benefitsSlides} titleBold={false} />
+        <RoundedImageCarousel slides={benefitsSlides} titleBold={false} hideMainTitle={true} />
       </div>
 
       {/* Espaciado blanco */}
