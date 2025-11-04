@@ -51,8 +51,7 @@ const VisualHeader = () => {
               whileTap={{ scale: 0.95 }}
               className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
               onClick={() => {
-                const element = document.getElementById('categoria-cestas');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                navigate('/#categoria-cestas');
               }}
             >
               ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!{" "}

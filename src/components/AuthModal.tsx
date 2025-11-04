@@ -49,8 +49,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
 
-      // Mantener la ruta actual para volver después del login
-      const redirectUrl = window.location.href;
+      // Redirigir SIEMPRE al checkout tras login por email
+      const redirectUrl = `${window.location.origin}/checkout`;
       const { error } = await supabase.auth.signInWithOtp({
         email: emailClean,
         options: {
@@ -93,7 +93,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       if (!emailValid) {
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
-      const redirectUrl = window.location.href;
+      const redirectUrl = `${window.location.origin}/checkout`;
       const { error } = await supabase.auth.signInWithOtp({
         email: targetEmail,
         options: { shouldCreateUser: true, emailRedirectTo: redirectUrl },
@@ -195,24 +195,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         localStorage.setItem('pendingCheckout', 'true');
       }
       
-      const inIframe = window.self !== window.top;
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.href,
+          redirectTo: `${window.location.origin}/checkout`,
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
-          },
-          skipBrowserRedirect: inIframe,
+          }
         }
       });
 
       if (error) throw error;
-
-      if (inIframe && data?.url) {
-        window.open(data.url, '_blank', 'noopener,noreferrer');
-      }
     } catch (error: any) {
       toast({
         variant: "destructive",
