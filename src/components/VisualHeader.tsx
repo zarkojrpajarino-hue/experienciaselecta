@@ -62,22 +62,19 @@ const VisualHeader = () => {
             
             {/* Animación del cursor en el primer botón */}
             <motion.div
-              className="absolute pointer-events-none"
-              initial={{ opacity: 0, x: 20, y: 0 }}
+              className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               animate={{
-                opacity: [0, 1, 1, 0],
-                x: [20, -10, -10, 20],
-                y: [0, 0, 0, 0],
-                scale: [1, 1, 0.9, 1]
+                opacity: [0, 1, 1, 1, 0],
+                scale: [1, 1, 0.85, 1, 1]
               }}
               transition={{
-                duration: 3,
+                duration: 2.5,
                 repeat: Infinity,
-                repeatDelay: 3,
-                times: [0, 0.2, 0.4, 0.6]
+                repeatDelay: 2.5,
+                times: [0, 0.2, 0.35, 0.5, 0.7]
               }}
             >
-              <MousePointer2 className="w-6 h-6 text-[#FFD700]" />
+              <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
             </motion.div>
           </div>
           
@@ -101,21 +98,18 @@ const VisualHeader = () => {
               
               {/* Animación del cursor en el segundo botón */}
               <motion.div
-                className="absolute pointer-events-none"
-                initial={{ opacity: 0, x: 20, y: 0 }}
+                className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                 animate={{
-                  opacity: [0, 0, 0, 1, 1, 0],
-                  x: [20, 20, 20, -10, -10, 20],
-                  y: [0, 0, 0, 0, 0, 0],
-                  scale: [1, 1, 1, 1, 0.9, 1]
+                  opacity: [0, 0, 1, 1, 1, 0],
+                  scale: [1, 1, 1, 0.85, 1, 1]
                 }}
                 transition={{
-                  duration: 6,
+                  duration: 5,
                   repeat: Infinity,
-                  times: [0, 0.3, 0.5, 0.6, 0.7, 0.9]
+                  times: [0, 0.4, 0.5, 0.6, 0.7, 0.9]
                 }}
               >
-                <MousePointer2 className="w-6 h-6 text-[#FFD700]" />
+                <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
               </motion.div>
             </div>
           </div>
