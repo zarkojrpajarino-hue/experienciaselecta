@@ -217,7 +217,7 @@ const ConocenosPage = () => {
                     side="top" 
                     className="rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2"
                   >
-                    Haz click
+                    Saber más
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

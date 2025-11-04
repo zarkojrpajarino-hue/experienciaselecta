@@ -86,7 +86,7 @@ const ComprarCestasPage = () => {
                 <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
                   <TooltipTrigger asChild>
                     <motion.span 
-                      onClick={() => { window.location.href = '/#que-vendemos'; }}
+                      onClick={() => { navigate('/conocenos'); }}
                       onMouseEnter={() => setTooltipOpen(true)} 
                       onMouseLeave={() => setTooltipOpen(false)} 
                       className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-xl sm:text-2xl md:text-4xl font-bold gpu-accelerated" 
@@ -98,7 +98,7 @@ const ComprarCestasPage = () => {
                     </motion.span>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2">
-                    <p className="font-medium">Haz click</p>
+                    <p className="font-medium">¿Tienes dudas?</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
