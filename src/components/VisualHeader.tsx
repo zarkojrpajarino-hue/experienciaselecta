@@ -31,50 +31,48 @@ const VisualHeader = () => {
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
-          {/* Botón "Crea tu propia experiencia" alineado a la izquierda debajo del título */}
-          <div className="relative inline-block mb-12 sm:mb-16 w-full text-left">
-            <motion.button
-              onClick={(e) => {
-                e.preventDefault();
-                const el = document.getElementById('categoria-cestas');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}
-              whileHover={{ color: '#FFD700' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap inline-block"
-            >
-              Crea tu propia experiencia.
-            </motion.button>
-            
-            {/* Animación del cursor */}
-            <motion.div
-              className="absolute pointer-events-none top-1/2 left-[50%] -translate-x-1/2 -translate-y-1/2"
-              animate={{
-                opacity: [0, 1, 1, 1, 0],
-                scale: [1, 1, 0.85, 1, 1]
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                times: [0, 0.2, 0.4, 0.6, 0.8]
-              }}
-            >
-              <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
-            </motion.div>
-          </div>
-          
-          <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
-            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
-          </p>
+          {/* Botones "Crea tu propia experiencia" y "Conócenos" lado a lado */}
+          <div className="flex justify-between items-center mb-12 sm:mb-16 w-full max-w-4xl mx-auto px-4">
+            {/* Botón izquierda - Crea tu propia experiencia */}
+            <div className="relative">
+              <motion.button
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById('categoria-cestas');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                whileHover={{ color: '#FFD700' }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
+              >
+                Crea tu propia experiencia.
+              </motion.button>
+              
+              {/* Animación del cursor en Crea tu experiencia */}
+              <motion.div
+                className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                animate={{
+                  opacity: [0, 1, 1, 1, 0],
+                  scale: [1, 1, 0.85, 1, 1]
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  times: [0, 0.2, 0.4, 0.6, 0.8]
+                }}
+              >
+                <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
+              </motion.div>
+            </div>
 
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative inline-block">
+            {/* Botón derecha - Conócenos */}
+            <div className="relative">
               <motion.button 
                 whileHover={{ color: '#FFD700' }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap hover:text-[#FFD700]"
+                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
                 onClick={(e) => {
                   e.preventDefault();
                   const element = document.getElementById('porque-no-vendemos-cestas');
@@ -86,7 +84,7 @@ const VisualHeader = () => {
                 Conócenos.
               </motion.button>
               
-              {/* Animación del cursor en el botón Conócenos */}
+              {/* Animación del cursor en Conócenos */}
               <motion.div
                 className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                 animate={{
@@ -104,6 +102,10 @@ const VisualHeader = () => {
               </motion.div>
             </div>
           </div>
+          
+          <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
+            Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
+          </p>
         </motion.div>
       </div>
     </section>;

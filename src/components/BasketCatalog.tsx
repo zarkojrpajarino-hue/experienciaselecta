@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, ShoppingCart, Sparkles, X } from "lucide-react";
+import { Wine, Coffee, Heart, Crown, Gem, Users, ChevronDown, ChevronUp, ShoppingCart, Sparkles, X, Info } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
@@ -106,6 +105,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [openIdeal, setOpenIdeal] = useState<{ [key: number]: boolean }>({});
   const [openMaridaje, setOpenMaridaje] = useState<{ [key: number]: boolean }>({});
   const [openOcasion, setOpenOcasion] = useState<{ [key: number]: boolean }>({});
+  const [openInfoDinamica, setOpenInfoDinamica] = useState<{ [key: number]: boolean }>({});
   const [showGroupSize, setShowGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
   const { cart: globalCart, addToCart: addToGlobalCart, getTotalAmount, getTotalItems, clearCart, removeMultipleItems } = useCart();
   const navigate = useNavigate();
@@ -1361,65 +1361,75 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             
                             {/* ACCESO A EXPERIENCIA ÚNICA */}
                             <div className="col-span-2 flex flex-col items-center justify-center mt-4 mb-2">
-                              <p className="text-center text-gold font-bungee text-xs sm:text-sm tracking-[0.15em] mb-2">
-                                ACCESO A EXPERIENCIA ÚNICA
-                              </p>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="text-xs bg-transparent text-foreground hover:bg-foreground/5">
-                                    ℹ️ Info
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-96 max-w-[90vw] p-4 bg-white border border-gold/30 shadow-lg" align="center" side="bottom">
-                                  <div className="space-y-3 text-sm">
-                                    <h4 className="font-bold text-base">¿Por qué no vendemos cestas?</h4>
-                                    <p>
-                                      En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
-                                    </p>
-                                    <p>
-                                      Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
-                                    </p>
-                                    <p>
-                                      Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold text-gold">acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
-                                    </p>
-                                    
-                                    {isGiftCatalog && (
-                                      <div className="mt-4 pt-3 border-t border-gray-200">
-                                        <p className="font-semibold text-sm mb-2">¿Cómo funciona el proceso de regalo?</p>
-                                        
-                                        <div className="space-y-2 text-xs">
-                                          <div>
-                                            <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
-                                            <ul className="list-disc pl-4 space-y-1 mt-1">
-                                              <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
-                                              <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
-                                            </ul>
-                                          </div>
+                              <Collapsible
+                                open={openInfoDinamica[basket.id] || false}
+                                onOpenChange={(open) => setOpenInfoDinamica(prev => ({ ...prev, [basket.id]: open }))}
+                                className="w-full"
+                              >
+                                <div className="flex flex-col items-center justify-center gap-2">
+                                  <p className="text-center text-gold font-bungee text-xs sm:text-sm tracking-[0.15em]">
+                                    ACCESO A EXPERIENCIA ÚNICA
+                                  </p>
+                                  <CollapsibleTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="text-xs bg-transparent text-foreground hover:bg-foreground/5 flex items-center gap-1">
+                                      <Info className="w-3 h-3" />
+                                      Info
+                                      <ChevronDown className={`w-3 h-3 transition-transform ${openInfoDinamica[basket.id] ? 'rotate-180' : ''}`} />
+                                    </Button>
+                                  </CollapsibleTrigger>
+                                </div>
+                                <CollapsibleContent className="mt-3 px-4">
+                                  <div className="bg-white/10 backdrop-blur-sm border border-gold/30 rounded-lg p-4">
+                                    <div className="space-y-3 text-sm text-white">
+                                      <h4 className="font-bold text-base text-gold">¿Por qué no vendemos cestas?</h4>
+                                      <p>
+                                        En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
+                                      </p>
+                                      <p>
+                                        Cada una de nuestras "cestas" es en realidad una <span className="font-bold">experiencia diseñada</span> para crear conexiones auténticas entre las personas. Los productos premium que incluimos son el vehículo perfecto para generar conversaciones significativas y momentos memorables.
+                                      </p>
+                                      <p>
+                                        Al adquirir una de nuestras experiencias, no solo recibes productos de la más alta calidad, sino también <span className="font-bold text-gold">acceso a una forma completamente nueva de relacionarte</span> con tus seres queridos a través del disfrute compartido de sabores excepcionales.
+                                      </p>
+                                      
+                                      {isGiftCatalog && (
+                                        <div className="mt-4 pt-3 border-t border-gold/30">
+                                          <p className="font-semibold text-sm mb-2">¿Cómo funciona el proceso de regalo?</p>
+                                          
+                                          <div className="space-y-2 text-xs">
+                                            <div>
+                                              <p><span className="font-bold">1. Eliges el canal de envío:</span></p>
+                                              <ul className="list-disc pl-4 space-y-1 mt-1">
+                                                <li><span className="font-bold">Por email:</span> El destinatario recibe un correo electrónico con un enlace seguro personalizado.</li>
+                                                <li><span className="font-bold">Por móvil:</span> El destinatario recibe un SMS con un enlace seguro de reclamación.</li>
+                                              </ul>
+                                            </div>
 
-                                          <div>
-                                            <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
-                                            <p className="pl-4 mt-1">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
-                                          </div>
+                                            <div>
+                                              <p><span className="font-bold">2. ¿Por qué enviamos al destinatario?</span></p>
+                                              <p className="pl-4 mt-1">Le enviamos un mensaje para que pueda <span className="font-bold">confirmar sus datos de envío</span> y elegir la <span className="font-bold">fecha de entrega preferida</span>. Así garantizamos que reciba su regalo en el momento perfecto.</p>
+                                            </div>
 
-                                          <div>
-                                            <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
-                                            <ul className="list-disc pl-4 space-y-1 mt-1">
-                                              <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
-                                              <li>Confirma o introduce su dirección de envío</li>
-                                              <li>Selecciona su fecha preferida de entrega</li>
-                                              <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
-                                            </ul>
-                                          </div>
+                                            <div>
+                                              <p><span className="font-bold">3. ¿Qué hace el destinatario?</span></p>
+                                              <ul className="list-disc pl-4 space-y-1 mt-1">
+                                                <li>Hace clic en el enlace recibido (válido durante 30 días)</li>
+                                                <li>Confirma o introduce su dirección de envío</li>
+                                                <li>Selecciona su fecha preferida de entrega</li>
+                                                <li>¡Y listo! Recibirá su experiencia selecta en la fecha elegida</li>
+                                              </ul>
+                                            </div>
 
-                                          <p className="text-xs text-muted-foreground pt-2">
-                                            💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
-                                          </p>
+                                            <p className="text-xs text-white/70 pt-2">
+                                              💡 <span className="font-semibold">Nota:</span> Tú pagas ahora, pero el destinatario controla cuándo y dónde recibe su regalo.
+                                            </p>
+                                          </div>
                                         </div>
-                                      </div>
-                                    )}
+                                      )}
+                                    </div>
                                   </div>
-                                </PopoverContent>
-                              </Popover>
+                                </CollapsibleContent>
+                              </Collapsible>
                             </div>
                           </div>
                         )}
@@ -1606,51 +1616,46 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                     
                                     {/* ACCESO A EXPERIENCIA ÚNICA */}
                                     <div className="flex flex-col items-center mt-4 gap-2">
-                                      <p 
-                                        className={`${colorCombo.important} font-bold text-sm tracking-[0.15em] uppercase`}
-                                        style={{ fontFamily: 'Boulder, sans-serif' }}
+                                      <Collapsible
+                                        open={openInfoDinamica[basket.id] || false}
+                                        onOpenChange={(open) => setOpenInfoDinamica(prev => ({ ...prev, [basket.id]: open }))}
+                                        className="w-full"
                                       >
-                                        ACCESO A EXPERIENCIA ÚNICA
-                                      </p>
-                                      <Popover>
-                                        <PopoverTrigger asChild>
-                                          <Button 
-                                            variant="ghost" 
-                                            size="sm"
-                                            className="h-6 w-6 p-0 rounded-full hover:bg-black/10"
+                                        <div className="flex items-center justify-between w-full">
+                                          <p
+                                            className={`${colorCombo.important} font-bold text-sm tracking-[0.15em] uppercase`}
+                                            style={{ fontFamily: 'Boulder, sans-serif' }}
                                           >
-                                            <span className="sr-only">Información sobre experiencia única</span>
-                                            <svg 
-                                              xmlns="http://www.w3.org/2000/svg" 
-                                              viewBox="0 0 24 24" 
-                                              fill="none" 
-                                              stroke="currentColor" 
-                                              strokeWidth="2" 
-                                              strokeLinecap="round" 
-                                              strokeLinejoin="round" 
-                                              className={`h-5 w-5 ${colorCombo.important}`}
+                                            ACCESO A EXPERIENCIA ÚNICA
+                                          </p>
+                                          <CollapsibleTrigger asChild>
+                                            <Button 
+                                              variant="ghost" 
+                                              size="sm"
+                                              className="h-8 gap-1 px-2 rounded-md hover:bg-black/10"
                                             >
-                                              <circle cx="12" cy="12" r="10"/>
-                                              <path d="M12 16v-4"/>
-                                              <path d="M12 8h.01"/>
-                                            </svg>
-                                          </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-96 max-w-[90vw] p-4 bg-white border border-gold/30 shadow-lg" align="center" side="bottom">
-                                          <div className="space-y-3 text-sm">
-                                            <h4 className="font-bold text-base">¿Por qué no vendemos cestas?</h4>
-                                            <p>
-                                              En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-gold">experiencias únicas y personalizadas</span>.
-                                            </p>
-                                            <p>
-                                              Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.
-                                            </p>
-                                            <p>
-                                              Es una forma diferente de disfrutar, compartir y crear recuerdos que van más allá de una simple comida.
-                                            </p>
+                                              <Info className={`h-4 w-4 ${colorCombo.important}`} />
+                                              <ChevronDown className={`h-4 w-4 ${colorCombo.important} transition-transform ${openInfoDinamica[basket.id] ? 'rotate-180' : ''}`} />
+                                            </Button>
+                                          </CollapsibleTrigger>
+                                        </div>
+                                        <CollapsibleContent className="mt-3">
+                                          <div className="bg-white/10 backdrop-blur-sm border border-[#FFD700]/30 rounded-lg p-4">
+                                            <div className="space-y-3 text-sm text-white">
+                                              <h4 className="font-bold text-base text-[#FFD700]">¿Por qué no vendemos cestas?</h4>
+                                              <p>
+                                                En <span className="font-bold">Experiencia Selecta</span>, no vendemos cestas convencionales. Lo que ofrecemos es mucho más que productos gourmet: creamos <span className="font-bold text-[#FFD700]">experiencias únicas y personalizadas</span>.
+                                              </p>
+                                              <p>
+                                                Cada cesta incluye <span className="font-bold">acceso a una experiencia exclusiva</span> diseñada para fomentar conversaciones profundas, conexiones auténticas y momentos inolvidables.
+                                              </p>
+                                              <p>
+                                                Es una forma diferente de disfrutar, compartir y crear recuerdos que van más allá de una simple comida.
+                                              </p>
+                                            </div>
                                           </div>
-                                        </PopoverContent>
-                                      </Popover>
+                                        </CollapsibleContent>
+                                      </Collapsible>
                                     </div>
                                   </div>
                                 </CollapsibleContent>
