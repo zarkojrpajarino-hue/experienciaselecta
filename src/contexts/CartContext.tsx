@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface CartItem {
@@ -22,7 +22,7 @@ interface CartContextType {
   getTotalAmount: () => number;
 }
 
-const CartContext = React.createContext<CartContextType | undefined>(undefined);
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'shopping-cart';
 
@@ -32,13 +32,13 @@ const getCartStorageKey = (userId: string | null) => {
 };
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   
   // Initialize cart from localStorage
-  const [cart, setCart] = React.useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   // Load user session and cart on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const loadUserCart = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const userId = session?.user?.id || null;
@@ -131,7 +131,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [currentUserId]);
 
   // Save cart to localStorage with debounce to improve performance
-  React.useEffect(() => {
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       try {
         const storageKey = getCartStorageKey(currentUserId);
@@ -235,7 +235,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const useCart = () => {
-  const context = React.useContext(CartContext);
+  const context = useContext(CartContext);
   if (!context) {
     throw new Error('useCart must be used within a CartProvider');
   }
