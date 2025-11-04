@@ -484,10 +484,14 @@ const CheckoutPage = () => {
   };
 
   const toggleSection = (section: 'personal' | 'gift') => {
-    // Alternar la sección: si ya está abierta, no hacer nada; si no, abrirla y cerrar la otra
-    setActiveSection(activeSection === section ? section : section);
+    // Si intenta abrir la sección de datos personales y no está logueado, abrir login
+    if (section === 'personal' && !user) {
+      setShowAuthModal(true);
+      toast.error("Inicia sesión para rellenar los datos de envío");
+      return;
+    }
+    setActiveSection(section);
   };
-
   // Handler para verificar auth antes de permitir editar campos
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!user) {
