@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
+import BasketCategories from "@/components/BasketCategories";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import StickyToast from "@/components/StickyToast";
@@ -149,58 +150,12 @@ const ComprarCestasPage = () => {
               </motion.svg>
             </motion.div>
 
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="flex justify-center mb-6 gpu-accelerated"
-            >
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </motion.div>
           </motion.div>
 
-          {/* Category Filter Buttons */}
-          <div className="flex justify-center items-center gap-2 sm:gap-4 mb-8">
-            <motion.button 
-              onClick={() => setSelectedCategory('Pareja')} 
-              className={`font-poppins font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base gpu-accelerated ${
-                selectedCategory === 'Pareja' 
-                  ? 'bg-[#782C23] text-white scale-110' 
-                  : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Pareja' ? 1.05 : 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Pareja.
-            </motion.button>
-
-            <motion.button 
-              onClick={() => setSelectedCategory('Familia')} 
-              className={`font-poppins font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base gpu-accelerated ${
-                selectedCategory === 'Familia' 
-                  ? 'bg-[#4A7050] text-white scale-110' 
-                  : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Familia' ? 1.05 : 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Familia.
-            </motion.button>
-            
-            <motion.button 
-              onClick={() => setSelectedCategory('Amigos')} 
-              className={`font-poppins font-bold transition-all duration-200 px-3 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base gpu-accelerated ${
-                selectedCategory === 'Amigos' 
-                  ? 'bg-[#44667D] text-white scale-110' 
-                  : 'bg-black/10 text-black hover:bg-black/20 border-2 border-black'
-              }`}
-              whileHover={{ scale: selectedCategory === 'Amigos' ? 1.05 : 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Amigos.
-            </motion.button>
-              </div>
+          {/* Carrusel de Categorías */}
+          <div className="mb-8">
+            <BasketCategories />
+          </div>
             </div>
           </section>
           

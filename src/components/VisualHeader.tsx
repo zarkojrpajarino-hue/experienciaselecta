@@ -36,10 +36,7 @@ const VisualHeader = () => {
             <motion.div
               onClick={(e) => {
                 e.preventDefault();
-                const el = document.getElementById('categoria-cestas');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                navigate('/comprar-cestas');
               }}
               initial={{ x: -100, opacity: 0 }}
               animate={{ 
@@ -98,10 +95,7 @@ const VisualHeader = () => {
           <p 
             onClick={(e) => {
               e.preventDefault();
-              const el = document.getElementById('categoria-cestas');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
+              navigate('/comprar-cestas');
             }}
             className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold cursor-pointer hover:text-[#FFD700] transition-colors duration-300"
           >
@@ -113,10 +107,7 @@ const VisualHeader = () => {
             <motion.div
               onClick={(e) => {
                 e.preventDefault();
-                const element = document.getElementById('porque-no-vendemos-cestas');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                navigate('/conocenos');
               }}
               initial={{ x: 100, opacity: 0 }}
               animate={{ 

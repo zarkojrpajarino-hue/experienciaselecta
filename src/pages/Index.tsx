@@ -13,7 +13,6 @@ import { supabase } from "@/integrations/supabase/client";
 import RoundedImageCarousel from "@/components/RoundedImageCarousel";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
 import BasketCTASection from "@/components/BasketCTASection";
-import BasketCategories from "@/components/BasketCategories";
 import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -430,13 +429,8 @@ const Index = () => {
         <RoundedImageCarousel slides={processSlides} titleBold={false} />
       </div>
       
-      {/* Espaciado blanco antes de categorías */}
+      {/* Espaciado blanco */}
       <div className="bg-white py-8"></div>
-      
-      {/* SECCIÓN DE CATEGORÍAS - FAMILIA, PAREJA Y AMIGOS */}
-      <div>
-        <BasketCategories />
-      </div>
 
       {/* Image Modal for cesta */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>

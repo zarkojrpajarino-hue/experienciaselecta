@@ -24,6 +24,7 @@ const ExperienciaSelectaPage = lazy(() => import("./pages/ExperienciaSelectaPage
 const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
+const ConocenosPage = lazy(() => import("./pages/ConocenosPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import CookieBanner from "./components/CookieBanner";
 import AutoUpdater from "./components/AutoUpdater";
@@ -103,6 +104,7 @@ const App = () => (
             <Route path="/preguntas-frecuentes" element={<><ScrollToTopOnRouteChange /><PreguntasFrecuentesPage /></>} />
             <Route path="/regalos" element={<><ScrollToTopOnRouteChange /><RegalosPage /></>} />
             <Route path="/feedback" element={<><ScrollToTopOnRouteChange /><FeedbackPage /></>} />
+            <Route path="/conocenos" element={<><ScrollToTopOnRouteChange /><ConocenosPage /></>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<><ScrollToTopOnRouteChange /><NotFound /></>} />
           </Routes>
