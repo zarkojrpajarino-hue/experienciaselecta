@@ -1,5 +1,5 @@
 import React, { useEffect, useState, memo, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,8 +28,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [arrowTooltipOpen, setArrowTooltipOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [imagePosition, setImagePosition] = useState({ top: 0, left: 0 });
+  const [imageExpanded, setImageExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Minimum swipe distance (in px)
@@ -74,14 +73,8 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
     return () => clearInterval(id);
   }, [autoPlay, autoPlayDelay, paused, slides.length]);
 
-  const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = (e.currentTarget as HTMLElement);
-    const container = containerRef.current || target.closest('[data-rounded-carousel-root]') as HTMLElement | null;
-    const rect = (container || target).getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    setImagePosition({ top: centerY, left: centerX });
-    setModalOpen(true);
+  const toggleImageExpand = () => {
+    setImageExpanded(!imageExpanded);
   };
 
   const current = slides[index];
@@ -214,9 +207,9 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               initial={false}
               animate={{ opacity: index === i ? 1 : 0 }}
               transition={{ duration: 0.6 }}
-              className="absolute inset-0 cursor-zoom-in rounded-[2rem] overflow-hidden"
+              className="absolute inset-0 cursor-pointer rounded-[2rem] overflow-hidden"
               style={{ pointerEvents: index === i ? "auto" : "none" }}
-              onClick={openModal}
+              onClick={toggleImageExpand}
             >
               <img
                 src={s.image}
@@ -228,56 +221,37 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
             </motion.div>
           ))}
         </div>
-      </div>
 
-      {/* Modal enlarge anchored to container center */}
-      {modalOpen && (
-        <div 
-          className="fixed inset-0 z-[9999]" 
-          style={{ pointerEvents: 'auto' }} 
-          onClick={() => setModalOpen(false)}
-        >
-          <motion.div
-            initial={{ 
-              scale: 0.5,
-              opacity: 0,
-              position: 'fixed',
-              left: imagePosition.left,
-              top: imagePosition.top + (window.innerWidth < 768 ? 120 : 80),
-              x: '-50%',
-              y: '-50%'
-            }}
-            animate={{ 
-              scale: window.innerWidth < 768 ? 1.2 : 1.5,
-              opacity: 1,
-              position: 'fixed',
-              left: imagePosition.left,
-              top: imagePosition.top + (window.innerWidth < 768 ? 120 : 80),
-              x: '-50%',
-              y: '-50%'
-            }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="w-[280px] md:w-[400px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Button 
-              onClick={() => setModalOpen(false)} 
-              className="absolute -top-4 -right-4 z-50 h-10 w-10 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-              size="icon"
+        {/* Tarjeta desplegable con imagen ampliada */}
+        <AnimatePresence>
+          {imageExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full max-w-2xl md:max-w-3xl mx-auto mt-4 overflow-hidden"
             >
-              <X className="h-5 w-5" />
-            </Button>
-            <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
-              <img
-                src={current.image}
-                alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
-                className="w-full h-auto object-contain rounded-[2rem]"
-              />
-            </div>
-          </motion.div>
-        </div>
-      )}
+              <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
+                <div className="flex justify-end mb-2">
+                  <Button 
+                    onClick={toggleImageExpand} 
+                    className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                    size="icon"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <img
+                  src={current.image}
+                  alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
+                  className="w-full h-auto object-contain rounded-[1.5rem]"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
     </section>
   );
