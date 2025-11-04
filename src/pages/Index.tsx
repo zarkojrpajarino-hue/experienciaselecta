@@ -135,7 +135,7 @@ const Index = () => {
     },
     { 
       image: nuevaSeccion04Img, 
-      title: <span style={{color: "black"}}>Estas actividades fomentan <span style={{color: "#D4AF37", fontWeight: "bold"}}>conversaciones reales</span>, <span style={{color: "#D4AF37", fontWeight: "bold"}}>vínculos profundos</span>, y el valor de mostrarse <span style={{color: "#D4AF37", fontWeight: "bold"}}>vulnerable</span>.</span>
+      title: <span style={{color: "black"}}>Nuestras <span style={{color: "#D4AF37", fontWeight: "bold"}}>dinámicas</span> son <span style={{color: "#D4AF37", fontWeight: "bold"}}>preguntas personalizadas</span> para cada tipo de grupo, diseñadas para generar <span style={{color: "#D4AF37", fontWeight: "bold"}}>diálogos profundos</span>, <span style={{color: "#D4AF37", fontWeight: "bold"}}>conocerse</span>, explorar <span style={{color: "#D4AF37", fontWeight: "bold"}}>sentimientos</span> y <span style={{color: "#D4AF37", fontWeight: "bold"}}>abrirse</span> de forma natural.</span>
     },
     { 
       image: nuevaSeccion05Img, 

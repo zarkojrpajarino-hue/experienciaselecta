@@ -488,11 +488,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     }
   };
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = async () => {
     setShowAuthModal(false);
-    // Clear the checkout flag from localStorage after successful auth
-    localStorage.removeItem('pendingCheckout');
-    checkAuthStatus();
+    // Keep the checkout flag - we want to stay in checkout!
+    // Re-check auth status to move to customer step
+    await checkAuthStatus();
+    // After checking auth, user should be in 'customer' step now
   };
 
   const handleCustomerSubmit = async (e: React.FormEvent) => {
