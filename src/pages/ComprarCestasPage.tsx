@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
-import BasketCategories from "@/components/BasketCategories";
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import StickyToast from "@/components/StickyToast";
@@ -78,7 +78,7 @@ const ComprarCestasPage = () => {
                 >
                   <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
                     {isGiftMode ? 'REGALA' : 'COMPRA'}
-                  </span> tu experiencia personalizada.
+                  </span>
                 </motion.h2>
               </AnimatePresence>
               
@@ -103,10 +103,6 @@ const ComprarCestasPage = () => {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            
-            <p className="text-base sm:text-lg md:text-xl mb-4 font-inter text-black">
-              Elige la experiencia perfecta: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
-            </p>
 
             {/* Indicador del modo actual con animación */}
             <AnimatePresence mode="wait">
@@ -131,7 +127,7 @@ const ComprarCestasPage = () => {
                 console.log('Cambiando modo de:', isGiftMode ? 'regalo' : 'normal', 'a:', !isGiftMode ? 'regalo' : 'normal');
                 setIsGiftMode(!isGiftMode);
               }}
-              className="flex justify-center items-center gap-2 mb-4 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex justify-center items-center gap-2 mb-6 cursor-pointer hover:opacity-80 transition-opacity"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -150,12 +146,49 @@ const ComprarCestasPage = () => {
               </motion.svg>
             </motion.div>
 
-          </motion.div>
+            {/* Botones de Categoría */}
+            <div className="flex justify-center gap-3 sm:gap-4 flex-wrap mb-4">
+              <motion.button
+                onClick={() => setSelectedCategory('Pareja')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-6 sm:px-8 py-3 rounded-xl font-poppins font-bold text-base sm:text-lg transition-all duration-300 ${
+                  selectedCategory === 'Pareja'
+                    ? 'bg-[#782C23] text-white shadow-lg'
+                    : 'bg-white text-[#782C23] border-2 border-[#782C23] hover:bg-[#782C23]/10'
+                }`}
+              >
+                Pareja
+              </motion.button>
+              
+              <motion.button
+                onClick={() => setSelectedCategory('Familia')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-6 sm:px-8 py-3 rounded-xl font-poppins font-bold text-base sm:text-lg transition-all duration-300 ${
+                  selectedCategory === 'Familia'
+                    ? 'bg-[#4A7050] text-white shadow-lg'
+                    : 'bg-white text-[#4A7050] border-2 border-[#4A7050] hover:bg-[#4A7050]/10'
+                }`}
+              >
+                Familia
+              </motion.button>
+              
+              <motion.button
+                onClick={() => setSelectedCategory('Amigos')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-6 sm:px-8 py-3 rounded-xl font-poppins font-bold text-base sm:text-lg transition-all duration-300 ${
+                  selectedCategory === 'Amigos'
+                    ? 'bg-[#44667D] text-white shadow-lg'
+                    : 'bg-white text-[#44667D] border-2 border-[#44667D] hover:bg-[#44667D]/10'
+                }`}
+              >
+                Amigos
+              </motion.button>
+            </div>
 
-          {/* Carrusel de Categorías */}
-          <div className="mb-8">
-            <BasketCategories />
-          </div>
+          </motion.div>
             </div>
           </section>
           
