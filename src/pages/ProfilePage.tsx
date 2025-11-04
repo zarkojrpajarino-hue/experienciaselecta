@@ -155,79 +155,92 @@ const ProfilePage = () => {
 
   const loadUserData = async (userId: string) => {
     try {
-      // Load profile
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
+      // Load all data in parallel for better performance
+      const [
+        profileResponse,
+        customerResponse
+      ] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase
+          .from("customers")
+          .select("id")
+          .eq("user_id", userId)
+          .maybeSingle()
+      ]);
 
-      setProfile(profileData);
+      setProfile(profileResponse.data);
 
-      // Load customer ID
-      const { data: customerData } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("user_id", userId)
-        .maybeSingle();
+      if (customerResponse.data) {
+        // Load orders with items in a single optimized query
+        const [ordersResponse, giftedItemsResponse, receivedGiftsResponse] = await Promise.all([
+          supabase
+            .from("orders")
+            .select(`
+              id,
+              created_at,
+              total_amount,
+              status,
+              shipping_address_line1,
+              shipping_address_line2,
+              shipping_city,
+              shipping_postal_code,
+              shipping_country
+            `)
+            .eq("customer_id", customerResponse.data.id)
+            .order("created_at", { ascending: false }),
+          supabase
+            .from("pending_gifts")
+            .select("order_id"),
+          supabase
+            .from("pending_gifts")
+            .select("*")
+            .eq("recipient_user_id", userId)
+            .eq("shipping_completed", true)
+        ]);
 
-      if (customerData) {
-        // Load orders with items and shipping info
-        const { data: ordersData, error: ordersError } = await supabase
-          .from("orders")
-          .select(`
-            id,
-            created_at,
-            total_amount,
-            status,
-            shipping_address_line1,
-            shipping_address_line2,
-            shipping_city,
-            shipping_postal_code,
-            shipping_country
-          `)
-          .eq("customer_id", customerData.id)
-          .order("created_at", { ascending: false });
+        if (ordersResponse.error) throw ordersResponse.error;
 
-        if (ordersError) throw ordersError;
+        const giftedOrderIds = new Set(giftedItemsResponse.data?.map(g => g.order_id) || []);
+        const orderIds = ordersResponse.data?.filter(o => !giftedOrderIds.has(o.id)).map(o => o.id) || [];
 
-        // Get all gift order IDs for this user (items they gifted to others)
-        const { data: giftedItems } = await supabase
-          .from("pending_gifts")
-          .select("order_id")
-          .in("order_id", ordersData?.map(o => o.id) || []);
+        // Load all order items in a single query
+        const { data: allOrderItems } = orderIds.length > 0 
+          ? await supabase
+              .from("order_items")
+              .select("order_id, basket_name, basket_category, quantity, price_per_item")
+              .in("order_id", orderIds)
+          : { data: [] };
 
-        const giftedOrderIds = new Set(giftedItems?.map(g => g.order_id) || []);
+        // Group items by order
+        const itemsByOrder = new Map<string, OrderItem[]>();
+        allOrderItems?.forEach(item => {
+          if (!itemsByOrder.has(item.order_id)) {
+            itemsByOrder.set(item.order_id, []);
+          }
+          itemsByOrder.get(item.order_id)?.push(item);
+        });
 
-        // Load order items for each order, expanding items individually
+        // Expand orders with their items
         const expandedOrders: Order[] = [];
         
-        for (const order of ordersData || []) {
-          // Skip orders that were entirely gifts
+        for (const order of ordersResponse.data || []) {
           if (giftedOrderIds.has(order.id)) continue;
 
-          const { data: items } = await supabase
-            .from("order_items")
-            .select("basket_name, basket_category, quantity, price_per_item")
-            .eq("order_id", order.id);
-
-          // Create a separate order entry for each item (no grouping)
-          for (const item of items || []) {
+          const items = itemsByOrder.get(order.id) || [];
+          for (const item of items) {
             expandedOrders.push({
               ...order,
-              items: [item], // Single item per order
+              items: [item],
             });
           }
         }
 
-        // Load received gifts as additional orders
-        const { data: receivedGifts } = await supabase
-          .from("pending_gifts")
-          .select("*")
-          .eq("recipient_user_id", userId)
-          .eq("shipping_completed", true);
-
-        for (const gift of receivedGifts || []) {
+        // Add received gifts
+        for (const gift of receivedGiftsResponse.data || []) {
           expandedOrders.push({
             id: gift.order_id,
             created_at: gift.created_at,
@@ -268,7 +281,7 @@ const ProfilePage = () => {
         created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
         user_id: userId,
         source_site: 'paragenteselecta',
-        profiles: profileData
+        profiles: profileResponse.data
       }));
 
       setReviews(reviewsMapped);

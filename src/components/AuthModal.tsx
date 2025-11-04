@@ -49,8 +49,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
 
-      // Usar siempre el origen del sitio para evitar errores de redirección
-      const redirectUrl = `${window.location.origin}/`;
+      // Mantener la ruta actual para volver después del login
+      const redirectUrl = window.location.href;
       const { error } = await supabase.auth.signInWithOtp({
         email: emailClean,
         options: {
@@ -93,7 +93,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       if (!emailValid) {
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = window.location.href;
       const { error } = await supabase.auth.signInWithOtp({
         email: targetEmail,
         options: { shouldCreateUser: true, emailRedirectTo: redirectUrl },

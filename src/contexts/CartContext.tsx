@@ -61,8 +61,46 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       const newUserId = session?.user?.id || null;
       
-      // If user changed, load their cart
-      if (newUserId !== currentUserId) {
+      // If user logged in (from anonymous to authenticated)
+      if (newUserId && !currentUserId) {
+        setCurrentUserId(newUserId);
+        
+        // Merge anonymous cart with user's saved cart
+        try {
+          const userStorageKey = getCartStorageKey(newUserId);
+          const savedUserCart = localStorage.getItem(userStorageKey);
+          const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
+          
+          // Get current anonymous cart
+          const currentCart = [...cart];
+          
+          // Merge carts: add anonymous items to user cart, combining quantities for matching items
+          const mergedCart = [...userCart];
+          currentCart.forEach(anonItem => {
+            const existingIndex = mergedCart.findIndex(
+              item => item.id === anonItem.id && item.isGift === anonItem.isGift
+            );
+            if (existingIndex >= 0) {
+              mergedCart[existingIndex].quantity += anonItem.quantity;
+            } else {
+              mergedCart.push(anonItem);
+            }
+          });
+          
+          setCart(mergedCart);
+          
+          // Save merged cart to user's storage
+          localStorage.setItem(userStorageKey, JSON.stringify(mergedCart));
+          
+          // Clear anonymous cart
+          const anonKey = getCartStorageKey(null);
+          localStorage.removeItem(anonKey);
+        } catch (error) {
+          console.error('Error merging carts:', error);
+        }
+      }
+      // If user changed (switching accounts)
+      else if (newUserId && currentUserId && newUserId !== currentUserId) {
         setCurrentUserId(newUserId);
         try {
           const storageKey = getCartStorageKey(newUserId);
@@ -76,6 +114,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       
       // Clear cart on logout
       if (event === 'SIGNED_OUT') {
+        setCurrentUserId(null);
         setCart([]);
       }
     });
