@@ -22,7 +22,8 @@ const orderConfirmationSchema = z.object({
     price: z.number().int().positive().max(100000)
   })).min(1).max(50),
   howFoundUs: z.string().optional(),
-  shippingAddress: z.string().optional()
+  shippingAddress: z.string().optional(),
+  isGift: z.boolean().optional()
 });
 
 type OrderConfirmationRequest = z.infer<typeof orderConfirmationSchema>;
@@ -65,9 +66,9 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { email, customerName, orderId, items, totalAmount, howFoundUs, shippingAddress } = validationResult.data;
+    const { email, customerName, orderId, items, totalAmount, howFoundUs, shippingAddress, isGift } = validationResult.data;
 
-    console.log("Enviando correo de confirmación de pedido a:", email);
+    console.log("Enviando correo de confirmación de pedido a:", email, "isGift:", isGift);
 
     // Send notification to host/admin with order details including "how found us"
     try {
@@ -151,11 +152,62 @@ const handler = async (req: Request): Promise<Response> => {
       </tr>
     `).join('');
 
+    // Different email content for gift buyers vs normal customers
     const emailResponse = await resend.emails.send({
       from: "Experiencia Selecta <onboarding@resend.dev>",
       to: [email],
-      subject: "🎉 ¡Enhorabuena! Tu experiencia única te está esperando",
-      html: `
+      subject: isGift ? "✅ Confirmación de pago - Regalo enviado" : "🎉 ¡Enhorabuena! Tu experiencia única te está esperando",
+      html: isGift ? `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #8B4513 0%, #2F4F2F 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+              .content { background: white; padding: 30px; border: 1px solid #eee; border-top: none; border-radius: 0 0 10px 10px; }
+              .order-summary { margin: 20px 0; }
+              .total { font-size: 1.2em; font-weight: bold; color: #8B4513; margin-top: 20px; }
+              .footer { text-align: center; margin-top: 30px; color: #888; font-size: 0.9em; }
+              .highlight { background: #FFF9E6; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FFB800; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>✅ Pago Confirmado</h1>
+              </div>
+              <div class="content">
+                <p>Hola ${customerName},</p>
+                
+                <p>Tu pago ha sido procesado correctamente y tus regalos han sido enviados a los destinatarios.</p>
+                
+                <div class="highlight">
+                  <p style="margin: 0;"><strong>📧 Los destinatarios recibirán un email</strong> con las instrucciones para reclamar su regalo y proporcionar su dirección de envío.</p>
+                  <p style="margin: 10px 0 0 0;">Te notificaremos cuando cada destinatario complete el proceso.</p>
+                </div>
+                
+                <div class="order-summary">
+                  <h2>📦 Resumen del pedido:</h2>
+                  <p><strong>Número de orden:</strong> #${orderId}</p>
+                  <p><strong>Cestas regaladas:</strong> ${items.map(item => `${item.quantity}x ${item.basketName}`).join(', ')}</p>
+                  <div class="total">Total pagado: ${(totalAmount / 100).toFixed(2)}€</div>
+                  <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
+                </div>
+                
+                <p style="margin-top: 30px;">Gracias por elegir <strong>Experiencia Selecta</strong> para compartir momentos especiales.</p>
+                
+                <p>Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
+              </div>
+              <div class="footer">
+                <p>¿Necesitas ayuda? Responde a este email, estamos aquí para ti.</p>
+                <p>© 2024 Experiencia Selecta. Todos los derechos reservados.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      ` : `
         <!DOCTYPE html>
         <html>
           <head>
@@ -170,6 +222,7 @@ const handler = async (req: Request): Promise<Response> => {
               .total { font-size: 1.2em; font-weight: bold; color: #8B4513; margin-top: 20px; text-align: right; }
               .footer { text-align: center; margin-top: 30px; color: #888; font-size: 0.9em; }
               .highlight { background: #FFF9E6; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FFB800; }
+              .experience-box { background: linear-gradient(135deg, #8B4513 0%, #2F4F2F 100%); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
             </style>
           </head>
           <body>
@@ -180,19 +233,26 @@ const handler = async (req: Request): Promise<Response> => {
               <div class="content">
                 <p>Has adquirido <strong>${items.map(item => `${item.quantity}x ${item.basketName}`).join(', ')}</strong>.</p>
                 
-                <p style="font-style: italic; color: #8B4513;">Pero esto es solo el comienzo...</p>
+                <p style="font-style: italic; color: #8B4513; font-size: 1.1em; margin: 20px 0;">Pero esto es solo el comienzo...</p>
+                
+                <div class="experience-box">
+                  <h2 style="margin: 0 0 15px 0; font-size: 1.5em;">✨ Esto no es solo una cesta, es una experiencia</h2>
+                  <p style="margin: 0; font-size: 1.1em;">No vendemos cestas. Creamos experiencias únicas que vivirás con tus seres queridos.</p>
+                </div>
                 
                 <div class="highlight">
-                  <h3 style="margin: 0 0 10px 0; color: #8B4513;">✨ Tu acceso exclusivo a paragenteselecta.com</h3>
+                  <h3 style="margin: 0 0 10px 0; color: #8B4513;">🔐 Acceso exclusivo a paragenteselecta.com</h3>
                   <p style="margin: 0 0 10px 0;">Con tu compra, tienes acceso a nuestra plataforma exclusiva donde cada cesta cobra vida con una experiencia personalizada y única.</p>
                   
                   <h3 style="margin: 20px 0 10px 0; color: #8B4513;">🕐 24 horas de experiencia por cada cesta</h3>
-                  <p style="margin: 0;"><strong>Importante:</strong> Cada cesta te da 24 horas de acceso activo. Te recomendamos activarlas solo cuando vayas a consumirlas con tus seres queridos para disfrutar de la experiencia completa.</p>
+                  <p style="margin: 0 0 10px 0;"><strong>⚠️ MUY IMPORTANTE:</strong> Activa tu experiencia solo cuando estés listo para consumir la cesta con tus seres queridos. Cada cesta te da 24 horas de acceso activo para disfrutar de contenido exclusivo, guías, y todo lo necesario para vivir la experiencia completa.</p>
+                  
+                  <p style="margin: 15px 0 0 0; font-style: italic; color: #666;">Te recomendamos planificar con anticipación y activarla cuando realmente vayas a disfrutarla.</p>
                 </div>
                 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://paragenteselecta.com" style="display: inline-block; background-color: #8B4513; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                    Acceder a mi experiencia
+                  <a href="https://paragenteselecta.com" style="display: inline-block; background-color: #8B4513; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em;">
+                    🎯 Acceder a mi experiencia
                   </a>
                 </div>
                 
@@ -203,7 +263,11 @@ const handler = async (req: Request): Promise<Response> => {
                   <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
                 </div>
 
-                <p style="font-style: italic; text-align: center; margin: 30px 0;">Mientras tanto, prepárate para vivir algo único.</p>
+                <p style="font-style: italic; text-align: center; margin: 30px 0; font-size: 1.2em; color: #8B4513;">
+                  "No es solo lo que comes. Es cómo lo vives. 💝"
+                </p>
+                
+                <p style="margin-top: 30px;">Mientras tanto, prepárate para vivir algo único que recordarás para siempre.</p>
                 
                 <p>Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
               </div>

@@ -167,7 +167,7 @@ Sistema Experiencia Selecta`,
     await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [gift.recipient_email],
-      subject: `✅ ¡Reclamado! Tu experiencia está de camino`,
+      subject: `🎉 ¡Enhorabuena! Tu regalo está en camino`,
       html: `
 <!DOCTYPE html>
 <html>
@@ -179,40 +179,55 @@ Sistema Experiencia Selecta`,
     .header { background: linear-gradient(135deg, #8B4513 0%, #2F4F2F 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 10px 10px 0 0; }
     .content { background: white; padding: 30px 20px; border-radius: 0 0 10px 10px; }
     .info-box { background: #f9f9f9; padding: 20px; margin: 20px 0; border-left: 4px solid #8B4513; }
-    .cta-button { display: inline-block; background: #8B4513; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
+    .highlight { background: #FFF9E6; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FFB800; }
+    .experience-box { background: linear-gradient(135deg, #8B4513 0%, #2F4F2F 100%); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header"><h1>✅ ¡Enhorabuena ${validatedData.recipientName}!</h1></div>
+    <div class="header"><h1>🎉 ¡Enhorabuena ${validatedData.recipientName}!</h1></div>
     <div class="content">
-      <p>Tu regalo <strong>${validatedData.basketName}</strong> está reclamado y pronto estará contigo.</p>
+      <p><strong>¡Perfecto!</strong> Hemos recibido tu dirección de envío correctamente.</p>
+      
+      <p>Tu regalo <strong>${validatedData.basketName}</strong> ${validatedData.senderName ? `de parte de ${validatedData.senderName}` : ''} está en camino y pronto lo disfrutarás.</p>
       
       <div class="info-box">
-        <h3>📦 Detalles de envío:</h3>
-        <p><strong>Dirección:</strong> ${validatedData.shippingAddress}</p>
-        <p><strong>Estimado:</strong> 3-5 días laborables</p>
+        <h3>📦 Tiempo estimado de entrega:</h3>
+        <p><strong>3-5 días laborables</strong></p>
       </div>
       
-      <div style="background-color: #fff3cd; padding: 20px; border-left: 4px solid #ffc107; margin: 25px 0; border-radius: 4px;">
-        <h3 style="color: #856404; margin-top: 0;">✨ Esto no es solo una cesta, es una experiencia</h3>
-        <p style="color: #856404; margin: 10px 0;">
-          Con este regalo no solo recibirás productos ibéricos premium. También tienes acceso exclusivo a <strong>paragenteselecta.com</strong>, donde tu cesta se convierte en una experiencia única e inolvidable.
+      <p style="font-style: italic; color: #8B4513; font-size: 1.1em; margin: 20px 0;">Pero esto es solo el comienzo...</p>
+      
+      <div class="experience-box">
+        <h2 style="margin: 0 0 15px 0; font-size: 1.5em;">✨ Esto no es solo una cesta, es una experiencia</h2>
+        <p style="margin: 0; font-size: 1.1em;">No vendemos cestas. Creamos experiencias únicas que vivirás con tus seres queridos.</p>
+      </div>
+      
+      <div class="highlight">
+        <h3 style="margin: 0 0 10px 0; color: #8B4513;">🔐 Acceso exclusivo a paragenteselecta.com</h3>
+        <p style="margin: 0 0 10px 0;">
+          Con este regalo tienes acceso a nuestra plataforma exclusiva donde tu cesta cobra vida con una experiencia personalizada y única.
         </p>
+        
+        <h3 style="margin: 20px 0 10px 0; color: #8B4513;">🕐 24 horas de experiencia por cada cesta</h3>
+        <p style="margin: 0 0 10px 0;"><strong>⚠️ MUY IMPORTANTE:</strong> Activa tu experiencia solo cuando estés listo para consumir la cesta con tus seres queridos. Cada cesta te da 24 horas de acceso activo para disfrutar de contenido exclusivo, guías, y todo lo necesario para vivir la experiencia completa.</p>
+        
+        <p style="margin: 15px 0 0 0; font-style: italic; color: #666;">Te recomendamos planificar con anticipación y activarla cuando realmente vayas a disfrutarla.</p>
       </div>
-      
-      <h3 style="color: #8B4513;">🕐 24 horas de experiencia por cada cesta</h3>
-      <p><strong>Muy importante:</strong> Activa tu experiencia en paragenteselecta.com solo cuando estés listo para consumir la cesta con tus seres queridos. Así disfrutarás de toda la experiencia completa durante 24 horas.</p>
       
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://paragenteselecta.com" class="cta-button">Acceder a paragenteselecta.com</a>
+        <a href="https://paragenteselecta.com" style="display: inline-block; background-color: #8B4513; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em;">
+          🎯 Acceder a mi experiencia
+        </a>
       </div>
       
-      <p style="text-align: center; font-style: italic; margin-top: 30px; color: #8B4513; font-size: 18px;">
-        No es solo lo que comes. Es cómo lo vives. 💝
+      <p style="font-style: italic; text-align: center; margin: 30px 0; font-size: 1.2em; color: #8B4513;">
+        "No es solo lo que comes. Es cómo lo vives. 💝"
       </p>
       
-      <p style="margin-top: 30px;">Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
+      <p style="margin-top: 30px;">Prepárate para vivir algo único que recordarás para siempre.</p>
+      
+      <p>Con cariño,<br><strong>El equipo de Experiencia Selecta</strong></p>
     </div>
   </div>
 </body>
@@ -220,23 +235,33 @@ Sistema Experiencia Selecta`,
       `,
       text: `¡Enhorabuena ${validatedData.recipientName}!
 
-Tu regalo ${validatedData.basketName} está reclamado y pronto estará contigo.
+¡Perfecto! Hemos recibido tu dirección de envío correctamente.
 
-📦 Detalles de envío:
-- Dirección: ${validatedData.shippingAddress}
-- Estimado: 3-5 días laborables
+Tu regalo ${validatedData.basketName} ${validatedData.senderName ? `de parte de ${validatedData.senderName}` : ''} está en camino y pronto lo disfrutarás.
+
+📦 Tiempo estimado de entrega: 3-5 días laborables
+
+Pero esto es solo el comienzo...
 
 ✨ Esto no es solo una cesta, es una experiencia
 
-Con este regalo no solo recibirás productos ibéricos premium. También tienes acceso exclusivo a paragenteselecta.com, donde tu cesta se convierte en una experiencia única e inolvidable.
+No vendemos cestas. Creamos experiencias únicas que vivirás con tus seres queridos.
+
+🔐 Acceso exclusivo a paragenteselecta.com
+
+Con este regalo tienes acceso a nuestra plataforma exclusiva donde tu cesta cobra vida con una experiencia personalizada y única.
 
 🕐 24 horas de experiencia por cada cesta
 
-Muy importante: Activa tu experiencia en paragenteselecta.com solo cuando estés listo para consumir la cesta con tus seres queridos. Así disfrutarás de toda la experiencia completa durante 24 horas.
+⚠️ MUY IMPORTANTE: Activa tu experiencia solo cuando estés listo para consumir la cesta con tus seres queridos. Cada cesta te da 24 horas de acceso activo para disfrutar de contenido exclusivo, guías, y todo lo necesario para vivir la experiencia completa.
+
+Te recomendamos planificar con anticipación y activarla cuando realmente vayas a disfrutarla.
 
 Acceder a paragenteselecta.com: https://paragenteselecta.com
 
-No es solo lo que comes. Es cómo lo vives. 💝
+"No es solo lo que comes. Es cómo lo vives. 💝"
+
+Prepárate para vivir algo único que recordarás para siempre.
 
 Con cariño,
 El equipo de Experiencia Selecta`,

@@ -175,15 +175,16 @@ serve(async (req) => {
           if (senderEmail && senderName) {
             console.log('Sending payment confirmation email to sender:', senderEmail);
             await supabase.functions.invoke('send-order-confirmation', {
-              body: { 
-                order: {
-                  ...order,
-                  customers: {
-                    ...order.customers,
-                    email: senderEmail,
-                    name: senderName
-                  }
-                },
+              body: {
+                email: senderEmail,
+                customerName: senderName,
+                orderId: order.id,
+                totalAmount: order.total_amount,
+                items: order.order_items.map((item: any) => ({
+                  basketName: item.basket_name,
+                  quantity: item.quantity,
+                  price: item.price_per_item
+                })),
                 isGift: true
               },
               headers: { Authorization: authHeader }
@@ -193,8 +194,21 @@ serve(async (req) => {
           }
         } else {
           // Non-gift: regular confirmation to customer (and admin handled inside function)
+          const customer = order.customers as any;
           await supabase.functions.invoke('send-order-confirmation', {
-            body: { order },
+            body: {
+              email: customer.email,
+              customerName: customer.name,
+              orderId: order.id,
+              totalAmount: order.total_amount,
+              items: order.order_items.map((item: any) => ({
+                basketName: item.basket_name,
+                quantity: item.quantity,
+                price: item.price_per_item
+              })),
+              shippingAddress: order.shipping_address_line1 + (order.shipping_address_line2 ? ', ' + order.shipping_address_line2 : '') + ', ' + order.shipping_city + ', ' + order.shipping_postal_code + ', ' + order.shipping_country,
+              isGift: false
+            },
             headers: { Authorization: authHeader }
           });
         }
