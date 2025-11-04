@@ -84,32 +84,31 @@ const App = () => (
       <Sonner position="bottom-right" />
       <AutoUpdater />
       
-        <ScrollToTopOnRouteChange />
-        <div className="min-h-screen bg-background gpu-accelerated">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/perfil" element={<ProfilePage />} />
-              <Route path="/carrito" element={<CartPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/pago" element={<PaymentPage />} />
-              <Route path="/pago-exitoso" element={<PaymentSuccessPage />} />
-              <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
-              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-              <Route path="/cestas" element={<Navigate to="/comprar-cestas" replace />} />
-              <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
-              <Route path="/experiencia" element={<ExperienciaPage />} />
-              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-              <Route path="/regalos" element={<RegalosPage />} />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-          <CookieBanner />
-        </div>
+      <div className="min-h-screen bg-background gpu-accelerated">
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<><ScrollToTopOnRouteChange /><Index /></>} />
+            <Route path="/perfil" element={<><ScrollToTopOnRouteChange /><ProfilePage /></>} />
+            <Route path="/carrito" element={<><ScrollToTopOnRouteChange /><CartPage /></>} />
+            <Route path="/checkout" element={<><ScrollToTopOnRouteChange /><CheckoutPage /></>} />
+            <Route path="/pago" element={<><ScrollToTopOnRouteChange /><PaymentPage /></>} />
+            <Route path="/pago-exitoso" element={<><ScrollToTopOnRouteChange /><PaymentSuccessPage /></>} />
+            <Route path="/nuestra-identidad" element={<><ScrollToTopOnRouteChange /><NuestraIdentidadPage /></>} />
+            <Route path="/sobre-nosotros-detalle" element={<><ScrollToTopOnRouteChange /><SobreNosotrosDetalle /></>} />
+            <Route path="/nuestros-clientes" element={<><ScrollToTopOnRouteChange /><NuestrosClientesPage /></>} />
+            <Route path="/cestas" element={<Navigate to="/comprar-cestas" replace />} />
+            <Route path="/comprar-cestas" element={<><ScrollToTopOnRouteChange /><ComprarCestasPage /></>} />
+            <Route path="/experiencia" element={<><ScrollToTopOnRouteChange /><ExperienciaPage /></>} />
+            <Route path="/experiencia-selecta" element={<><ScrollToTopOnRouteChange /><ExperienciaSelectaPage /></>} />
+            <Route path="/preguntas-frecuentes" element={<><ScrollToTopOnRouteChange /><PreguntasFrecuentesPage /></>} />
+            <Route path="/regalos" element={<><ScrollToTopOnRouteChange /><RegalosPage /></>} />
+            <Route path="/feedback" element={<><ScrollToTopOnRouteChange /><FeedbackPage /></>} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<><ScrollToTopOnRouteChange /><NotFound /></>} />
+          </Routes>
+        </Suspense>
+        <CookieBanner />
+      </div>
     </TooltipProvider>
   </CartProvider>
 );
