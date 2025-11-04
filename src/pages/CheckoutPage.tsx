@@ -17,7 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 
 interface CartItem {
-  id: string;
+  id: number;
   nombre: string;
   name?: string;
   precio: number;
@@ -259,7 +259,7 @@ const CheckoutPage = () => {
     return getCurrentPersonalTotal() + getAssignedGiftTotal();
   };
 
-  const handleRemovePersonalItem = (itemId: string) => {
+  const handleRemovePersonalItem = (itemId: number) => {
     setCurrentPersonalItems(prev => prev.filter(item => item.id !== itemId));
     toast.success("Cesta eliminada");
   };
@@ -379,11 +379,11 @@ const CheckoutPage = () => {
       // Add personal items
       for (const item of currentPersonalItems) {
         basketItems.push({
-          id: item.id,
-          name: item.nombre || item.name,
-          price: item.precio || item.price,
+          id: String(item.id),
+          name: item.nombre,
+          price: item.precio,
           quantity: item.quantity,
-          category: item.categoria || item.category,
+          category: item.categoria,
           image: item.imagen
         });
       }
@@ -395,10 +395,10 @@ const CheckoutPage = () => {
         if (giftItem) {
           basketItems.push({
             id: uniqueId,
-            name: giftItem.nombre || giftItem.name,
-            price: giftItem.precio || giftItem.price,
+            name: giftItem.nombre,
+            price: giftItem.precio,
             quantity: 1,
-            category: giftItem.categoria || giftItem.category,
+            category: giftItem.categoria,
             image: giftItem.imagen
           });
         }
