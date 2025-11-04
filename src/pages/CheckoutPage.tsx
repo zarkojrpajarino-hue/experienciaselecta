@@ -135,37 +135,38 @@ const CheckoutPage = () => {
   // Check auth status and handle post-OAuth redirect
   React.useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // Only synchronous state updates here to avoid deadlocks
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
         // Cerrar modal si estuviera abierto para evitar bucles
         setShowAuthModal(false);
-        // Cargar perfil al iniciar sesión
-        loadUserProfile(session.user.id);
-        
-        // Si acabamos de hacer login y hay checkout pendiente, solo informar
-        if (event === 'SIGNED_IN') {
-          try { localStorage.removeItem('oauthInProgress'); } catch {}
-          const hasPendingCheckout = localStorage.getItem('pendingCheckout');
-          if (hasPendingCheckout) {
-            localStorage.removeItem('pendingCheckout');
-            toast.success("¡Sesión iniciada! Ahora completa tus datos de envío.");
+        // Defer any Supabase calls to next tick (prevents freezes after OAuth)
+        setTimeout(() => {
+          loadUserProfile(session.user!.id);
+          if (event === 'SIGNED_IN') {
+            try { localStorage.removeItem('oauthInProgress'); } catch {}
+            const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+            if (hasPendingCheckout) {
+              localStorage.removeItem('pendingCheckout');
+              toast.success("¡Sesión iniciada! Ahora completa tus datos de envío.");
+            }
           }
-        }
+        }, 0);
       }
     });
 
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    setSession(session);
-    setUser(session?.user ?? null);
-    
-    if (session?.user) {
-      // Cerrar modal si estuviera abierto para evitar bucles
-      setShowAuthModal(false);
-      loadUserProfile(session.user.id);
-    }
-  });
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        setShowAuthModal(false);
+        setTimeout(() => loadUserProfile(session.user!.id), 0);
+      }
+    });
 
     return () => subscription.unsubscribe();
   }, []);

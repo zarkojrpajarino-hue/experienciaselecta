@@ -58,71 +58,73 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     loadUserCart();
     
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const newUserId = session?.user?.id || null;
-      
-      // If user logged in (from anonymous to authenticated)
-      if (newUserId && !currentUserId) {
-        setCurrentUserId(newUserId);
-        
-        // Only merge anonymous cart when checkout was intentionally started
-        // This prevents leaking carts between different accounts on the same device
-        try {
-          const userStorageKey = getCartStorageKey(newUserId);
-          const savedUserCart = localStorage.getItem(userStorageKey);
-          const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
+      // Defer to next tick to avoid blocking auth callback
+      setTimeout(() => {
+        // If user logged in (from anonymous to authenticated)
+        if (newUserId && !currentUserId) {
+          setCurrentUserId(newUserId);
+          
+          // Only merge anonymous cart when checkout was intentionally started
+          // This prevents leaking carts between different accounts on the same device
+          try {
+            const userStorageKey = getCartStorageKey(newUserId);
+            const savedUserCart = localStorage.getItem(userStorageKey);
+            const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
 
-          const anonKey = getCartStorageKey(null);
-          const anonCartString = localStorage.getItem(anonKey);
-          const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
+            const anonKey = getCartStorageKey(null);
+            const anonCartString = localStorage.getItem(anonKey);
+            const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
 
-          const shouldMerge = localStorage.getItem('pendingCheckout') === 'true';
+            const shouldMerge = localStorage.getItem('pendingCheckout') === 'true';
 
-          if (shouldMerge && anonCart.length > 0) {
-            // Merge carts: add anonymous items to user cart, combining quantities
-            const mergedCart = [...userCart];
-            anonCart.forEach(anonItem => {
-              const existingIndex = mergedCart.findIndex(
-                item => item.id === anonItem.id && item.isGift === anonItem.isGift
-              );
-              if (existingIndex >= 0) {
-                mergedCart[existingIndex].quantity += anonItem.quantity;
-              } else {
-                mergedCart.push(anonItem);
-              }
-            });
+            if (shouldMerge && anonCart.length > 0) {
+              // Merge carts: add anonymous items to user cart, combining quantities
+              const mergedCart = [...userCart];
+              anonCart.forEach(anonItem => {
+                const existingIndex = mergedCart.findIndex(
+                  item => item.id === anonItem.id && item.isGift === anonItem.isGift
+                );
+                if (existingIndex >= 0) {
+                  mergedCart[existingIndex].quantity += anonItem.quantity;
+                } else {
+                  mergedCart.push(anonItem);
+                }
+              });
 
-            setCart(mergedCart);
-            localStorage.setItem(userStorageKey, JSON.stringify(mergedCart));
-          } else {
-            // Do NOT merge anonymous cart; use only the user's saved cart
-            setCart(userCart);
+              setCart(mergedCart);
+              localStorage.setItem(userStorageKey, JSON.stringify(mergedCart));
+            } else {
+              // Do NOT merge anonymous cart; use only the user's saved cart
+              setCart(userCart);
+            }
+
+            // Always clear anonymous cart on successful login to avoid cross-account leakage
+            localStorage.removeItem(anonKey);
+          } catch (error) {
+            console.error('Error handling cart on login:', error);
           }
-
-          // Always clear anonymous cart on successful login to avoid cross-account leakage
-          localStorage.removeItem(anonKey);
-        } catch (error) {
-          console.error('Error handling cart on login:', error);
         }
-      }
-      // If user changed (switching accounts)
-      else if (newUserId && currentUserId && newUserId !== currentUserId) {
-        setCurrentUserId(newUserId);
-        try {
-          const storageKey = getCartStorageKey(newUserId);
-          const savedCart = localStorage.getItem(storageKey);
-          setCart(savedCart ? JSON.parse(savedCart) : []);
-        } catch (error) {
-          console.error('Error loading cart for new user:', error);
+        // If user changed (switching accounts)
+        else if (newUserId && currentUserId && newUserId !== currentUserId) {
+          setCurrentUserId(newUserId);
+          try {
+            const storageKey = getCartStorageKey(newUserId);
+            const savedCart = localStorage.getItem(storageKey);
+            setCart(savedCart ? JSON.parse(savedCart) : []);
+          } catch (error) {
+            console.error('Error loading cart for new user:', error);
+            setCart([]);
+          }
+        }
+        
+        // Clear cart on logout
+        if (event === 'SIGNED_OUT') {
+          setCurrentUserId(null);
           setCart([]);
         }
-      }
-      
-      // Clear cart on logout
-      if (event === 'SIGNED_OUT') {
-        setCurrentUserId(null);
-        setCart([]);
-      }
+      }, 0);
     });
     
     return () => subscription.unsubscribe();
