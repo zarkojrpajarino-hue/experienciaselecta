@@ -31,67 +31,6 @@ const VisualHeader = () => {
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
-          {/* Botón "Crea tu propia experiencia" a la izquierda con flecha al lado */}
-          <div className="relative mb-8 sm:mb-12 w-full text-left">
-            <motion.div
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/comprar-cestas');
-              }}
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ 
-                x: 0, 
-                opacity: 1,
-                scale: [1, 1.05, 1],
-              }}
-              transition={{
-                x: { duration: 0.8 },
-                opacity: { duration: 0.8 },
-                scale: {
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatDelay: 3,
-                  times: [0, 0.5, 1]
-                }
-              }}
-              className="inline-flex items-center gap-3 cursor-pointer group"
-            >
-              <motion.button
-                whileHover={{ color: '#FFD700' }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-              >
-                Crea tu propia experiencia.
-              </motion.button>
-              
-              {/* Flecha al lado */}
-              <motion.div
-                whileHover={{ x: 10 }}
-                animate={{
-                  y: [0, 5, 0],
-                  opacity: [0.6, 1, 0.6]
-                }}
-                transition={{
-                  y: {
-                    duration: 1.5,
-                    repeat: Infinity,
-                    repeatDelay: 3
-                  },
-                  opacity: {
-                    duration: 1.5,
-                    repeat: Infinity,
-                    repeatDelay: 3
-                  },
-                  x: { duration: 0.3 }
-                }}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 5v14M19 12l-7 7-7-7"/>
-                </svg>
-              </motion.div>
-            </motion.div>
-          </div>
-          
           <p 
             onClick={(e) => {
               e.preventDefault();
@@ -155,6 +94,67 @@ const VisualHeader = () => {
                     repeat: Infinity,
                     repeatDelay: 3,
                     delay: 1.5
+                  },
+                  x: { duration: 0.3 }
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 5v14M19 12l-7 7-7-7"/>
+                </svg>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          {/* Botón "Crea tu propia experiencia" a la izquierda con flecha al lado */}
+          <div className="relative mb-8 sm:mb-12 w-full text-left">
+            <motion.div
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/comprar-cestas');
+              }}
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ 
+                x: 0, 
+                opacity: 1,
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                x: { duration: 0.8 },
+                opacity: { duration: 0.8 },
+                scale: {
+                  duration: 1.5,
+                  repeat: Infinity,
+                  repeatDelay: 3,
+                  times: [0, 0.5, 1]
+                }
+              }}
+              className="inline-flex items-center gap-3 cursor-pointer group"
+            >
+              <motion.button
+                whileHover={{ color: '#FFD700' }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
+              >
+                Crea tu propia experiencia.
+              </motion.button>
+              
+              {/* Flecha al lado */}
+              <motion.div
+                whileHover={{ x: 10 }}
+                animate={{
+                  y: [0, 5, 0],
+                  opacity: [0.6, 1, 0.6]
+                }}
+                transition={{
+                  y: {
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatDelay: 3
+                  },
+                  opacity: {
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatDelay: 3
                   },
                   x: { duration: 0.3 }
                 }}

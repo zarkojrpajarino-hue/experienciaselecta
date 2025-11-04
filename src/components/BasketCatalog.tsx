@@ -1188,7 +1188,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             whileHover={{ scale: showGroupSize === '3-4' ? 1.05 : 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span className={showGroupSize === '3-4' ? '' : 'text-black'} style={showGroupSize === '3-4' ? { color: '#D4AF37' } : {}}>3-4</span>
+            <span className={showGroupSize === '3-4' ? '' : 'text-black'} style={showGroupSize === '3-4' ? { color: '#D4AF37' } : {}}>Personas: 3-4</span>
           </motion.button>
           
           <span className="text-black text-base sm:text-xl mx-1 sm:mx-2">|</span>
@@ -1206,7 +1206,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             whileHover={{ scale: showGroupSize === '5-6' ? 1.05 : 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span className={showGroupSize === '5-6' ? '' : 'text-black'} style={showGroupSize === '5-6' ? { color: '#D4AF37' } : {}}>5-6</span>
+            <span className={showGroupSize === '5-6' ? '' : 'text-black'} style={showGroupSize === '5-6' ? { color: '#D4AF37' } : {}}>Personas: 5-6</span>
           </motion.button>
           
           <span className="text-black text-base sm:text-xl mx-1 sm:mx-2">|</span>
@@ -1224,7 +1224,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             whileHover={{ scale: showGroupSize === '7-8' ? 1.05 : 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span className={showGroupSize === '7-8' ? '' : 'text-black'} style={showGroupSize === '7-8' ? { color: '#D4AF37' } : {}}>7-8</span>
+            <span className={showGroupSize === '7-8' ? '' : 'text-black'} style={showGroupSize === '7-8' ? { color: '#D4AF37' } : {}}>Personas: 7-8</span>
           </motion.button>
         </div>
       )}

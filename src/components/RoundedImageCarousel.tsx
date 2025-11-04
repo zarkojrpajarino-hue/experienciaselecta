@@ -76,7 +76,20 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   }, [autoPlay, autoPlayDelay, paused, slides.length]);
 
   const toggleImageExpand = () => {
+    const wasExpanded = imageExpanded;
     setImageExpanded(!imageExpanded);
+    
+    // Si estamos expandiendo, hacer scroll después de la animación
+    if (!wasExpanded) {
+      setTimeout(() => {
+        const container = containerRef.current;
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const scrollTarget = window.scrollY + containerRect.top - 100;
+          window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+        }
+      }, 350); // Esperar a que la animación de expansión termine
+    }
   };
 
   const current = slides[index];

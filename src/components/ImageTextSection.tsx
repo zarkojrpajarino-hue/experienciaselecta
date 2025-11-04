@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
@@ -14,9 +13,22 @@ interface ImageTextSectionProps {
 const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: ImageTextSectionProps) => {
   const [isImageOpen, setIsImageOpen] = useState(false);
 
+  const handleImageClick = () => {
+    setIsImageOpen(true);
+    // Centrar en la imagen después de que se abra
+    setTimeout(() => {
+      const section = document.querySelector('.image-text-section-container');
+      if (section) {
+        const sectionRect = section.getBoundingClientRect();
+        const scrollTarget = window.scrollY + sectionRect.top - 100;
+        window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+      }
+    }, 350);
+  };
+
   return (
     <>
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-background image-text-section-container">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`flex flex-col ${position === "right" ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 md:gap-12 max-w-6xl mx-auto`}>
             {/* Image */}
@@ -27,7 +39,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
               viewport={{ once: true }}
               className="w-full md:w-1/2"
             >
-              <div className="relative group cursor-pointer" onClick={() => setIsImageOpen(true)}>
+              <div className="relative group cursor-pointer" onClick={handleImageClick}>
                 <div className="rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-gold/50 transition-all duration-300">
                   <img
                     src={image}
@@ -51,32 +63,36 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
               </h2>
             </motion.div>
           </div>
+          
+          {/* Imagen ampliada debajo */}
+          <AnimatePresence>
+            {isImageOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="w-full max-w-6xl mx-auto mt-8 overflow-hidden"
+              >
+                <div className="bg-white border-2 border-[#FFD700]/30 rounded-3xl p-4 shadow-xl relative">
+                  <Button 
+                    onClick={() => setIsImageOpen(false)} 
+                    className="absolute top-4 right-4 z-10 h-10 w-10 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                    size="icon"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                  <img
+                    src={image}
+                    alt={imageAlt}
+                    className="w-full h-auto object-contain rounded-[1.5rem]"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
-
-      {/* Image Modal */}
-      <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
-          <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
-          <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
-          <DialogClose asChild>
-            <Button 
-              className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-              size="icon"
-              aria-label="Cerrar imagen"
-            >
-              <X className="h-6 w-6" />
-            </Button>
-          </DialogClose>
-          <div className="rounded-3xl overflow-hidden">
-            <img 
-              src={image} 
-              alt={imageAlt} 
-              className="w-full h-auto max-h-[80vh] object-contain rounded-3xl" 
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };

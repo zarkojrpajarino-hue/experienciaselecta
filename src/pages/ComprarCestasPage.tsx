@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import StickyToast from "@/components/StickyToast";
 import ExitConfirmDialog from "@/components/ExitConfirmDialog";
+import { Gift, ShoppingCart } from "lucide-react";
 
 const ComprarCestasPage = () => {
   const navigate = useNavigate();
@@ -121,50 +122,33 @@ const ComprarCestasPage = () => {
               </motion.p>
             </AnimatePresence>
 
-            {/* Indicador del modo actual con animación */}
-            <AnimatePresence mode="wait">
-              <motion.div 
-                key={isGiftMode ? 'gift-indicator' : 'normal-indicator'}
-                initial={{ opacity: 0, scale: 0.8, x: isGiftMode ? 100 : -100 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.8, x: isGiftMode ? -100 : 100 }}
-                transition={{ duration: 0.5, type: "spring" }}
-                className={`mb-3 px-4 py-2 rounded-xl font-bold text-sm inline-block ${
-                  isGiftMode 
-                    ? 'bg-purple-100 text-purple-700 border-2 border-purple-400' 
-                    : 'bg-blue-100 text-blue-700 border-2 border-blue-400'
-                }`}
-              >
-                {isGiftMode ? '🎁 Modo Regalo' : '🛒 Modo Compra'}
-              </motion.div>
-            </AnimatePresence>
-
+            {/* Botones para Modo Compra y Modo Regalo */}
             <motion.div 
-              onClick={() => {
-                console.log('Cambiando modo de:', isGiftMode ? 'regalo' : 'normal', 'a:', !isGiftMode ? 'regalo' : 'normal');
-                setIsGiftMode(!isGiftMode);
-              }}
-              className="flex justify-center items-center gap-2 mb-6 cursor-pointer hover:opacity-80 transition-opacity"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center justify-center gap-4 mb-6"
             >
-              <p className="text-sm sm:text-base md:text-lg font-poppins font-bold text-black">
-                {isGiftMode ? '¿Prefieres compra normal?' : '¿Quieres regalar algo original?'}
-              </p>
-              <motion.svg 
-                className="w-5 h-5 sm:w-6 sm:h-6 text-[#D4AF37]" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              <Button
+                onClick={() => setIsGiftMode(false)}
+                variant={!isGiftMode ? "default" : "outline"}
+                className="flex items-center gap-2"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </motion.svg>
+                <ShoppingCart className="h-4 w-4" />
+                Modo Compra
+              </Button>
+              <Button
+                onClick={() => setIsGiftMode(true)}
+                variant={isGiftMode ? "default" : "outline"}
+                className="flex items-center gap-2"
+              >
+                <Gift className="h-4 w-4" />
+                Modo Regalo
+              </Button>
             </motion.div>
 
             {/* Botones de Categoría */}
-            <div className="flex justify-center gap-3 sm:gap-4 flex-wrap mb-4">
+            <div className="flex justify-center gap-3 sm:gap-4 mb-4">
               <motion.button
                 onClick={() => setSelectedCategory('Pareja')}
                 whileHover={{ scale: 1.05 }}
