@@ -139,7 +139,7 @@ const CheckoutPage = () => {
             const hasPendingCheckout = localStorage.getItem('pendingCheckout');
             if (hasPendingCheckout) {
               localStorage.removeItem('pendingCheckout');
-              toast.success("¡Sesión iniciada! Ahora completa tus datos de envío.");
+              toast.success("¡Sesión iniciada! Completa tus datos de envío.");
             }
           }
         }, 0);
@@ -154,11 +154,6 @@ const CheckoutPage = () => {
       if (session?.user) {
         setShowAuthModal(false);
         setTimeout(() => loadUserProfile(session.user!.id), 0);
-      } else {
-        // Usuario NO autenticado con items en carrito -> establecer flag para merge
-        if (cart.length > 0) {
-          localStorage.setItem('pendingCheckout', 'true');
-        }
       }
     });
 
@@ -273,10 +268,10 @@ const CheckoutPage = () => {
     
     // Require authentication
     if (!user) {
-      // Establecer flag antes de abrir modal para preservar carrito tras login
+      // Establecer flag ANTES de abrir modal para preservar carrito tras login
       localStorage.setItem('pendingCheckout', 'true');
       setShowAuthModal(true);
-      toast.error("Debes iniciar sesión para continuar");
+      toast.error("Inicia sesión para continuar con tu pedido");
       return;
     }
     

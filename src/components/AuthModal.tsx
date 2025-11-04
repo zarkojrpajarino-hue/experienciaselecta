@@ -44,7 +44,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      // Redirigir al checkout tras login con Google
+      // CRÍTICO: Establecer flag ANTES de OAuth para preservar carrito
+      localStorage.setItem('pendingCheckout', 'true');
+      
+      // Siempre redirigir a checkout (donde se inició el login)
       const redirectUrl = `${window.location.origin}/checkout`;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -52,7 +55,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
           redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
-            prompt: 'consent',
+            prompt: 'select_account',
           }
         }
       });
@@ -60,6 +63,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       if (error) throw error;
     } catch (error: any) {
       console.error('Error en login con Google:', error);
+      localStorage.removeItem('pendingCheckout'); // Limpiar si falla
       toast({
         variant: "destructive",
         title: "No se pudo iniciar sesión",
@@ -80,6 +84,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
 
+      // CRÍTICO: Establecer flag ANTES de OTP para preservar carrito
+      localStorage.setItem('pendingCheckout', 'true');
+      
       // Redirigir SIEMPRE al checkout tras login por email
       const redirectUrl = `${window.location.origin}/checkout`;
       const { error } = await supabase.auth.signInWithOtp({
@@ -90,7 +97,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        localStorage.removeItem('pendingCheckout'); // Limpiar si falla
+        throw error;
+      }
 
       setShowCodeInput(true);
       setLastEmailSent(emailClean);
