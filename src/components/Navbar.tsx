@@ -74,8 +74,8 @@ const Navbar = () => {
         if (location.pathname !== '/checkout') {
           console.log('Redirecting to /checkout from:', location.pathname);
           setTimeout(() => {
-            window.location.assign('/checkout');
-          }, 100);
+            navigate('/checkout', { replace: true });
+          }, 50);
         }
       }
 
