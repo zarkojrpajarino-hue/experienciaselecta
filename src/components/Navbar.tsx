@@ -373,8 +373,8 @@ const Navbar = () => {
               </Tooltip>
             )}
 
-            {/* Cart Button - Only show if user is authenticated and cart has items */}
-            {user && getTotalItems() > 0 && (
+            {/* Cart Button - Show whenever cart has items (with or without login) */}
+            {getTotalItems() > 0 && (
               <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
