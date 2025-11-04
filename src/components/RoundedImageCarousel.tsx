@@ -79,7 +79,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
     const wasExpanded = imageExpanded;
     setImageExpanded(!imageExpanded);
     
-    // Si estamos expandiendo, hacer scroll después de la animación
+    // Si estamos expandiendo, hacer scroll después de que la animación comience
     if (!wasExpanded) {
       setTimeout(() => {
         // Buscar el contenedor de la imagen ampliada
@@ -90,7 +90,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
             block: 'center' 
           });
         }
-      }, 100); // Pequeño delay para que el DOM se actualice
+      }, 350); // Esperar a que la animación de expansión esté más avanzada
     }
   };
 

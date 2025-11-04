@@ -15,7 +15,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
 
   const handleImageClick = () => {
     setIsImageOpen(true);
-    // Centrar en la imagen ampliada después de que se abra
+    // Centrar en la imagen ampliada después de que la animación esté más avanzada
     setTimeout(() => {
       const expandedImage = document.querySelector('[data-expanded-image-section]');
       if (expandedImage) {
@@ -24,7 +24,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
           block: 'center' 
         });
       }
-    }, 100);
+    }, 350);
   };
 
   return (
