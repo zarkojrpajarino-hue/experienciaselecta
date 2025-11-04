@@ -31,19 +31,43 @@ const Navbar = () => {
   // Check auth status with proper session persistence
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Redirigir a la ruta/intención original tras login o restauración de sesión
+      // Send welcome email on new login (Google or email/password)
+      if (event === 'SIGNED_IN' && session?.user) {
+        try {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('name')
+            .eq('user_id', session.user.id)
+            .single();
+
+          await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              userEmail: session.user.email,
+              userName: profiles?.name || session.user.user_metadata?.name || 'amigo'
+            }
+          });
+        } catch (error) {
+          console.error('Error sending welcome email:', error);
+        }
+      }
+
+      // Redirigir a la ruta/intención original o al checkout si hay items en carrito
       if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
         const intended = localStorage.getItem('intendedRoute');
+        
         if (intended) {
           localStorage.removeItem('intendedRoute');
           const current = window.location.pathname + window.location.search + window.location.hash;
           if (current !== intended) {
             navigate(intended);
           }
+        } else if (event === 'SIGNED_IN' && getTotalItems() > 0) {
+          // Si acabamos de hacer login y hay items en el carrito, ir al checkout
+          navigate('/checkout');
         }
       }
 
@@ -76,7 +100,7 @@ const Navbar = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate, getTotalItems]);
 
   // Listen for pending feedback changes (session-based)
   useEffect(() => {
