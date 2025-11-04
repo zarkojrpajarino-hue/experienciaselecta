@@ -103,88 +103,88 @@ const CookieBanner = () => {
         border: '1px solid hsl(45 100% 65% / 0.3)'
       }}
     >
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="px-4 py-4">
+        <div className="flex flex-col gap-4">
           <div className="flex-1">
             <h2 className="sr-only">Preferencias de cookies</h2>
-            <p className="text-sm text-white leading-relaxed">
+            <p className="text-xs sm:text-sm text-white leading-relaxed">
               Utilizamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar el marketing.
               Puedes aceptar todas, rechazarlas o personalizarlas según la normativa de España (RGPD/LOPDGDD).
             </p>
             {showPreferences && (
-              <div className="mt-4 p-4 border border-[hsl(45,100%,65%)]/30 rounded-lg bg-black/50">
+              <div className="mt-4 p-3 sm:p-4 border border-[hsl(45,100%,65%)]/30 rounded-lg bg-black/50">
                 <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-white">Esenciales</p>
-                      <p className="text-sm text-white/70">Siempre activas para el funcionamiento básico del sitio.</p>
+                  <div className="flex items-start justify-between gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white">Esenciales</p>
+                      <p className="text-xs text-white/70">Siempre activas.</p>
                     </div>
-                    <input type="checkbox" checked readOnly className="h-4 w-4 opacity-60" aria-label="Cookies esenciales (siempre activas)" />
+                    <input type="checkbox" checked readOnly className="h-4 w-4 opacity-60 flex-shrink-0" aria-label="Cookies esenciales (siempre activas)" />
                   </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-white">Analíticas</p>
-                      <p className="text-sm text-white/70">Nos ayudan a entender el uso del sitio. Opcionales.</p>
+                  <div className="flex items-start justify-between gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white">Analíticas</p>
+                      <p className="text-xs text-white/70">Entender el uso del sitio.</p>
                     </div>
                     <input
                       type="checkbox"
-                      className="h-4 w-4"
+                      className="h-4 w-4 flex-shrink-0"
                       checked={analytics}
                       onChange={(e) => setAnalytics(e.target.checked)}
                       aria-label="Permitir cookies analíticas"
                     />
                   </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-white">Marketing</p>
-                      <p className="text-sm text-white/70">Personalizan anuncios y ofertas. Opcionales.</p>
+                  <div className="flex items-start justify-between gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white">Marketing</p>
+                      <p className="text-xs text-white/70">Personalizar ofertas.</p>
                     </div>
                     <input
                       type="checkbox"
-                      className="h-4 w-4"
+                      className="h-4 w-4 flex-shrink-0"
                       checked={marketing}
                       onChange={(e) => setMarketing(e.target.checked)}
                       aria-label="Permitir cookies de marketing"
                     />
                   </div>
                 </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Button size="sm" onClick={handleSavePreferences} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold">
-                    Guardar preferencias
+                <div className="mt-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
+                  <Button size="sm" onClick={handleSavePreferences} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs">
+                    Guardar
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleAcceptAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]">
+                  <Button variant="outline" size="sm" onClick={handleAcceptAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs">
                     Aceptar todas
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleRejectAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]">
+                  <Button variant="outline" size="sm" onClick={handleRejectAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs">
                     Rechazar todas
                   </Button>
                 </div>
               </div>
             )}
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-2 justify-end">
             <Button 
               variant="outline" 
               size="sm" 
               onClick={() => setShowPreferences((v) => !v)}
-              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]"
+              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs"
             >
-              {showPreferences ? 'Ocultar opciones' : 'Personalizar cookies'}
+              {showPreferences ? 'Ocultar' : 'Personalizar'}
             </Button>
             <Button 
               variant="outline" 
               size="sm" 
               onClick={handleRejectAll}
-              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)]"
+              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs"
             >
               Rechazar
             </Button>
             <Button 
               onClick={handleAcceptAll}
               size="sm"
-              className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold"
+              className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs"
             >
-              Aceptar todas
+              Aceptar
             </Button>
             <Button
               variant="ghost"
