@@ -51,12 +51,18 @@ const VisualHeader = () => {
               whileTap={{ scale: 0.95 }}
               className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
               onClick={() => {
+                // Intentar scroll inmediato
                 const element = document.getElementById('categoria-cestas');
                 if (element) {
                   element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else {
-                  // Fallback: actualizar hash para que el efecto de Index haga el scroll
-                  navigate('/#categoria-cestas');
+                  // Si no existe, esperar un momento y reintentar (por si está cargando)
+                  setTimeout(() => {
+                    const retryElement = document.getElementById('categoria-cestas');
+                    if (retryElement) {
+                      retryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
                 }
               }}
             >
