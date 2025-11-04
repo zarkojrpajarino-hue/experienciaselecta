@@ -38,7 +38,7 @@ const CheckoutPage = () => {
   // Si no hay items en carrito, redirigir suavemente a /carrito
   React.useEffect(() => {
     if (cart.length === 0) {
-      navigate('/carrito', { replace: true });
+      navigate('/#categoria-cestas', { replace: true });
     }
   }, [cart.length, navigate]);
 

@@ -64,13 +64,10 @@ const Navbar = () => {
         }, 0);
       }
 
-      // Redirigir tras login: solo si hay flag de checkout pendiente
+      // Redirigir tras login: SIEMPRE ir a checkout
       if (event === 'SIGNED_IN') {
-        const hasPendingCheckout = localStorage.getItem('pendingCheckout');
-        if (hasPendingCheckout) {
-          localStorage.removeItem('pendingCheckout');
-          navigate('/checkout');
-        }
+        try { localStorage.removeItem('pendingCheckout'); } catch {}
+        navigate('/checkout', { replace: true });
       }
 
       if (session?.user) {
@@ -84,16 +81,7 @@ const Navbar = () => {
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Si ya hay sesión al cargar, aplicar intendedRoute si existe
       if (session?.user) {
-        const intended = localStorage.getItem('intendedRoute');
-        if (intended) {
-          localStorage.removeItem('intendedRoute');
-          const current = window.location.pathname + window.location.search + window.location.hash;
-          if (current !== intended) {
-            navigate(intended);
-          }
-        }
         checkPendingGifts(session.user.email!);
         checkPendingReviews(session.user.id);
       }
