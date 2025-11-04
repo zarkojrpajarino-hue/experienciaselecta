@@ -1381,8 +1381,12 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                 <CollapsibleContent className="mt-2 px-2 sm:px-4">
                                   <div className="bg-white border border-gold/30 rounded-lg p-3 sm:p-4">
                                     <div className="space-y-2 text-xs sm:text-sm text-black">
+                                      <p className="font-semibold text-gold mb-2">🌟 Experiencia Única Incluida</p>
                                       <p>
-                                        No vendemos cestas, creamos <span className="font-bold text-gold">experiencias únicas</span>: productos gourmet premium + dinámicas de conexión para momentos inolvidables.
+                                        Acceso a una <span className="font-bold text-gold">web privada exclusiva para clientes</span> con dinámicas personalizadas diseñadas por psicólogos y expertos en conexión humana.
+                                      </p>
+                                      <p>
+                                        <span className="font-bold">Preguntas dinámicas</span> creadas específicamente para cada momento: para conocerse, profundizar, reír y crear recuerdos mientras disfrutan de productos gourmet premium.
                                       </p>
                                       
                                       {isGiftCatalog && (
@@ -1610,9 +1614,15 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                         </div>
                                         <CollapsibleContent className="mt-2">
                                           <div className="bg-white border border-[#FFD700]/30 rounded-lg p-3 sm:p-4">
-                                            <p className="text-xs sm:text-sm text-black">
-                                              No vendemos cestas, creamos <span className="font-bold text-[#FFD700]">experiencias únicas</span>: productos gourmet premium + dinámicas de conexión para momentos inolvidables.
-                                            </p>
+                                            <div className="space-y-2 text-xs sm:text-sm text-black">
+                                              <p className="font-semibold text-[#FFD700]">🌟 Experiencia Única Incluida</p>
+                                              <p>
+                                                Acceso a una <span className="font-bold text-[#FFD700]">web privada exclusiva para clientes</span> con dinámicas personalizadas diseñadas por psicólogos y expertos en conexión humana.
+                                              </p>
+                                              <p>
+                                                <span className="font-bold">Preguntas dinámicas</span> creadas específicamente para cada momento: para conocerse, profundizar, reír y crear recuerdos mientras disfrutan de productos gourmet premium.
+                                              </p>
+                                            </div>
                                           </div>
                                         </CollapsibleContent>
                                       </Collapsible>

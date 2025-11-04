@@ -31,81 +31,115 @@ const VisualHeader = () => {
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
-          {/* Botones "Crea tu propia experiencia" y "Conócenos" lado a lado */}
-          <div className="flex justify-between items-center mb-12 sm:mb-16 w-full max-w-4xl mx-auto px-4">
-            {/* Botón izquierda - Crea tu propia experiencia */}
-            <div className="relative">
-              <motion.button
-                onClick={(e) => {
-                  e.preventDefault();
-                  const el = document.getElementById('categoria-cestas');
-                  if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-                whileHover={{ color: '#FFD700' }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-              >
-                Crea tu propia experiencia.
-              </motion.button>
-              
-              {/* Animación del cursor en Crea tu experiencia */}
-              <motion.div
-                className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                animate={{
-                  opacity: [0, 1, 1, 1, 0],
-                  scale: [1, 1, 0.85, 1, 1]
-                }}
-                transition={{
-                  duration: 5,
+          {/* Botón "Crea tu propia experiencia" a la izquierda */}
+          <div className="relative inline-block mb-8 sm:mb-12 w-full text-left">
+            <motion.button
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById('categoria-cestas');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ 
+                x: 0, 
+                opacity: 1,
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                x: { duration: 0.8 },
+                opacity: { duration: 0.8 },
+                scale: {
+                  duration: 1.5,
                   repeat: Infinity,
-                  times: [0, 0.2, 0.4, 0.6, 0.8]
-                }}
-              >
-                <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
-              </motion.div>
-            </div>
-
-            {/* Botón derecha - Conócenos */}
-            <div className="relative">
-              <motion.button 
-                whileHover={{ color: '#FFD700' }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.getElementById('porque-no-vendemos-cestas');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }
-                }}
-              >
-                Conócenos.
-              </motion.button>
-              
-              {/* Animación del cursor en Conócenos */}
-              <motion.div
-                className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                animate={{
-                  opacity: [0, 0, 0, 1, 1, 1, 0],
-                  scale: [1, 1, 1, 1, 0.85, 1, 1]
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  repeatDelay: 5,
-                  times: [0, 0.2, 0.4, 0.5, 0.6, 0.7, 0.9]
-                }}
-              >
-                <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
-              </motion.div>
-            </div>
+                  repeatDelay: 3,
+                  times: [0, 0.5, 1]
+                }
+              }}
+              whileHover={{ color: '#FFD700' }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap inline-block"
+            >
+              Crea tu propia experiencia.
+            </motion.button>
+            
+            {/* Flecha apuntando hacia abajo */}
+            <motion.div
+              className="absolute left-1/2 -translate-x-1/2 -bottom-8"
+              animate={{
+                y: [0, 8, 0],
+                opacity: [0.6, 1, 0.6]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 3
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+              </svg>
+            </motion.div>
           </div>
           
           <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
             Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
           </p>
+
+          {/* Botón "Conócenos" debajo de la frase, a la derecha */}
+          <div className="relative inline-block w-full text-right mb-8">
+            <motion.button 
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById('porque-no-vendemos-cestas');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              }}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ 
+                x: 0, 
+                opacity: 1,
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                x: { duration: 0.8, delay: 0.3 },
+                opacity: { duration: 0.8, delay: 0.3 },
+                scale: {
+                  duration: 1.5,
+                  repeat: Infinity,
+                  repeatDelay: 3,
+                  delay: 1.5,
+                  times: [0, 0.5, 1]
+                }
+              }}
+              whileHover={{ color: '#FFD700' }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap inline-block"
+            >
+              Conócenos.
+            </motion.button>
+            
+            {/* Flecha apuntando hacia abajo */}
+            <motion.div
+              className="absolute left-1/2 -translate-x-1/2 -bottom-8"
+              animate={{
+                y: [0, 8, 0],
+                opacity: [0.6, 1, 0.6]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 3,
+                delay: 1.5
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+              </svg>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>;
