@@ -65,39 +65,44 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (newUserId && !currentUserId) {
         setCurrentUserId(newUserId);
         
-        // Merge anonymous cart with user's saved cart
+        // Only merge anonymous cart when checkout was intentionally started
+        // This prevents leaking carts between different accounts on the same device
         try {
           const userStorageKey = getCartStorageKey(newUserId);
           const savedUserCart = localStorage.getItem(userStorageKey);
           const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
-          
-          // Get current anonymous cart from localStorage (to avoid stale closure)
+
           const anonKey = getCartStorageKey(null);
           const anonCartString = localStorage.getItem(anonKey);
-          const currentCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
-          
-          // Merge carts: add anonymous items to user cart, combining quantities for matching items
-          const mergedCart = [...userCart];
-          currentCart.forEach(anonItem => {
-            const existingIndex = mergedCart.findIndex(
-              item => item.id === anonItem.id && item.isGift === anonItem.isGift
-            );
-            if (existingIndex >= 0) {
-              mergedCart[existingIndex].quantity += anonItem.quantity;
-            } else {
-              mergedCart.push(anonItem);
-            }
-          });
-          
-          setCart(mergedCart);
-          
-          // Save merged cart to user's storage
-          localStorage.setItem(userStorageKey, JSON.stringify(mergedCart));
-          
-          // Clear anonymous cart
+          const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
+
+          const shouldMerge = localStorage.getItem('pendingCheckout') === 'true';
+
+          if (shouldMerge && anonCart.length > 0) {
+            // Merge carts: add anonymous items to user cart, combining quantities
+            const mergedCart = [...userCart];
+            anonCart.forEach(anonItem => {
+              const existingIndex = mergedCart.findIndex(
+                item => item.id === anonItem.id && item.isGift === anonItem.isGift
+              );
+              if (existingIndex >= 0) {
+                mergedCart[existingIndex].quantity += anonItem.quantity;
+              } else {
+                mergedCart.push(anonItem);
+              }
+            });
+
+            setCart(mergedCart);
+            localStorage.setItem(userStorageKey, JSON.stringify(mergedCart));
+          } else {
+            // Do NOT merge anonymous cart; use only the user's saved cart
+            setCart(userCart);
+          }
+
+          // Always clear anonymous cart on successful login to avoid cross-account leakage
           localStorage.removeItem(anonKey);
         } catch (error) {
-          console.error('Error merging carts:', error);
+          console.error('Error handling cart on login:', error);
         }
       }
       // If user changed (switching accounts)

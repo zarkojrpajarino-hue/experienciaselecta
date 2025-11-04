@@ -68,7 +68,9 @@ const Navbar = () => {
       if (event === 'SIGNED_IN') {
         try { localStorage.removeItem('pendingCheckout'); } catch {}
         try { localStorage.removeItem('oauthInProgress'); } catch {}
-        navigate('/checkout', { replace: true });
+        if (location.pathname !== '/checkout') {
+          window.location.assign('/checkout');
+        }
       }
 
       if (session?.user) {

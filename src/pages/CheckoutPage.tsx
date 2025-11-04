@@ -35,12 +35,8 @@ const CheckoutPage = () => {
   // Obtener items desde el carrito global en lugar de location.state
   const { cart } = useCart();
 
-  // Si no hay items en carrito, redirigir suavemente a /carrito
-  React.useEffect(() => {
-    if (cart.length === 0) {
-      navigate('/#categoria-cestas', { replace: true });
-    }
-  }, [cart.length, navigate]);
+  // Mantener en checkout aunque el carrito esté vacío para evitar rebotes tras login
+  // (antes redirigía a '/#categoria-cestas')
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
@@ -51,9 +47,11 @@ const CheckoutPage = () => {
   if (cart.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
-          <p className="text-black font-poppins">Redirigiendo...</p>
+        <div className="text-center space-y-4">
+          <p className="text-black font-poppins">Tu carrito está vacío.</p>
+          <Button onClick={() => navigate('/#categoria-cestas')}>
+            Descubrir cestas
+          </Button>
         </div>
       </div>
     );
