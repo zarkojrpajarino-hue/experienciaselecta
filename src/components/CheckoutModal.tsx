@@ -1718,6 +1718,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           isOpen={showAuthModal}
           onClose={() => setShowAuthModal(false)}
           onSuccess={handleAuthSuccess}
+          onBack={() => setShowAuthModal(false)}
         />
       </DialogContent>
     </Dialog>

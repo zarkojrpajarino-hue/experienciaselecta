@@ -55,7 +55,18 @@ const VisualHeader = () => {
                 element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
             >
-              ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!. <ChevronDown className="inline-block ml-2 w-5 h-5 md:w-6 md:h-6" />
+              ¡Descubre tu <span style={{ color: '#FFD700' }}>experiencia</span>!{" "}
+              <motion.span
+                className="inline-block ml-2"
+                animate={{ y: [0, 5, 0] }}
+                transition={{ 
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <ChevronDown className="w-5 h-5 md:w-6 md:h-6" />
+              </motion.span>
             </motion.button>
             
             <motion.button 

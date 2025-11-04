@@ -183,29 +183,32 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
         </motion.div>
       </div>
 
-      {/* Inline enlarged image below the carousel */}
+      {/* Fixed full-screen modal for enlarged image */}
       {modalOpen && (
-        <div className="mt-6 flex justify-center">
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          onClick={() => setModalOpen(false)}
+        >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="relative w-[50vw] max-w-[360px] md:w-[400px]"
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative max-w-4xl max-h-[90vh] w-[90vw]"
             onClick={(e) => e.stopPropagation()}
           >
             <Button 
               onClick={() => setModalOpen(false)} 
-              className="absolute -top-4 -right-4 z-50 h-10 w-10 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+              className="absolute -top-4 -right-4 z-50 h-12 w-12 rounded-full bg-white hover:bg-white/90 text-black shadow-2xl transition-all duration-300" 
               size="icon"
             >
-              <X className="h-5 w-5" />
+              <X className="h-6 w-6" />
             </Button>
-            <div className="rounded-[2rem] overflow-hidden bg-white shadow-2xl">
+            <div className="rounded-2xl overflow-hidden bg-white shadow-2xl">
               <img
                 src={slides[currentIndex].image}
                 alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-                className="w-full h-auto object-contain rounded-[2rem]"
+                className="w-full h-auto object-contain"
               />
             </div>
           </motion.div>

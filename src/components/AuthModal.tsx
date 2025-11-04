@@ -175,23 +175,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       setShowCodeInput(false);
       onSuccess();
 
-      // Redirigir a la ruta/intención original (por ejemplo, checkout)
-      const intended = localStorage.getItem('intendedRoute');
-      if (intended) {
-        localStorage.removeItem('intendedRoute');
-        try {
-          const url = intended.startsWith('http')
-            ? intended
-            : `${window.location.origin}${intended.startsWith('/') ? '' : '/'}${intended}`;
-          // Asegura misma origin y evita volver atrás
-          if (new URL(url).origin === window.location.origin) {
-            window.location.replace(url);
-          } else {
-            window.location.href = window.location.href; // fallback: permanecer en la página actual
+      // Solo redirigir si NO estamos en un contexto de checkout/modal
+      // Si hay un onBack, significa que estamos dentro de otro flujo
+      if (!onBack) {
+        const intended = localStorage.getItem('intendedRoute');
+        if (intended) {
+          localStorage.removeItem('intendedRoute');
+          try {
+            const url = intended.startsWith('http')
+              ? intended
+              : `${window.location.origin}${intended.startsWith('/') ? '' : '/'}${intended}`;
+            // Asegura misma origin y evita volver atrás
+            if (new URL(url).origin === window.location.origin) {
+              window.location.replace(url);
+            }
+            return;
+          } catch {
+            // Si algo falla, no bloquea el cierre del modal
           }
-          return;
-        } catch {
-          // Si algo falla, no bloquea el cierre del modal
         }
       }
 

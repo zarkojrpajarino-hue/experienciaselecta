@@ -98,6 +98,7 @@ interface BasketCatalogProps {
 
 const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeChange, initialBasketId, isGiftMode = false }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [openCard, setOpenCard] = useState<number | null>(null);
   const [openProducts, setOpenProducts] = useState<{ [key: number]: boolean }>({});
@@ -115,11 +116,13 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   // Callback optimizado para abrir imagen
   const handleOpenImage = useCallback((imageSrc: string) => {
     setSelectedImage(imageSrc);
+    setImageModalOpen(true);
   }, []);
   
   // Callback optimizado para cerrar imagen
   const handleCloseImage = useCallback(() => {
     setSelectedImage(null);
+    setImageModalOpen(false);
   }, []);
   
   // Usar el modo regalo pasado como prop
@@ -1733,42 +1736,37 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       </div>
 
 
-      {/* Image Dialog */}
-      <Dialog open={!!selectedImage} onOpenChange={handleCloseImage}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-0 shadow-none rounded-3xl overflow-hidden">
-          <DialogTitle className="sr-only">Vista previa de cesta</DialogTitle>
-          <DialogDescription className="sr-only">
-            Imagen ampliada de la cesta seleccionada
-          </DialogDescription>
-          <DialogClose asChild>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCloseImage();
-              }}
-              className="absolute top-2 right-2 z-[70] h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30 hover:scale-110 pointer-events-auto flex items-center justify-center"
-              aria-label="Cerrar imagen"
+      {/* Image Modal - Full screen overlay */}
+      {imageModalOpen && selectedImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          onClick={handleCloseImage}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative max-w-6xl max-h-[90vh] w-[90vw]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Button 
+              onClick={handleCloseImage} 
+              className="absolute -top-4 -right-4 z-50 h-12 w-12 rounded-full bg-white hover:bg-white/90 text-black shadow-2xl transition-all duration-300" 
+              size="icon"
             >
-              <X className="h-5 w-5 sm:h-6 sm:w-6" />
-            </button>
-          </DialogClose>
-          {selectedImage && (
-            <div 
-              className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white p-2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img 
-                src={selectedImage} 
-                alt="Cesta completa"
-                className="w-full h-auto max-h-[85vh] object-contain rounded-xl"
-                loading="eager"
-                decoding="async"
+              <X className="h-6 w-6" />
+            </Button>
+            <div className="rounded-2xl overflow-hidden bg-white shadow-2xl p-2">
+              <img
+                src={selectedImage}
+                alt="Cesta completa - Vista ampliada"
+                className="w-full h-auto object-contain rounded-xl"
               />
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          </motion.div>
+        </div>
+      )}
 
       {/* Checkout Modal */}
       <CheckoutModal
