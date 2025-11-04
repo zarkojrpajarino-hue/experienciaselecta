@@ -154,6 +154,11 @@ const CheckoutPage = () => {
       if (session?.user) {
         setShowAuthModal(false);
         setTimeout(() => loadUserProfile(session.user!.id), 0);
+      } else {
+        // Usuario NO autenticado con items en carrito -> establecer flag para merge
+        if (cart.length > 0) {
+          localStorage.setItem('pendingCheckout', 'true');
+        }
       }
     });
 
@@ -268,6 +273,8 @@ const CheckoutPage = () => {
     
     // Require authentication
     if (!user) {
+      // Establecer flag antes de abrir modal para preservar carrito tras login
+      localStorage.setItem('pendingCheckout', 'true');
       setShowAuthModal(true);
       toast.error("Debes iniciar sesión para continuar");
       return;
@@ -486,6 +493,8 @@ const CheckoutPage = () => {
   const toggleSection = (section: 'personal' | 'gift') => {
     // Si intenta abrir la sección de datos personales y no está logueado, abrir login
     if (section === 'personal' && !user) {
+      // Establecer flag antes de abrir modal para preservar carrito tras login
+      localStorage.setItem('pendingCheckout', 'true');
       setShowAuthModal(true);
       toast.error("Inicia sesión para rellenar los datos de envío");
       return;
@@ -497,6 +506,8 @@ const CheckoutPage = () => {
     if (!user) {
       e.preventDefault();
       e.target.blur();
+      // Establecer flag antes de abrir modal para preservar carrito tras login
+      localStorage.setItem('pendingCheckout', 'true');
       setShowAuthModal(true);
       toast.error("Inicia sesión para rellenar los datos de envío");
     }
