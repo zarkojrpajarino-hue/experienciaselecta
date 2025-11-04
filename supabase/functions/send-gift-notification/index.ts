@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
     ` : '';
 
     const emailResponse = await resend.emails.send({
-      from: "Experiencia Selecta <onboarding@resend.dev>",
+      from: "Experiencia Selecta <noreply@experienciaselecta.com>",
       to: [recipientEmail],
       replyTo: senderEmail,
       subject: `🎁 ${senderName} te ha enviado un regalo - Experiencia Selecta`,

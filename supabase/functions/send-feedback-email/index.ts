@@ -130,7 +130,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to admin
     const emailResponse = await resend.emails.send({
-      from: "REUSEED Feedback <onboarding@resend.dev>",
+      from: "Experiencia Selecta <noreply@experienciaselecta.com>",
       to: ["selectaexperiencia@gmail.com"],
       subject: `Nuevo Feedback - ${isPostPurchase ? 'Post-compra' : 'Menú'} - ${userName}`,
       html: emailContent,

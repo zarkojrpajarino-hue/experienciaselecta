@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     const basketsList = basketNames.map(name => `<li style="margin: 5px 0;">${name}</li>`).join('');
 
     const emailResponse = await resend.emails.send({
-      from: "Experiencia Selecta <onboarding@resend.dev>",
+      from: "Experiencia Selecta <noreply@experienciaselecta.com>",
       to: [email],
       subject: "⭐ ¿Qué te pareció tu experiencia? - Experiencia Selecta",
       html: `

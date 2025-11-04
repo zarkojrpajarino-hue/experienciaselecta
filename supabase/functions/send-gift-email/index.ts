@@ -71,7 +71,7 @@ serve(async (req) => {
       // Prioritize email over SMS: if both are provided, only send email
       if (recipient.recipientEmail) {
         const recipientEmailResponse = await resend.emails.send({
-          from: 'Experiencias Selecta <onboarding@resend.dev>',
+          from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
           to: [recipient.recipientEmail],
           subject: '🎁 ¡' + validatedData.senderName + ' te ha enviado una experiencia única!',
           html: `
@@ -180,7 +180,7 @@ El equipo de Experiencia Selecta
 
     // Send confirmation email to sender
     const senderEmailResponse = await resend.emails.send({
-      from: 'Experiencias Selecta <onboarding@resend.dev>',
+      from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [validatedData.senderEmail],
       subject: '💝 ¡Regalo enviado! ' + validatedData.recipients.map((r: z.infer<typeof recipientSchema>) => r.recipientName).join(', ') + ' recibirá tu sorpresa',
       html: `

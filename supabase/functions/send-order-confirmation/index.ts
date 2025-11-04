@@ -75,7 +75,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!isGift) {
       try {
       const adminEmailResponse = await resend.emails.send({
-        from: "Experiencia Selecta <onboarding@resend.dev>",
+        from: "Experiencia Selecta <noreply@experienciaselecta.com>",
         to: ["selectaexperiencia@gmail.com"],
         subject: `🛒 Nuevo pedido de ${customerName} - ${orderId}`,
         html: `
@@ -159,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Different email content for gift buyers vs normal customers
     const emailResponse = await resend.emails.send({
-      from: "Experiencia Selecta <onboarding@resend.dev>",
+      from: "Experiencia Selecta <noreply@experienciaselecta.com>",
       to: [email],
       subject: isGift ? "✅ Confirmación de pago - Regalo enviado" : "🎉 ¡Enhorabuena! Tu experiencia única te está esperando",
       html: isGift ? `
