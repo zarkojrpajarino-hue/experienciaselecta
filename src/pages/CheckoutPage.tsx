@@ -44,18 +44,7 @@ const CheckoutPage = () => {
   const total = cart.reduce((sum: number, it: any) => sum + (it.precio * it.quantity), 0);
 
   // Mientras redirige o si está vacío, mostrar loader mínimo
-  if (cart.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <p className="text-black font-poppins">Tu carrito está vacío.</p>
-          <Button onClick={() => navigate('/#categoria-cestas')}>
-            Descubrir cestas
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const isCartEmpty = cart.length === 0;
 
   // State para controlar qué sección está abierta (solo una a la vez)
   // Inicializar con la primera sección que tenga items
