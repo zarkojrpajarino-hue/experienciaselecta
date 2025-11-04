@@ -236,6 +236,8 @@ const ComprarCestasPage = () => {
         onClose={() => setShowExitDialog(false)}
         onContinueToAuth={() => {
           setShowExitDialog(false);
+          // Establecer flag para preservar carrito durante login
+          localStorage.setItem('pendingCheckout', 'true');
           navigate('/checkout');
         }}
       />

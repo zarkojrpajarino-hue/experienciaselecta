@@ -13,6 +13,8 @@ const CartPage = () => {
   // Redirigir sin mostrar estados intermedios
   useEffect(() => {
     if (cart.length > 0) {
+      // Establecer flag para preservar carrito durante login
+      localStorage.setItem('pendingCheckout', 'true');
       navigate('/checkout', { replace: true });
     } else {
       navigate('/#categoria-cestas', { replace: true });

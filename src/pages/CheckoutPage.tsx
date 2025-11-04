@@ -35,16 +35,13 @@ const CheckoutPage = () => {
   // Obtener items desde el carrito global en lugar de location.state
   const { cart } = useCart();
 
-  // Mantener en checkout aunque el carrito esté vacío para evitar rebotes tras login
-  // (antes redirigía a '/#categoria-cestas')
-
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
   const giftItems = cart.filter((it: any) => it.isGift);
   const total = cart.reduce((sum: number, it: any) => sum + (it.precio * it.quantity), 0);
 
-  // Mientras redirige o si está vacío, mostrar loader mínimo
-  const isCartEmpty = cart.length === 0;
+  // State para tracking de carga inicial
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // State para controlar qué sección está abierta (solo una a la vez)
   // Inicializar con la primera sección que tenga items
@@ -139,10 +136,15 @@ const CheckoutPage = () => {
             const hasPendingCheckout = localStorage.getItem('pendingCheckout');
             if (hasPendingCheckout) {
               localStorage.removeItem('pendingCheckout');
-              toast.success("¡Sesión iniciada! Completa tus datos de envío.");
+              toast.success("¡Sesión iniciada! Tu carrito se ha cargado correctamente.");
             }
           }
+          // Marcar que la carga inicial ha terminado
+          setIsInitialLoad(false);
         }, 0);
+      } else {
+        // Si no hay sesión, también marcar como cargado
+        setTimeout(() => setIsInitialLoad(false), 100);
       }
     });
 
@@ -153,12 +155,27 @@ const CheckoutPage = () => {
       
       if (session?.user) {
         setShowAuthModal(false);
-        setTimeout(() => loadUserProfile(session.user!.id), 0);
+        setTimeout(() => {
+          loadUserProfile(session.user!.id);
+          setIsInitialLoad(false);
+        }, 0);
+      } else {
+        setTimeout(() => setIsInitialLoad(false), 100);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Redirigir al catálogo si el carrito está vacío DESPUÉS de la carga inicial
+  React.useEffect(() => {
+    // Solo redirigir si ya no estamos en carga inicial Y el carrito está vacío
+    if (!isInitialLoad && cart.length === 0) {
+      console.log('Carrito vacío después de login, redirigiendo al catálogo');
+      toast.error("Tu carrito está vacío. Añade algunas cestas primero.");
+      navigate('/comprar-cestas', { replace: true });
+    }
+  }, [cart.length, isInitialLoad, navigate]);
 
   // Load user profile data
   const loadUserProfile = async (userId: string) => {
