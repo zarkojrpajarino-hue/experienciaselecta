@@ -173,7 +173,6 @@ const ConocenosPage = () => {
       {/* Espaciado blanco */}
       <div className="bg-white py-8"></div>
 
-      {/* Sección: Porque no vendemos cestas */}
       <div id="porque-no-vendemos-cestas" className="bg-white">
         <RoundedImageCarousel slides={processSlides} titleBold={false} />
       </div>
