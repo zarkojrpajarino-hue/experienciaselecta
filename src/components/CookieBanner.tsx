@@ -15,14 +15,21 @@ const CookieBanner = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Mostrar si no hay consentimiento guardado (en toda la web)
-    const stored = localStorage.getItem("cookieConsent");
+    // Verificar si hay una sesión activa
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const stored = localStorage.getItem("cookieConsent");
+      
+      // Mostrar banner solo si no hay sesión activa Y no hay consentimiento guardado
+      if (!session && !stored) {
+        setIsVisible(true);
+      }
+    };
 
-    if (!stored) {
-      setIsVisible(true);
-    }
+    checkSession();
 
     // Cargar preferencias guardadas si existen
+    const stored = localStorage.getItem("cookieConsent");
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -167,7 +174,7 @@ const CookieBanner = () => {
               variant="outline" 
               size="sm" 
               onClick={() => setShowPreferences((v) => !v)}
-              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs"
+              className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs border-none"
             >
               {showPreferences ? 'Ocultar' : 'Personalizar'}
             </Button>
@@ -175,7 +182,7 @@ const CookieBanner = () => {
               variant="outline" 
               size="sm" 
               onClick={handleRejectAll}
-              className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs"
+              className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs border-none"
             >
               Rechazar
             </Button>

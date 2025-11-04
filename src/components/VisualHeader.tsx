@@ -41,12 +41,11 @@ const VisualHeader = () => {
                   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
               }}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ color: '#FFD700' }}
               whileTap={{ scale: 0.95 }}
-              className="font-auto-display text-lg sm:text-xl md:text-2xl text-white mx-auto font-bold uppercase transition-all duration-300 hover:text-[#FFD700] cursor-pointer flex items-center gap-2 justify-center relative"
+              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
             >
-              Crea tu propia experiencia
-              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+              Crea tu propia experiencia.
             </motion.button>
             
             {/* Animación del cursor en el primer botón */}
