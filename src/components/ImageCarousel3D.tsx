@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -16,8 +16,7 @@ interface ImageCarousel3DProps {
 
 const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [imagePosition, setImagePosition] = useState({ top: 0, left: 0 });
+  const [imageExpanded, setImageExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const nextSlide = () => {
@@ -28,20 +27,22 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const openModal = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Usar directamente la posición del contenedor del carrusel
-    const root = containerRef.current;
-    if (root) {
-      const carouselRect = root.getBoundingClientRect();
-      const centerX = carouselRect.left + carouselRect.width / 2;
-      const centerY = carouselRect.top + carouselRect.height / 2;
-
-      setImagePosition({
-        top: centerY,
-        left: centerX
-      });
+  const toggleImageExpand = () => {
+    const wasExpanded = imageExpanded;
+    setImageExpanded(!imageExpanded);
+    
+    // Si estamos expandiendo, hacer scroll después de que la animación esté más avanzada
+    if (!wasExpanded) {
+      setTimeout(() => {
+        const expandedImageContainer = document.querySelector(`[data-expanded-carousel-image="${carouselId}"]`);
+        if (expandedImageContainer) {
+          expandedImageContainer.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }
+      }, 350);
     }
-    setModalOpen(true);
   };
 
   const getCardPosition = (index: number) => {
@@ -128,7 +129,7 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
                   >
                     <div
                       className="relative bg-white rounded-3xl shadow-2xl overflow-hidden"
-                      onClick={isActive ? openModal : undefined}
+                      onClick={isActive ? toggleImageExpand : undefined}
                     >
                       <img
                         src={slide.image}
@@ -181,39 +182,36 @@ const ImageCarousel3D = ({ slides, title, carouselId }: ImageCarousel3DProps) =>
             {slides[currentIndex].text}
           </div>
         </motion.div>
-      </div>
 
-      {/* Fixed full-screen modal for enlarged image */}
-      {modalOpen && (
-        <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
-          onClick={() => setModalOpen(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative max-w-4xl max-h-[90vh] w-[90vw]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Button 
-              onClick={() => setModalOpen(false)} 
-              className="absolute -top-4 -right-4 z-50 h-12 w-12 rounded-full bg-white hover:bg-white/90 text-black shadow-2xl transition-all duration-300" 
-              size="icon"
+        {/* Imagen ampliada desplegable justo debajo */}
+        <AnimatePresence>
+          {imageExpanded && (
+            <motion.div
+              data-expanded-carousel-image={carouselId}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full max-w-4xl mx-auto mt-8 overflow-hidden"
             >
-              <X className="h-6 w-6" />
-            </Button>
-            <div className="rounded-2xl overflow-hidden bg-white shadow-2xl">
-              <img
-                src={slides[currentIndex].image}
-                alt={`${title} ${currentIndex + 1} - Vista ampliada`}
-                className="w-full h-auto object-contain"
-              />
-            </div>
-          </motion.div>
-        </div>
-      )}
+              <div className="bg-white border-2 border-[#FFD700]/30 rounded-3xl p-4 shadow-xl relative">
+                <Button 
+                  onClick={toggleImageExpand} 
+                  className="absolute top-4 right-4 z-10 h-10 w-10 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                  size="icon"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+                <img
+                  src={slides[currentIndex].image}
+                  alt={`${title} ${currentIndex + 1} - Vista ampliada`}
+                  className="w-full h-auto object-contain rounded-[1.5rem]"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 };
