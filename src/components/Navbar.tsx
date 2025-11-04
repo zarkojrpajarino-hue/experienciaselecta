@@ -90,7 +90,7 @@ const Navbar = () => {
     return () => window.removeEventListener('pendingFeedbackChanged', update);
   }, []);
 
-  const checkPendingGifts = async (email: string) => {
+  const checkPendingGifts = useCallback(async (email: string) => {
     try {
       const { data, error } = await supabase
         .from('pending_gifts')
@@ -104,11 +104,10 @@ const Navbar = () => {
     } catch (error) {
       console.error('Error checking pending gifts:', error);
     }
-  };
+  }, []);
 
-  const checkPendingReviews = async (userId: string) => {
+  const checkPendingReviews = useCallback(async (userId: string) => {
     try {
-      // Get customer ID
       const { data: customerData } = await supabase
         .from('customers')
         .select('id')
@@ -117,13 +116,12 @@ const Navbar = () => {
 
       if (!customerData) return;
 
-      // Get orders older than 10 days
       const tenDaysAgo = new Date();
       tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
       const { data: ordersData } = await supabase
         .from('orders')
-        .select('id, created_at')
+        .select('id')
         .eq('customer_id', customerData.id)
         .eq('status', 'completed')
         .lt('created_at', tenDaysAgo.toISOString());
@@ -133,25 +131,21 @@ const Navbar = () => {
         return;
       }
 
-      // Check which orders don't have reviews
-      let pendingCount = 0;
-      for (const order of ordersData) {
-        const { data: reviewData } = await supabase
-          .from('reviews')
-          .select('id')
-          .eq('order_id', order.id)
-          .eq('user_id', userId);
+      const orderIds = ordersData.map(o => o.id);
+      const { data: reviewsData } = await supabase
+        .from('reviews')
+        .select('order_id')
+        .in('order_id', orderIds)
+        .eq('user_id', userId);
 
-        if (!reviewData || reviewData.length === 0) {
-          pendingCount++;
-        }
-      }
-
+      const reviewedOrderIds = new Set(reviewsData?.map(r => r.order_id) || []);
+      const pendingCount = ordersData.filter(o => !reviewedOrderIds.has(o.id)).length;
+      
       setPendingReviewsCount(pendingCount);
     } catch (error) {
       console.error('Error checking pending reviews:', error);
     }
-  };
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

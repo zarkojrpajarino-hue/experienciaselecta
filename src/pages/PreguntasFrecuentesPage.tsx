@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
@@ -113,25 +113,24 @@ const PreguntasFrecuentesPage = () => {
       {/* Espacio superior para centrar */}
       <div className="pt-12 md:pt-16"></div>
 
-      {/* CTA con fondo crema */}
-      <div className="relative py-8 md:py-10 mx-4 sm:mx-6 lg:mx-8" style={{ backgroundColor: '#F5F5DC', borderRadius: '1rem' }}>
-        {/* Botón Contáctanos */}
-        <div className="flex justify-center">
+      {/* CTA con fondo reducido */}
+      <div className="relative py-8 md:py-10 flex justify-center">
         <ContactModal>
-          <div className="flex flex-col items-center gap-2 cursor-pointer">
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-3 px-6 py-4 cursor-pointer transition-all duration-300"
+            style={{ 
+              backgroundColor: '#F5F5DC', 
+              borderRadius: '1rem',
+            }}
+          >
             <p className="text-black hover:text-gray-600 font-work-sans font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300" style={{ textTransform: "none" }}>
               Contáctanos.
             </p>
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-0 bg-transparent text-black hover:text-gray-600 transition-all duration-300"
-            >
-            <ChevronDown className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6 text-black hover:text-gray-600 transition-all duration-300" />
           </motion.div>
-        </div>
-      </ContactModal>
-      </div>
+        </ContactModal>
       </div>
 
       {/* Sección única fusionada de FAQ y Valores */}

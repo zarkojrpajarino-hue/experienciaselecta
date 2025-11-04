@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { X, Send, Mail, User, MessageCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -56,11 +56,11 @@ const ContactModal = ({ children }: ContactModalProps) => {
   };
 
   // Load user data when modal opens
-  useState(() => {
+  useEffect(() => {
     if (open) {
       loadUserData();
     }
-  });
+  }, [open]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -93,9 +93,11 @@ const ContactModal = ({ children }: ContactModalProps) => {
     e.preventDefault();
     
     if (!validateForm()) {
+      console.log('Form validation failed');
       return;
     }
 
+    console.log('Sending contact email with data:', { ...formData, message: formData.message.substring(0, 50) + '...' });
     setIsSubmitting(true);
 
     try {
@@ -104,8 +106,11 @@ const ContactModal = ({ children }: ContactModalProps) => {
       });
 
       if (error) {
+        console.error('Supabase function invoke error:', error);
         throw new Error(error.message);
       }
+
+      console.log('Contact email sent successfully:', data);
 
       toast({
         title: "¡Mensaje enviado!",

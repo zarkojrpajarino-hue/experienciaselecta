@@ -127,34 +127,40 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       if (error) throw error;
 
-      // Check if it's a new user and send welcome email
+      // Send welcome email for new users
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         try {
-          const { data: profile } = await supabase
+          // Check if this is a new user by checking if profile was just created
+          const { data: profiles } = await supabase
             .from('profiles')
             .select('created_at')
-            .eq('user_id', session.user.id)
-            .single();
+            .eq('user_id', session.user.id);
 
-          // If profile was just created (within last 5 seconds), send welcome email
-          if (profile?.created_at) {
-            const createdAt = new Date(profile.created_at);
+          if (profiles && profiles.length > 0) {
+            const createdAt = new Date(profiles[0].created_at);
             const now = new Date();
             const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
 
-            if (diffSeconds < 5) {
-              // New user, send welcome email
-              await supabase.functions.invoke('send-welcome-email', {
+            // Send welcome email if profile was created in the last 10 seconds
+            if (diffSeconds < 10) {
+              console.log('Attempting to send welcome email to new user');
+              const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
                 body: {
                   userEmail: session.user.email,
                   userName: session.user.user_metadata?.name || session.user.user_metadata?.full_name || ''
                 }
               });
+              
+              if (emailError) {
+                console.error('Error sending welcome email:', emailError);
+              } else {
+                console.log('Welcome email sent successfully');
+              }
             }
           }
         } catch (emailError) {
-          console.error('Error sending welcome email:', emailError);
+          console.error('Error in welcome email flow:', emailError);
           // Don't fail the login if welcome email fails
         }
       }
