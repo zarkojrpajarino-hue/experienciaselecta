@@ -78,7 +78,7 @@ const ComprarCestasPage = () => {
                 >
                   <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
                     {isGiftMode ? 'REGALA' : 'COMPRA'}
-                  </span>
+                  </span> tu experiencia personalizada.
                 </motion.h2>
               </AnimatePresence>
               
@@ -103,6 +103,23 @@ const ComprarCestasPage = () => {
                 </Tooltip>
               </TooltipProvider>
             </div>
+            
+            <AnimatePresence mode="wait">
+              <motion.p 
+                key={isGiftMode ? 'gift-text' : 'normal-text'}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.4 }}
+                className="text-base sm:text-lg md:text-xl mb-4 font-inter text-black"
+              >
+                {isGiftMode ? (
+                  <>Elige a quién quieres regalar: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                ) : (
+                  <>Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                )}
+              </motion.p>
+            </AnimatePresence>
 
             {/* Indicador del modo actual con animación */}
             <AnimatePresence mode="wait">
