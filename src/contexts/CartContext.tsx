@@ -71,8 +71,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           const savedUserCart = localStorage.getItem(userStorageKey);
           const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
           
-          // Get current anonymous cart
-          const currentCart = [...cart];
+          // Get current anonymous cart from localStorage (to avoid stale closure)
+          const anonKey = getCartStorageKey(null);
+          const anonCartString = localStorage.getItem(anonKey);
+          const currentCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
           
           // Merge carts: add anonymous items to user cart, combining quantities for matching items
           const mergedCart = [...userCart];
@@ -93,7 +95,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           localStorage.setItem(userStorageKey, JSON.stringify(mergedCart));
           
           // Clear anonymous cart
-          const anonKey = getCartStorageKey(null);
           localStorage.removeItem(anonKey);
         } catch (error) {
           console.error('Error merging carts:', error);
@@ -120,7 +121,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     });
     
     return () => subscription.unsubscribe();
-  }, []);
+  }, [currentUserId]);
 
   // Save cart to localStorage with debounce to improve performance
   React.useEffect(() => {
