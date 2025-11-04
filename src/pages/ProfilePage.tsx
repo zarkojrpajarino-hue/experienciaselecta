@@ -392,7 +392,7 @@ const ProfilePage = () => {
                       Aún no has realizado ninguna experiencia.
                     </p>
                     <Button
-                      onClick={() => navigate('/catalogo')}
+                        onClick={() => navigate('/comprar-cestas')}
                       className="bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-bungee tracking-wider uppercase"
                     >
                       Ver catálogo
@@ -605,7 +605,7 @@ const ProfilePage = () => {
                       Aún no has realizado ninguna experiencia.
                     </p>
                     <Button
-                      onClick={() => navigate('/catalogo')}
+                      onClick={() => navigate('/comprar-cestas')}
                       className="bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-bungee tracking-wider uppercase"
                     >
                       Ver catálogo
