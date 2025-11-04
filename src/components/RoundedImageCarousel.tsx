@@ -19,9 +19,11 @@ interface RoundedImageCarouselProps {
   autoPlayDelay?: number;
   hideMainTitle?: boolean;
   titleBold?: boolean;
+  carouselTitle?: string;
+  isSecondCarousel?: boolean;
 }
 
-const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, hideMainTitle = false, titleBold = true }: RoundedImageCarouselProps) => {
+const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, hideMainTitle = false, titleBold = true, carouselTitle, isSecondCarousel = false }: RoundedImageCarouselProps) => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   
@@ -82,6 +84,15 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
   return (
     <section id="que-vendemos" className="w-full py-4 bg-white" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Título del carrusel si existe */}
+        {carouselTitle && (
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-poppins font-bold text-black">
+              {carouselTitle}
+            </h2>
+          </div>
+        )}
+
         {/* Título principal */}
         {!hideMainTitle && (
           <div className="text-center mb-2">
@@ -196,7 +207,11 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         <div 
           ref={containerRef}
           data-rounded-carousel-root
-          className="w-full max-w-2xl md:max-w-3xl mx-auto h-[25vh] md:h-[30vh] relative flex items-center justify-center rounded-[2rem] overflow-hidden"
+          className={`mx-auto relative flex items-center justify-center rounded-[2rem] overflow-hidden ${
+            isSecondCarousel 
+              ? 'w-[60%] sm:w-[50%] md:w-[40%] h-[25vh] md:h-[30vh]' 
+              : 'w-full max-w-2xl md:max-w-3xl h-[25vh] md:h-[30vh]'
+          }`}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}

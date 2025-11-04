@@ -164,24 +164,20 @@ const ConocenosPage = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black">
                 Conócenos.
               </h1>
-              <motion.span 
+              <motion.button
                 onClick={() => {
-                  const element = document.getElementById('porque-no-vendemos-cestas');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }
+                  const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
+                    const svg = btn.querySelector('svg');
+                    return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
+                  }) as HTMLButtonElement | undefined;
+                  hamburgerButton?.click();
                 }}
-                className="cursor-pointer hover:opacity-80 transition-opacity duration-300 text-3xl sm:text-4xl md:text-5xl font-bold"
-                style={{ color: '#D4AF37' }}
-                animate={{ rotateZ: [0, 180, 0] }}
-                transition={{ 
-                  duration: 3, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
-                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 text-sm sm:text-base font-poppins font-semibold bg-[#D4AF37] text-white rounded-lg hover:bg-[#C4A037] transition-all duration-300"
               >
-                ¿?
-              </motion.span>
+                Haz click
+              </motion.button>
             </div>
             <p className="text-base sm:text-lg md:text-xl text-black mt-4">
               Descubre quiénes somos y qué nos mueve.
@@ -194,7 +190,12 @@ const ConocenosPage = () => {
       <div className="bg-white py-8"></div>
 
       <div id="porque-no-vendemos-cestas" className="bg-white">
-        <RoundedImageCarousel slides={processSlides} titleBold={false} hideMainTitle={true} />
+        <RoundedImageCarousel 
+          slides={processSlides} 
+          titleBold={false} 
+          hideMainTitle={true}
+          carouselTitle="Porque no vendemos cestas."
+        />
       </div>
 
       {/* Espaciado blanco */}
@@ -202,7 +203,13 @@ const ConocenosPage = () => {
 
       {/* Sección: Como te entendemos */}
       <div id="como-te-entendemos" className="bg-white">
-        <RoundedImageCarousel slides={benefitsSlides} titleBold={false} hideMainTitle={true} />
+        <RoundedImageCarousel 
+          slides={benefitsSlides} 
+          titleBold={false} 
+          hideMainTitle={true}
+          carouselTitle="Como te entendemos."
+          isSecondCarousel={true}
+        />
       </div>
 
       {/* Espaciado blanco */}
