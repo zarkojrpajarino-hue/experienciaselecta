@@ -39,6 +39,34 @@ serve(async (req) => {
       );
     }
 
+    // Verify timestamp to prevent replay attacks
+    const requestTimestamp = req.headers.get('X-Request-Timestamp');
+    if (!requestTimestamp) {
+      console.error('Missing timestamp header');
+      return new Response(
+        JSON.stringify({ error: 'Missing timestamp' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400 
+        }
+      );
+    }
+
+    const timestamp = parseInt(requestTimestamp, 10);
+    const now = Date.now();
+    const fiveMinutes = 5 * 60 * 1000;
+
+    if (isNaN(timestamp) || Math.abs(now - timestamp) > fiveMinutes) {
+      console.error('Invalid or expired timestamp');
+      return new Response(
+        JSON.stringify({ error: 'Request expired or invalid timestamp' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401 
+        }
+      );
+    }
+
     console.log('Starting scheduled marketing email job...');
 
     // Initialize Supabase client with service role
