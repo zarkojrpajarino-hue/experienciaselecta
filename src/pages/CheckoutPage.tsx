@@ -140,32 +140,33 @@ const CheckoutPage = () => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      // Load profile data when user logs in
       if (session?.user) {
+        // Cerrar modal si estuviera abierto para evitar bucles
+        setShowAuthModal(false);
+        // Cargar perfil al iniciar sesión
         loadUserProfile(session.user.id);
         
-        // Si acabamos de hacer login y hay checkout pendiente, no hacer nada más
-        // El usuario ya está en la página de checkout
+        // Si acabamos de hacer login y hay checkout pendiente, solo informar
         if (event === 'SIGNED_IN') {
           const hasPendingCheckout = localStorage.getItem('pendingCheckout');
           if (hasPendingCheckout) {
             localStorage.removeItem('pendingCheckout');
-            // El usuario ya está autenticado y en checkout, solo necesita ver el mensaje
             toast.success("¡Sesión iniciada! Ahora completa tus datos de envío.");
           }
         }
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      // Load profile data if user is already logged in
-      if (session?.user) {
-        loadUserProfile(session.user.id);
-      }
-    });
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    setSession(session);
+    setUser(session?.user ?? null);
+    
+    if (session?.user) {
+      // Cerrar modal si estuviera abierto para evitar bucles
+      setShowAuthModal(false);
+      loadUserProfile(session.user.id);
+    }
+  });
 
     return () => subscription.unsubscribe();
   }, []);
