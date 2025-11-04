@@ -39,7 +39,7 @@ const ComprarCestasPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen font-work-sans bg-background">
+    <div className={`min-h-screen font-work-sans transition-colors duration-500 ${isGiftMode ? 'bg-[#F5F5DC]' : 'bg-background'}`}>
       <Navbar />
       
       <div className="relative">
@@ -67,7 +67,7 @@ const ComprarCestasPage = () => {
             viewport={{ once: true }}
             className="text-center mb-8 gpu-accelerated"
           >
-            <div className="flex justify-center items-center gap-2 mb-3 flex-wrap">
+            <div className="flex justify-center items-center gap-1 sm:gap-2 mb-3 flex-wrap">
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={isGiftMode ? 'gift' : 'normal'}
@@ -90,7 +90,7 @@ const ComprarCestasPage = () => {
                       onClick={() => { navigate('/conocenos'); }}
                       onMouseEnter={() => setTooltipOpen(true)} 
                       onMouseLeave={() => setTooltipOpen(false)} 
-                      className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-xl sm:text-2xl md:text-4xl font-bold gpu-accelerated" 
+                      className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-sm sm:text-2xl md:text-4xl font-bold gpu-accelerated" 
                       style={{ color: '#D4AF37' }}
                       animate={{ rotateZ: [0, 180, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -148,12 +148,12 @@ const ComprarCestasPage = () => {
             </motion.div>
 
             {/* Botones de Categoría */}
-            <div className="flex justify-center gap-3 sm:gap-4 mb-4">
+            <div className="flex justify-center gap-2 sm:gap-4 mb-4">
               <motion.button
                 onClick={() => setSelectedCategory('Pareja')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`px-6 sm:px-8 py-3 rounded-xl font-poppins font-bold text-base sm:text-lg transition-all duration-300 ${
+                className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
                   selectedCategory === 'Pareja'
                     ? 'bg-[#782C23] text-white shadow-lg'
                     : 'bg-white text-[#782C23] border-2 border-[#782C23] hover:bg-[#782C23]/10'
@@ -166,7 +166,7 @@ const ComprarCestasPage = () => {
                 onClick={() => setSelectedCategory('Familia')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`px-6 sm:px-8 py-3 rounded-xl font-poppins font-bold text-base sm:text-lg transition-all duration-300 ${
+                className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
                   selectedCategory === 'Familia'
                     ? 'bg-[#4A7050] text-white shadow-lg'
                     : 'bg-white text-[#4A7050] border-2 border-[#4A7050] hover:bg-[#4A7050]/10'
@@ -179,7 +179,7 @@ const ComprarCestasPage = () => {
                 onClick={() => setSelectedCategory('Amigos')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`px-6 sm:px-8 py-3 rounded-xl font-poppins font-bold text-base sm:text-lg transition-all duration-300 ${
+                className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
                   selectedCategory === 'Amigos'
                     ? 'bg-[#44667D] text-white shadow-lg'
                     : 'bg-white text-[#44667D] border-2 border-[#44667D] hover:bg-[#44667D]/10'
