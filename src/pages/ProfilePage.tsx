@@ -106,38 +106,10 @@ const ProfilePage = () => {
     checkAuthAndLoadData();
   }, []);
 
-  // Optimized real-time subscriptions - only when user is active
-  useEffect(() => {
-    if (!user?.id || !document.hasFocus()) return;
+  // Optimized real-time subscriptions - removed for better performance
+  // Real-time updates not needed - data loads on page mount
 
-    const ordersChannel = supabase
-      .channel('profile-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'orders',
-          filter: `customer_id=eq.${user.id}`
-        },
-        () => {
-          loadUserData(user.id);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(ordersChannel);
-    };
-  }, [user?.id]);
-
-  // Auto-refresh reviews when the tab is active
-  useEffect(() => {
-    if (activeTab !== 'reviews' || !user?.id) return;
-    loadUserData(user.id);
-    const id = setInterval(() => loadUserData(user.id), 15000);
-    return () => clearInterval(id);
-  }, [activeTab, user?.id]);
+  // Removed auto-refresh for better performance - data loads on tab change only
 
 
   const checkAuthAndLoadData = async () => {
@@ -176,6 +148,7 @@ const ProfilePage = () => {
 
       if (customerResponse.data) {
         // Load orders with items in a single optimized query
+        // CRITICAL: Only show completed orders (payment confirmed)
         const [ordersResponse, giftedItemsResponse, receivedGiftsResponse] = await Promise.all([
           supabase
             .from("orders")
@@ -191,6 +164,7 @@ const ProfilePage = () => {
               shipping_country
             `)
             .eq("customer_id", customerResponse.data.id)
+            .eq("status", "completed")
             .order("created_at", { ascending: false }),
           supabase
             .from("pending_gifts")
@@ -239,13 +213,13 @@ const ProfilePage = () => {
           }
         }
 
-        // Add received gifts
+        // Add received gifts (only show shipped gifts to avoid showing pending items)
         for (const gift of receivedGiftsResponse.data || []) {
           expandedOrders.push({
             id: gift.order_id,
             created_at: gift.created_at,
             total_amount: gift.price * gift.quantity,
-            status: "pending",
+            status: "completed",
             shipping_address_line1: gift.shipping_address_line1 || "",
             shipping_address_line2: gift.shipping_address_line2,
             shipping_city: gift.shipping_city || "",
