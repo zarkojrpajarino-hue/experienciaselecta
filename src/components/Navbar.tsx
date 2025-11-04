@@ -64,9 +64,15 @@ const Navbar = () => {
         }, 0);
       }
 
-      // Redirigir al checkout si acabamos de hacer login y hay items en carrito
-      if (event === 'SIGNED_IN' && getTotalItems() > 0) {
-        navigate('/checkout');
+      // Redirigir tras login: prioridad checkout si hay flag, luego checkout si hay items
+      if (event === 'SIGNED_IN') {
+        const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+        if (hasPendingCheckout) {
+          localStorage.removeItem('pendingCheckout');
+          navigate('/checkout');
+        } else if (getTotalItems() > 0) {
+          navigate('/checkout');
+        }
       }
 
       if (session?.user) {
@@ -297,7 +303,7 @@ const Navbar = () => {
   }, [handleNavigation, location.hash]);
   
   // Mostrar navbar siempre en páginas que no son home, o en home cuando se ha revelado por scroll
-  const shouldShowNavbar = location.pathname !== '/' || (isScrolled || hasRevealed);
+  const shouldShowNavbar = location.pathname !== '/' || (isScrolled || hasRevealed) || getTotalItems() > 0;
 
   return <motion.nav initial={{
     y: location.pathname === '/' ? -100 : 0,
