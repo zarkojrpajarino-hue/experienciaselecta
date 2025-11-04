@@ -82,13 +82,15 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
     // Si estamos expandiendo, hacer scroll después de la animación
     if (!wasExpanded) {
       setTimeout(() => {
-        const container = containerRef.current;
-        if (container) {
-          const containerRect = container.getBoundingClientRect();
-          const scrollTarget = window.scrollY + containerRect.top - 100;
-          window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+        // Buscar el contenedor de la imagen ampliada
+        const expandedImageContainer = document.querySelector('[data-expanded-image]');
+        if (expandedImageContainer) {
+          expandedImageContainer.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
         }
-      }, 350); // Esperar a que la animación de expansión termine
+      }, 100); // Pequeño delay para que el DOM se actualice
     }
   };
 
@@ -254,6 +256,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         <AnimatePresence>
           {imageExpanded && (
             <motion.div
+              data-expanded-image
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}

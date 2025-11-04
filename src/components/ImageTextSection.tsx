@@ -15,15 +15,16 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
 
   const handleImageClick = () => {
     setIsImageOpen(true);
-    // Centrar en la imagen después de que se abra
+    // Centrar en la imagen ampliada después de que se abra
     setTimeout(() => {
-      const section = document.querySelector('.image-text-section-container');
-      if (section) {
-        const sectionRect = section.getBoundingClientRect();
-        const scrollTarget = window.scrollY + sectionRect.top - 100;
-        window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+      const expandedImage = document.querySelector('[data-expanded-image-section]');
+      if (expandedImage) {
+        expandedImage.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
       }
-    }, 350);
+    }, 100);
   };
 
   return (
@@ -68,6 +69,7 @@ const ImageTextSection = ({ image, text, position = "left", imageAlt = "" }: Ima
           <AnimatePresence>
             {isImageOpen && (
               <motion.div
+                data-expanded-image-section
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
