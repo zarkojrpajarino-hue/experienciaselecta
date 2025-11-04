@@ -15,23 +15,13 @@ const CookieBanner = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Verificar si hay una sesión activa y si ya se mostró el banner en esta sesión
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const shownThisSession = sessionStorage.getItem("cookieBannerShown");
-      
-      // Mostrar banner si NO hay sesión Y NO se ha mostrado en esta sesión del navegador
-      if (!session && !shownThisSession) {
-        setIsVisible(true);
-      }
-      
-      // Si hay sesión, marcar como mostrado para no volver a aparecer
-      if (session) {
-        sessionStorage.setItem("cookieBannerShown", "true");
-      }
-    };
-
-    checkSession();
+    // Verificar si el banner ya se mostró en esta sesión del navegador
+    const shownThisSession = sessionStorage.getItem("cookieBannerShown");
+    
+    // Mostrar banner si NO se ha mostrado en esta sesión
+    if (!shownThisSession) {
+      setIsVisible(true);
+    }
 
     // Cargar preferencias guardadas si existen
     const stored = localStorage.getItem("cookieConsent");

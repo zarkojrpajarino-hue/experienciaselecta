@@ -31,46 +31,46 @@ const VisualHeader = () => {
             <span style={{ color: '#FFD700' }}>Experiencia</span> Selecta.
           </h1>
           
-          {/* Nueva frase "Crea tu propia experiencia" con flecha */}
-          <div className="relative inline-block mb-12 sm:mb-16">
-            <motion.button
-              onClick={(e) => {
-                e.preventDefault();
-                const el = document.getElementById('categoria-cestas');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}
-              whileHover={{ color: '#FFD700' }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
-            >
-              Crea tu propia experiencia.
-            </motion.button>
-            
-            {/* Animación del cursor en el primer botón */}
-            <motion.div
-              className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              animate={{
-                opacity: [0, 1, 1, 1, 0],
-                scale: [1, 1, 0.85, 1, 1]
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                repeatDelay: 2.5,
-                times: [0, 0.2, 0.35, 0.5, 0.7]
-              }}
-            >
-              <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
-            </motion.div>
-          </div>
-          
           <p className="font-poppins text-lg sm:text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto font-bold">
             Cestas <span style={{ color: '#FFD700' }}>gourmet</span> con <span style={{ color: '#FFD700' }}>dinámicas</span> para <span style={{ color: '#FFD700' }}>abrirse</span>, <span style={{ color: '#FFD700' }}>conocerse</span> y <span style={{ color: '#FFD700' }}>descubrir</span>.
           </p>
 
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16">
+            {/* Botón izquierdo: Crea tu propia experiencia */}
+            <div className="relative inline-block">
+              <motion.button
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById('categoria-cestas');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                whileHover={{ color: '#FFD700' }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap"
+              >
+                Crea tu propia experiencia.
+              </motion.button>
+              
+              {/* Animación del cursor en el botón izquierdo */}
+              <motion.div
+                className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                animate={{
+                  opacity: [0, 1, 1, 1, 0, 0, 0, 0],
+                  scale: [1, 1, 0.85, 1, 1, 1, 1, 1]
+                }}
+                transition={{
+                  duration: 10,
+                  repeat: Infinity,
+                  times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.9, 1]
+                }}
+              >
+                <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
+              </motion.div>
+            </div>
+            
+            {/* Botón derecho: Conócenos */}
             <div className="relative inline-block">
               <motion.button 
                 whileHover={{ color: '#FFD700' }}
@@ -87,17 +87,17 @@ const VisualHeader = () => {
                 Conócenos.
               </motion.button>
               
-              {/* Animación del cursor en el segundo botón */}
+              {/* Animación del cursor en el botón derecho */}
               <motion.div
                 className="absolute pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                 animate={{
-                  opacity: [0, 0, 1, 1, 1, 0],
-                  scale: [1, 1, 1, 0.85, 1, 1]
+                  opacity: [0, 0, 0, 0, 0, 1, 1, 1, 0],
+                  scale: [1, 1, 1, 1, 1, 1, 0.85, 1, 1]
                 }}
                 transition={{
-                  duration: 5,
+                  duration: 10,
                   repeat: Infinity,
-                  times: [0, 0.4, 0.5, 0.6, 0.7, 0.9]
+                  times: [0, 0.4, 0.5, 0.55, 0.6, 0.65, 0.75, 0.85, 0.95]
                 }}
               >
                 <MousePointer2 className="w-6 h-6 text-[#FFD700] drop-shadow-lg" />
