@@ -99,7 +99,7 @@ const CookieBanner = () => {
 
   return (
     <div 
-      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-[100] rounded-xl shadow-2xl animate-slide-in-right"
+      className="fixed top-20 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-[100] rounded-xl shadow-2xl animate-slide-in-right"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.90), rgba(0, 0, 0, 0.90)), url(${headerBg})`,
         backgroundSize: 'cover',
@@ -154,13 +154,13 @@ const CookieBanner = () => {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
-                  <Button size="sm" onClick={handleSavePreferences} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs">
+                  <Button size="sm" onClick={handleSavePreferences} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs border-none">
                     Guardar
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleAcceptAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs">
+                  <Button size="sm" onClick={handleAcceptAll} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs border-none">
                     Aceptar todas
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleRejectAll} className="text-white border-white/30 hover:text-[hsl(45,100%,65%)] hover:border-[hsl(45,100%,65%)] text-xs">
+                  <Button size="sm" onClick={handleRejectAll} className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] hover:bg-[hsl(45,100%,70%)] font-semibold text-xs border-none">
                     Rechazar todas
                   </Button>
                 </div>
