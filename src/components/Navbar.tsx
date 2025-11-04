@@ -35,7 +35,7 @@ const Navbar = () => {
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Send welcome email on new login (Google or email/password)
+      // Send welcome email on new Google login
       if (event === 'SIGNED_IN' && session?.user) {
         // Defer to next tick to avoid blocking
         setTimeout(async () => {
@@ -46,32 +46,27 @@ const Navbar = () => {
               .eq('user_id', session.user.id)
               .single();
 
-            await supabase.functions.invoke('send-welcome-email', {
+            const { data, error } = await supabase.functions.invoke('send-welcome-email', {
               body: {
                 userEmail: session.user.email,
                 userName: profiles?.name || session.user.user_metadata?.name || 'amigo'
               }
             });
+            
+            if (error) {
+              console.error('Error sending welcome email:', error);
+            } else {
+              console.log('Welcome email sent successfully');
+            }
           } catch (error) {
             console.error('Error sending welcome email:', error);
           }
         }, 0);
       }
 
-      // Redirigir a la ruta/intención original o al checkout si hay items en carrito
-      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
-        const intended = localStorage.getItem('intendedRoute');
-        
-        if (intended) {
-          localStorage.removeItem('intendedRoute');
-          const current = window.location.pathname + window.location.search + window.location.hash;
-          if (current !== intended) {
-            navigate(intended);
-          }
-        } else if (event === 'SIGNED_IN' && getTotalItems() > 0) {
-          // Si acabamos de hacer login y hay items en el carrito, ir al checkout
-          navigate('/checkout');
-        }
+      // Redirigir al checkout si acabamos de hacer login y hay items en carrito
+      if (event === 'SIGNED_IN' && getTotalItems() > 0) {
+        navigate('/checkout');
       }
 
       if (session?.user) {
