@@ -70,8 +70,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Enviando correo de confirmación de pedido a:", email, "isGift:", isGift);
 
-    // Send notification to host/admin with order details including "how found us"
-    try {
+    // Send notification to host/admin ONLY for normal purchases (not gifts)
+    // For gifts, admin will be notified when recipient fills shipping info
+    if (!isGift) {
+      try {
       const adminEmailResponse = await resend.emails.send({
         from: "Experiencia Selecta <onboarding@resend.dev>",
         to: ["selectaexperiencia@gmail.com"],
@@ -138,10 +140,13 @@ const handler = async (req: Request): Promise<Response> => {
           </html>
         `,
       });
-      console.log("Notificación al admin enviada:", adminEmailResponse);
-    } catch (adminError) {
-      console.error("Error enviando notificación al admin:", adminError);
-      // Non-blocking - continue to send customer email
+        console.log("Notificación al admin enviada:", adminEmailResponse);
+      } catch (adminError) {
+        console.error("Error enviando notificación al admin:", adminError);
+        // Non-blocking - continue to send customer email
+      }
+    } else {
+      console.log("Compra de regalo - admin será notificado cuando el destinatario rellene la dirección");
     }
 
     const itemsHtml = items.map(item => `
