@@ -53,19 +53,22 @@ serve(async (req) => {
     const magicLink = `${supabaseUrl}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${redirect_to}`;
 
     if (email_action_type === 'magiclink') {
-      subject = '🔐 Tu enlace de acceso a Experiencia Selecta';
+      // For login, prioritize CODE-based flow to preserve the user's cart/session
+      subject = '🔐 Tu código de acceso a Experiencia Selecta';
       emailContent = `
 Hola,
 
-Has solicitado acceder a Experiencia Selecta. Haz clic en el siguiente enlace para iniciar sesión:
+Has solicitado acceder a Experiencia Selecta.
 
-${magicLink}
+Introduce este código de verificación en la web donde lo estás solicitando:
 
-O usa este código de verificación: ${token}
+CÓDIGO: ${token}
 
-Este enlace es válido por 1 hora.
+Por seguridad, evita usar enlaces y usa el código directamente para mantener tu carrito y continuar el pago.
 
-Si no solicitaste este correo, puedes ignorarlo de forma segura.
+Este código caduca en 1 hora.
+
+Si no solicitaste este correo, ignóralo.
 
 Un abrazo,
 El equipo de Experiencia Selecta
@@ -78,81 +81,25 @@ El equipo de Experiencia Selecta
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
-      color: white;
-      padding: 30px 20px;
-      text-align: center;
-      border-radius: 10px 10px 0 0;
-    }
-    .content {
-      background: #f9f9f9;
-      padding: 30px 20px;
-      border-radius: 0 0 10px 10px;
-    }
-    .button {
-      display: inline-block;
-      background: #8B4513;
-      color: white;
-      padding: 15px 30px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin: 20px 0;
-      font-weight: bold;
-    }
-    .code {
-      background: white;
-      padding: 15px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 18px;
-      letter-spacing: 2px;
-      text-align: center;
-      margin: 20px 0;
-      border: 2px dashed #8B4513;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #666;
-      font-size: 12px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 10px 10px 0 0; }
+    .content { background: #f9f9f9; padding: 30px 20px; border-radius: 0 0 10px 10px; }
+    .code { background: white; padding: 18px; border-radius: 6px; font-family: monospace; font-size: 22px; letter-spacing: 3px; text-align: center; margin: 24px 0; border: 2px dashed #8B4513; font-weight: 700; }
+    .note { font-size: 13px; color: #555; }
+    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🔐 Acceso a Experiencia Selecta</h1>
+    <h1>🔐 Tu código de acceso</h1>
   </div>
   <div class="content">
     <p>Hola,</p>
     <p>Has solicitado acceder a <strong>Experiencia Selecta</strong>.</p>
-    
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="${magicLink}" class="button">
-        Iniciar sesión
-      </a>
-    </div>
-    
-    <p style="text-align: center; color: #666; margin: 20px 0;">O usa este código de verificación:</p>
-    
+    <p>Introduce este código en la web donde lo estás solicitando para mantener tu carrito y continuar al pago:</p>
     <div class="code">${token}</div>
-    
-    <p style="font-size: 14px; color: #666; margin-top: 30px;">
-      Este enlace es válido por <strong>1 hora</strong>.
-    </p>
-    
-    <p style="font-size: 14px; color: #999; margin-top: 20px;">
-      Si no solicitaste este correo, puedes ignorarlo de forma segura.
-    </p>
-    
+    <p class="note">Este código caduca en <strong>1 hora</strong>. No compartas este código con nadie.</p>
+    <p class="note">Por seguridad y para mantener tu carrito, <strong>no uses enlaces</strong>; introduce el código directamente en el formulario.</p>
     <p style="margin-top: 30px;"><strong>Un abrazo,<br>El equipo de Experiencia Selecta</strong></p>
   </div>
   <div class="footer">
