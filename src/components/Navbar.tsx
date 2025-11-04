@@ -44,7 +44,7 @@ const Navbar = () => {
               .from('profiles')
               .select('name')
               .eq('user_id', session.user.id)
-              .single();
+              .maybeSingle();
 
             const { data, error } = await supabase.functions.invoke('send-welcome-email', {
               body: {
@@ -135,7 +135,7 @@ const Navbar = () => {
         .from('customers')
         .select('id')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (!customerData) return;
 

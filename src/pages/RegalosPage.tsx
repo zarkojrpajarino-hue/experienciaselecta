@@ -112,7 +112,7 @@ const RegalosPage = () => {
         .from('profiles')
         .select('name')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profile?.name) {
         setUserName(profile.name);

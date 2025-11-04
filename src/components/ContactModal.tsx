@@ -38,7 +38,7 @@ const ContactModal = ({ children }: ContactModalProps) => {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profile) {
         setFormData(prev => ({
