@@ -94,12 +94,13 @@ const CookieBanner = () => {
 
   return (
     <div 
-      className="fixed bottom-0 left-0 right-0 z-[100] shadow-lg"
+      className="fixed bottom-4 left-4 right-4 z-[100] rounded-xl shadow-2xl animate-in slide-in-from-bottom-5 duration-500"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url(${headerBg})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.90), rgba(0, 0, 0, 0.90)), url(${headerBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        border: '1px solid hsl(45 100% 65% / 0.3)'
       }}
     >
       <div className="container mx-auto px-4 py-4">
