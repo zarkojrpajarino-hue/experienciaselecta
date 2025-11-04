@@ -50,25 +50,26 @@ const VisualHeader = () => {
               className="px-6 py-3 text-white font-poppins font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 uppercase tracking-normal sm:tracking-widest whitespace-nowrap hover:text-[#FFD700] cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
-                console.log('Botón clickeado - buscando categoria-cestas');
-                
-                // Buscar el elemento inmediatamente
-                const targetElement = document.getElementById('categoria-cestas');
-                console.log('Elemento encontrado:', targetElement);
-                
-                if (targetElement) {
-                  // Scroll con más offset para compensar el header
-                  const yOffset = -80;
-                  const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                  
-                  window.scrollTo({
-                    top: y,
-                    behavior: 'smooth'
-                  });
+                console.log('Botón: scroll a #categoria-cestas');
+                const el = document.getElementById('categoria-cestas');
+
+                // Forzar hash para asegurar navegación en móviles / SPA
+                try { window.location.hash = '#categoria-cestas'; } catch {}
+
+                if (el?.scrollIntoView) {
+                  // Scroll nativo + reintentos ligeros por si tarda el layout
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                  requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }));
                 } else {
-                  console.log('Elemento no encontrado, navegando con hash');
-                  // Si no existe, forzar navegación con hash
-                  window.location.hash = '#categoria-cestas';
+                  // Último recurso: calcular posición manual
+                  const rect = el?.getBoundingClientRect();
+                  if (rect) {
+                    window.scrollTo({
+                      top: rect.top + window.pageYOffset - 80,
+                      behavior: 'smooth'
+                    });
+                  }
                 }
               }}
             >
