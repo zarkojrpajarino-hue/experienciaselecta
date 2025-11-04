@@ -9,8 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Lazy load pages for better performance
 import Index from "./pages/Index";
 import ComprarCestasPage from "./pages/ComprarCestasPage";
+import CartPage from "./pages/CartPage";
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const CartPage = lazy(() => import("./pages/CartPage"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const PaymentPage = lazy(() => import("./pages/PaymentPage"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
