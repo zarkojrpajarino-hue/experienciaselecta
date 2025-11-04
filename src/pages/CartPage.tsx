@@ -12,26 +12,56 @@ const CartPage = () => {
 
   // Redirigir automáticamente a checkout cuando hay items en el carrito
   useEffect(() => {
-    if (cart.length > 0) {
-      const giftItems = cart.filter(item => item.isGift === true);
-      const personalItems = cart.filter(item => !item.isGift);
-      const total = cart.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
-      
-      // Immediate redirect without showing cart page
+    const proceedToCheckout = (items: any[]) => {
+      const giftItems = items.filter((item) => item.isGift === true);
+      const personalItems = items.filter((item) => !item.isGift);
+      const total = items.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
       navigate('/checkout', {
         replace: true,
-        state: {
-          giftItems,
-          personalItems,
-          total
-        }
+        state: { giftItems, personalItems, total }
       });
+    };
+
+    if (cart.length > 0) {
+      proceedToCheckout(cart as any[]);
+      return;
     }
+
+    // Si aún no se ha cargado el contexto, comprobar localStorage para evitar parpadeo
+    try {
+      const saved = localStorage.getItem('shopping-cart');
+      const parsed = saved ? JSON.parse(saved) : [];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        proceedToCheckout(parsed);
+      }
+    } catch {}
   }, [cart, navigate]);
 
-  // Solo mostrar cuando el carrito está vacío
-  if (cart.length > 0) {
-    return null; // No mostrar nada mientras se redirige
+  // Evitar parpadeo de "carrito vacío" si hay items en localStorage
+  const localHasItems = (() => {
+    try {
+      const saved = localStorage.getItem('shopping-cart');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) && parsed.length > 0;
+    } catch {
+      return false;
+    }
+  })();
+
+  // Si hay items (en contexto o detectados en localStorage), no mostrar la página de vacío
+  if (cart.length > 0 || localHasItems) {
+    // Si aún no están en contexto pero sí en localStorage, mostrar un loader suave
+    if (cart.length === 0 && localHasItems) {
+      return (
+        <>
+          <Navbar />
+          <div className="min-h-screen pt-24 flex items-center justify-center bg-white">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#D4AF37]" />
+          </div>
+        </>
+      );
+    }
+    return null; // Dejar que la redirección ocurra sin mostrar "vacío"
   }
 
   return (

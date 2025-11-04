@@ -64,13 +64,11 @@ const Navbar = () => {
         }, 0);
       }
 
-      // Redirigir tras login: prioridad checkout si hay flag, luego checkout si hay items
+      // Redirigir tras login: solo si hay flag de checkout pendiente
       if (event === 'SIGNED_IN') {
         const hasPendingCheckout = localStorage.getItem('pendingCheckout');
         if (hasPendingCheckout) {
           localStorage.removeItem('pendingCheckout');
-          navigate('/checkout');
-        } else if (getTotalItems() > 0) {
           navigate('/checkout');
         }
       }

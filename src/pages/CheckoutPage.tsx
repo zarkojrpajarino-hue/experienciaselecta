@@ -14,6 +14,7 @@ import AuthModal from "@/components/AuthModal";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/contexts/CartContext";
 
 interface CartItem {
   id: string;
@@ -31,18 +32,23 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Validar que location.state existe, si no redirigir
+  // Obtener items desde el carrito global en lugar de location.state
+  const { cart } = useCart();
+
+  // Si no hay items en carrito, redirigir suavemente a /carrito
   React.useEffect(() => {
-    if (!location.state) {
+    if (cart.length === 0) {
       navigate('/carrito', { replace: true });
     }
-  }, [location.state, navigate]);
+  }, [cart.length, navigate]);
 
-  // Manejar el caso donde state es null con valores por defecto
-  const { giftItems = [], personalItems = [], total = 0 } = location.state || {};
+  // Derivar items personales y de regalo desde el carrito
+  const personalItems = cart.filter((it: any) => !it.isGift);
+  const giftItems = cart.filter((it: any) => it.isGift);
+  const total = cart.reduce((sum: number, it: any) => sum + (it.precio * it.quantity), 0);
 
-  // Si no hay state, mostrar loading mientras redirige
-  if (!location.state) {
+  // Mientras redirige o si está vacío, mostrar loader mínimo
+  if (cart.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
