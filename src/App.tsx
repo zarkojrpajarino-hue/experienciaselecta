@@ -88,7 +88,7 @@ const App = () => (
         <div className="min-h-screen bg-background gpu-accelerated">
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Navigate to="/checkout" replace />} />
+              <Route path="/" element={<Index />} />
               <Route path="/perfil" element={<ProfilePage />} />
               <Route path="/carrito" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
