@@ -94,7 +94,7 @@ const CookieBanner = () => {
 
   return (
     <div 
-      className="fixed bottom-4 left-4 right-4 z-[100] rounded-xl shadow-2xl animate-in slide-in-from-bottom-5 duration-500"
+      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-[100] rounded-xl shadow-2xl animate-slide-in-right"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.90), rgba(0, 0, 0, 0.90)), url(${headerBg})`,
         backgroundSize: 'cover',
