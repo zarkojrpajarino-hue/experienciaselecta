@@ -227,7 +227,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="w-full max-w-2xl md:max-w-3xl mx-auto mb-4 overflow-hidden"
+              className="w-full max-w-xl md:max-w-2xl mx-auto mb-4 overflow-hidden"
             >
               <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
                 <div className="flex justify-end mb-2">

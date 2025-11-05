@@ -150,7 +150,7 @@ const ConocenosPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background font-work-sans">
+    <div className="min-h-screen bg-[#F5F5DC] font-work-sans">
       <Navbar />
       
       {/* Header Section */}
@@ -187,11 +187,11 @@ const ConocenosPage = () => {
                         }) as HTMLButtonElement | undefined;
                         hamburgerButton?.click();
                       }}
-                      whileHover={{ scale: 1.15, y: -3 }}
+                      whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
-                      animate={{ y: [0, -5, 0] }}
+                      animate={{ scale: [1, 1.1, 1] }}
                       transition={{
-                        y: {
+                        scale: {
                           duration: 2,
                           repeat: Infinity,
                           ease: "easeInOut",
@@ -199,18 +199,15 @@ const ConocenosPage = () => {
                       }}
                       onMouseEnter={() => setArrowTooltipOpen(true)}
                       onMouseLeave={() => setArrowTooltipOpen(false)}
-                      className="p-0 bg-transparent border-0 cursor-pointer"
+                      className="p-0 bg-transparent border-0 cursor-pointer flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10"
                       aria-label="Abrir menú"
                     >
-                      <svg 
-                        className="w-6 h-6 sm:w-8 sm:h-8" 
-                        fill="none" 
-                        stroke="#D4AF37" 
-                        strokeWidth="3" 
-                        viewBox="0 0 24 24"
+                      <span 
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold leading-none"
+                        style={{ color: '#D4AF37' }}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                      </svg>
+                        +
+                      </span>
                     </motion.button>
                   </TooltipTrigger>
                   <TooltipContent 
