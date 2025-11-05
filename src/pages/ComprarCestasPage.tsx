@@ -59,7 +59,7 @@ const ComprarCestasPage = () => {
                 </Button>
               </div>
 
-              {/* Texto "ELIGE" - Siempre visible encima del toggle */}
+              {/* Texto "ELIGE:" - Siempre visible encima del toggle */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -70,7 +70,7 @@ const ComprarCestasPage = () => {
                   className="text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-[0.2em]"
                   style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}
                 >
-                  ELIGE
+                  ELIGE:
                 </h2>
               </motion.div>
 
