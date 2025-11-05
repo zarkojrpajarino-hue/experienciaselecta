@@ -39,7 +39,7 @@ const ComprarCestasPage = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen font-work-sans transition-colors duration-500 ${isGiftMode === true ? 'bg-[#F5F5DC]' : 'bg-white'}`}>
+    <div className="min-h-screen font-work-sans transition-colors duration-500 bg-[#F5F5DC]">
       <Navbar />
       
       <div className="relative">
@@ -102,43 +102,45 @@ const ComprarCestasPage = () => {
             viewport={{ once: true }}
             className="text-center mb-8 gpu-accelerated"
           >
-            <div className="flex justify-center items-center gap-2 mb-6">
-              <AnimatePresence mode="wait">
-                <motion.h2 
-                  key={isGiftMode === true ? 'gift' : 'normal'}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.4 }}
-                  className="text-sm sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center whitespace-nowrap"
-                >
-                  <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
-                    {isGiftMode === true ? 'REGALA' : 'COMPRA'}
-                  </span>{' '}tu experiencia personalizada.
-                </motion.h2>
-              </AnimatePresence>
-              
-              <TooltipProvider delayDuration={80}>
-                <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
-                  <TooltipTrigger asChild>
-                    <motion.span 
-                      onClick={() => { navigate('/conocenos'); }}
-                      onMouseEnter={() => setTooltipOpen(true)} 
-                      onMouseLeave={() => setTooltipOpen(false)} 
-                      className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-sm sm:text-2xl md:text-4xl font-bold gpu-accelerated flex-shrink-0" 
-                      style={{ color: '#D4AF37' }}
-                      animate={{ rotateZ: [0, 180, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      ¿?
-                    </motion.span>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2">
-                    <p className="font-medium">¿Tienes dudas?</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            {isGiftMode !== null && (
+              <div className="flex justify-center items-center gap-2 mb-6">
+                <AnimatePresence mode="wait">
+                  <motion.h2 
+                    key={isGiftMode === true ? 'gift' : 'normal'}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-sm sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center whitespace-nowrap"
+                  >
+                    <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
+                      {isGiftMode === true ? 'REGALA' : 'COMPRA'}
+                    </span>{' '}tu experiencia personalizada.
+                  </motion.h2>
+                </AnimatePresence>
+                
+                <TooltipProvider delayDuration={80}>
+                  <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+                    <TooltipTrigger asChild>
+                      <motion.span 
+                        onClick={() => { navigate('/conocenos'); }}
+                        onMouseEnter={() => setTooltipOpen(true)} 
+                        onMouseLeave={() => setTooltipOpen(false)} 
+                        className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-sm sm:text-2xl md:text-4xl font-bold gpu-accelerated flex-shrink-0" 
+                        style={{ color: '#D4AF37' }}
+                        animate={{ rotateZ: [0, 180, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        ¿?
+                      </motion.span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2">
+                      <p className="font-medium">¿Tienes dudas?</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            )}
             
             {isGiftMode !== null && (
               <AnimatePresence mode="wait">
