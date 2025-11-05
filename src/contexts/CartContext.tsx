@@ -66,40 +66,27 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         if (newUserId && !currentUserId) {
           setCurrentUserId(newUserId);
           
-          // Check if we should preserve the current cart (during checkout flow)
-          const hasPendingCheckout = localStorage.getItem('pendingCheckout') === 'true';
-          
           try {
             const userStorageKey = getCartStorageKey(newUserId);
             const anonKey = getCartStorageKey(null);
             const anonCartString = localStorage.getItem(anonKey);
             const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
 
-            if (hasPendingCheckout) {
-              // CRITICAL: Durante checkout, SIEMPRE preservar el carrito actual
-              // No importa si el usuario tiene un carrito guardado o no
-              console.log('Preserving cart during checkout login:', anonCart);
-              
-              if (anonCart.length > 0) {
-                // Guardar el carrito anónimo como carrito del usuario
-                setCart(anonCart);
-                localStorage.setItem(userStorageKey, JSON.stringify(anonCart));
-              } else {
-                // Si por alguna razón el carrito anónimo está vacío, mantener el actual
-                console.warn('Anonymous cart is empty during checkout - this should not happen');
-              }
-              
-              // Limpiar carrito anónimo
-              localStorage.removeItem(anonKey);
+            // El usuario acaba de hacer login
+            // Preservar el carrito que estaba creando (anónimo) y guardarlo como suyo
+            if (anonCart.length > 0) {
+              console.log('User logged in - saving current cart as theirs:', anonCart);
+              setCart(anonCart);
+              localStorage.setItem(userStorageKey, JSON.stringify(anonCart));
             } else {
-              // Login normal (no desde checkout): cargar carrito del usuario
+              // Si no hay carrito anónimo, cargar el guardado del usuario (si existe)
               const savedUserCart = localStorage.getItem(userStorageKey);
               const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
               setCart(userCart);
-              
-              // Limpiar carrito anónimo para evitar leaks
-              localStorage.removeItem(anonKey);
             }
+            
+            // Limpiar carrito anónimo
+            localStorage.removeItem(anonKey);
           } catch (error) {
             console.error('Error handling cart on login:', error);
           }
