@@ -9,7 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Import critical pages directly (no lazy loading)
 import Index from "./pages/Index";
 import ComprarCestasPage from "./pages/ComprarCestasPage";
-import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ExperienciaSelectaPage from "./pages/ExperienciaSelectaPage";
 import NuestrosClientesPage from "./pages/NuestrosClientesPage";
@@ -90,7 +89,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<><ScrollToTopOnRouteChange /><Index /></>} />
             <Route path="/perfil" element={<><ScrollToTopOnRouteChange /><ProfilePage /></>} />
-            <Route path="/carrito" element={<><ScrollToTopOnRouteChange /><CartPage /></>} />
             <Route path="/checkout" element={<><ScrollToTopOnRouteChange /><CheckoutPage /></>} />
             <Route path="/pago" element={<><ScrollToTopOnRouteChange /><PaymentPage /></>} />
             <Route path="/pago-exitoso" element={<><ScrollToTopOnRouteChange /><PaymentSuccessPage /></>} />
