@@ -133,12 +133,12 @@ const ComprarCestasPage = () => {
             >
               <Button
                 onClick={() => setIsGiftMode(false)}
-                variant={isGiftMode === false ? "default" : "outline"}
+                variant="outline"
                 size="sm"
-                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 ${
+                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
                   isGiftMode === false 
-                    ? 'ring-2 ring-primary ring-offset-2 shadow-lg scale-105' 
-                    : 'hover:scale-105'
+                    ? 'bg-black text-white border-[#D4AF37] hover:bg-black' 
+                    : 'bg-transparent text-black border-black hover:bg-transparent'
                 }`}
               >
                 <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -146,12 +146,12 @@ const ComprarCestasPage = () => {
               </Button>
               <Button
                 onClick={() => setIsGiftMode(true)}
-                variant={isGiftMode === true ? "default" : "outline"}
+                variant="outline"
                 size="sm"
-                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 ${
+                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
                   isGiftMode === true 
-                    ? 'ring-2 ring-primary ring-offset-2 shadow-lg scale-105' 
-                    : 'hover:scale-105'
+                    ? 'bg-white text-black border-[#D4AF37] hover:bg-white' 
+                    : 'bg-transparent text-black border-black hover:bg-transparent'
                 }`}
               >
                 <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -161,10 +161,12 @@ const ComprarCestasPage = () => {
 
             {/* Botones de Categoría */}
             {isGiftMode !== null && (
-              <AnimatePresence>
+              <AnimatePresence mode="wait">
                 <motion.div 
+                  key={isGiftMode ? 'gift-categories' : 'buy-categories'}
                   initial={{ opacity: 0, x: -100 }}
                   animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 100 }}
                   transition={{ duration: 0.5, type: "spring" }}
                   className="flex justify-center gap-2 sm:gap-4 mb-4"
                 >
