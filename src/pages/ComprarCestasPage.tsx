@@ -39,7 +39,7 @@ const ComprarCestasPage = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen font-work-sans transition-colors duration-500 ${isGiftMode === true ? 'bg-[#F5F5DC]' : 'bg-background'}`}>
+    <div className="min-h-screen font-work-sans transition-colors duration-500 bg-white">
       <Navbar />
       
       <div className="relative">
@@ -137,7 +137,7 @@ const ComprarCestasPage = () => {
                 size="sm"
                 className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
                   isGiftMode === false 
-                    ? 'bg-black text-white border-[#D4AF37] hover:bg-black' 
+                    ? 'bg-black text-white border-[#D4AF37] hover:bg-black shadow-lg scale-105' 
                     : 'bg-transparent text-black border-black hover:bg-transparent'
                 }`}
               >
@@ -150,7 +150,7 @@ const ComprarCestasPage = () => {
                 size="sm"
                 className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
                   isGiftMode === true 
-                    ? 'bg-white text-black border-[#D4AF37] hover:bg-white' 
+                    ? 'bg-black text-white border-[#D4AF37] hover:bg-black shadow-lg scale-105' 
                     : 'bg-transparent text-black border-black hover:bg-transparent'
                 }`}
               >
