@@ -35,6 +35,13 @@ const CheckoutPage = () => {
   // Obtener items desde el carrito global
   const { cart } = useCart();
 
+  // Redirigir inmediatamente si el carrito está vacío
+  React.useEffect(() => {
+    if (cart.length === 0) {
+      navigate('/#categoria-cestas', { replace: true });
+    }
+  }, [cart.length, navigate]);
+
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
   const giftItems = cart.filter((it: any) => it.isGift);
