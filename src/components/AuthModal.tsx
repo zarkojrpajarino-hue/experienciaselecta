@@ -265,7 +265,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
             <CardHeader className="space-y-1">
               <CardTitle className="text-lg">Inicia sesión</CardTitle>
               <CardDescription>
-                {showCodeInput ? "Introduce el código que te enviamos" : "Te enviaremos un código de verificación a tu email"}
+                {showCodeInput 
+                  ? "Introduce el código que te enviamos" 
+                  : "es necesario que inicies sesión y te registres como usuario con un correo, para que podamos vincular la compra, a tu perfil y así darte acceso a la web privada de compradores, donde está la experiencia por cada cesta adquirida."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
