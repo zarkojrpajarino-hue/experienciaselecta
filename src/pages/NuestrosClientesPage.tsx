@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote, ArrowLeft, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+// (useNavigate removed to avoid hook mismatch); using window navigation instead
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
@@ -18,7 +18,7 @@ import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
 import grupoMedianoExperience from "@/assets/grupo-mediano-experience.jpg";
 
 const NuestrosClientesPage = () => {
-  const navigate = useNavigate();
+  const goBack = () => { window.location.href = "/#categoria-cestas"; };
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isImageOpen, setIsImageOpen] = useState(false);
 
@@ -104,7 +104,7 @@ const NuestrosClientesPage = () => {
           }} transition={{
             duration: 0.5
           }} className="mb-0 md:mb-12 pt-1">
-              <Button onClick={() => navigate("/#categoria-cestas")} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent">
+              <Button onClick={goBack} variant="ghost" className="text-white hover:text-gold transition-colors hover:bg-transparent bg-transparent">
                 <ArrowLeft className="w-5 h-5 mr-2" />
                 Volver
               </Button>
