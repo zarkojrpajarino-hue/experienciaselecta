@@ -33,7 +33,7 @@ const CheckoutPage = () => {
   const location = useLocation();
   
   // Obtener items desde el carrito global
-  const { cart } = useCart();
+  const { cart, removeFromCart, updateQuantity } = useCart();
   
   // State para controlar si se muestra la pantalla de carrito vacío
   const [showEmptyCartScreen, setShowEmptyCartScreen] = useState(false);
@@ -275,6 +275,9 @@ const CheckoutPage = () => {
   const handleRemovePersonalItem = (itemId: number) => {
     const newItems = currentPersonalItems.filter(item => item.id !== itemId);
     setCurrentPersonalItems(newItems);
+    
+    // CRÍTICO: Eliminar del carrito global también
+    removeFromCart(itemId, false); // false = no es regalo
     
     // Si acabamos de eliminar todos los items personales Y no hay items de regalo, mostrar pantalla especial
     if (newItems.length === 0 && giftItems.length === 0) {
@@ -748,13 +751,16 @@ const CheckoutPage = () => {
                                       variant="outline"
                                       size="sm"
                                       onClick={() => {
+                                        const newQuantity = item.quantity - 1;
                                         setCurrentPersonalItems(prev => 
                                           prev.map(it => 
                                             it.id === item.id && it.quantity > 1 
-                                              ? { ...it, quantity: it.quantity - 1 } 
+                                              ? { ...it, quantity: newQuantity } 
                                               : it
                                           )
                                         );
+                                        // Actualizar en carrito global
+                                        updateQuantity(item.id, newQuantity, false);
                                       }}
                                       disabled={item.quantity <= 1}
                                       className="h-6 w-6 md:h-8 md:w-8 p-0 text-xs"
@@ -766,13 +772,16 @@ const CheckoutPage = () => {
                                       variant="outline"
                                       size="sm"
                                       onClick={() => {
+                                        const newQuantity = item.quantity + 1;
                                         setCurrentPersonalItems(prev => 
                                           prev.map(it => 
                                             it.id === item.id 
-                                              ? { ...it, quantity: it.quantity + 1 } 
+                                              ? { ...it, quantity: newQuantity } 
                                               : it
                                           )
                                         );
+                                        // Actualizar en carrito global
+                                        updateQuantity(item.id, newQuantity, false);
                                       }}
                                       className="h-6 w-6 md:h-8 md:w-8 p-0 text-xs"
                                     >
