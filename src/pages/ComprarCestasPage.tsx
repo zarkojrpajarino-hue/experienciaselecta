@@ -67,7 +67,7 @@ const ComprarCestasPage = () => {
             viewport={{ once: true }}
             className="text-center mb-8 gpu-accelerated"
           >
-            <div className="flex justify-center items-center gap-1 sm:gap-2 mb-3 flex-wrap">
+            <div className="flex justify-center items-center gap-2 mb-6">
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={isGiftMode === true ? 'gift' : 'normal'}
@@ -75,7 +75,7 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.4 }}
-                  className="text-sm sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center"
+                  className="text-sm sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center whitespace-nowrap"
                 >
                   <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
                     {isGiftMode === true ? 'REGALA' : 'COMPRA'}
@@ -90,7 +90,7 @@ const ComprarCestasPage = () => {
                       onClick={() => { navigate('/conocenos'); }}
                       onMouseEnter={() => setTooltipOpen(true)} 
                       onMouseLeave={() => setTooltipOpen(false)} 
-                      className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-sm sm:text-2xl md:text-4xl font-bold gpu-accelerated" 
+                      className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-sm sm:text-2xl md:text-4xl font-bold gpu-accelerated flex-shrink-0" 
                       style={{ color: '#D4AF37' }}
                       animate={{ rotateZ: [0, 180, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -113,7 +113,7 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.4 }}
-                  className="text-base sm:text-lg md:text-xl mb-4 font-inter text-black"
+                  className="text-base sm:text-lg md:text-xl mb-6 font-inter text-black"
                 >
                   {isGiftMode === true ? (
                     <>Elige a quién quieres regalar: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
@@ -129,7 +129,7 @@ const ComprarCestasPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex items-center justify-center gap-2 sm:gap-4 mb-6"
+              className="flex items-center justify-center gap-4 sm:gap-4 mb-8"
             >
               <Button
                 onClick={() => setIsGiftMode(false)}
@@ -216,10 +216,12 @@ const ComprarCestasPage = () => {
           
           {/* Basket Catalog Section */}
           {isGiftMode !== null && (
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               <motion.section 
+                key={isGiftMode ? 'gift-mode' : 'buy-mode'}
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
                 transition={{ duration: 0.6, type: "spring", delay: 0.2 }}
                 className="py-8 md:py-10"
               >
