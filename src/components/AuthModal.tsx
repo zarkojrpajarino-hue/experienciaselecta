@@ -264,10 +264,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
           <Card className="border-0 shadow-none">
             <CardHeader className="space-y-1">
               <CardTitle className="text-lg">Inicia sesión</CardTitle>
-              <CardDescription>
+              <CardDescription className="font-semibold text-black">
                 {showCodeInput 
                   ? "Introduce el código que te enviamos" 
-                  : "es necesario que inicies sesión y te registres como usuario con un correo, para que podamos vincular la compra, a tu perfil y así darte acceso a la web privada de compradores, donde está la experiencia por cada cesta adquirida."}
+                  : "Es necesario que inicies sesión y te registres como usuario con un correo, para que podamos vincular la compra a tu perfil y así darte acceso a la web privada de compradores, donde está la experiencia por cada cesta adquirida. En modo regalo, los destinatarios recibirán el acceso a la web, pero aún así necesitamos un usuario para poder realizar la compra."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
