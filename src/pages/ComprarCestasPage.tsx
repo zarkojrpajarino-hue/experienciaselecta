@@ -39,7 +39,7 @@ const ComprarCestasPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen font-work-sans transition-colors duration-500 bg-white">
+    <div className={`min-h-screen font-work-sans transition-colors duration-500 ${isGiftMode === true ? 'bg-[#F5F5DC]' : 'bg-white'}`}>
       <Navbar />
       
       <div className="relative">
@@ -58,6 +58,41 @@ const ComprarCestasPage = () => {
                   ← Volver al inicio
                 </Button>
               </div>
+
+              {/* Botones para Compra y Regalo - Movidos aquí */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center justify-center gap-4 sm:gap-4 mb-6"
+              >
+                <Button
+                  onClick={() => setIsGiftMode(false)}
+                  variant="outline"
+                  size="sm"
+                  className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
+                    isGiftMode === false 
+                      ? 'bg-black text-white border-[#D4AF37] hover:bg-black shadow-lg scale-105' 
+                      : 'bg-transparent text-black border-black hover:bg-transparent'
+                  }`}
+                >
+                  <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  Compra
+                </Button>
+                <Button
+                  onClick={() => setIsGiftMode(true)}
+                  variant="outline"
+                  size="sm"
+                  className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
+                    isGiftMode === true 
+                      ? 'bg-black text-white border-[#D4AF37] hover:bg-black shadow-lg scale-105' 
+                      : 'bg-transparent text-black border-black hover:bg-transparent'
+                  }`}
+                >
+                  <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  Regalo
+                </Button>
+              </motion.div>
           
           
           <motion.div 
@@ -117,49 +152,14 @@ const ComprarCestasPage = () => {
                 >
                   {isGiftMode === true ? (
                     <>Elige a quién quieres regalar: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
-                  ) : (
-                    <>Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
-                  )}
-                </motion.p>
-              </AnimatePresence>
-            )}
+                ) : (
+                  <>Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                )}
+              </motion.p>
+            </AnimatePresence>
+          )}
 
-            {/* Botones para Modo Compra y Modo Regalo */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center justify-center gap-4 sm:gap-4 mb-8"
-            >
-              <Button
-                onClick={() => setIsGiftMode(false)}
-                variant="outline"
-                size="sm"
-                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
-                  isGiftMode === false 
-                    ? 'bg-black text-white border-[#D4AF37] hover:bg-black shadow-lg scale-105' 
-                    : 'bg-transparent text-black border-black hover:bg-transparent'
-                }`}
-              >
-                <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Modo Compra
-              </Button>
-              <Button
-                onClick={() => setIsGiftMode(true)}
-                variant="outline"
-                size="sm"
-                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 border-2 ${
-                  isGiftMode === true 
-                    ? 'bg-black text-white border-[#D4AF37] hover:bg-black shadow-lg scale-105' 
-                    : 'bg-transparent text-black border-black hover:bg-transparent'
-                }`}
-              >
-                <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Modo Regalo
-              </Button>
-            </motion.div>
-
-            {/* Botones de Categoría */}
+          {/* Botones de Categoría */}
             {isGiftMode !== null && (
               <AnimatePresence mode="wait">
                 <motion.div 
