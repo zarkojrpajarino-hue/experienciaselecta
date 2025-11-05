@@ -89,6 +89,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<><ScrollToTopOnRouteChange /><Index /></>} />
             <Route path="/perfil" element={<><ScrollToTopOnRouteChange /><ProfilePage /></>} />
+            <Route path="/carrito" element={<><ScrollToTopOnRouteChange /><CheckoutPage /></>} />
             <Route path="/checkout" element={<><ScrollToTopOnRouteChange /><CheckoutPage /></>} />
             <Route path="/pago" element={<><ScrollToTopOnRouteChange /><PaymentPage /></>} />
             <Route path="/pago-exitoso" element={<><ScrollToTopOnRouteChange /><PaymentSuccessPage /></>} />
