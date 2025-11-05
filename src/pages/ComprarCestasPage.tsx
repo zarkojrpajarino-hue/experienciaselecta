@@ -59,6 +59,23 @@ const ComprarCestasPage = () => {
                 </Button>
               </div>
 
+              {/* Texto "Elige:" - Solo aparece antes de seleccionar modo */}
+              <AnimatePresence>
+                {isGiftMode === null && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-center mb-4"
+                  >
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
+                      Elige:
+                    </h2>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Botones para Compra y Regalo - Movidos aquí */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
