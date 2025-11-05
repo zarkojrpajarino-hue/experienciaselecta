@@ -118,7 +118,7 @@ const ComprarCestasPage = () => {
             className="text-center mb-8 gpu-accelerated"
           >
             {isGiftMode !== null && (
-              <div className="flex justify-center items-center gap-2 mb-6">
+              <div className="flex justify-center items-center gap-2 mb-6 px-2">
                 <AnimatePresence mode="wait">
                   <motion.h2 
                     key={isGiftMode === true ? 'gift' : 'normal'}
@@ -126,11 +126,13 @@ const ComprarCestasPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.4 }}
-                    className="text-sm sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center whitespace-nowrap"
+                    className="text-base sm:text-xl md:text-2xl lg:text-4xl leading-tight font-poppins font-bold text-black text-center"
                   >
                     <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
                       {isGiftMode === true ? 'REGALA' : 'COMPRA'}
-                    </span>{' '}tu experiencia personalizada.
+                    </span>{' '}
+                    <span className="hidden sm:inline">tu experiencia personalizada.</span>
+                    <span className="sm:hidden">tu experiencia.</span>
                   </motion.h2>
                 </AnimatePresence>
                 
@@ -165,12 +167,20 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.4 }}
-                  className="text-base sm:text-lg md:text-xl mb-6 font-inter text-black"
+                  className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 font-inter text-black px-2"
                 >
                   {isGiftMode === true ? (
-                    <>Elige a quién quieres regalar: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                    <>
+                      <span className="hidden md:inline">Elige a quién quieres regalar: </span>
+                      <span className="md:hidden">Regala a: </span>
+                      <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
+                    </>
                 ) : (
-                  <>Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                  <>
+                    <span className="hidden md:inline">Elige con quién quieres compartir: </span>
+                    <span className="md:hidden">Comparte con: </span>
+                    <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.
+                  </>
                 )}
               </motion.p>
             </AnimatePresence>
@@ -239,8 +249,15 @@ const ComprarCestasPage = () => {
               >
                 <motion.button
                   onClick={() => {
-                    const groupSizeSelector = document.querySelector('[data-group-size-selector]');
-                    groupSizeSelector?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (selectedCategory === 'Pareja') {
+                      // En Pareja, ir directamente a la primera cesta
+                      const firstBasket = document.querySelector('[data-basket-id]');
+                      firstBasket?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                      // En Familia/Amigos, ir al selector de grupos
+                      const groupSizeSelector = document.querySelector('[data-group-size-selector]');
+                      groupSizeSelector?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
                   whileTap={{ scale: 0.9 }}
@@ -253,7 +270,7 @@ const ComprarCestasPage = () => {
                     },
                   }}
                   className="p-0 bg-transparent border-0 cursor-pointer"
-                  aria-label="Ver selector de grupos"
+                  aria-label={selectedCategory === 'Pareja' ? 'Ver cestas' : 'Ver selector de grupos'}
                 >
                   <svg 
                     className="w-8 h-8 sm:w-10 sm:h-10" 
