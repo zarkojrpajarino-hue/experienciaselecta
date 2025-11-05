@@ -12,6 +12,7 @@ import ComprarCestasPage from "./pages/ComprarCestasPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ExperienciaSelectaPage from "./pages/ExperienciaSelectaPage";
+import NuestrosClientesPage from "./pages/NuestrosClientesPage";
 
 // Lazy load non-critical pages for better performance
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
@@ -19,7 +20,6 @@ const PaymentPage = lazy(() => import("./pages/PaymentPage"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
 const SobreNosotrosDetalle = lazy(() => import("./pages/SobreNosotrosDetalle"));
-const NuestrosClientesPage = lazy(() => import("./pages/NuestrosClientesPage"));
 const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
