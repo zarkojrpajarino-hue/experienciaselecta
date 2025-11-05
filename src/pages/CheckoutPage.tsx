@@ -34,13 +34,29 @@ const CheckoutPage = () => {
   
   // Obtener items desde el carrito global
   const { cart } = useCart();
+  
+  // State para controlar si se muestra la pantalla de carrito vacío
+  const [showEmptyCartScreen, setShowEmptyCartScreen] = useState(false);
+  const [isAuthInProgress, setIsAuthInProgress] = useState(false);
 
-  // Redirigir inmediatamente si el carrito está vacío
+  // Verificar si hay un proceso de autenticación en curso
   React.useEffect(() => {
-    if (cart.length === 0) {
+    const pendingCheckout = localStorage.getItem('pendingCheckout');
+    if (pendingCheckout) {
+      setIsAuthInProgress(true);
+    }
+  }, []);
+
+  // Redirigir SOLO si el carrito está vacío Y NO hay auth en progreso Y NO acabamos de eliminar items
+  React.useEffect(() => {
+    // Si hay auth en progreso, no redirigir todavía
+    if (isAuthInProgress) return;
+    
+    // Si el carrito está vacío y no se mostró la pantalla de carrito vacío, redirigir
+    if (cart.length === 0 && !showEmptyCartScreen) {
       navigate('/#categoria-cestas', { replace: true });
     }
-  }, [cart.length, navigate]);
+  }, [cart.length, navigate, isAuthInProgress, showEmptyCartScreen]);
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
@@ -132,6 +148,8 @@ const CheckoutPage = () => {
       if (session?.user) {
         // Cerrar modal si estuviera abierto para evitar bucles
         setShowAuthModal(false);
+        // Auth completada
+        setIsAuthInProgress(false);
         // Defer any Supabase calls to next tick (prevents freezes after OAuth)
         setTimeout(() => {
           loadUserProfile(session.user!.id);
@@ -154,7 +172,11 @@ const CheckoutPage = () => {
       
       if (session?.user) {
         setShowAuthModal(false);
+        setIsAuthInProgress(false);
         setTimeout(() => loadUserProfile(session.user!.id), 0);
+      } else {
+        // Si no hay sesión, tampoco hay auth en progreso
+        setIsAuthInProgress(false);
       }
     });
 
@@ -251,7 +273,14 @@ const CheckoutPage = () => {
   };
 
   const handleRemovePersonalItem = (itemId: number) => {
-    setCurrentPersonalItems(prev => prev.filter(item => item.id !== itemId));
+    const newItems = currentPersonalItems.filter(item => item.id !== itemId);
+    setCurrentPersonalItems(newItems);
+    
+    // Si acabamos de eliminar todos los items personales Y no hay items de regalo, mostrar pantalla especial
+    if (newItems.length === 0 && giftItems.length === 0) {
+      setShowEmptyCartScreen(true);
+    }
+    
     toast.success("Cesta eliminada");
   };
 
@@ -508,6 +537,41 @@ const CheckoutPage = () => {
       toast.error("Inicia sesión para rellenar los datos de envío");
     }
   };
+
+  // Si mostramos la pantalla de carrito vacío
+  if (showEmptyCartScreen) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen pt-16 pb-6 px-4 bg-white flex items-center justify-center">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
+            <div className="text-6xl mb-4">🛒</div>
+            <h1 className="text-2xl md:text-3xl font-poppins font-bold text-black">
+              Vaya, has eliminado todas las cestas de tu carrito
+            </h1>
+            <p className="text-lg text-gray-600">
+              ¿Quieres volver a añadir cestas y crear experiencias?
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Button
+                onClick={() => navigate('/comprar-cestas')}
+                className="bg-gold hover:bg-gold/90 text-black font-semibold px-8 py-6 text-lg"
+              >
+                Ir al catálogo
+              </Button>
+              <Button
+                onClick={() => navigate('/')}
+                variant="outline"
+                className="border-2 border-black hover:bg-gray-50 text-black font-semibold px-8 py-6 text-lg"
+              >
+                Ir a la página principal
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
