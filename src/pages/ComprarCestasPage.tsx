@@ -24,7 +24,7 @@ const ComprarCestasPage = () => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
-  const [isGiftMode, setIsGiftMode] = useState(false);
+  const [isGiftMode, setIsGiftMode] = useState<boolean | null>(null);
 
   // Scroll al inicio en cambio de categoría
   useEffect(() => {
@@ -39,7 +39,7 @@ const ComprarCestasPage = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen font-work-sans transition-colors duration-500 ${isGiftMode ? 'bg-[#F5F5DC]' : 'bg-background'}`}>
+    <div className={`min-h-screen font-work-sans transition-colors duration-500 ${isGiftMode === true ? 'bg-[#F5F5DC]' : 'bg-background'}`}>
       <Navbar />
       
       <div className="relative">
@@ -70,16 +70,16 @@ const ComprarCestasPage = () => {
             <div className="flex justify-center items-center gap-1 sm:gap-2 mb-3 flex-wrap">
               <AnimatePresence mode="wait">
                 <motion.h2 
-                  key={isGiftMode ? 'gift' : 'normal'}
+                  key={isGiftMode === true ? 'gift' : 'normal'}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.4 }}
-                  className="text-base sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center break-words"
+                  className="text-sm sm:text-2xl md:text-4xl leading-tight font-poppins font-bold text-black text-center"
                 >
                   <span style={{ fontFamily: "'Boulder', cursive", color: '#D4AF37' }}>
-                    {isGiftMode ? 'REGALA' : 'COMPRA'}
-                  </span> tu experiencia personalizada.
+                    {isGiftMode === true ? 'REGALA' : 'COMPRA'}
+                  </span>{' '}tu experiencia personalizada.
                 </motion.h2>
               </AnimatePresence>
               
@@ -105,104 +105,134 @@ const ComprarCestasPage = () => {
               </TooltipProvider>
             </div>
             
-            <AnimatePresence mode="wait">
-              <motion.p 
-                key={isGiftMode ? 'gift-text' : 'normal-text'}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.4 }}
-                className="text-base sm:text-lg md:text-xl mb-4 font-inter text-black"
-              >
-                {isGiftMode ? (
-                  <>Elige a quién quieres regalar: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
-                ) : (
-                  <>Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
-                )}
-              </motion.p>
-            </AnimatePresence>
+            {isGiftMode !== null && (
+              <AnimatePresence mode="wait">
+                <motion.p 
+                  key={isGiftMode === true ? 'gift-text' : 'normal-text'}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-base sm:text-lg md:text-xl mb-4 font-inter text-black"
+                >
+                  {isGiftMode === true ? (
+                    <>Elige a quién quieres regalar: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                  ) : (
+                    <>Elige con quién quieres compartir: <span className="font-bold" style={{ color: '#4A7050' }}>familia</span>, <span className="font-bold" style={{ color: '#782C23' }}>pareja</span> o <span className="font-bold" style={{ color: '#44667D' }}>amigos</span>.</>
+                  )}
+                </motion.p>
+              </AnimatePresence>
+            )}
 
             {/* Botones para Modo Compra y Modo Regalo */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex items-center justify-center gap-4 mb-6"
+              className="flex items-center justify-center gap-2 sm:gap-4 mb-6"
             >
               <Button
                 onClick={() => setIsGiftMode(false)}
-                variant={!isGiftMode ? "default" : "outline"}
-                className="flex items-center gap-2"
+                variant={isGiftMode === false ? "default" : "outline"}
+                size="sm"
+                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 ${
+                  isGiftMode === false 
+                    ? 'ring-2 ring-primary ring-offset-2 shadow-lg scale-105' 
+                    : 'hover:scale-105'
+                }`}
               >
-                <ShoppingCart className="h-4 w-4" />
+                <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Modo Compra
               </Button>
               <Button
                 onClick={() => setIsGiftMode(true)}
-                variant={isGiftMode ? "default" : "outline"}
-                className="flex items-center gap-2"
+                variant={isGiftMode === true ? "default" : "outline"}
+                size="sm"
+                className={`flex items-center gap-1.5 text-xs sm:text-sm transition-all duration-300 ${
+                  isGiftMode === true 
+                    ? 'ring-2 ring-primary ring-offset-2 shadow-lg scale-105' 
+                    : 'hover:scale-105'
+                }`}
               >
-                <Gift className="h-4 w-4" />
+                <Gift className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Modo Regalo
               </Button>
             </motion.div>
 
             {/* Botones de Categoría */}
-            <div className="flex justify-center gap-2 sm:gap-4 mb-4">
-              <motion.button
-                onClick={() => setSelectedCategory('Pareja')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
-                  selectedCategory === 'Pareja'
-                    ? 'bg-[#782C23] text-white shadow-lg'
-                    : 'bg-white text-[#782C23] border-2 border-[#782C23] hover:bg-[#782C23]/10'
-                }`}
-              >
-                Pareja
-              </motion.button>
-              
-              <motion.button
-                onClick={() => setSelectedCategory('Familia')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
-                  selectedCategory === 'Familia'
-                    ? 'bg-[#4A7050] text-white shadow-lg'
-                    : 'bg-white text-[#4A7050] border-2 border-[#4A7050] hover:bg-[#4A7050]/10'
-                }`}
-              >
-                Familia
-              </motion.button>
-              
-              <motion.button
-                onClick={() => setSelectedCategory('Amigos')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
-                  selectedCategory === 'Amigos'
-                    ? 'bg-[#44667D] text-white shadow-lg'
-                    : 'bg-white text-[#44667D] border-2 border-[#44667D] hover:bg-[#44667D]/10'
-                }`}
-              >
-                Amigos
-              </motion.button>
-            </div>
+            {isGiftMode !== null && (
+              <AnimatePresence>
+                <motion.div 
+                  initial={{ opacity: 0, x: -100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, type: "spring" }}
+                  className="flex justify-center gap-2 sm:gap-4 mb-4"
+                >
+                  <motion.button
+                    onClick={() => setSelectedCategory('Pareja')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
+                      selectedCategory === 'Pareja'
+                        ? 'bg-[#782C23] text-white shadow-lg'
+                        : 'bg-white text-[#782C23] border-2 border-[#782C23] hover:bg-[#782C23]/10'
+                    }`}
+                  >
+                    Pareja
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => setSelectedCategory('Familia')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
+                      selectedCategory === 'Familia'
+                        ? 'bg-[#4A7050] text-white shadow-lg'
+                        : 'bg-white text-[#4A7050] border-2 border-[#4A7050] hover:bg-[#4A7050]/10'
+                    }`}
+                  >
+                    Familia
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={() => setSelectedCategory('Amigos')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
+                      selectedCategory === 'Amigos'
+                        ? 'bg-[#44667D] text-white shadow-lg'
+                        : 'bg-white text-[#44667D] border-2 border-[#44667D] hover:bg-[#44667D]/10'
+                    }`}
+                  >
+                    Amigos
+                  </motion.button>
+                </motion.div>
+              </AnimatePresence>
+            )}
 
           </motion.div>
             </div>
           </section>
           
           {/* Basket Catalog Section */}
-          <section className="py-8 md:py-10">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <BasketCatalog 
-                categoria={selectedCategory} 
-                onGroupSizeChange={setGroupSize}
-                isGiftMode={isGiftMode}
-              />
-            </div>
-          </section>
+          {isGiftMode !== null && (
+            <AnimatePresence>
+              <motion.section 
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, type: "spring", delay: 0.2 }}
+                className="py-8 md:py-10"
+              >
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                  <BasketCatalog 
+                    categoria={selectedCategory} 
+                    onGroupSizeChange={setGroupSize}
+                    isGiftMode={isGiftMode}
+                  />
+                </div>
+              </motion.section>
+            </AnimatePresence>
+          )}
 
       {/* Welcome Toast - Esquina inferior derecha */}
       <div className="fixed bottom-4 right-4 z-[200] max-w-md">
