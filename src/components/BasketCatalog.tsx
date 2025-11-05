@@ -1251,7 +1251,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
         </div>
       )}
 
-      <div className="flex flex-col items-center gap-16 max-w-6xl mx-auto">
+      <div data-basket-catalog className="flex flex-col items-center gap-16 max-w-6xl mx-auto">
         {filteredBaskets.map((basket, index) => {
           const IconComponent = getCategoryIcon(basket.categoria);
           const isCardOpen = openCard === basket.id;

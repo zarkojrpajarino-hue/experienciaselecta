@@ -225,6 +225,36 @@ const ConocenosPage = () => {
             <p className="text-base sm:text-lg md:text-xl text-black mt-4">
               Descubre quiénes somos y qué nos mueve.
             </p>
+            
+            {/* Flecha hacia abajo */}
+            <motion.button
+              onClick={() => {
+                const section = document.getElementById('porque-no-vendemos-cestas');
+                section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              whileHover={{ scale: 1.15, y: 3 }}
+              whileTap={{ scale: 0.9 }}
+              animate={{ y: [0, 5, 0] }}
+              transition={{
+                y: {
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+              className="mt-4 p-0 bg-transparent border-0 cursor-pointer"
+              aria-label="Ir a porque no vendemos cestas"
+            >
+              <svg 
+                className="w-8 h-8 sm:w-10 sm:h-10 mx-auto" 
+                fill="none" 
+                stroke="#D4AF37" 
+                strokeWidth="3" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.button>
           </motion.div>
         </div>
       </section>

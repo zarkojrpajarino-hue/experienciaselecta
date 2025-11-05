@@ -82,7 +82,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
     // Si estamos expandiendo, hacer scroll después de que la animación comience
     if (!wasExpanded) {
       setTimeout(() => {
-        // Buscar el contenedor de la imagen ampliada
+        // Buscar el contenedor de la imagen ampliada (ahora está arriba)
         const expandedImageContainer = document.querySelector('[data-expanded-image]');
         if (expandedImageContainer) {
           expandedImageContainer.scrollIntoView({ 
@@ -218,6 +218,37 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           </div>
         </div>
 
+        {/* Tarjeta desplegable con imagen ampliada - AHORA ARRIBA */}
+        <AnimatePresence>
+          {imageExpanded && (
+            <motion.div
+              data-expanded-image
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full max-w-2xl md:max-w-3xl mx-auto mb-4 overflow-hidden"
+            >
+              <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
+                <div className="flex justify-end mb-2">
+                  <Button 
+                    onClick={toggleImageExpand} 
+                    className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                    size="icon"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <img
+                  src={current.image}
+                  alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
+                  className="w-full h-auto object-contain rounded-[1.5rem]"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Image */}
         <div 
           ref={containerRef}
@@ -251,37 +282,6 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
             </motion.div>
           ))}
         </div>
-
-        {/* Tarjeta desplegable con imagen ampliada */}
-        <AnimatePresence>
-          {imageExpanded && (
-            <motion.div
-              data-expanded-image
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="w-full max-w-2xl md:max-w-3xl mx-auto mt-4 overflow-hidden"
-            >
-              <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
-                <div className="flex justify-end mb-2">
-                  <Button 
-                    onClick={toggleImageExpand} 
-                    className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
-                    size="icon"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <img
-                  src={current.image}
-                  alt={current.alt || (typeof current.title === 'string' ? current.title : 'Imagen ampliada')}
-                  className="w-full h-auto object-contain rounded-[1.5rem]"
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
     </section>

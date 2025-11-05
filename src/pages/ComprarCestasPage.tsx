@@ -229,6 +229,45 @@ const ComprarCestasPage = () => {
               </AnimatePresence>
             )}
 
+            {/* Flecha hacia abajo debajo de las tarjetas */}
+            {isGiftMode !== null && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex justify-center mt-4"
+              >
+                <motion.button
+                  onClick={() => {
+                    const catalogSection = document.querySelector('[data-basket-catalog]');
+                    catalogSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  whileHover={{ scale: 1.15, y: 3 }}
+                  whileTap={{ scale: 0.9 }}
+                  animate={{ y: [0, 5, 0] }}
+                  transition={{
+                    y: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  }}
+                  className="p-0 bg-transparent border-0 cursor-pointer"
+                  aria-label="Ver catálogo"
+                >
+                  <svg 
+                    className="w-8 h-8 sm:w-10 sm:h-10" 
+                    fill="none" 
+                    stroke="#D4AF37" 
+                    strokeWidth="3" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </motion.button>
+              </motion.div>
+            )}
+
           </motion.div>
             </div>
           </section>
