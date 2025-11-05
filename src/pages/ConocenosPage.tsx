@@ -227,7 +227,15 @@ const ConocenosPage = () => {
             <motion.button
               onClick={() => {
                 const section = document.getElementById('porque-no-vendemos-cestas');
-                section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (section) {
+                  // Buscar el título del carrusel dentro de la sección
+                  const carouselTitle = section.querySelector('h2');
+                  if (carouselTitle) {
+                    carouselTitle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  } else {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+                }
               }}
               whileHover={{ scale: 1.15, y: 3 }}
               whileTap={{ scale: 0.9 }}

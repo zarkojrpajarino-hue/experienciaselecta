@@ -239,8 +239,8 @@ const ComprarCestasPage = () => {
               >
                 <motion.button
                   onClick={() => {
-                    const catalogSection = document.querySelector('[data-basket-catalog]');
-                    catalogSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    const groupSizeSelector = document.querySelector('[data-group-size-selector]');
+                    groupSizeSelector?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
                   whileTap={{ scale: 0.9 }}
@@ -253,7 +253,7 @@ const ComprarCestasPage = () => {
                     },
                   }}
                   className="p-0 bg-transparent border-0 cursor-pointer"
-                  aria-label="Ver catálogo"
+                  aria-label="Ver selector de grupos"
                 >
                   <svg 
                     className="w-8 h-8 sm:w-10 sm:h-10" 

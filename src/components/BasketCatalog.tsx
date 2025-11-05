@@ -1174,7 +1174,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       
       {/* Group Size Buttons - Horizontal navigation */}
       {shouldShowGroupButtons && (
-        <div className="mb-4 mt-4 flex justify-center items-center gap-1 sm:gap-2 flex-wrap">
+        <div data-group-size-selector className="mb-4 mt-4 flex justify-center items-center gap-1 sm:gap-2 flex-wrap">
           <motion.button
             onClick={() => {
               setShowGroupSize('3-4');
@@ -1250,6 +1250,9 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             </Button>
         </div>
       )}
+
+      {/* Separación adicional antes de las cestas */}
+      <div className="mb-12"></div>
 
       <div data-basket-catalog className="flex flex-col items-center gap-16 max-w-6xl mx-auto">
         {filteredBaskets.map((basket, index) => {
