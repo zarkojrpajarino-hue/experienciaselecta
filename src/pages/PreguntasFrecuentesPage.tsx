@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// (useNavigate removed to avoid hook mismatch); using window navigation instead
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
@@ -22,7 +22,7 @@ import faqProductoresLocales from "@/assets/faq-productores-locales.png";
 import faqJamonPinzas from "@/assets/faq-jamon-pinzas.png";
 
 const PreguntasFrecuentesPage = () => {
-  const navigate = useNavigate();
+  const goBack = () => { window.location.href = "/#categoria-cestas"; };
 
   // Scroll to top when page loads
   useEffect(() => {
@@ -98,7 +98,7 @@ const PreguntasFrecuentesPage = () => {
             className="mb-4"
           >
             <Button
-              onClick={() => navigate("/#categoria-cestas")}
+              onClick={goBack}
               variant="link"
               style={{ color: '#D4AF37' }}
               className="hover:opacity-80 p-0"
