@@ -23,8 +23,15 @@ serve(async (req) => {
     const payload = await req.text();
     const headers = Object.fromEntries(req.headers);
     
-    // Verify webhook signature
-    const wh = new Webhook(hookSecret);
+    // Verify webhook signature with fallback for non-base64 secrets
+    let wh: any;
+    try {
+      wh = new Webhook(hookSecret);
+    } catch (e) {
+      console.warn('Webhook secret not base64-encoded, attempting to encode it.');
+      const encoded = btoa(hookSecret);
+      wh = new Webhook(encoded);
+    }
     const {
       user,
       email_data: { token, token_hash, redirect_to, email_action_type },
@@ -40,7 +47,6 @@ serve(async (req) => {
         site_url: string;
       };
     };
-
     console.log('Sending auth email to:', user.email, 'Type:', email_action_type);
 
     let subject = '';
