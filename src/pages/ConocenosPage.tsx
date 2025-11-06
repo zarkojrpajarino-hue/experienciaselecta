@@ -221,7 +221,7 @@ const ConocenosPage = () => {
       </section>
 
 
-      <div id="porque-no-vendemos-cestas" className="bg-white">
+      <div id="porque-no-vendemos-cestas" className="bg-white pb-16">
         <RoundedImageCarousel 
           slides={processSlides} 
           titleBold={false} 
@@ -233,8 +233,14 @@ const ConocenosPage = () => {
 
       {/* Saber más debajo del carrusel con fondo beige */}
       <div className="bg-[#F5F5DC] w-full py-12">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center overflow-hidden">
           <motion.button
+            initial={{ x: -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ 
+              duration: 0.8,
+              ease: "easeOut"
+            }}
             onClick={() => {
               const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
                 const svg = btn.querySelector('svg');
@@ -244,10 +250,10 @@ const ConocenosPage = () => {
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-black px-4 py-2 rounded-lg flex items-center gap-2 border-0 cursor-pointer"
+            className="bg-transparent border-2 border-black px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer"
             aria-label="Abrir menú para saber más"
           >
-            <span className="text-xl sm:text-2xl md:text-3xl font-extrabold font-poppins text-white uppercase">
+            <span className="text-xl sm:text-2xl md:text-3xl font-extrabold font-poppins text-black uppercase">
               SABER MÁS
             </span>
             <motion.span
@@ -268,7 +274,7 @@ const ConocenosPage = () => {
 
 
       {/* Sección: Como te entendemos */}
-      <div id="como-te-entendemos" className="bg-white">
+      <div id="como-te-entendemos" className="bg-white pb-16">
         <RoundedImageCarousel 
           slides={benefitsSlides} 
           titleBold={false} 
