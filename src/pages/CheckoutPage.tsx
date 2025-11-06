@@ -45,6 +45,14 @@ React.useEffect(() => {
   const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
   const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
   
+  console.log('🔍 CheckoutPage OAuth detection:', {
+    oauthInProgress,
+    hasOauthParams,
+    hasOauthHash,
+    session: session ? 'PRESENTE' : 'AUSENTE',
+    url: location.pathname + location.search
+  });
+  
   // Si hay sesión, el OAuth ya se completó, no mostrar loader
   const isProcessingOAuth = !!(oauthInProgress || hasOauthParams || hasOauthHash) && !session;
   

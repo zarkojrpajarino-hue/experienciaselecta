@@ -57,8 +57,18 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     const hasTokenInHash = window.location.hash.includes('access_token=');
+    const oauthHandled = sessionStorage.getItem('oauthHandled');
 
-    if ((code || hasTokenInHash) && !session && !sessionStorage.getItem('oauthHandled')) {
+    console.log('🔍 OAuth useEffect ejecutado:', {
+      code: code ? 'PRESENTE' : 'AUSENTE',
+      hasTokenInHash,
+      session: session ? 'PRESENTE' : 'AUSENTE',
+      oauthHandled,
+      url: window.location.href
+    });
+
+    if ((code || hasTokenInHash) && !session && !oauthHandled) {
+      console.log('✅ Condiciones cumplidas, procesando OAuth...');
       (async () => {
         try {
           if (code) {
@@ -107,10 +117,10 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
               }
               
               // CRÍTICO: Siempre redirigir a checkout después del login con OAuth
-console.log('Redirecting to /checkout after OAuth login');
-try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
-try { localStorage.removeItem('oauthInProgress'); } catch {}
-window.location.replace(`${window.location.origin}/checkout`);
+              console.log('Redirecting to /checkout after OAuth login');
+              try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+              try { localStorage.removeItem('oauthInProgress'); } catch {}
+              window.location.replace(`${window.location.origin}/checkout`);
               console.log('✅ OAuth flow completed, redirected to /checkout');
               
               // Mostrar toast de confirmación con nombre del usuario
@@ -135,6 +145,8 @@ window.location.replace(`${window.location.origin}/checkout`);
           try { localStorage.removeItem('oauthInProgress'); } catch {}
         }
       })();
+    } else {
+      console.log('❌ Condiciones NO cumplidas para procesar OAuth');
     }
   }, [session]);
 
