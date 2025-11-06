@@ -250,9 +250,6 @@ const ConocenosPage = () => {
         </div>
       </div>
 
-      {/* Espaciado blanco */}
-      <div className="bg-white py-8"></div>
-
       {/* Sección: Como te entendemos */}
       <div id="como-te-entendemos" className="bg-white">
         <RoundedImageCarousel 
