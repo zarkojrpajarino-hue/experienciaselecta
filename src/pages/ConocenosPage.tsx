@@ -154,7 +154,7 @@ const ConocenosPage = () => {
       <Navbar />
       
       {/* Header Section */}
-      <section className="pt-24 pb-4 md:pt-32 md:pb-6 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
+      <section className="pt-24 pb-2 md:pt-32 md:pb-3 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start mb-4">
             <Button 
@@ -233,12 +233,25 @@ const ConocenosPage = () => {
         
         {/* Saber más debajo del carrusel */}
         <div className="flex justify-center items-center mt-6 mb-4">
-          <div className="bg-black px-4 py-2 rounded-lg flex items-center gap-2">
+          <motion.button
+            onClick={() => {
+              const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
+                const svg = btn.querySelector('svg');
+                return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
+              }) as HTMLButtonElement | undefined;
+              hamburgerButton?.click();
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-black px-4 py-2 rounded-lg flex items-center gap-2 border-0 cursor-pointer"
+            aria-label="Abrir menú para saber más"
+          >
             <span className="text-xl sm:text-2xl md:text-3xl font-extrabold font-poppins text-white uppercase">
               SABER MÁS
             </span>
             <motion.span
-              className="text-xl sm:text-2xl md:text-3xl text-white"
+              className="text-xl sm:text-2xl md:text-3xl"
+              style={{ color: '#D4AF37' }}
               animate={{ x: [0, 5, 0] }}
               transition={{
                 duration: 1.5,
@@ -248,12 +261,15 @@ const ConocenosPage = () => {
             >
               →
             </motion.span>
-          </div>
+          </motion.button>
         </div>
         
         {/* Línea separadora blanca */}
         <div className="w-full h-px bg-white my-8"></div>
       </div>
+
+      {/* Fondo blanco antes del siguiente carrusel */}
+      <div className="bg-white py-4"></div>
 
       {/* Sección: Como te entendemos */}
       <div id="como-te-entendemos" className="bg-white">
