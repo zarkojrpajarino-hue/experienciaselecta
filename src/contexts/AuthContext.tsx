@@ -108,9 +108,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               const currentPath = window.location.pathname;
               console.log('Cleaning URL on path:', currentPath);
               window.history.replaceState({}, '', currentPath);
-              
-              // Limpiar localStorage
-              localStorage.removeItem('pendingCheckout');
               console.log('✅ OAuth flow completed, staying on', currentPath);
               
               // Mostrar toast de confirmación con nombre del usuario

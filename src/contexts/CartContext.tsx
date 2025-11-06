@@ -75,6 +75,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         // Limpiar TODOS los carritos temporales y anónimos
         localStorage.removeItem(anonKey);
         localStorage.removeItem('temp-cart-before-oauth');
+        localStorage.removeItem('pendingCheckout');
         console.log('🧹 Cleaned up anonymous and temp carts');
       } catch (error) {
         console.error('Error handling cart on login:', error);
