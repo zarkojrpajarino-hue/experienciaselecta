@@ -999,7 +999,7 @@ React.useEffect(() => {
                                   <p className="text-xs text-muted-foreground mb-2">Selecciona qué cestas van para {recipient.recipientName || 'este destinatario'}</p>
                                 )}
                                 <div className="space-y-2">
-                                  {expandedGiftItems
+                                   {expandedGiftItems
                                     .filter((it) => {
                                       // Mostrar solo cestas no asignadas a otros destinatarios
                                       const assignedElsewhere = giftAssignment.recipients
@@ -1027,7 +1027,7 @@ React.useEffect(() => {
                                             setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                           }}
                                         >
-                                         <div className="flex items-center space-x-2">
+                                         <div className="flex items-center space-x-2 flex-1">
                                             <input
                                               type="checkbox"
                                               id={`basket-${it.uniqueId}-recipient-${index}`}
@@ -1050,7 +1050,22 @@ React.useEffect(() => {
                                               {it.nombre}
                                             </label>
                                           </div>
-                                          <span className="text-sm font-semibold">{it.precio.toFixed(2)}€</span>
+                                          <div className="flex items-center gap-2">
+                                            <span className="text-sm font-semibold">{it.precio.toFixed(2)}€</span>
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                // Eliminar del carrito global
+                                                removeFromCart(it.id, true); // true = es regalo
+                                                toast.success("Cesta eliminada");
+                                              }}
+                                              className="h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600"
+                                            >
+                                              <X className="w-4 h-4" />
+                                            </Button>
+                                          </div>
                                         </div>
                                       );
                                     })}

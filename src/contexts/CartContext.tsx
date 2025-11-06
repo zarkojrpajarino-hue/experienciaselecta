@@ -48,19 +48,22 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const anonCartString = localStorage.getItem(anonKey);
         const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
 
-        // Preserve anonymous cart and save it as user's cart
+        console.log('User logged in. Anonymous cart:', anonCart);
+        
+        // SIEMPRE preserve el carrito anónimo de la sesión actual
         if (anonCart.length > 0) {
-          console.log('User logged in - saving current cart as theirs:', anonCart);
+          console.log('Preserving anonymous cart from current session:', anonCart);
           setCart(anonCart);
           localStorage.setItem(userStorageKey, JSON.stringify(anonCart));
         } else {
-          // Load saved user cart if no anonymous cart
+          // Si NO hay carrito anónimo, intentar cargar el carrito guardado del usuario
           const savedUserCart = localStorage.getItem(userStorageKey);
           const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
+          console.log('No anonymous cart, loading saved user cart:', userCart);
           setCart(userCart);
         }
         
-        // Clean up anonymous cart
+        // Clean up anonymous cart DESPUÉS de preservarlo
         localStorage.removeItem(anonKey);
       } catch (error) {
         console.error('Error handling cart on login:', error);

@@ -59,12 +59,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       (async () => {
         try {
           if (code) {
-            const { data } = await supabase.auth.exchangeCodeForSession(code);
-            if (data.session) {
-              // Redirigir a checkout tras login exitoso
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (error) {
+              console.error('OAuth exchange error:', error);
+            } else if (data.session) {
+              console.log('OAuth exchange success, session created for:', data.session.user.email);
+              // Redirigir a checkout tras login exitoso SI hay pendingCheckout
               const pendingCheckout = localStorage.getItem('pendingCheckout');
               if (pendingCheckout === 'true') {
-                window.location.href = '/checkout';
+                console.log('Redirecting to checkout after OAuth...');
+                // Usar setTimeout para asegurar que el estado se actualice primero
+                setTimeout(() => {
+                  window.location.href = '/checkout';
+                }, 100);
                 return;
               }
             }
@@ -74,10 +81,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } finally {
           try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
           try { localStorage.removeItem('oauthInProgress'); } catch {}
-          // Limpiar parámetros de la URL para evitar reintentos
-          try {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } catch {}
+          // Limpiar parámetros de la URL para evitar reintentos solo si NO vamos a redirigir
+          const pendingCheckout = localStorage.getItem('pendingCheckout');
+          if (pendingCheckout !== 'true') {
+            try {
+              window.history.replaceState({}, document.title, window.location.pathname);
+            } catch {}
+          }
         }
       })();
     }
