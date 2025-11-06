@@ -203,6 +203,15 @@ const Index = () => {
           sessionStorage.removeItem('hasClosedAuthModal');
           try { localStorage.removeItem('oauthInProgress'); } catch {}
           
+          // CRÍTICO: Si hay pendingCheckout, redirigir al checkout
+          const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+          if (hasPendingCheckout && event === 'SIGNED_IN') {
+            // Solo redirigir si no estamos ya en checkout
+            if (window.location.pathname !== '/checkout') {
+              navigate('/checkout', { replace: true });
+            }
+          }
+          
         } else {
           // No hay sesión
           setShowAuthModal(false);
