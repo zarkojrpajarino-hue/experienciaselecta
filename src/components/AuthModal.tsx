@@ -56,7 +56,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       }
       
       // CRÍTICO: Siempre redirigir a checkout después de Google OAuth
-      const redirectUrl = `${window.location.origin}/checkout`;
+      const baseOrigin = (() => {
+        try {
+          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
+          if (topOrigin && topOrigin !== window.location.origin) {
+            console.log('Using top window origin for OAuth redirect:', topOrigin);
+            return topOrigin;
+          }
+        } catch (e) {
+          console.warn('Could not read top origin, using current origin:', e);
+        }
+        return window.location.origin;
+      })();
+      const redirectUrl = `${baseOrigin}/checkout`;
       console.log('Google OAuth redirectTo:', redirectUrl);
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -99,7 +111,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       localStorage.setItem('pendingCheckout', 'true');
       
       // CRÍTICO: Redirigir SIEMPRE al checkout tras login por email OTP
-      const redirectUrl = `${window.location.origin}/checkout`;
+      const baseOrigin = (() => {
+        try {
+          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
+          if (topOrigin && topOrigin !== window.location.origin) {
+            console.log('Using top window origin for OTP redirect:', topOrigin);
+            return topOrigin;
+          }
+        } catch (e) {
+          console.warn('Could not read top origin (OTP), using current origin:', e);
+        }
+        return window.location.origin;
+      })();
+      const redirectUrl = `${baseOrigin}/checkout`;
       console.log('Email OTP redirectTo:', redirectUrl);
       const { error } = await supabase.auth.signInWithOtp({
         email: emailClean,
@@ -146,7 +170,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       if (!emailValid) {
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
-      const redirectUrl = `${window.location.origin}/checkout`;
+      const baseOrigin = (() => {
+        try {
+          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
+          if (topOrigin && topOrigin !== window.location.origin) {
+            console.log('Using top window origin for OTP resend redirect:', topOrigin);
+            return topOrigin;
+          }
+        } catch (e) {
+          console.warn('Could not read top origin (OTP resend), using current origin:', e);
+        }
+        return window.location.origin;
+      })();
+      const redirectUrl = `${baseOrigin}/checkout`;
       const { error } = await supabase.auth.signInWithOtp({
         email: targetEmail,
         options: { shouldCreateUser: true, emailRedirectTo: redirectUrl },

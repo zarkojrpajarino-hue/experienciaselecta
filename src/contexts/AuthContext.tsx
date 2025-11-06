@@ -119,7 +119,19 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
               console.log('Redirecting to /checkout after OAuth login');
               try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
               try { localStorage.removeItem('oauthInProgress'); } catch {}
-              window.location.replace(`${window.location.origin}/checkout`);
+              const baseOrigin = (() => {
+                try {
+                  const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
+                  if (topOrigin && topOrigin !== window.location.origin) {
+                    console.log('Using top window origin for post-OAuth redirect:', topOrigin);
+                    return topOrigin;
+                  }
+                } catch (e) {
+                  console.warn('Could not read top origin (post-OAuth), using current origin:', e);
+                }
+                return window.location.origin;
+              })();
+              window.location.replace(`${baseOrigin}/checkout`);
               console.log('✅ OAuth flow completed, redirected to /checkout');
               
               // Mostrar toast de confirmación con nombre del usuario
