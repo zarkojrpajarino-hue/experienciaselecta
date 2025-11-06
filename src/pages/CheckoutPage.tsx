@@ -45,14 +45,17 @@ React.useEffect(() => {
   const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
   const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
   
-  const isProcessingOAuth = !!(oauthInProgress || hasOauthParams || hasOauthHash);
+  // Si hay sesión, el OAuth ya se completó, no mostrar loader
+  const isProcessingOAuth = !!(oauthInProgress || hasOauthParams || hasOauthHash) && !session;
   
   if (isProcessingOAuth) {
     console.log('🔄 Detectado código OAuth, mostrando loader...');
+  } else if ((hasOauthParams || hasOauthHash) && session) {
+    console.log('✅ OAuth completado, sesión activa');
   }
   
   setIsAuthInProgress(isProcessingOAuth);
-}, [location.search, location.hash]);
+}, [location.search, location.hash, session]);
 
 
   // Esperar a que termine la carga inicial de autenticación
