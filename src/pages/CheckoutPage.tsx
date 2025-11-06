@@ -44,11 +44,14 @@ React.useEffect(() => {
   const oauthInProgress = localStorage.getItem('oauthInProgress');
   const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
   const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
-  if (oauthInProgress || hasOauthParams || hasOauthHash) {
-    setIsAuthInProgress(true);
-  } else {
-    setIsAuthInProgress(false);
+  
+  const isProcessingOAuth = !!(oauthInProgress || hasOauthParams || hasOauthHash);
+  
+  if (isProcessingOAuth) {
+    console.log('🔄 Detectado código OAuth, mostrando loader...');
   }
+  
+  setIsAuthInProgress(isProcessingOAuth);
 }, [location.search, location.hash]);
 
 
