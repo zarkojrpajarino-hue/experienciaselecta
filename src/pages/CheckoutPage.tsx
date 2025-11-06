@@ -73,6 +73,23 @@ React.useEffect(() => {
   }
 }, [session]);
 
+// Fallback: si oauthInProgress persiste pero no llegan parámetros ni sesión, limpiar en 7s
+React.useEffect(() => {
+  const oauthInProgress = localStorage.getItem('oauthInProgress');
+  const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
+  const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
+
+  if (oauthInProgress && !session && !(hasOauthParams || hasOauthHash)) {
+    console.warn('⏱️ OAuth timeout sin código: limpiando flags y continuando');
+    const timeout = window.setTimeout(() => {
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
+      try { sessionStorage.setItem('oauthHandled', 'timeout'); } catch {}
+      setIsAuthInProgress(false);
+    }, 7000);
+    return () => window.clearTimeout(timeout);
+  }
+}, [location.search, location.hash, session]);
+
 
   // Esperar a que termine la carga inicial de autenticación
   if (isAuthLoading || isAuthInProgress) {
