@@ -65,7 +65,8 @@ serve(async (req) => {
     const oneHourAgo = new Date();
     oneHourAgo.setHours(oneHourAgo.getHours() - 1);
 
-    const { data: ordersWithoutReviews, error: fetchError } = await supabase
+    // Paso 1: Obtener todas las órdenes completadas hace más de 1 hora
+    const { data: completedOrders, error: fetchError } = await supabase
       .from('orders')
       .select(`
         id,
@@ -77,17 +78,37 @@ serve(async (req) => {
         )
       `)
       .eq('status', 'completed')
-      .lte('completed_at', oneHourAgo.toISOString())
-      .not('id', 'in', `(
-        SELECT DISTINCT order_id FROM reviews
-      )`);
+      .lte('completed_at', oneHourAgo.toISOString());
 
     if (fetchError) {
       console.error('Error fetching orders:', fetchError);
       throw fetchError;
     }
 
-    if (!ordersWithoutReviews || ordersWithoutReviews.length === 0) {
+    if (!completedOrders || completedOrders.length === 0) {
+      console.log('No completed orders found');
+      return new Response(
+        JSON.stringify({ success: true, message: 'No completed orders' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200 
+        }
+      );
+    }
+
+    // Paso 2: Obtener IDs de órdenes que YA tienen reviews
+    const { data: existingReviews } = await supabase
+      .from('reviews')
+      .select('order_id');
+
+    const reviewedOrderIds = new Set(existingReviews?.map(r => r.order_id) || []);
+
+    // Paso 3: Filtrar órdenes sin reviews
+    const ordersWithoutReviews = completedOrders.filter(
+      order => !reviewedOrderIds.has(order.id)
+    );
+
+    if (ordersWithoutReviews.length === 0) {
       console.log('No pending feedback reminders to send');
       return new Response(
         JSON.stringify({ success: true, message: 'No pending reminders' }),
