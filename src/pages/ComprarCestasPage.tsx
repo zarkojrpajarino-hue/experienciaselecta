@@ -164,42 +164,44 @@ const ComprarCestasPage = () => {
               </motion.p>
               
               {/* ¿Tienes dudas? con animación */}
-              <motion.button
-                onClick={() => navigate('/conocenos')}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex items-center justify-center gap-2 mb-6 cursor-pointer hover:opacity-80 transition-opacity duration-200 bg-transparent border-0 p-0"
-              >
-                <motion.span
-                  animate={{ rotateZ: [0, -15, 15, -15, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="text-lg sm:text-xl font-bold"
-                  style={{ color: '#D4AF37' }}
+              <div className="flex justify-center w-full">
+                <motion.button
+                  onClick={() => navigate('/conocenos')}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="flex items-center justify-center gap-2 mb-6 cursor-pointer hover:opacity-80 transition-opacity duration-200 bg-transparent border-0 p-0"
                 >
-                  ¿
-                </motion.span>
-                <span className="text-sm sm:text-base font-poppins text-black underline underline-offset-4 decoration-2">
-                  Tienes dudas
-                </span>
-                <motion.span
-                  animate={{ rotateZ: [0, 15, -15, 15, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="text-lg sm:text-xl font-bold"
-                  style={{ color: '#D4AF37' }}
-                >
-                  ?
-                </motion.span>
-                <svg 
-                  className="w-4 h-4 sm:w-5 sm:h-5" 
-                  fill="none" 
-                  stroke="#D4AF37" 
-                  strokeWidth="2" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </motion.button>
+                  <motion.span
+                    animate={{ rotateZ: [0, -15, 15, -15, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-lg sm:text-xl font-bold"
+                    style={{ color: '#D4AF37' }}
+                  >
+                    ¿
+                  </motion.span>
+                  <span className="text-sm sm:text-base font-poppins text-black">
+                    Tienes dudas
+                  </span>
+                  <motion.span
+                    animate={{ rotateZ: [0, 15, -15, 15, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-lg sm:text-xl font-bold"
+                    style={{ color: '#D4AF37' }}
+                  >
+                    ?
+                  </motion.span>
+                  <svg 
+                    className="w-4 h-4 sm:w-5 sm:h-5" 
+                    fill="none" 
+                    stroke="#D4AF37" 
+                    strokeWidth="2" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </motion.button>
+              </div>
             </AnimatePresence>
           )}
 
@@ -263,7 +265,7 @@ const ComprarCestasPage = () => {
                       transition={{ duration: 0.3 }}
                       className="text-xs sm:text-sm text-black/60 mt-1 mb-3"
                     >
-                      Selecciona el grupo de personas debajo
+                      <span className="font-bold">Selecciona</span> el grupo de personas debajo
                     </motion.p>
                   )}
                 </motion.div>
