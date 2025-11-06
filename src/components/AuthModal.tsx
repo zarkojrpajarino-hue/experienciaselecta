@@ -48,6 +48,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       localStorage.setItem('pendingCheckout', 'true');
       localStorage.setItem('oauthInProgress', 'true');
       
+      // NUEVO: Guardar una copia del carrito anónimo actual en un key temporal
+      const currentAnonCart = localStorage.getItem('shopping-cart');
+      if (currentAnonCart) {
+        console.log('Preserving anonymous cart before OAuth:', currentAnonCart);
+        localStorage.setItem('temp-cart-before-oauth', currentAnonCart);
+      }
+      
       // Siempre redirigir a checkout (donde se inició el login)
       const redirectUrl = `${window.location.origin}/checkout`;
       const { error } = await supabase.auth.signInWithOAuth({
@@ -65,6 +72,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
     } catch (error: any) {
       console.error('Error en login con Google:', error);
       localStorage.removeItem('pendingCheckout'); // Limpiar si falla
+      localStorage.removeItem('temp-cart-before-oauth'); // Limpiar carrito temporal
       try { localStorage.removeItem('oauthInProgress'); } catch {}
       toast({
         variant: "destructive",

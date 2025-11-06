@@ -45,26 +45,37 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const userStorageKey = getCartStorageKey(userId);
         const anonKey = getCartStorageKey(null);
-        const anonCartString = localStorage.getItem(anonKey);
-        const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
-
-        console.log('User logged in. Anonymous cart:', anonCart);
         
-        // SIEMPRE preserve el carrito anónimo de la sesión actual
+        // PRIMERO: Intentar cargar desde el carrito temporal (guardado antes de OAuth)
+        const tempCartString = localStorage.getItem('temp-cart-before-oauth');
+        // SEGUNDO: Carrito anónimo actual
+        const anonCartString = localStorage.getItem(anonKey);
+        
+        // Usar el temporal si existe, sino el anónimo
+        const cartToUse = tempCartString || anonCartString;
+        const anonCart: CartItem[] = cartToUse ? JSON.parse(cartToUse) : [];
+
+        console.log('User logged in. Temp cart:', tempCartString ? 'EXISTS' : 'NONE');
+        console.log('User logged in. Anonymous cart:', anonCartString ? 'EXISTS' : 'NONE');
+        console.log('Cart to use:', anonCart);
+        
+        // SIEMPRE preserve el carrito de la sesión pre-login
         if (anonCart.length > 0) {
-          console.log('Preserving anonymous cart from current session:', anonCart);
+          console.log('✅ Preserving cart from current session:', anonCart);
           setCart(anonCart);
           localStorage.setItem(userStorageKey, JSON.stringify(anonCart));
         } else {
-          // Si NO hay carrito anónimo, intentar cargar el carrito guardado del usuario
+          // Si NO hay carrito de la sesión actual, cargar el carrito guardado del usuario
           const savedUserCart = localStorage.getItem(userStorageKey);
           const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
-          console.log('No anonymous cart, loading saved user cart:', userCart);
+          console.log('No cart from current session, loading saved user cart:', userCart);
           setCart(userCart);
         }
         
-        // Clean up anonymous cart DESPUÉS de preservarlo
+        // Limpiar TODOS los carritos temporales y anónimos
         localStorage.removeItem(anonKey);
+        localStorage.removeItem('temp-cart-before-oauth');
+        console.log('🧹 Cleaned up anonymous and temp carts');
       } catch (error) {
         console.error('Error handling cart on login:', error);
       }

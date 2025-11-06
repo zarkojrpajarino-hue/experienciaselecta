@@ -64,6 +64,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               console.error('OAuth exchange error:', error);
             } else if (data.session) {
               console.log('OAuth exchange success, session created for:', data.session.user.email);
+              
+              // Enviar email de bienvenida para nuevos usuarios
+              try {
+                const { data: profiles } = await supabase
+                  .from('profiles')
+                  .select('created_at')
+                  .eq('user_id', data.session.user.id);
+
+                if (profiles && profiles.length > 0) {
+                  const createdAt = new Date(profiles[0].created_at);
+                  const now = new Date();
+                  const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
+
+                  // Enviar email de bienvenida si el perfil se creó recientemente (últimos 30 segundos)
+                  if (diffSeconds < 30) {
+                    console.log('Sending welcome email to new OAuth user:', data.session.user.email);
+                    const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
+                      headers: {
+                        Authorization: `Bearer ${data.session.access_token}`
+                      },
+                      body: {
+                        userEmail: data.session.user.email,
+                        userName: data.session.user.user_metadata?.name || data.session.user.user_metadata?.full_name || ''
+                      }
+                    });
+                    
+                    if (emailError) {
+                      console.error('Error sending welcome email:', emailError);
+                    } else {
+                      console.log('Welcome email sent successfully');
+                    }
+                  }
+                }
+              } catch (emailError) {
+                console.error('Error in welcome email flow:', emailError);
+                // No fallar el login si falla el email
+              }
+              
               // Redirigir a checkout tras login exitoso SI hay pendingCheckout
               const pendingCheckout = localStorage.getItem('pendingCheckout');
               if (pendingCheckout === 'true') {
