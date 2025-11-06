@@ -233,49 +233,20 @@ const ConocenosPage = () => {
         
         {/* Saber más debajo del carrusel */}
         <div className="flex justify-center items-center gap-2 mt-6 mb-4">
-          <TooltipProvider delayDuration={0}>
-            <Tooltip open={arrowTooltipOpen} onOpenChange={setArrowTooltipOpen}>
-              <TooltipTrigger asChild>
-                <motion.button
-                  onClick={() => {
-                    const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
-                      const svg = btn.querySelector('svg');
-                      return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
-                    }) as HTMLButtonElement | undefined;
-                    hamburgerButton?.click();
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onMouseEnter={() => setArrowTooltipOpen(true)}
-                  onMouseLeave={() => setArrowTooltipOpen(false)}
-                  className="px-4 py-2 border-0 cursor-pointer flex items-center gap-2"
-                  aria-label="Abrir menú"
-                >
-                  <span className="text-base sm:text-lg font-poppins text-black">
-                    <span className="font-bold">Saber</span>{" "}
-                  </span>
-                  <motion.span 
-                    className="text-xl font-bold"
-                    style={{ color: '#D4AF37' }}
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    +
-                  </motion.span>
-                </motion.button>
-              </TooltipTrigger>
-              <TooltipContent 
-                side="top" 
-                className="rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2"
-              >
-                Explora más contenido
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-poppins text-black uppercase">
+            SABER
+          </span>
+          <motion.span
+            className="text-2xl sm:text-3xl"
+            animate={{ x: [0, 5, 0] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            →
+          </motion.span>
         </div>
       </div>
 
