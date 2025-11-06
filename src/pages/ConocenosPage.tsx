@@ -154,7 +154,7 @@ const ConocenosPage = () => {
       <Navbar />
       
       {/* Header Section */}
-      <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
+      <section className="pt-24 pb-4 md:pt-32 md:pb-6 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start mb-4">
             <Button 
@@ -250,6 +250,9 @@ const ConocenosPage = () => {
             </motion.span>
           </div>
         </div>
+        
+        {/* Línea separadora blanca */}
+        <div className="w-full h-px bg-white my-8"></div>
       </div>
 
       {/* Sección: Como te entendemos */}
