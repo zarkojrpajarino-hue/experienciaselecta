@@ -56,8 +56,9 @@ React.useEffect(() => {
     const params = new URLSearchParams(location.search);
     const code = params.get('code');
     const hasTokenInHash = location.hash?.includes('access_token=');
+    const alreadyHandled = sessionStorage.getItem('oauthHandled');
 
-    if ((code || hasTokenInHash) && !user) {
+    if ((code || hasTokenInHash) && !user && !alreadyHandled) {
       (async () => {
         try {
           setIsAuthInProgress(true);
@@ -73,6 +74,7 @@ React.useEffect(() => {
           if (window.location.pathname === '/checkout') {
             window.history.replaceState({}, document.title, '/checkout');
           }
+          try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
         } catch (e) {
           console.error('OAuth exchange exception:', e);
         }

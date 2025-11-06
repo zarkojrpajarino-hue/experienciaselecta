@@ -49,6 +49,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
+  // Manejar callback OAuth globalmente para asegurar creación de sesión y mantener el carrito
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const hasTokenInHash = window.location.hash.includes('access_token=');
+
+    if ((code || hasTokenInHash) && !session && !sessionStorage.getItem('oauthHandled')) {
+      (async () => {
+        try {
+          if (code) {
+            await supabase.auth.exchangeCodeForSession(code);
+          }
+        } catch (e) {
+          console.error('Global OAuth exchange error:', e);
+        } finally {
+          try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+          // Limpiar parámetros de la URL para evitar reintentos
+          try {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } catch {}
+        }
+      })();
+    }
+  }, [session]);
+
   return (
     <AuthContext.Provider value={{ user, session, isLoading }}>
       {children}
