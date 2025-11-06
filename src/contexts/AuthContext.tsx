@@ -108,7 +108,14 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
               
               // CRÍTICO: Siempre redirigir a checkout después del login con OAuth
               console.log('Redirecting to /checkout after OAuth login');
-              window.history.replaceState({}, '', '/checkout');
+              try {
+                window.history.replaceState({}, '', '/checkout');
+                // Inform React Router: replaceState doesn't emit a popstate event
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              } catch (err) {
+                console.warn('replaceState failed, falling back to full reload', err);
+                window.location.assign('/checkout');
+              }
               console.log('✅ OAuth flow completed, redirected to /checkout');
               
               // Mostrar toast de confirmación con nombre del usuario
