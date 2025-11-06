@@ -107,7 +107,9 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
               }
               
               // CRÍTICO: Siempre redirigir a checkout después del login con OAuth
-              console.log('Redirecting to /checkout after OAuth login');
+console.log('Redirecting to /checkout after OAuth login');
+try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+try { localStorage.removeItem('oauthInProgress'); } catch {}
 window.location.replace(`${window.location.origin}/checkout`);
               console.log('✅ OAuth flow completed, redirected to /checkout');
               

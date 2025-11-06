@@ -57,6 +57,14 @@ React.useEffect(() => {
   setIsAuthInProgress(isProcessingOAuth);
 }, [location.search, location.hash, session]);
 
+// Seguridad adicional: limpiar flags OAuth si ya hay sesión
+React.useEffect(() => {
+  if (session) {
+    try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+    try { localStorage.removeItem('oauthInProgress'); } catch {}
+  }
+}, [session]);
+
 
   // Esperar a que termine la carga inicial de autenticación
   if (isAuthLoading || isAuthInProgress) {
