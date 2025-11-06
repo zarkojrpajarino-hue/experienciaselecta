@@ -37,8 +37,6 @@ const CheckoutPage = () => {
   // Obtener items desde el carrito global
   const { cart, removeFromCart, updateQuantity } = useCart();
   
-  // State para controlar si se muestra la pantalla de carrito vacío
-  const [showEmptyCartScreen, setShowEmptyCartScreen] = useState(false);
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
 
   // Verificar si hay un proceso de autenticación en curso
@@ -62,17 +60,17 @@ React.useEffect(() => {
     );
   }
 
-  // Redirigir SOLO si el carrito está vacío Y NO hay auth en progreso Y NO acabamos de eliminar items
+  // Redirigir si el carrito está vacío y NO hay auth en progreso
   React.useEffect(() => {
-// Si hay auth en progreso o venimos del callback OAuth, no redirigir
-  const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
-  if (isAuthInProgress || hasOauthParams) return;
-  
-  // Si el carrito está vacío, mostrar pantalla de carrito vacío en lugar de navegar fuera
-  if (cart.length === 0 && !showEmptyCartScreen) {
-    setShowEmptyCartScreen(true);
-  }
-}, [cart.length, isAuthInProgress, showEmptyCartScreen, location.search]);
+    // Si hay auth en progreso o venimos del callback OAuth, no redirigir
+    const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
+    if (isAuthInProgress || hasOauthParams) return;
+    
+    // Si el carrito está vacío, redirigir
+    if (cart.length === 0) {
+      navigate('/#categoria-cestas', { replace: true });
+    }
+  }, [cart.length, navigate, isAuthInProgress, location.search]);
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
@@ -264,11 +262,6 @@ React.useEffect(() => {
     
     // CRÍTICO: Eliminar del carrito global también
     removeFromCart(itemId, false); // false = no es regalo
-    
-    // Si acabamos de eliminar todos los items personales Y no hay items de regalo, mostrar pantalla especial
-    if (newItems.length === 0 && giftItems.length === 0) {
-      setShowEmptyCartScreen(true);
-    }
     
     toast.success("Cesta eliminada");
   };
@@ -526,41 +519,6 @@ React.useEffect(() => {
       toast.error("Inicia sesión para rellenar los datos de envío");
     }
   };
-
-  // Si mostramos la pantalla de carrito vacío
-  if (showEmptyCartScreen) {
-    return (
-      <>
-        <Navbar />
-        <div className="min-h-screen pt-16 pb-6 px-4 bg-white flex items-center justify-center">
-          <div className="max-w-2xl mx-auto text-center space-y-6">
-            <div className="text-6xl mb-4">🛒</div>
-            <h1 className="text-2xl md:text-3xl font-poppins font-bold text-black">
-              Vaya, has eliminado todas las cestas de tu carrito
-            </h1>
-            <p className="text-lg text-gray-600">
-              ¿Quieres volver a añadir cestas y crear experiencias?
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button
-                onClick={() => navigate('/comprar-cestas')}
-                className="bg-gold hover:bg-gold/90 text-black font-semibold px-8 py-6 text-lg"
-              >
-                Ir al catálogo
-              </Button>
-              <Button
-                onClick={() => navigate('/')}
-                variant="outline"
-                className="border-2 border-black hover:bg-gray-50 text-black font-semibold px-8 py-6 text-lg"
-              >
-                Ir a la página principal
-              </Button>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
 
   return (
     <>
