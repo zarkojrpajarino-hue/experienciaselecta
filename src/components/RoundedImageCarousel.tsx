@@ -165,7 +165,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         )}
 
         {/* Text */}
-        <div className="w-full flex flex-col items-center justify-center py-1">
+        <div className="w-full flex flex-col items-center justify-center py-1 pt-8">
           <div className="px-4 max-w-2xl mb-1 text-center">
             <div
               className={`text-sm sm:text-base md:text-base lg:text-lg xl:text-xl font-poppins ${titleBold ? 'font-bold' : 'font-normal'} tracking-wide text-black`}
