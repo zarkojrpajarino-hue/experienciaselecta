@@ -232,22 +232,26 @@ const ConocenosPage = () => {
         />
         
         {/* Saber más debajo del carrusel */}
-        <div className="flex justify-center items-center gap-2 mt-6 mb-4">
-          <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-poppins text-black uppercase bg-[#F5F5DC] px-4 py-2 rounded-lg">
-            SABER
-          </span>
-          <motion.span
-            className="text-2xl sm:text-3xl font-bold"
-            style={{ color: '#D4AF37' }}
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            +
-          </motion.span>
+        <div className="flex justify-center items-center mt-6 mb-4">
+          <div className="bg-black px-6 py-3 rounded-lg flex items-center gap-2">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-poppins text-white uppercase">
+              SABER
+            </span>
+            <span className="text-2xl sm:text-3xl md:text-4xl font-normal font-poppins text-white lowercase">
+              más
+            </span>
+            <motion.span
+              className="text-2xl sm:text-3xl text-white"
+              animate={{ x: [0, 5, 0] }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              →
+            </motion.span>
+          </div>
         </div>
       </div>
 
