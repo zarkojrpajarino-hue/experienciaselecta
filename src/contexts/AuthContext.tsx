@@ -104,11 +104,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // No fallar el login si falla el email
               }
               
-              // Limpiar la URL sin recargar la página
-              const currentPath = window.location.pathname;
-              console.log('Cleaning URL on path:', currentPath);
-              window.history.replaceState({}, '', currentPath);
-              console.log('✅ OAuth flow completed, staying on', currentPath);
+              // CRÍTICO: Siempre redirigir a checkout después del login con OAuth
+              console.log('Redirecting to /checkout after OAuth login');
+              window.history.replaceState({}, '', '/checkout');
+              console.log('✅ OAuth flow completed, redirected to /checkout');
               
               // Mostrar toast de confirmación con nombre del usuario
               const userName = data.session.user.user_metadata?.name 

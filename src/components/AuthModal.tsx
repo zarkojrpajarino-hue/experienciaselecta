@@ -55,8 +55,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         localStorage.setItem('temp-cart-before-oauth', currentAnonCart);
       }
       
-      // Siempre redirigir a checkout (donde se inició el login)
+      // CRÍTICO: Siempre redirigir a checkout después de Google OAuth
       const redirectUrl = `${window.location.origin}/checkout`;
+      console.log('Google OAuth redirectTo:', redirectUrl);
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -97,8 +98,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       // CRÍTICO: Establecer flag ANTES de OTP para preservar carrito
       localStorage.setItem('pendingCheckout', 'true');
       
-      // Redirigir SIEMPRE al checkout tras login por email
+      // CRÍTICO: Redirigir SIEMPRE al checkout tras login por email OTP
       const redirectUrl = `${window.location.origin}/checkout`;
+      console.log('Email OTP redirectTo:', redirectUrl);
       const { error } = await supabase.auth.signInWithOtp({
         email: emailClean,
         options: {
@@ -233,8 +235,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       setVerificationCode("");
       setShowCodeInput(false);
       onSuccess();
-
       onClose();
+      
+      // CRÍTICO: Después del OTP, siempre redirigir a /checkout
+      console.log('OTP verification successful, redirecting to /checkout');
+      setTimeout(() => {
+        window.location.href = '/checkout';
+      }, 100); // Small delay para que se ejecute onSuccess primero
     } catch (error: any) {
       console.error('Verification error:', error);
       toast({
