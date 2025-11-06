@@ -72,26 +72,30 @@ React.useEffect(() => {
 
   // Redirigir si el carrito está vacío y NO hay auth en progreso
   React.useEffect(() => {
-    // Si hay auth en progreso o venimos del callback OAuth, no redirigir
-    const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
-    const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
-    if (isAuthInProgress || hasOauthParams || hasOauthHash) return;
+    // NO redirigir si:
+    // - Hay auth en progreso
+    // - Está cargando auth
+    // - Usuario está autenticado (el carrito puede estar cargándose)
+    if (isAuthInProgress || isAuthLoading || user) {
+      console.log('⏳ Esperando a que termine auth o carga de carrito...');
+      return;
+    }
     
     // Evitar redirigir si hay carrito guardado en localStorage (esperando a que el contexto lo cargue)
     try {
       const anonCart = JSON.parse(localStorage.getItem('shopping-cart') || '[]');
-      const userCartKey = user?.id ? `shopping-cart-${user.id}` : null;
-      const userCart = userCartKey ? JSON.parse(localStorage.getItem(userCartKey) || '[]') : [];
-      if ((anonCart?.length ?? 0) > 0 || (userCart?.length ?? 0) > 0 || localStorage.getItem('pendingCheckout')) {
+      if ((anonCart?.length ?? 0) > 0 || localStorage.getItem('pendingCheckout')) {
+        console.log('📦 Carrito detectado en localStorage, no redirigir');
         return;
       }
     } catch {}
     
-    // Si el carrito está vacío de verdad, redirigir
+    // Solo redirigir si NO hay usuario Y el carrito está realmente vacío
     if (cart.length === 0) {
+      console.log('⚠️ Carrito vacío sin usuario, redirigiendo a home');
       navigate('/#categoria-cestas', { replace: true });
     }
-  }, [cart.length, navigate, isAuthInProgress, location.search, location.hash, user?.id]);
+  }, [cart.length, navigate, isAuthInProgress, isAuthLoading, user]);
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
