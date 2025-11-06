@@ -59,13 +59,12 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const hasTokenInHash = window.location.hash.includes('access_token=');
     const oauthHandled = sessionStorage.getItem('oauthHandled');
 
-    console.log('🔍 OAuth useEffect ejecutado:', {
-      code: code ? 'PRESENTE' : 'AUSENTE',
-      hasTokenInHash,
-      session: session ? 'PRESENTE' : 'AUSENTE',
-      oauthHandled,
-      url: window.location.href
-    });
+    console.log('🔍 OAuth useEffect ejecutado');
+    console.log('   📍 URL:', window.location.href);
+    console.log('   🔑 code:', code ? 'PRESENTE' : 'AUSENTE');
+    console.log('   🔑 hasTokenInHash:', hasTokenInHash);
+    console.log('   👤 session:', session ? 'PRESENTE' : 'AUSENTE');
+    console.log('   ✋ oauthHandled:', oauthHandled);
 
     if ((code || hasTokenInHash) && !session && !oauthHandled) {
       console.log('✅ Condiciones cumplidas, procesando OAuth...');
@@ -147,6 +146,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       })();
     } else {
       console.log('❌ Condiciones NO cumplidas para procesar OAuth');
+      console.log('   Razón: code=' + (code ? 'SÍ' : 'NO') + ', hasTokenInHash=' + hasTokenInHash + ', session=' + (session ? 'SÍ' : 'NO') + ', oauthHandled=' + oauthHandled);
     }
   }, [session]);
 
