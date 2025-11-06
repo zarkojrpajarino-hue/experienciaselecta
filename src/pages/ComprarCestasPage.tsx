@@ -167,7 +167,7 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.4 }}
-                  className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 font-inter text-black px-2"
+                  className="text-sm sm:text-base md:text-lg lg:text-xl mb-2 font-inter text-black px-2"
                 >
                   {isGiftMode === true ? (
                     <>
@@ -183,6 +183,46 @@ const ComprarCestasPage = () => {
                   </>
                 )}
               </motion.p>
+              
+              {/* ¿Tienes dudas? con animación */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex items-center justify-center gap-2 mb-6"
+              >
+                <motion.span
+                  animate={{ rotateZ: [0, -15, 15, -15, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  className="text-lg sm:text-xl font-bold"
+                  style={{ color: '#D4AF37' }}
+                >
+                  ¿
+                </motion.span>
+                <button
+                  onClick={() => navigate('/conocenos')}
+                  className="text-sm sm:text-base font-poppins text-black hover:underline underline-offset-4 decoration-2"
+                >
+                  Tienes dudas
+                </button>
+                <motion.span
+                  animate={{ rotateZ: [0, 15, -15, 15, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  className="text-lg sm:text-xl font-bold"
+                  style={{ color: '#D4AF37' }}
+                >
+                  ?
+                </motion.span>
+                <svg 
+                  className="w-4 h-4 sm:w-5 sm:h-5" 
+                  fill="none" 
+                  stroke="#D4AF37" 
+                  strokeWidth="2" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </motion.div>
             </AnimatePresence>
           )}
 
@@ -195,46 +235,60 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 100 }}
                   transition={{ duration: 0.5, type: "spring" }}
-                  className="flex justify-center gap-2 sm:gap-4 mb-4"
+                  className="flex flex-col items-center"
                 >
-                  <motion.button
-                    onClick={() => setSelectedCategory('Pareja')}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
-                      selectedCategory === 'Pareja'
-                        ? 'bg-[#782C23] text-white shadow-lg'
-                        : 'bg-white text-[#782C23] border-2 border-[#782C23] hover:bg-[#782C23]/10'
-                    }`}
-                  >
-                    Pareja
-                  </motion.button>
+                  <div className="flex justify-center gap-2 sm:gap-4 mb-2">
+                    <motion.button
+                      onClick={() => setSelectedCategory('Pareja')}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
+                        selectedCategory === 'Pareja'
+                          ? 'bg-[#782C23] text-white shadow-lg'
+                          : 'bg-white text-[#782C23] border-2 border-[#782C23] hover:bg-[#782C23]/10'
+                      }`}
+                    >
+                      Pareja
+                    </motion.button>
+                    
+                    <motion.button
+                      onClick={() => setSelectedCategory('Familia')}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
+                        selectedCategory === 'Familia'
+                          ? 'bg-[#4A7050] text-white shadow-lg'
+                          : 'bg-white text-[#4A7050] border-2 border-[#4A7050] hover:bg-[#4A7050]/10'
+                      }`}
+                    >
+                      Familia
+                    </motion.button>
+                    
+                    <motion.button
+                      onClick={() => setSelectedCategory('Amigos')}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
+                        selectedCategory === 'Amigos'
+                          ? 'bg-[#44667D] text-white shadow-lg'
+                          : 'bg-white text-[#44667D] border-2 border-[#44667D] hover:bg-[#44667D]/10'
+                      }`}
+                    >
+                      Amigos
+                    </motion.button>
+                  </div>
                   
-                  <motion.button
-                    onClick={() => setSelectedCategory('Familia')}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
-                      selectedCategory === 'Familia'
-                        ? 'bg-[#4A7050] text-white shadow-lg'
-                        : 'bg-white text-[#4A7050] border-2 border-[#4A7050] hover:bg-[#4A7050]/10'
-                    }`}
-                  >
-                    Familia
-                  </motion.button>
-                  
-                  <motion.button
-                    onClick={() => setSelectedCategory('Amigos')}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-4 sm:px-8 py-2 sm:py-3 rounded-xl font-poppins font-bold text-sm sm:text-lg transition-all duration-300 ${
-                      selectedCategory === 'Amigos'
-                        ? 'bg-[#44667D] text-white shadow-lg'
-                        : 'bg-white text-[#44667D] border-2 border-[#44667D] hover:bg-[#44667D]/10'
-                    }`}
-                  >
-                    Amigos
-                  </motion.button>
+                  {/* Mostrar grupo seleccionado solo para Familia y Amigos */}
+                  {(selectedCategory === 'Familia' || selectedCategory === 'Amigos') && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-xs sm:text-sm text-black/60 mt-1 mb-3"
+                    >
+                      Selecciona el grupo de personas debajo
+                    </motion.p>
+                  )}
                 </motion.div>
               </AnimatePresence>
             )}

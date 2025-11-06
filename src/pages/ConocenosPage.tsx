@@ -172,53 +172,9 @@ const ConocenosPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-8"
           >
-            <div className="flex items-center justify-center gap-3">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black">
-                Conócenos.
-              </h1>
-              <TooltipProvider delayDuration={0}>
-                <Tooltip open={arrowTooltipOpen} onOpenChange={setArrowTooltipOpen}>
-                  <TooltipTrigger asChild>
-                    <motion.button
-                      onClick={() => {
-                        const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
-                          const svg = btn.querySelector('svg');
-                          return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
-                        }) as HTMLButtonElement | undefined;
-                        hamburgerButton?.click();
-                      }}
-                      whileHover={{ scale: 1.15 }}
-                      whileTap={{ scale: 0.9 }}
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{
-                        scale: {
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                      }}
-                      onMouseEnter={() => setArrowTooltipOpen(true)}
-                      onMouseLeave={() => setArrowTooltipOpen(false)}
-                      className="p-0 bg-transparent border-0 cursor-pointer flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10"
-                      aria-label="Abrir menú"
-                    >
-                      <span 
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold leading-none"
-                        style={{ color: '#D4AF37' }}
-                      >
-                        +
-                      </span>
-                    </motion.button>
-                  </TooltipTrigger>
-                  <TooltipContent 
-                    side="top" 
-                    className="rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2"
-                  >
-                    Saber más
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black">
+              Conócenos.
+            </h1>
             <p className="text-base sm:text-lg md:text-xl text-black mt-4">
               Descubre quiénes somos y qué nos mueve.
             </p>
@@ -274,6 +230,50 @@ const ConocenosPage = () => {
           hideMainTitle={true}
           carouselTitle="Porque no vendemos cestas."
         />
+        
+        {/* Saber más debajo del carrusel */}
+        <div className="flex justify-center items-center gap-2 mt-6 mb-4">
+          <TooltipProvider delayDuration={0}>
+            <Tooltip open={arrowTooltipOpen} onOpenChange={setArrowTooltipOpen}>
+              <TooltipTrigger asChild>
+                <motion.button
+                  onClick={() => {
+                    const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
+                      const svg = btn.querySelector('svg');
+                      return svg && (svg.classList.contains('lucide-menu') || svg.classList.contains('lucide-x'));
+                    }) as HTMLButtonElement | undefined;
+                    hamburgerButton?.click();
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onMouseEnter={() => setArrowTooltipOpen(true)}
+                  onMouseLeave={() => setArrowTooltipOpen(false)}
+                  className="p-0 bg-transparent border-0 cursor-pointer flex items-center gap-2"
+                  aria-label="Abrir menú"
+                >
+                  <span className="text-base sm:text-lg font-poppins text-black underline decoration-2 underline-offset-4">
+                    (saber más
+                  </span>
+                  <span 
+                    className="text-xl sm:text-2xl font-bold"
+                    style={{ color: '#D4AF37' }}
+                  >
+                    +
+                  </span>
+                  <span className="text-base sm:text-lg font-poppins text-black">
+                    )
+                  </span>
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent 
+                side="top" 
+                className="rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2"
+              >
+                Explora más contenido
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
       {/* Espaciado blanco */}
