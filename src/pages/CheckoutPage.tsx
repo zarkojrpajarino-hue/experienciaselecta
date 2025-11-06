@@ -15,6 +15,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CartItem {
   id: number;
@@ -31,6 +32,7 @@ interface CartItem {
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, session } = useAuth();
   
   // Obtener items desde el carrito global
   const { cart, removeFromCart, updateQuantity } = useCart();
@@ -134,54 +136,24 @@ const CheckoutPage = () => {
 
   // Authentication
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
-  // Check auth status and handle post-OAuth redirect
+  // Load user profile when user changes
   React.useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      // Only synchronous state updates here to avoid deadlocks
-      setSession(session);
-      setUser(session?.user ?? null);
+    if (user?.id) {
+      setIsAuthInProgress(false);
+      loadUserProfile(user.id);
       
-      if (session?.user) {
-        // Cerrar modal si estuviera abierto para evitar bucles
-        setShowAuthModal(false);
-        // Auth completada
-        setIsAuthInProgress(false);
-        // Defer any Supabase calls to next tick (prevents freezes after OAuth)
-        setTimeout(() => {
-          loadUserProfile(session.user!.id);
-          if (event === 'SIGNED_IN') {
-            try { localStorage.removeItem('oauthInProgress'); } catch {}
-            const hasPendingCheckout = localStorage.getItem('pendingCheckout');
-            if (hasPendingCheckout) {
-              localStorage.removeItem('pendingCheckout');
-              toast.success("¡Sesión iniciada! Tu carrito se ha cargado correctamente.");
-            }
-          }
-        }, 0);
+      // Handle post-login actions
+      const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+      if (hasPendingCheckout) {
+        localStorage.removeItem('pendingCheckout');
+        toast.success("¡Sesión iniciada! Tu carrito se ha cargado correctamente.");
       }
-    });
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        setShowAuthModal(false);
-        setIsAuthInProgress(false);
-        setTimeout(() => loadUserProfile(session.user!.id), 0);
-      } else {
-        // Si no hay sesión, tampoco hay auth en progreso
-        setIsAuthInProgress(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    } else {
+      setIsAuthInProgress(false);
+    }
+  }, [user?.id]);
 
   // Load user profile data
   const loadUserProfile = async (userId: string) => {

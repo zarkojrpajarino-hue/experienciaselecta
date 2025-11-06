@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import AuthModal from "./AuthModal";
@@ -18,8 +19,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showCartPreview, setShowCartPreview] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
+  const { user, session } = useAuth();
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
   const [hasPendingFeedback, setHasPendingFeedback] = useState(false);
@@ -28,81 +28,15 @@ const Navbar = () => {
   const { cart, getTotalItems, getTotalAmount, removeFromCart } = useCart();
   const { toast } = useToast();
 
-  // Check auth status with proper session persistence
+  // Check pending gifts and reviews when user changes
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-
-      // Send welcome email on new Google login
-      if (event === 'SIGNED_IN' && session?.user) {
-        // Defer to next tick to avoid blocking
-        setTimeout(async () => {
-          try {
-            const { data: profiles } = await supabase
-              .from('profiles')
-              .select('name')
-              .eq('user_id', session.user.id)
-              .maybeSingle();
-
-            const { data, error } = await supabase.functions.invoke('send-welcome-email', {
-              body: {
-                userEmail: session.user.email,
-                userName: profiles?.name || session.user.user_metadata?.name || 'amigo'
-              }
-            });
-            
-            if (error) {
-              console.error('Error sending welcome email:', error);
-            } else {
-              console.log('Welcome email sent successfully');
-            }
-          } catch (error) {
-            console.error('Error sending welcome email:', error);
-          }
-        }, 0);
-      }
-
-      // Redirigir tras login: SIEMPRE ir a checkout
-      if (event === 'SIGNED_IN') {
-        console.log('SIGNED_IN event detected in Navbar');
-        try { localStorage.removeItem('pendingCheckout'); } catch {}
-        try { localStorage.removeItem('oauthInProgress'); } catch {}
-        
-        // Solo redirigir si no estamos ya en checkout
-        if (location.pathname !== '/checkout') {
-          console.log('Redirecting to /checkout from:', location.pathname);
-          setTimeout(() => {
-            navigate('/checkout', { replace: true });
-          }, 50);
-        }
-      }
-
-      if (session?.user) {
-        // Defer Supabase calls to next tick to avoid freezes after OAuth
-        setTimeout(() => {
-          checkPendingGifts(session.user!.email!);
-          checkPendingReviews(session.user!.id);
-        }, 0);
-      }
-    });
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-
-      if (session?.user) {
-        checkPendingGifts(session.user.email!);
-        checkPendingReviews(session.user.id);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+    if (user?.email) {
+      checkPendingGifts(user.email);
+    }
+    if (user?.id) {
+      checkPendingReviews(user.id);
+    }
+  }, [user?.id, user?.email]);
 
   // Listen for pending feedback changes (session-based)
   useEffect(() => {

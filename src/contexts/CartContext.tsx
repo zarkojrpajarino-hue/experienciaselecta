@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './AuthContext';
 
 export interface CartItem {
   id: number;
@@ -32,19 +32,60 @@ const getCartStorageKey = (userId: string | null) => {
 };
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  
-  // Initialize cart from localStorage
+  const { user } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [prevUserId, setPrevUserId] = useState<string | null>(null);
 
-  // Load user session and cart on mount
+  // Load cart when user changes
   useEffect(() => {
-    const loadUserCart = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const userId = session?.user?.id || null;
-      setCurrentUserId(userId);
-      
-      // Load cart for this user
+    const userId = user?.id || null;
+    
+    // User logged in (from anonymous to authenticated)
+    if (userId && !prevUserId) {
+      try {
+        const userStorageKey = getCartStorageKey(userId);
+        const anonKey = getCartStorageKey(null);
+        const anonCartString = localStorage.getItem(anonKey);
+        const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
+
+        // Preserve anonymous cart and save it as user's cart
+        if (anonCart.length > 0) {
+          console.log('User logged in - saving current cart as theirs:', anonCart);
+          setCart(anonCart);
+          localStorage.setItem(userStorageKey, JSON.stringify(anonCart));
+        } else {
+          // Load saved user cart if no anonymous cart
+          const savedUserCart = localStorage.getItem(userStorageKey);
+          const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
+          setCart(userCart);
+        }
+        
+        // Clean up anonymous cart
+        localStorage.removeItem(anonKey);
+      } catch (error) {
+        console.error('Error handling cart on login:', error);
+      }
+      setPrevUserId(userId);
+    }
+    // User changed (switching accounts)
+    else if (userId && prevUserId && userId !== prevUserId) {
+      try {
+        const storageKey = getCartStorageKey(userId);
+        const savedCart = localStorage.getItem(storageKey);
+        setCart(savedCart ? JSON.parse(savedCart) : []);
+      } catch (error) {
+        console.error('Error loading cart for new user:', error);
+        setCart([]);
+      }
+      setPrevUserId(userId);
+    }
+    // User logged out
+    else if (!userId && prevUserId) {
+      setCart([]);
+      setPrevUserId(null);
+    }
+    // Initial load for authenticated or anonymous user
+    else if (prevUserId === null) {
       try {
         const storageKey = getCartStorageKey(userId);
         const savedCart = localStorage.getItem(storageKey);
@@ -53,73 +94,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Error loading cart from localStorage:', error);
         setCart([]);
       }
-    };
-    
-    loadUserCart();
-    
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const newUserId = session?.user?.id || null;
-      // Defer to next tick to avoid blocking auth callback
-      setTimeout(() => {
-        // If user logged in (from anonymous to authenticated)
-        if (newUserId && !currentUserId) {
-          setCurrentUserId(newUserId);
-          
-          try {
-            const userStorageKey = getCartStorageKey(newUserId);
-            const anonKey = getCartStorageKey(null);
-            const anonCartString = localStorage.getItem(anonKey);
-            const anonCart: CartItem[] = anonCartString ? JSON.parse(anonCartString) : [];
-
-            // El usuario acaba de hacer login
-            // Preservar el carrito que estaba creando (anónimo) y guardarlo como suyo
-            if (anonCart.length > 0) {
-              console.log('User logged in - saving current cart as theirs:', anonCart);
-              setCart(anonCart);
-              localStorage.setItem(userStorageKey, JSON.stringify(anonCart));
-            } else {
-              // Si no hay carrito anónimo, cargar el guardado del usuario (si existe)
-              const savedUserCart = localStorage.getItem(userStorageKey);
-              const userCart: CartItem[] = savedUserCart ? JSON.parse(savedUserCart) : [];
-              setCart(userCart);
-            }
-            
-            // Limpiar carrito anónimo
-            localStorage.removeItem(anonKey);
-          } catch (error) {
-            console.error('Error handling cart on login:', error);
-          }
-        }
-        // If user changed (switching accounts)
-        else if (newUserId && currentUserId && newUserId !== currentUserId) {
-          setCurrentUserId(newUserId);
-          try {
-            const storageKey = getCartStorageKey(newUserId);
-            const savedCart = localStorage.getItem(storageKey);
-            setCart(savedCart ? JSON.parse(savedCart) : []);
-          } catch (error) {
-            console.error('Error loading cart for new user:', error);
-            setCart([]);
-          }
-        }
-        
-        // Clear cart on logout
-        if (event === 'SIGNED_OUT') {
-          setCurrentUserId(null);
-          setCart([]);
-        }
-      }, 0);
-    });
-    
-    return () => subscription.unsubscribe();
-  }, [currentUserId]);
+      setPrevUserId(userId);
+    }
+  }, [user?.id]);
 
   // Save cart to localStorage with debounce to improve performance
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       try {
-        const storageKey = getCartStorageKey(currentUserId);
+        const storageKey = getCartStorageKey(user?.id || null);
         localStorage.setItem(storageKey, JSON.stringify(cart));
       } catch (error) {
         console.error('Error saving cart to localStorage:', error);
@@ -127,7 +110,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }, 300);
     
     return () => clearTimeout(timeoutId);
-  }, [cart, currentUserId]);
+  }, [cart, user?.id]);
 
   const addToCart = React.useCallback((item: Omit<CartItem, 'quantity'>) => {
     setCart(prevCart => {

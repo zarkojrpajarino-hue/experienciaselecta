@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Import critical pages directly (no lazy loading)
@@ -78,15 +79,16 @@ const ScrollToTopOnRouteChange = () => {
 
 
 const App = () => (
-  <CartProvider>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner position="bottom-right" />
-      <AutoUpdater />
-      
-      <div className="min-h-screen bg-background gpu-accelerated">
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
+  <AuthProvider>
+    <CartProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner position="bottom-right" />
+        <AutoUpdater />
+        
+        <div className="min-h-screen bg-background gpu-accelerated">
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
             <Route path="/" element={<><ScrollToTopOnRouteChange /><Index /></>} />
             <Route path="/perfil" element={<><ScrollToTopOnRouteChange /><ProfilePage /></>} />
             <Route path="/carrito" element={<><ScrollToTopOnRouteChange /><CheckoutPage /></>} />
@@ -106,12 +108,13 @@ const App = () => (
             <Route path="/conocenos" element={<><ScrollToTopOnRouteChange /><ConocenosPage /></>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<><ScrollToTopOnRouteChange /><NotFound /></>} />
-          </Routes>
-        </Suspense>
-        <CookieBanner />
-      </div>
-    </TooltipProvider>
-  </CartProvider>
+            </Routes>
+          </Suspense>
+          <CookieBanner />
+        </div>
+      </TooltipProvider>
+    </CartProvider>
+  </AuthProvider>
 );
 
 export default App;
