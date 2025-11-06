@@ -229,8 +229,11 @@ const ConocenosPage = () => {
           carouselTitle="Porque no vendemos cestas."
         />
         
-        {/* Saber más debajo del carrusel */}
-        <div className="flex justify-center items-center mt-6 mb-4">
+      </div>
+
+      {/* Saber más debajo del carrusel con fondo beige */}
+      <div className="bg-[#F5F5DC] w-full py-12">
+        <div className="flex justify-center items-center">
           <motion.button
             onClick={() => {
               const hamburgerButton = Array.from(document.querySelectorAll('button')).find(btn => {
@@ -261,13 +264,8 @@ const ConocenosPage = () => {
             </motion.span>
           </motion.button>
         </div>
-        
-        {/* Línea separadora blanca */}
-        <div className="w-full h-px bg-white my-8"></div>
       </div>
 
-      {/* Fondo blanco antes del siguiente carrusel */}
-      <div className="bg-white py-4"></div>
 
       {/* Sección: Como te entendemos */}
       <div id="como-te-entendemos" className="bg-white">
