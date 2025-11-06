@@ -248,12 +248,24 @@ const ConocenosPage = () => {
                   whileTap={{ scale: 0.95 }}
                   onMouseEnter={() => setArrowTooltipOpen(true)}
                   onMouseLeave={() => setArrowTooltipOpen(false)}
-                  className="bg-[#F5F5DC] px-4 py-2 rounded-lg border-0 cursor-pointer flex items-center gap-2"
+                  className="px-4 py-2 border-0 cursor-pointer flex items-center gap-2"
                   aria-label="Abrir menú"
                 >
                   <span className="text-base sm:text-lg font-poppins text-black">
-                    Saber más →.
+                    <span className="font-bold">Saber</span>{" "}
                   </span>
+                  <motion.span 
+                    className="text-xl font-bold"
+                    style={{ color: '#D4AF37' }}
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    +
+                  </motion.span>
                 </motion.button>
               </TooltipTrigger>
               <TooltipContent 
