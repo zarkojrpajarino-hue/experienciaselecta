@@ -221,7 +221,7 @@ const ConocenosPage = () => {
       </section>
 
 
-      <div id="porque-no-vendemos-cestas" className="bg-white pb-32">
+      <div id="porque-no-vendemos-cestas" className="bg-white pb-16">
         <RoundedImageCarousel 
           slides={processSlides} 
           titleBold={false} 
@@ -274,7 +274,7 @@ const ConocenosPage = () => {
 
 
       {/* Sección: Como te entendemos */}
-      <div id="como-te-entendemos" className="bg-white pb-32">
+      <div id="como-te-entendemos" className="bg-white pb-16">
         <RoundedImageCarousel 
           slides={benefitsSlides} 
           titleBold={false} 
