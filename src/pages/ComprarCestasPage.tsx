@@ -135,27 +135,6 @@ const ComprarCestasPage = () => {
                     <span className="sm:hidden">tu experiencia.</span>
                   </motion.h2>
                 </AnimatePresence>
-                
-                <TooltipProvider delayDuration={80}>
-                  <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
-                    <TooltipTrigger asChild>
-                      <motion.span 
-                        onClick={() => { navigate('/conocenos'); }}
-                        onMouseEnter={() => setTooltipOpen(true)} 
-                        onMouseLeave={() => setTooltipOpen(false)} 
-                        className="cursor-pointer hover:opacity-80 transition-opacity duration-200 text-sm sm:text-2xl md:text-4xl font-bold gpu-accelerated flex-shrink-0" 
-                        style={{ color: '#D4AF37' }}
-                        animate={{ rotateZ: [0, 180, 0] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        ¿?
-                      </motion.span>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="relative rounded-2xl border-2 border-black/10 bg-white text-black shadow-lg px-4 py-2">
-                      <p className="font-medium">¿Tienes dudas?</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
               </div>
             )}
             
@@ -185,29 +164,27 @@ const ComprarCestasPage = () => {
               </motion.p>
               
               {/* ¿Tienes dudas? con animación */}
-              <motion.div
+              <motion.button
+                onClick={() => navigate('/conocenos')}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex items-center justify-center gap-2 mb-6"
+                className="flex items-center justify-center gap-2 mb-6 cursor-pointer hover:opacity-80 transition-opacity duration-200 bg-transparent border-0 p-0"
               >
                 <motion.span
                   animate={{ rotateZ: [0, -15, 15, -15, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="text-lg sm:text-xl font-bold"
                   style={{ color: '#D4AF37' }}
                 >
                   ¿
                 </motion.span>
-                <button
-                  onClick={() => navigate('/conocenos')}
-                  className="text-sm sm:text-base font-poppins text-black hover:underline underline-offset-4 decoration-2"
-                >
+                <span className="text-sm sm:text-base font-poppins text-black underline underline-offset-4 decoration-2">
                   Tienes dudas
-                </button>
+                </span>
                 <motion.span
                   animate={{ rotateZ: [0, 15, -15, 15, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="text-lg sm:text-xl font-bold"
                   style={{ color: '#D4AF37' }}
                 >
@@ -222,7 +199,7 @@ const ComprarCestasPage = () => {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </motion.div>
+              </motion.button>
             </AnimatePresence>
           )}
 

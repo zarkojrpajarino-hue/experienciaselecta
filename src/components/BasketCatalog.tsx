@@ -106,7 +106,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const [openMaridaje, setOpenMaridaje] = useState<{ [key: number]: boolean }>({});
   const [openOcasion, setOpenOcasion] = useState<{ [key: number]: boolean }>({});
   const [openInfoDinamica, setOpenInfoDinamica] = useState<{ [key: number]: boolean }>({});
-  const [showGroupSize, setShowGroupSize] = useState<'3-4' | '5-6' | '7-8'>('3-4');
+  const [showGroupSize, setShowGroupSize] = useState<'3-4' | '5-6' | '7-8' | null>(null);
   const { cart: globalCart, addToCart: addToGlobalCart, getTotalAmount, getTotalItems, clearCart, removeMultipleItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -140,7 +140,9 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
 
   // Notify parent of initial group size
   React.useEffect(() => {
-    onGroupSizeChange?.(showGroupSize);
+    if (showGroupSize) {
+      onGroupSizeChange?.(showGroupSize);
+    }
   }, []);
 
   // Si llega un id de cesta, ajusta tamaño de grupo y desplaza con reintentos
@@ -1096,6 +1098,9 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const getFilteredBaskets = () => {
     if (!shouldShowGroupButtons) return baskets;
     
+    // Si no hay tamaño de grupo seleccionado, no mostrar cestas
+    if (!showGroupSize) return [];
+    
     if (showGroupSize === '3-4') {
       // Show first 3 baskets (3-4 personas)
       return baskets.filter(b => b.personas === '3-4').slice(0, 3);
@@ -1112,7 +1117,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   
   // Get section title based on current group size
   const getSectionTitle = () => {
-    if (!shouldShowGroupButtons) return null;
+    if (!shouldShowGroupButtons || !showGroupSize) return null;
     
     if (showGroupSize === '3-4') {
       return (
@@ -1184,14 +1189,14 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               }}
               className={`font-bold transition-all duration-200 px-1.5 py-1 sm:px-6 sm:py-2 gpu-accelerated ${
                 showGroupSize === '3-4' 
-                  ? 'text-xs sm:text-2xl scale-110' 
-                  : 'text-[10px] sm:text-lg hover:opacity-70'
+                  ? 'text-base sm:text-2xl scale-110' 
+                  : 'text-sm sm:text-lg hover:opacity-70'
               }`}
               whileHover={{ scale: showGroupSize === '3-4' ? 1.05 : 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <span className={showGroupSize === '3-4' ? '' : 'text-black'} style={showGroupSize === '3-4' ? { color: '#D4AF37' } : {}}>
-                <span className="hidden sm:inline">Personas: </span>3-4
+                3-4 personas
               </span>
             </motion.button>
             
@@ -1204,14 +1209,14 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               }}
               className={`font-bold transition-all duration-200 px-1.5 py-1 sm:px-6 sm:py-2 gpu-accelerated ${
                 showGroupSize === '5-6' 
-                  ? 'text-xs sm:text-2xl scale-110' 
-                  : 'text-[10px] sm:text-lg hover:opacity-70'
+                  ? 'text-base sm:text-2xl scale-110' 
+                  : 'text-sm sm:text-lg hover:opacity-70'
               }`}
               whileHover={{ scale: showGroupSize === '5-6' ? 1.05 : 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <span className={showGroupSize === '5-6' ? '' : 'text-black'} style={showGroupSize === '5-6' ? { color: '#D4AF37' } : {}}>
-                <span className="hidden sm:inline">Personas: </span>5-6
+                5-6 personas
               </span>
             </motion.button>
             
@@ -1224,29 +1229,34 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
               }}
               className={`font-bold transition-all duration-200 px-1.5 py-1 sm:px-6 sm:py-2 gpu-accelerated ${
                 showGroupSize === '7-8' 
-                  ? 'text-xs sm:text-2xl scale-110' 
-                  : 'text-[10px] sm:text-lg hover:opacity-70'
+                  ? 'text-base sm:text-2xl scale-110' 
+                  : 'text-sm sm:text-lg hover:opacity-70'
               }`}
               whileHover={{ scale: showGroupSize === '7-8' ? 1.05 : 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <span className={showGroupSize === '7-8' ? '' : 'text-black'} style={showGroupSize === '7-8' ? { color: '#D4AF37' } : {}}>
-                <span className="hidden sm:inline">Personas: </span>7-8
+                7-8 personas
               </span>
             </motion.button>
           </div>
           
           {/* Mostrar grupo seleccionado debajo */}
-          <motion.div
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="text-center mt-2"
-          >
-            <p className="text-sm sm:text-base font-semibold" style={{ color: '#D4AF37' }}>
-              Grupo seleccionado: {showGroupSize} personas
-            </p>
-          </motion.div>
+          {showGroupSize && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-center mt-2"
+            >
+              <p className="text-sm sm:text-base font-semibold" style={{ color: '#D4AF37' }}>
+                {categoria === 'Amigos' 
+                  ? `Cestas para ${showGroupSize} amigos`
+                  : `Cestas para familias de ${showGroupSize} personas`
+                }
+              </p>
+            </motion.div>
+          )}
         </div>
       )}
       
