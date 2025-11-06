@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   user: User | null;
@@ -111,10 +112,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               // Limpiar localStorage
               localStorage.removeItem('pendingCheckout');
               console.log('✅ OAuth flow completed, staying on', currentPath);
+              
+              // Mostrar toast de confirmación con nombre del usuario
+              const userName = data.session.user.user_metadata?.name 
+                || data.session.user.user_metadata?.full_name 
+                || data.session.user.email?.split('@')[0] 
+                || 'Usuario';
+              
+              toast.success(`¡Bienvenido, ${userName}!`, {
+                description: 'Tu carrito se ha preservado correctamente.',
+                duration: 4000,
+              });
             }
           }
         } catch (e) {
           console.error('Global OAuth exchange error:', e);
+          toast.error('Error al iniciar sesión', {
+            description: 'Por favor, inténtalo de nuevo.',
+          });
         } finally {
           try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
           try { localStorage.removeItem('oauthInProgress'); } catch {}
