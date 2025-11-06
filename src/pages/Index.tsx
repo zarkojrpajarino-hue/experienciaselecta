@@ -199,9 +199,8 @@ const Index = () => {
         
         if (session) {
           setShowAuthModal(false);
-          // Limpiar TODOS los flags cuando el usuario inicia sesión exitosamente
+          // Limpiar flags de modal - PERO NO pendingCheckout (se limpia en CheckoutPage)
           sessionStorage.removeItem('hasClosedAuthModal');
-          try { localStorage.removeItem('pendingCheckout'); } catch {}
           try { localStorage.removeItem('oauthInProgress'); } catch {}
           
         } else {
