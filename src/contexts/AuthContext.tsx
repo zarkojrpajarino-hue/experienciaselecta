@@ -59,7 +59,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       (async () => {
         try {
           if (code) {
-            await supabase.auth.exchangeCodeForSession(code);
+            const { data } = await supabase.auth.exchangeCodeForSession(code);
+            if (data.session) {
+              // Redirigir a checkout tras login exitoso
+              const pendingCheckout = localStorage.getItem('pendingCheckout');
+              if (pendingCheckout === 'true') {
+                window.location.href = '/checkout';
+                return;
+              }
+            }
           }
         } catch (e) {
           console.error('Global OAuth exchange error:', e);

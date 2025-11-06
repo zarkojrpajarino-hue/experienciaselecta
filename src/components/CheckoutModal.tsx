@@ -64,6 +64,7 @@ interface RecipientData {
 interface GiftData {
   senderName: string;
   senderEmail: string;
+  howFoundUs: string;
   recipients: RecipientData[];
 }
 
@@ -78,6 +79,7 @@ interface BackendRecipientData {
 interface BackendGiftData {
   senderName: string;
   senderEmail: string;
+  howFoundUs: string;
   recipients: BackendRecipientData[];
 }
 
@@ -377,8 +379,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [giftData, setGiftData] = useState<GiftData>({
     senderName: '',
     senderEmail: '',
+    howFoundUs: '',
     recipients: [{ recipientName: '', recipientEmail: '', personalNote: '', basketIds: [] }]
   });
+  const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Total dinámico: cestas personales + (solo cestas de regalo asignadas)
@@ -425,6 +429,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const giftSchema = z.object({
     senderName: z.string().trim().min(1, "Tu nombre es requerido").max(100),
     senderEmail: z.string().trim().email("Tu email es inválido").max(255),
+    howFoundUs: z.string().trim().min(1, "Debes indicar cómo nos conociste").max(100),
     recipients: z.array(recipientSchema).min(1, "Debe haber al menos un destinatario")
   });
 
@@ -499,6 +504,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Clear previous invalid fields
+    setInvalidFields(new Set());
+    
     // Validate that at least one basket is assigned in gift mode or mixed mode
     if (isGiftMode || isMixedMode) {
       const assignedBaskets = giftData.recipients.flatMap(r => r.basketIds);
@@ -527,6 +535,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
+        // Mark invalid fields and trigger shake animation
+        const fields = new Set(error.errors.map(e => e.path.join('.')));
+        setInvalidFields(fields);
+        
+        // Trigger shake animation
+        setTimeout(() => setInvalidFields(new Set()), 1000);
+        
         toast({
           variant: "destructive",
           title: "Datos inválidos",
@@ -635,6 +650,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setGiftData({
       senderName: '',
       senderEmail: '',
+      howFoundUs: '',
       recipients: [{ recipientName: '', recipientEmail: '', recipientPhone: '', personalNote: '', basketIds: [] }]
     });
     localStorage.removeItem('pendingCheckout');
@@ -859,6 +875,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         onChange={(e) => setGiftData(prev => ({ ...prev, senderName: e.target.value }))}
                         placeholder="¿Quién regala?"
                         required
+                        className={invalidFields.has('senderName') ? 'border-red-500 animate-shake' : ''}
                       />
                     </div>
                     <div>
@@ -870,8 +887,32 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         onChange={(e) => setGiftData(prev => ({ ...prev, senderEmail: e.target.value }))}
                         placeholder="tu@email.com"
                         required
+                        className={invalidFields.has('senderEmail') ? 'border-red-500 animate-shake' : ''}
                       />
                     </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <Label htmlFor="howFoundUs">¿Cómo nos has conocido? *</Label>
+                    <Select
+                      value={giftData.howFoundUs}
+                      onValueChange={(value) => setGiftData(prev => ({ ...prev, howFoundUs: value }))}
+                      required
+                    >
+                      <SelectTrigger 
+                        id="howFoundUs"
+                        className={invalidFields.has('howFoundUs') ? 'border-red-500 animate-shake' : ''}
+                      >
+                        <SelectValue placeholder="Selecciona una opción" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="redes_sociales">Redes sociales</SelectItem>
+                        <SelectItem value="buscador">Buscador (Google, etc.)</SelectItem>
+                        <SelectItem value="recomendacion">Recomendación de amigo/familiar</SelectItem>
+                        <SelectItem value="publicidad">Publicidad online</SelectItem>
+                        <SelectItem value="otro">Otro</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <Separator className="my-4" />
@@ -907,6 +948,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           }}
                           placeholder="¿A quién se lo regalas?"
                           required
+                          className={invalidFields.has(`recipients.${index}.recipientName`) ? 'border-red-500 animate-shake' : ''}
                         />
                       </div>
 
@@ -983,6 +1025,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                            }}
                            placeholder="email@ejemplo.com"
                            required={!recipient.recipientPhone}
+                           className={invalidFields.has(`recipients.${index}.recipientEmail`) ? 'border-red-500 animate-shake' : ''}
                          />
                         </div>
                         <div>
@@ -998,6 +1041,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                            }}
                            placeholder="+34 600 000 000"
                            required={!recipient.recipientEmail}
+                           className={invalidFields.has(`recipients.${index}.recipientPhone`) ? 'border-red-500 animate-shake' : ''}
                          />
                         </div>
                       </div>
@@ -1204,7 +1248,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <Label htmlFor="senderName">Tu nombre *</Label>
                     <Input
@@ -1213,6 +1257,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       onChange={(e) => setGiftData(prev => ({ ...prev, senderName: e.target.value }))}
                       placeholder="¿Quién regala?"
                       required
+                      className={invalidFields.has('senderName') ? 'border-red-500 animate-shake' : ''}
                     />
                   </div>
                   <div>
@@ -1224,8 +1269,32 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       onChange={(e) => setGiftData(prev => ({ ...prev, senderEmail: e.target.value }))}
                       placeholder="tu@email.com"
                       required
+                      className={invalidFields.has('senderEmail') ? 'border-red-500 animate-shake' : ''}
                     />
                   </div>
+                </div>
+                
+                <div className="mb-4">
+                  <Label htmlFor="howFoundUs-gift">¿Cómo nos has conocido? *</Label>
+                  <Select
+                    value={giftData.howFoundUs}
+                    onValueChange={(value) => setGiftData(prev => ({ ...prev, howFoundUs: value }))}
+                    required
+                  >
+                    <SelectTrigger 
+                      id="howFoundUs-gift"
+                      className={invalidFields.has('howFoundUs') ? 'border-red-500 animate-shake' : ''}
+                    >
+                      <SelectValue placeholder="Selecciona una opción" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="redes_sociales">Redes sociales</SelectItem>
+                      <SelectItem value="buscador">Buscador (Google, etc.)</SelectItem>
+                      <SelectItem value="recomendacion">Recomendación de amigo/familiar</SelectItem>
+                      <SelectItem value="publicidad">Publicidad online</SelectItem>
+                      <SelectItem value="otro">Otro</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <Separator />
@@ -1261,6 +1330,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         }}
                         placeholder="¿A quién se lo regalas?"
                         required
+                        className={invalidFields.has(`recipients.${index}.recipientName`) ? 'border-red-500 animate-shake' : ''}
                       />
                     </div>
 
@@ -1337,6 +1407,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           }}
                           placeholder="email@ejemplo.com"
                           required={!recipient.recipientPhone}
+                          className={invalidFields.has(`recipients.${index}.recipientEmail`) ? 'border-red-500 animate-shake' : ''}
                         />
                       </div>
                       <div>
@@ -1352,6 +1423,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                           }}
                           placeholder="+34 600 000 000"
                           required={!recipient.recipientEmail}
+                          className={invalidFields.has(`recipients.${index}.recipientPhone`) ? 'border-red-500 animate-shake' : ''}
                         />
                       </div>
                     </div>
@@ -1392,31 +1464,56 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                                .some(r => r.basketIds.includes(item.uniqueId));
                              return !alreadyAssigned;
                            })
-                           .map((item) => (
-                             <div key={item.uniqueId} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded">
-                               <div className="flex items-center space-x-2">
-                                 <input
-                                   type="checkbox"
-                                   id={`basket-${item.uniqueId}-recipient-${index}`}
-                                   checked={recipient.basketIds.includes(item.uniqueId)}
-                                   onChange={(e) => {
-                                     const newRecipients = [...giftData.recipients];
-                                     if (e.target.checked) {
-                                       newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
-                                     } else {
-                                       newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
-                                     }
-                                     setGiftData(prev => ({ ...prev, recipients: newRecipients }));
-                                   }}
-                                   className="rounded border-gray-300"
-                                 />
-                                 <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
-                                   {item.name}
-                                 </Label>
-                               </div>
-                               <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
-                             </div>
-                         ))}
+                            .map((item) => (
+                              <div key={item.uniqueId} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded">
+                                <div className="flex items-center space-x-2 flex-1">
+                                  <input
+                                    type="checkbox"
+                                    id={`basket-${item.uniqueId}-recipient-${index}`}
+                                    checked={recipient.basketIds.includes(item.uniqueId)}
+                                    onChange={(e) => {
+                                      const newRecipients = [...giftData.recipients];
+                                      if (e.target.checked) {
+                                        newRecipients[index].basketIds = [...newRecipients[index].basketIds, item.uniqueId];
+                                      } else {
+                                        newRecipients[index].basketIds = newRecipients[index].basketIds.filter(id => id !== item.uniqueId);
+                                      }
+                                      setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                    }}
+                                    className="rounded border-gray-300"
+                                  />
+                                  <Label htmlFor={`basket-${item.uniqueId}-recipient-${index}`} className="cursor-pointer">
+                                    {item.name}
+                                  </Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-semibold">{item.price.toFixed(2)}€</span>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0 hover:bg-red-50 hover:text-red-600"
+                                    onClick={() => {
+                                      // Mark as removed immediately for UI update
+                                      setRemovedItemIds(prev => [...prev, item.uniqueId]);
+                                      // Remove this basket from all recipients
+                                      const newRecipients = giftData.recipients.map(r => ({
+                                        ...r,
+                                        basketIds: r.basketIds.filter(id => id !== item.uniqueId)
+                                      }));
+                                      setGiftData(prev => ({ ...prev, recipients: newRecipients }));
+                                      // Remove from cart
+                                      if (onRemoveItems) {
+                                        onRemoveItems([{ id: item.id, isGift: true, quantityToRemove: 1 }]);
+                                      }
+                                    }}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                          ))}
+
                        </div>
                      </div>
                   </div>
