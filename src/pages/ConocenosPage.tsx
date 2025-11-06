@@ -154,7 +154,7 @@ const ConocenosPage = () => {
       <Navbar />
       
       {/* Header Section */}
-      <section className="pt-24 pb-0 md:pt-32 md:pb-1 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
+      <section className="pt-24 pb-0 md:pt-32 md:pb-1 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 mb-8 border-2 border-black">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start mb-4">
             <Button 
