@@ -183,10 +183,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
             const now = new Date();
             const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
 
-            // Send welcome email if profile was created in the last 10 seconds
-            if (diffSeconds < 10) {
-              console.log('Attempting to send welcome email to new user');
+            // Send welcome email if profile was created in the last 30 seconds (to account for network delays)
+            if (diffSeconds < 30) {
+              console.log('Attempting to send welcome email to new user:', session.user.email);
               const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`
+                },
                 body: {
                   userEmail: session.user.email,
                   userName: session.user.user_metadata?.name || session.user.user_metadata?.full_name || ''
@@ -196,8 +199,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
               if (emailError) {
                 console.error('Error sending welcome email:', emailError);
               } else {
-                console.log('Welcome email sent successfully');
+                console.log('Welcome email sent successfully to:', session.user.email);
               }
+            } else {
+              console.log('User profile is older than 30 seconds, skipping welcome email');
             }
           }
         } catch (emailError) {
