@@ -3,8 +3,9 @@ import { Resend } from 'https://esm.sh/resend@4.0.0';
 import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string);
-const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET') as string;
-
+const rawHookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET') as string;
+// Supabase provides secrets like "v1,whsec_..." - Standard Webhooks expects the base64 part only
+const hookSecret = (rawHookSecret || '').replace(/^v\d+,?whsec_/, '');
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -23,15 +24,8 @@ serve(async (req) => {
     const payload = await req.text();
     const headers = Object.fromEntries(req.headers);
     
-    // Verify webhook signature with fallback for non-base64 secrets
-    let wh: any;
-    try {
-      wh = new Webhook(hookSecret);
-    } catch (e) {
-      console.warn('Webhook secret not base64-encoded, attempting to encode it.');
-      const encoded = btoa(hookSecret);
-      wh = new Webhook(encoded);
-    }
+    // Verify webhook signature using Standard Webhooks
+    const wh = new Webhook(hookSecret);
     const {
       user,
       email_data: { token, token_hash, redirect_to, email_action_type },
