@@ -164,13 +164,13 @@ const ComprarCestasPage = () => {
               </motion.p>
               
               {/* ¿Tienes dudas? con animación */}
-              <div className="flex justify-center w-full">
+              <div className="flex justify-center w-full mt-6">
                 <motion.button
                   onClick={() => navigate('/conocenos')}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="flex items-center justify-center gap-2 mb-6 cursor-pointer hover:opacity-80 transition-opacity duration-200 bg-transparent border-0 p-0"
+                  className="flex items-center justify-center gap-2 mb-2 cursor-pointer hover:opacity-80 transition-opacity duration-200 bg-transparent border-0 p-0 w-auto"
                 >
                   <motion.span
                     animate={{ rotateZ: [0, -15, 15, -15, 0] }}
@@ -214,8 +214,20 @@ const ComprarCestasPage = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 100 }}
                   transition={{ duration: 0.5, type: "spring" }}
-                  className="flex flex-col items-center"
+                  className="flex flex-col items-center mt-8"
                 >
+                  {/* Mostrar grupo seleccionado solo para Familia y Amigos - ANTES de los botones */}
+                  {(selectedCategory === 'Familia' || selectedCategory === 'Amigos') && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-xs sm:text-sm text-black/60 mb-3"
+                    >
+                      <span className="font-bold">Selecciona</span> el grupo de personas debajo
+                    </motion.p>
+                  )}
+                  
                   <div className="flex justify-center gap-2 sm:gap-4 mb-2">
                     <motion.button
                       onClick={() => setSelectedCategory('Pareja')}
@@ -256,18 +268,6 @@ const ComprarCestasPage = () => {
                       Amigos
                     </motion.button>
                   </div>
-                  
-                  {/* Mostrar grupo seleccionado solo para Familia y Amigos */}
-                  {(selectedCategory === 'Familia' || selectedCategory === 'Amigos') && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-xs sm:text-sm text-black/60 mt-1 mb-3"
-                    >
-                      <span className="font-bold">Selecciona</span> el grupo de personas debajo
-                    </motion.p>
-                  )}
                 </motion.div>
               </AnimatePresence>
             )}
@@ -278,7 +278,7 @@ const ComprarCestasPage = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="flex justify-center mt-4"
+                className="flex justify-center mt-2"
               >
                 <motion.button
                   onClick={() => {
