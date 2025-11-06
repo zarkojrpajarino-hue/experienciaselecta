@@ -59,11 +59,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       (async () => {
         try {
           if (code) {
+            console.log('Processing OAuth code...');
             const { data, error } = await supabase.auth.exchangeCodeForSession(code);
             if (error) {
               console.error('OAuth exchange error:', error);
             } else if (data.session) {
-              console.log('OAuth exchange success, session created for:', data.session.user.email);
+              console.log('✅ OAuth exchange success, session created for:', data.session.user.email);
               
               // Enviar email de bienvenida para nuevos usuarios
               try {
@@ -102,16 +103,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // No fallar el login si falla el email
               }
               
-              // Redirigir a checkout tras login exitoso SI hay pendingCheckout
-              const pendingCheckout = localStorage.getItem('pendingCheckout');
-              if (pendingCheckout === 'true') {
-                console.log('Redirecting to checkout after OAuth...');
-                // Usar setTimeout para asegurar que el estado se actualice primero
-                setTimeout(() => {
-                  window.location.href = '/checkout';
-                }, 100);
-                return;
-              }
+              // Limpiar la URL sin recargar la página
+              const currentPath = window.location.pathname;
+              console.log('Cleaning URL on path:', currentPath);
+              window.history.replaceState({}, '', currentPath);
+              
+              // Limpiar localStorage
+              localStorage.removeItem('pendingCheckout');
+              console.log('✅ OAuth flow completed, staying on', currentPath);
             }
           }
         } catch (e) {
@@ -119,13 +118,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } finally {
           try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
           try { localStorage.removeItem('oauthInProgress'); } catch {}
-          // Limpiar parámetros de la URL para evitar reintentos solo si NO vamos a redirigir
-          const pendingCheckout = localStorage.getItem('pendingCheckout');
-          if (pendingCheckout !== 'true') {
-            try {
-              window.history.replaceState({}, document.title, window.location.pathname);
-            } catch {}
-          }
         }
       })();
     }
