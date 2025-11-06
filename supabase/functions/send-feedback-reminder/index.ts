@@ -116,6 +116,8 @@ serve(async (req) => {
           continue;
         }
 
+        const reviewUrl = `https://experienciaselecta.com/review/${order.id}`;
+        
         const emailContent = `
 ¡Hola ${customerName}!
 
@@ -124,7 +126,7 @@ Esperamos que hayas disfrutado tu experiencia con Experiencia Selecta.
 Tu opinión es súper importante para nosotros y nos ayuda a seguir mejorando.
 
 ¿Nos dejas tu valoración? Solo te llevará un minuto:
-👉 https://experienciaselecta.com/feedback
+👉 ${reviewUrl}
 
 Muchas gracias por tu tiempo y por confiar en nosotros.
 
@@ -187,7 +189,7 @@ El equipo de Experiencia Selecta
     <p>Tu opinión es súper importante para nosotros y nos ayuda a seguir mejorando.</p>
     
     <div style="text-align: center; margin: 30px 0;">
-      <a href="https://experienciaselecta.com/feedback" class="cta-button">
+      <a href="${reviewUrl}" class="cta-button">
         Dejar mi valoración
       </a>
     </div>

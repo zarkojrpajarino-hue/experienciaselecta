@@ -24,6 +24,7 @@ const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
 const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
+const ReviewPage = lazy(() => import("./pages/ReviewPage"));
 const ConocenosPage = lazy(() => import("./pages/ConocenosPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import CookieBanner from "./components/CookieBanner";
@@ -105,6 +106,7 @@ const App = () => (
             <Route path="/preguntas-frecuentes" element={<><ScrollToTopOnRouteChange /><PreguntasFrecuentesPage /></>} />
             <Route path="/regalos" element={<><ScrollToTopOnRouteChange /><RegalosPage /></>} />
             <Route path="/feedback" element={<><ScrollToTopOnRouteChange /><FeedbackPage /></>} />
+            <Route path="/review/:orderId" element={<><ScrollToTopOnRouteChange /><ReviewPage /></>} />
             <Route path="/conocenos" element={<><ScrollToTopOnRouteChange /><ConocenosPage /></>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<><ScrollToTopOnRouteChange /><NotFound /></>} />
