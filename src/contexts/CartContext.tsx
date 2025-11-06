@@ -1,4 +1,6 @@
-import { useState, useEffect, createContext, useContext, useCallback, ReactNode } from 'react';
+import * as React from 'react';
+import { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 
 export interface CartItem {
