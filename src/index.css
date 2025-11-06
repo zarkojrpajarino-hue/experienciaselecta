@@ -126,13 +126,18 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth solo para anchors dentro de la misma página */
+    /* NO para navegación entre páginas (manejado por JS) */
+    scroll-behavior: auto;
     overflow-x: hidden;
     height: 100%;
     /* Enable GPU acceleration for smoother scrolling */
     -webkit-overflow-scrolling: touch;
-    /* Reduce paint on scroll */
-    will-change: scroll-position;
+  }
+  
+  /* Smooth scroll solo para navegación dentro de la misma página con anchors */
+  html:has(a[href^="#"]:hover) {
+    scroll-behavior: smooth;
   }
 
   body {
