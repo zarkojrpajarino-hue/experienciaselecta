@@ -1,16 +1,16 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
 interface PageLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
  * PageLayout - Wrapper que proporciona transiciones fluidas entre páginas
  * Usa framer-motion para fade-in/out suaves de 250ms
  */
-export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
+export const PageLayout = ({ children }: PageLayoutProps) => {
   const location = useLocation();
 
   return (
