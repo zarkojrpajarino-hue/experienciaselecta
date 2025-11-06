@@ -64,13 +64,24 @@ React.useEffect(() => {
   React.useEffect(() => {
     // Si hay auth en progreso o venimos del callback OAuth, no redirigir
     const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
-    if (isAuthInProgress || hasOauthParams) return;
+    const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
+    if (isAuthInProgress || hasOauthParams || hasOauthHash) return;
     
-    // Si el carrito está vacío, redirigir
+    // Evitar redirigir si hay carrito guardado en localStorage (esperando a que el contexto lo cargue)
+    try {
+      const anonCart = JSON.parse(localStorage.getItem('shopping-cart') || '[]');
+      const userCartKey = user?.id ? `shopping-cart-${user.id}` : null;
+      const userCart = userCartKey ? JSON.parse(localStorage.getItem(userCartKey) || '[]') : [];
+      if ((anonCart?.length ?? 0) > 0 || (userCart?.length ?? 0) > 0 || localStorage.getItem('pendingCheckout')) {
+        return;
+      }
+    } catch {}
+    
+    // Si el carrito está vacío de verdad, redirigir
     if (cart.length === 0) {
       navigate('/#categoria-cestas', { replace: true });
     }
-  }, [cart.length, navigate, isAuthInProgress, location.search]);
+  }, [cart.length, navigate, isAuthInProgress, location.search, location.hash, user?.id]);
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
