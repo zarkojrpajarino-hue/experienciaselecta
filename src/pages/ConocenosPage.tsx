@@ -233,15 +233,12 @@ const ConocenosPage = () => {
         
         {/* Saber más debajo del carrusel */}
         <div className="flex justify-center items-center mt-6 mb-4">
-          <div className="bg-black px-6 py-3 rounded-lg flex items-center gap-2">
-            <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-poppins text-white uppercase">
-              SABER
-            </span>
-            <span className="text-2xl sm:text-3xl md:text-4xl font-normal font-poppins text-white lowercase">
-              más
+          <div className="bg-black px-4 py-2 rounded-lg flex items-center gap-2">
+            <span className="text-xl sm:text-2xl md:text-3xl font-extrabold font-poppins text-white uppercase">
+              SABER MÁS
             </span>
             <motion.span
-              className="text-2xl sm:text-3xl text-white"
+              className="text-xl sm:text-2xl md:text-3xl text-white"
               animate={{ x: [0, 5, 0] }}
               transition={{
                 duration: 1.5,
@@ -264,9 +261,6 @@ const ConocenosPage = () => {
           isSecondCarousel={true}
         />
       </div>
-
-      {/* Espaciado blanco */}
-      <div className="bg-white py-8"></div>
     </div>
   );
 };
