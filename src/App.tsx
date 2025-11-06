@@ -2,9 +2,9 @@ import React, { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Import critical pages directly (no lazy loading)
@@ -77,31 +77,6 @@ const ScrollToTopOnRouteChange = () => {
   return null;
 };
 
-// Redirige a la ruta prevista tras login (si existe intendedRoute/pendingCheckout)
-const AuthPostLoginRedirect = () => {
-  const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const intended = localStorage.getItem('intendedRoute');
-    const pending = localStorage.getItem('pendingCheckout');
-    const already = sessionStorage.getItem('postLoginRedirectDone');
-
-    if (user && !already && (intended || pending)) {
-      sessionStorage.setItem('postLoginRedirectDone', '1');
-      const target = intended || '/checkout';
-      // Limpiar banderas para no repetir
-      try { localStorage.removeItem('intendedRoute'); } catch {}
-      try { localStorage.removeItem('pendingCheckout'); } catch {}
-      navigate(target, { replace: true });
-    }
-  }, [user, isLoading, navigate]);
-
-  return null;
-};
-
 
 const App = () => (
   <AuthProvider>
@@ -110,7 +85,6 @@ const App = () => (
         <Toaster />
         <Sonner position="bottom-right" />
         <AutoUpdater />
-        <AuthPostLoginRedirect />
         
         <div className="min-h-screen bg-background gpu-accelerated">
           <Suspense fallback={<PageLoader />}>
