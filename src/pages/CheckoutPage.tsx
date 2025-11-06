@@ -32,7 +32,7 @@ interface CartItem {
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, session } = useAuth();
+  const { user, session, isLoading: isAuthLoading } = useAuth();
   
   // Obtener items desde el carrito global
   const { cart, removeFromCart, updateQuantity } = useCart();
@@ -48,6 +48,18 @@ const CheckoutPage = () => {
       setIsAuthInProgress(true);
     }
   }, []);
+
+  // Esperar a que termine la carga inicial de autenticación
+  if (isAuthLoading || isAuthInProgress) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+          <p className="text-muted-foreground">Cargando tus datos...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Redirigir SOLO si el carrito está vacío Y NO hay auth en progreso Y NO acabamos de eliminar items
   React.useEffect(() => {
