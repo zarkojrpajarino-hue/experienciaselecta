@@ -42,12 +42,13 @@ const CheckoutPage = () => {
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
 
   // Verificar si hay un proceso de autenticación en curso
-  React.useEffect(() => {
-    const pendingCheckout = localStorage.getItem('pendingCheckout');
-    if (pendingCheckout) {
-      setIsAuthInProgress(true);
-    }
-  }, []);
+React.useEffect(() => {
+  const pendingCheckout = localStorage.getItem('pendingCheckout');
+  const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
+  if (pendingCheckout || hasOauthParams) {
+    setIsAuthInProgress(true);
+  }
+}, [location.search]);
 
   // Esperar a que termine la carga inicial de autenticación
   if (isAuthLoading || isAuthInProgress) {
@@ -63,14 +64,15 @@ const CheckoutPage = () => {
 
   // Redirigir SOLO si el carrito está vacío Y NO hay auth en progreso Y NO acabamos de eliminar items
   React.useEffect(() => {
-    // Si hay auth en progreso, no redirigir todavía
-    if (isAuthInProgress) return;
-    
-    // Si el carrito está vacío y no se mostró la pantalla de carrito vacío, redirigir
-    if (cart.length === 0 && !showEmptyCartScreen) {
-      navigate('/#categoria-cestas', { replace: true });
-    }
-  }, [cart.length, navigate, isAuthInProgress, showEmptyCartScreen]);
+// Si hay auth en progreso o venimos del callback OAuth, no redirigir
+  const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
+  if (isAuthInProgress || hasOauthParams) return;
+  
+  // Si el carrito está vacío, mostrar pantalla de carrito vacío en lugar de navegar fuera
+  if (cart.length === 0 && !showEmptyCartScreen) {
+    setShowEmptyCartScreen(true);
+  }
+}, [cart.length, isAuthInProgress, showEmptyCartScreen, location.search]);
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
