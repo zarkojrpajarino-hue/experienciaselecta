@@ -216,18 +216,6 @@ const ComprarCestasPage = () => {
                   transition={{ duration: 0.5, type: "spring" }}
                   className="flex flex-col items-center mt-8"
                 >
-                  {/* Mostrar grupo seleccionado solo para Familia y Amigos - ANTES de los botones */}
-                  {(selectedCategory === 'Familia' || selectedCategory === 'Amigos') && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-xs sm:text-sm text-black/60 mb-3"
-                    >
-                      <span className="font-bold">Selecciona</span> el grupo de personas debajo
-                    </motion.p>
-                  )}
-                  
                   <div className="flex justify-center gap-2 sm:gap-4 mb-2">
                     <motion.button
                       onClick={() => setSelectedCategory('Pareja')}

@@ -1180,6 +1180,16 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       {/* Group Size Buttons - Horizontal navigation */}
       {shouldShowGroupButtons && (
         <div data-group-size-selector className="mb-4 mt-4">
+          {/* Texto de selección encima de los botones */}
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-xs sm:text-sm text-black/60 mb-3 text-center"
+          >
+            <span className="font-bold">Selecciona</span> el grupo de personas debajo:
+          </motion.p>
+          
           {/* Una sola línea en móvil con texto más pequeño */}
           <div className="flex justify-center items-center gap-0.5 sm:gap-2">
             <motion.button
