@@ -41,12 +41,15 @@ const CheckoutPage = () => {
 
   // Verificar si hay un proceso de autenticación en curso
 React.useEffect(() => {
-  const pendingCheckout = localStorage.getItem('pendingCheckout');
+  const oauthInProgress = localStorage.getItem('oauthInProgress');
   const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
-  if (pendingCheckout || hasOauthParams) {
+  const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
+  if (oauthInProgress || hasOauthParams || hasOauthHash) {
     setIsAuthInProgress(true);
+  } else {
+    setIsAuthInProgress(false);
   }
-}, [location.search]);
+}, [location.search, location.hash]);
 
   // Esperar a que termine la carga inicial de autenticación
   if (isAuthLoading || isAuthInProgress) {
@@ -165,6 +168,7 @@ React.useEffect(() => {
   React.useEffect(() => {
     if (user?.id) {
       setIsAuthInProgress(false);
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
       loadUserProfile(user.id);
       
       // Handle post-login actions
@@ -175,6 +179,7 @@ React.useEffect(() => {
       }
     } else {
       setIsAuthInProgress(false);
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
     }
   }, [user?.id]);
 

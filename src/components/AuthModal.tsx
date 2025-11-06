@@ -44,8 +44,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      // CRÍTICO: Establecer flag ANTES de OAuth para preservar carrito
+      // CRÍTICO: Establecer flags ANTES de OAuth para preservar carrito y mostrar loader
       localStorage.setItem('pendingCheckout', 'true');
+      localStorage.setItem('oauthInProgress', 'true');
       
       // Siempre redirigir a checkout (donde se inició el login)
       const redirectUrl = `${window.location.origin}/checkout`;
@@ -64,6 +65,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
     } catch (error: any) {
       console.error('Error en login con Google:', error);
       localStorage.removeItem('pendingCheckout'); // Limpiar si falla
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
       toast({
         variant: "destructive",
         title: "No se pudo iniciar sesión",
