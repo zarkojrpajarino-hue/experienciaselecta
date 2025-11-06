@@ -101,7 +101,7 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título del carrusel si existe */}
         {carouselTitle && (
-          <div className="text-center mb-6">
+          <div className="text-center mb-6 pt-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-poppins font-bold text-black">
               {carouselTitle}
             </h2>
