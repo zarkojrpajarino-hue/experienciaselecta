@@ -73,6 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.error('Global OAuth exchange error:', e);
         } finally {
           try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+          try { localStorage.removeItem('oauthInProgress'); } catch {}
           // Limpiar parámetros de la URL para evitar reintentos
           try {
             window.history.replaceState({}, document.title, window.location.pathname);

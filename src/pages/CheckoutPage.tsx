@@ -75,8 +75,11 @@ React.useEffect(() => {
             window.history.replaceState({}, document.title, '/checkout');
           }
           try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+          try { localStorage.removeItem('oauthInProgress'); } catch {}
+          setIsAuthInProgress(false);
         } catch (e) {
           console.error('OAuth exchange exception:', e);
+          setIsAuthInProgress(false);
         }
       })();
     }
@@ -220,6 +223,9 @@ React.useEffect(() => {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const userEmail = sessionData?.session?.user?.email || "";
+      const googleName = (sessionData?.session?.user?.user_metadata as any)?.full_name 
+        || (sessionData?.session?.user?.user_metadata as any)?.name 
+        || "";
       
       const { data, error } = await supabase
         .from('profiles')
@@ -228,15 +234,33 @@ React.useEffect(() => {
         .maybeSingle();
 
       if (!error && data) {
-        // Auto-fill personal data from profile
+        // Auto-fill personal data from profile (fallback to Google name)
         setPersonalData({
-          name: data.name || "",
+          name: data.name || googleName || "",
           email: userEmail,
           phone: data.phone || "",
           address: data.address_line1 || "",
           city: data.city || "",
           postalCode: data.postal_code || ""
         });
+        // También completar remitente para modo regalo
+        setGiftAssignment(prev => ({
+          ...prev,
+          senderName: prev.senderName || data.name || googleName || "",
+          senderEmail: prev.senderEmail || userEmail
+        }));
+      } else {
+        // Sin perfil: completar al menos nombre/email del comprador y remitente
+        setPersonalData(prev => ({
+          ...prev,
+          name: prev.name || googleName,
+          email: userEmail
+        }));
+        setGiftAssignment(prev => ({
+          ...prev,
+          senderName: prev.senderName || googleName,
+          senderEmail: prev.senderEmail || userEmail
+        }));
       }
     } catch (error) {
       console.error('Error loading profile:', error);
