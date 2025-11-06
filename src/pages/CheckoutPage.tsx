@@ -84,8 +84,10 @@ React.useEffect(() => {
     // - Hay auth en progreso
     // - Está cargando auth
     // - Usuario está autenticado (el carrito puede estar cargándose)
-    if (isAuthInProgress || isAuthLoading || user) {
-      console.log('⏳ Esperando a que termine auth o carga de carrito...');
+    // - Acabamos de completar un flujo OAuth (flag temporal)
+    const oauthHandled = sessionStorage.getItem('oauthHandled');
+    if (isAuthInProgress || isAuthLoading || user || oauthHandled) {
+      console.log('⏳ Esperando a que termine auth/carga o post-OAuth, no redirigir');
       return;
     }
     
