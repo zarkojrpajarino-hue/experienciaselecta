@@ -51,6 +51,35 @@ React.useEffect(() => {
   }
 }, [location.search, location.hash]);
 
+  // Intercambiar código OAuth por sesión si venimos del callback
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    const hasTokenInHash = location.hash?.includes('access_token=');
+
+    if ((code || hasTokenInHash) && !user) {
+      (async () => {
+        try {
+          setIsAuthInProgress(true);
+          if (code) {
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (error) {
+              console.error('OAuth exchange error:', error);
+            } else {
+              console.log('OAuth exchange success:', data?.session?.user?.email);
+            }
+          }
+          // Limpiar parámetros de la URL para evitar reintentos
+          if (window.location.pathname === '/checkout') {
+            window.history.replaceState({}, document.title, '/checkout');
+          }
+        } catch (e) {
+          console.error('OAuth exchange exception:', e);
+        }
+      })();
+    }
+  }, [location.search, location.hash, user?.id]);
+
   // Esperar a que termine la carga inicial de autenticación
   if (isAuthLoading || isAuthInProgress) {
     return (
