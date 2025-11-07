@@ -1,7 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 interface CarouselSlide {
@@ -108,11 +107,65 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           </div>
         </motion.div>
 
+        {/* Tarjeta desplegable con imagen ampliada - ARRIBA */}
+        <AnimatePresence>
+          {isImageOpen && (
+            <motion.div
+              data-expanded-carousel-image
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full max-w-xl md:max-w-2xl mx-auto mb-4 overflow-hidden"
+            >
+              <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
+                <div className="flex justify-end mb-2">
+                  <Button 
+                    onClick={() => {
+                      setIsImageOpen(false);
+                      // Auto-scroll después de cerrar
+                      setTimeout(() => {
+                        const imageSection = document.querySelector('[data-carousel-image-section]');
+                        if (imageSection) {
+                          const yOffset = -80;
+                          const y = imageSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                          window.scrollTo({ top: y, behavior: 'smooth' });
+                        }
+                      }, 100);
+                    }}
+                    className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                    size="icon"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <img
+                  src={currentSlide.image}
+                  alt="Imagen ampliada"
+                  className="w-full h-auto object-contain rounded-[1.5rem]"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Image Section */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div 
+            data-carousel-image-section
             className={`w-full max-w-2xl md:max-w-4xl mx-auto ${imageHeightClasses} relative cursor-pointer overflow-hidden rounded-[2rem]`}
-            onClick={() => setIsImageOpen(true)}
+            onClick={() => {
+              setIsImageOpen(true);
+              // Auto-scroll a la imagen ampliada
+              setTimeout(() => {
+                const expandedImage = document.querySelector('[data-expanded-carousel-image]');
+                if (expandedImage) {
+                  const yOffset = -80;
+                  const y = expandedImage.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+              }, 150);
+            }}
           >
             {slides.map((slide, index) => (
               <img
@@ -130,28 +183,6 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           </div>
         </div>
       </div>
-
-      {/* Image Modal */}
-      <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-white border-2 border-black/10 p-2 shadow-2xl rounded-[2rem] overflow-hidden">
-          <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
-          <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
-          <Button 
-            onClick={() => setIsImageOpen(false)} 
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-            size="icon"
-          >
-            <X className="h-6 w-6" />
-          </Button>
-          <div className="rounded-[1.5rem] overflow-hidden">
-            <img 
-              src={currentSlide.image} 
-              alt="Ampliado" 
-              className="w-full h-auto max-h-[80vh] object-contain"
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
     </section>
   );
 };

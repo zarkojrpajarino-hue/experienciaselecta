@@ -11,7 +11,7 @@ const EmptyCartPage = () => {
         <div className="space-y-4">
           <ShoppingCart className="w-24 h-24 mx-auto text-muted-foreground/30" />
           <h1 className="text-3xl font-bold text-foreground">
-            Has eliminado todas tus cestas
+            Vaya, parece que has eliminado todas tus cestas...
           </h1>
           <p className="text-muted-foreground text-lg">
             Tu carrito está vacío. Explora nuestro catálogo para encontrar las mejores cestas gourmet.

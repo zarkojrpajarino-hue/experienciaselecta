@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Gift, X, Home, Info } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Import basket images
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -221,10 +221,17 @@ const RegalosPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] pt-24 px-4 pb-12">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8 pt-32 md:pt-8">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">🎁 Tus Regalos</h1>
-        </div>
+      <div className="container mx-auto px-4 pt-20 md:pt-8 pb-20 max-w-4xl">
+        <Button
+          onClick={() => navigate("/")}
+          variant="link"
+          className="text-black hover:text-black/80 mb-4"
+        >
+          ← Volver al inicio
+        </Button>
+        <h1 className="text-4xl md:text-5xl font-poppins font-bold text-black mb-6 text-center">
+          🎁 Tus Regalos
+        </h1>
 
         {pendingGifts.length === 0 ? (
           <div className="text-center py-12">
@@ -239,47 +246,37 @@ const RegalosPage = () => {
               const categoryColor = categoryColors[gift.basket_category] || '#4A7050';
               
               return (
-                <div key={gift.id} className="relative">
-                  {/* Botón volver al inicio - fuera de la tarjeta */}
-                  <Button
-                    onClick={() => navigate('/')}
-                    variant="ghost"
-                    className="absolute -top-12 left-0 z-10 bg-white/90 hover:bg-white text-foreground shadow-md"
-                    size="sm"
-                  >
-                    <Home className="w-4 h-4 mr-2" />
-                    Volver al inicio
-                  </Button>
-                  
-                  <div className="bg-card rounded-lg p-6 border border-border shadow-lg">
-                    <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6">
-                      <div 
-                        className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
-                        onClick={() => setZoomedImage(basketImg)}
-                      >
-                        <img
-                          src={basketImg}
-                          alt={gift.basket_name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
-                          🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
-                        </h2>
-                        <p className="text-xs sm:text-sm text-muted-foreground mb-2 break-words">
-                          Te ha regalado: <strong className="break-words">{gift.basket_name}</strong>
-                        </p>
-                        {gift.personal_note && (
-                          <p className="text-xs sm:text-sm text-muted-foreground mb-2 italic break-words">
-                            Nota: "{gift.personal_note}"
+                  <div key={gift.id} className="relative">
+                    {/* Tarjeta del regalo */}
+                    <div className="bg-card rounded-lg p-6 border border-border shadow-lg">
+                      <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6">
+                        <div 
+                          className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
+                          onClick={() => setZoomedImage(basketImg)}
+                        >
+                          <img
+                            src={basketImg}
+                            alt={gift.basket_name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
+                            🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
+                          </h2>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-2 break-words">
+                            Te ha regalado: <strong className="break-words">{gift.basket_name}</strong>
                           </p>
-                        )}
+                          {gift.personal_note && (
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-2 italic break-words">
+                              Nota: "{gift.personal_note}"
+                            </p>
+                          )}
                           <p className="text-[0.6rem] sm:text-xs md:text-sm font-poppins font-bold text-center uppercase tracking-tight sm:tracking-wide mt-4 leading-tight text-black">
                             Rellena la información para que podamos enviártelo
                           </p>
+                        </div>
                       </div>
-                    </div>
 
                 <div className="space-y-4">
                   <div>
@@ -371,41 +368,41 @@ const RegalosPage = () => {
       </div>
     )}
 
-        {/* Image Zoom Modal */}
-        {zoomedImage && (
-          <div 
-            className="fixed inset-0 bg-white flex items-center justify-center z-50 p-4"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) {
-                setZoomedImage(null);
-              }
-            }}
-          >
-            <div 
-              className="relative bg-white border-4 border-black rounded-lg shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+        {/* Image Zoom Modal - Deployable card style */}
+        <AnimatePresence>
+          {zoomedImage && (
+            <motion.div
+              data-expanded-regalos-image
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xl md:max-w-2xl px-4 overflow-hidden"
+              onClick={() => setZoomedImage(null)}
             >
-              <Button 
-                onClick={() => setZoomedImage(null)} 
-                className="absolute top-2 right-2 z-50 h-10 w-10 rounded-full bg-black hover:bg-black/90 text-white shadow-xl" 
-                size="icon"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-              <img 
-                src={zoomedImage} 
-                alt="Cesta ampliada"
-                className="max-w-full max-h-[85vh] object-contain"
-                onLoad={(e) => {
-                  // Auto scroll to center the image
-                  setTimeout(() => {
-                    e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }, 100);
-                }}
-              />
-            </div>
-          </div>
-        )}
+              <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
+                <div className="flex justify-end mb-2">
+                  <Button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setZoomedImage(null);
+                    }}
+                    className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                    size="icon"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <img 
+                  src={zoomedImage} 
+                  alt="Cesta ampliada"
+                  className="w-full h-auto object-contain rounded-[1.5rem]"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

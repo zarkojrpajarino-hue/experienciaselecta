@@ -146,9 +146,9 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                 <h3 className="text-lg font-bold text-black">
                   {editedProfile.name || "Usuario"}
                 </h3>
-                <p className="text-sm text-black flex items-center gap-1">
-                  <Mail className="w-4 h-4" />
-                  {user?.email}
+                <p className="text-xs sm:text-sm text-black flex items-center gap-1 truncate max-w-full">
+                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <span className="truncate">{user?.email}</span>
                 </p>
               </div>
             </div>

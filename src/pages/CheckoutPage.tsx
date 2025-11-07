@@ -851,29 +851,29 @@ React.useEffect(() => {
                           <h4 className="font-semibold mb-2">Cestas seleccionadas:</h4>
                           <div className="space-y-2">
                             {currentPersonalItems.map((item) => (
-                              <div key={item.id} className="flex flex-col md:flex-row md:items-center justify-between p-1.5 md:p-2 bg-white rounded border gap-2">
-                                <div className="flex items-center gap-1.5 md:gap-2 flex-1 min-w-0">
-                                   <img 
-                                    src={item.imagen} 
-                                    alt={item.nombre} 
-                                    className="w-10 h-10 md:w-10 md:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
-                                     onClick={(e) => {
-                                       const el = e.currentTarget as HTMLImageElement;
-                                       const rect = el.getBoundingClientRect();
-                                       const gap = 8;
-                                       const previewSize = window.innerWidth < 768 ? 160 : 320; // w-40 / w-80
-                                       let left = rect.right + gap;
-                                       if (left + previewSize > window.innerWidth - gap) {
-                                         left = rect.left - previewSize - gap; // si no cabe a la derecha, pon a la izquierda
-                                       }
-                                       const top = rect.top + rect.height / 2; // centra verticalmente respecto a la miniatura
-                                       setImagePreview({ src: item.imagen, top, left });
-                                    }}
-                                  />
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-[11px] md:text-xs truncate">{item.nombre}</p>
-                                  </div>
-                                </div>
+                               <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-2 bg-white rounded border gap-2">
+                                 <div className="flex items-center gap-2 flex-1 min-w-0">
+                                    <img 
+                                     src={item.imagen} 
+                                     alt={item.nombre} 
+                                     className="w-12 h-12 sm:w-10 sm:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
+                                      onClick={(e) => {
+                                        setImagePreview({ src: item.imagen, top: 0, left: 0 });
+                                        // Auto-scroll a la imagen ampliada
+                                        setTimeout(() => {
+                                          const expandedImage = document.querySelector('[data-expanded-checkout-image]');
+                                          if (expandedImage) {
+                                            const yOffset = -80;
+                                            const y = expandedImage.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                                            window.scrollTo({ top: y, behavior: 'smooth' });
+                                          }
+                                        }, 150);
+                                     }}
+                                   />
+                                   <div className="flex-1 min-w-0">
+                                     <p className="font-medium text-xs sm:text-sm break-words">{item.nombre}</p>
+                                   </div>
+                                 </div>
                                 <div className="flex items-center justify-between md:justify-end gap-2 md:gap-3">
                                   <div className="flex items-center gap-1 md:gap-2">
                                     <Button
@@ -1124,9 +1124,9 @@ React.useEffect(() => {
                                     .map((it) => {
                                       const canSelect = canSelectBasketsForRecipient(index);
                                       return (
-                                         <div 
+                                          <div 
                                           key={it.uniqueId} 
-                                          className={`flex items-center justify-between p-2 rounded ${
+                                          className={`flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded gap-2 ${
                                             canSelect ? 'hover:bg-muted/50 cursor-pointer' : 'opacity-50 cursor-not-allowed bg-gray-100'
                                           }`}
                                           onClick={(e) => {
@@ -1142,26 +1142,34 @@ React.useEffect(() => {
                                             setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                           }}
                                         >
-                                         <div className="flex items-center space-x-2 flex-1">
+                                         <div className="flex items-center space-x-2 flex-1 min-w-0">
                                             <input
                                               type="checkbox"
                                               id={`basket-${it.uniqueId}-recipient-${index}`}
                                               checked={recipient.basketIds.includes(it.uniqueId)}
                                               disabled={!canSelect}
                                               readOnly
-                                              className="cursor-pointer"
+                                              className="cursor-pointer flex-shrink-0"
                                             />
                                             <img 
                                               src={it.imagen} 
                                               alt={it.nombre} 
-                                              className="w-10 h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold" 
+                                              className="w-12 h-12 sm:w-10 sm:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
                                                onClick={(e) => {
                                                  e.stopPropagation();
-                                                 const rect = (e.currentTarget as HTMLImageElement).getBoundingClientRect();
-                                                 setImagePreview({ src: it.imagen, top: rect.top, left: rect.right + 10 });
+                                                 setImagePreview({ src: it.imagen, top: 0, left: 0 });
+                                                 // Auto-scroll a la imagen ampliada
+                                                 setTimeout(() => {
+                                                   const expandedImage = document.querySelector('[data-expanded-checkout-image]');
+                                                   if (expandedImage) {
+                                                     const yOffset = -80;
+                                                     const y = expandedImage.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                                                     window.scrollTo({ top: y, behavior: 'smooth' });
+                                                   }
+                                                 }, 150);
                                               }}
                                             />
-                                            <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-sm ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+                                            <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-xs sm:text-sm break-words flex-1 ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
                                               {it.nombre}
                                             </label>
                                           </div>
@@ -1316,34 +1324,35 @@ React.useEffect(() => {
         </AnimatePresence>
       )}
 
-      {imagePreview && (
-        <AnimatePresence>
+      <AnimatePresence>
+        {imagePreview && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.3, type: 'spring' }}
-            style={{ 
-              position: 'fixed', 
-              top: `${imagePreview.top}px`, 
-              left: `${imagePreview.left}px`, 
-              transform: 'translateY(-50%)',
-              zIndex: 110
-            }}
+            data-expanded-checkout-image
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xl md:max-w-2xl px-4 overflow-hidden"
           >
-            <div className="relative bg-white border-2 border-black shadow-2xl rounded-lg p-1">
-              <button
-                onClick={() => setImagePreview(null)}
-                className="absolute -top-3 -right-3 z-50 h-7 w-7 md:h-8 md:w-8 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all duration-300 border-2 border-white flex items-center justify-center"
-                aria-label="Cerrar imagen"
-              >
-                <X className="h-3 w-3 md:h-4 md:w-4" />
-              </button>
-              <img src={imagePreview.src} alt="Vista ampliada" className="w-40 h-40 md:w-80 md:h-80 object-cover rounded-md" />
+            <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
+              <div className="flex justify-end mb-2">
+                <Button
+                  onClick={() => setImagePreview(null)}
+                  className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md"
+                  size="icon"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <img
+                src={imagePreview.src}
+                alt="Vista ampliada"
+                className="w-full h-auto object-contain rounded-[1.5rem]"
+              />
             </div>
           </motion.div>
-        </AnimatePresence>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* Auth Modal */}
       <AuthModal 
