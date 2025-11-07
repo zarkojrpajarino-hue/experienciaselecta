@@ -53,6 +53,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       if (currentAnonCart) {
         console.log('Preserving anonymous cart before OAuth:', currentAnonCart);
         localStorage.setItem('temp-cart-before-oauth', currentAnonCart);
+        localStorage.setItem('cart_backup', currentAnonCart);
       }
       
       // Redirigir de vuelta a nuestra app (no al callback de Supabase)
@@ -70,6 +71,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       })();
       const redirectUrl = `${baseOrigin}/checkout`;
       console.log('Google OAuth redirectTo:', redirectUrl);
+      try { localStorage.setItem('auth_redirect_url', redirectUrl); } catch {}
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',

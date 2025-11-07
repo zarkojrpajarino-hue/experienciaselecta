@@ -33,27 +33,53 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+      console.log('Auth state changed:', event, session);
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
+      
       if (event === 'SIGNED_IN' && session?.user) {
+        // Identificar usuario en RudderStack
         try {
-          // Identificar usuario en RudderStack si está disponible
-          // @ts-ignore
           const ra = (window as any).rudderanalytics;
           if (ra && typeof ra.identify === 'function') {
             ra.identify(session.user.id, {
               email: session.user.email,
               name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-              avatar: session.user.user_metadata?.avatar_url,
+              avatar_url: session.user.user_metadata?.avatar_url,
               provider: session.user.app_metadata?.provider || 'google'
             });
-            console.log('RudderStack: user identified after SIGNED_IN');
+            console.log('Usuario identificado en RudderStack:', session.user.id);
           }
-        } catch (e) {
-          console.warn('RudderStack identify failed:', e);
+        } catch (error) {
+          console.error('Error identificando usuario en RudderStack:', error);
         }
+
+        // Restaurar el carrito si existe un backup
+        try {
+          const cartBackup = localStorage.getItem('cart_backup') || localStorage.getItem('temp-cart-before-oauth');
+          if (cartBackup) {
+            localStorage.setItem('shopping-cart', cartBackup);
+            localStorage.removeItem('cart_backup');
+            localStorage.removeItem('temp-cart-before-oauth');
+            console.log('Carrito restaurado después del login');
+          }
+        } catch {}
+
+        // Redireccionar a la URL guardada
+        try {
+          const savedUrl = localStorage.getItem('auth_redirect_url') || '/checkout';
+          if (savedUrl) {
+            localStorage.removeItem('auth_redirect_url');
+            try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
+            try { localStorage.removeItem('oauthInProgress'); } catch {}
+            console.log('Redirigiendo a:', savedUrl);
+            // Usar setTimeout para asegurar que el estado se actualice primero
+            setTimeout(() => {
+              window.location.href = savedUrl;
+            }, 100);
+          }
+        } catch {}
       }
     });
 
