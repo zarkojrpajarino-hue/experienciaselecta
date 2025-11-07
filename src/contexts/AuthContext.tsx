@@ -56,15 +56,12 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }
 
         // Restaurar el carrito si existe un backup
-        try {
-          const cartBackup = localStorage.getItem('cart_backup') || localStorage.getItem('temp-cart-before-oauth');
-          if (cartBackup) {
-            localStorage.setItem('shopping-cart', cartBackup);
-            localStorage.removeItem('cart_backup');
-            localStorage.removeItem('temp-cart-before-oauth');
-            console.log('Carrito restaurado después del login');
-          }
-        } catch {}
+        const cartBackup = localStorage.getItem('cart_backup');
+        if (cartBackup) {
+          localStorage.setItem('shopping-cart', cartBackup);
+          localStorage.removeItem('cart_backup');
+          console.log('Carrito restaurado después del login');
+        }
 
         // Redireccionar a la URL guardada
         try {
