@@ -61,11 +61,11 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get orders completed 1+ hours ago that don't have reviews yet
-    const oneHourAgo = new Date();
-    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+    const now = new Date();
 
-    // Paso 1: Obtener todas las órdenes completadas hace más de 1 hora
+    // Paso 1: Obtener órdenes completadas hace más de 24 horas sin review
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
     const { data: completedOrders, error: fetchError } = await supabase
       .from('orders')
       .select(`
@@ -78,7 +78,7 @@ serve(async (req) => {
         )
       `)
       .eq('status', 'completed')
-      .lte('completed_at', oneHourAgo.toISOString());
+      .lte('completed_at', twentyFourHoursAgo.toISOString());
 
     if (fetchError) {
       console.error('Error fetching orders:', fetchError);
@@ -86,7 +86,7 @@ serve(async (req) => {
     }
 
     if (!completedOrders || completedOrders.length === 0) {
-      console.log('No completed orders found');
+      console.log('No completed orders found older than 24h');
       return new Response(
         JSON.stringify({ success: true, message: 'No completed orders' }),
         { 
@@ -109,7 +109,7 @@ serve(async (req) => {
     );
 
     if (ordersWithoutReviews.length === 0) {
-      console.log('No pending feedback reminders to send');
+      console.log('No orders without reviews found');
       return new Response(
         JSON.stringify({ success: true, message: 'No pending reminders' }),
         { 
@@ -119,13 +119,69 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Found ${ordersWithoutReviews.length} orders without feedback`);
+    console.log(`Found ${ordersWithoutReviews.length} orders without reviews`);
+
+    // Paso 4: Obtener info de recordatorios ya enviados
+    const orderIds = ordersWithoutReviews.map(o => o.id);
+    const { data: existingReminders } = await supabase
+      .from('review_reminders')
+      .select('*')
+      .in('order_id', orderIds);
+
+    const reminderMap = new Map(
+      existingReminders?.map(r => [r.order_id, r]) || []
+    );
+
+    // Paso 5: Determinar qué órdenes deben recibir email AHORA
+    const ordersToEmail = [];
+    
+    for (const order of ordersWithoutReviews) {
+      const reminder = reminderMap.get(order.id);
+      
+      if (!reminder) {
+        // Primera vez: enviar recordatorio inmediatamente (24h después de completar)
+        ordersToEmail.push({ order, reminderCount: 0 });
+      } else if (reminder.reminder_count >= 3) {
+        // Ya se enviaron 3 recordatorios, no enviar más
+        console.log(`Order ${order.id}: Max reminders (3) reached, skipping`);
+        continue;
+      } else if (reminder.next_send_at && new Date(reminder.next_send_at) <= now) {
+        // Es momento de enviar el siguiente recordatorio
+        ordersToEmail.push({ order, reminderCount: reminder.reminder_count });
+      } else {
+        console.log(`Order ${order.id}: Next reminder scheduled for ${reminder.next_send_at}`);
+      }
+    }
+
+    if (ordersToEmail.length === 0) {
+      console.log('No reminders to send at this time');
+      return new Response(
+        JSON.stringify({ success: true, message: 'No reminders due now' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200 
+        }
+      );
+    }
+
+    console.log(`Sending ${ordersToEmail.length} reminders`);
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
     let sentCount = 0;
     let errorCount = 0;
 
-    for (const order of ordersWithoutReviews) {
+    // Espaciado de recordatorios: 24h, 3 días, 7 días
+    const getNextSendTime = (count: number): Date | null => {
+      const base = new Date();
+      switch (count) {
+        case 0: return new Date(base.getTime() + 3 * 24 * 60 * 60 * 1000); // +3 días
+        case 1: return new Date(base.getTime() + 4 * 24 * 60 * 60 * 1000); // +4 días (total 7 días)
+        case 2: return null; // No más recordatorios
+        default: return null;
+      }
+    };
+
+    for (const { order, reminderCount } of ordersToEmail) {
       try {
         const customer = (order as any).customers;
         const customerName = customer?.name || 'cliente';
@@ -137,7 +193,8 @@ serve(async (req) => {
           continue;
         }
 
-        const reviewUrl = `https://experienciaselecta.com/review/${order.id}`;
+        // URL corregida: llevar a perfil con tab de orders
+        const reviewUrl = `https://experienciaselecta.com/perfil?tab=orders`;
         
         const emailContent = `
 ¡Hola ${customerName}!
@@ -237,7 +294,30 @@ El equipo de Experiencia Selecta
           html: htmlContent,
         });
 
-        console.log(`Feedback reminder sent to: ${customerEmail}`);
+        console.log(`Reminder ${reminderCount + 1}/3 sent to: ${customerEmail} for order ${order.id}`);
+
+        // Actualizar o crear registro de recordatorio
+        const newCount = reminderCount + 1;
+        const nextSend = getNextSendTime(newCount);
+
+        const { error: upsertError } = await supabase
+          .from('review_reminders')
+          .upsert({
+            order_id: order.id,
+            customer_id: order.customer_id,
+            reminder_count: newCount,
+            last_sent_at: new Date().toISOString(),
+            next_send_at: nextSend ? nextSend.toISOString() : null
+          }, {
+            onConflict: 'order_id'
+          });
+
+        if (upsertError) {
+          console.error(`Error updating reminder tracking for order ${order.id}:`, upsertError);
+        } else {
+          console.log(`Reminder tracking updated: ${newCount}/3, next: ${nextSend?.toISOString() || 'FINAL'}`);
+        }
+
         sentCount++;
 
       } catch (error: any) {

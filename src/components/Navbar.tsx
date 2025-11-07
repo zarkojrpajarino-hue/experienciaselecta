@@ -38,12 +38,15 @@ const Navbar = () => {
     }
   }, [user?.id, user?.email]);
 
-  // Listen for pending feedback changes (session-based)
+  // Listen for pending feedback changes (session-based or email reminders)
   useEffect(() => {
     const update = () => {
-      const hasPending = !!sessionStorage.getItem('pendingPurchaseFeedback');
+      const hasPurchasePending = !!sessionStorage.getItem('pendingPurchaseFeedback');
+      const hasEmailReminder = !!sessionStorage.getItem('emailReminderPending');
       const given = !!sessionStorage.getItem('feedbackGiven');
-      setHasPendingFeedback(hasPending && !given);
+      
+      // Mostrar badge si hay compra pendiente O recordatorio de email
+      setHasPendingFeedback((hasPurchasePending || hasEmailReminder) && !given);
     };
     update();
     window.addEventListener('pendingFeedbackChanged', update);
@@ -102,6 +105,30 @@ const Navbar = () => {
       const pendingCount = ordersData.filter(o => !reviewedOrderIds.has(o.id)).length;
       
       setPendingReviewsCount(pendingCount);
+
+      // Verificar si hay recordatorios de email enviados recientemente (últimas 72h)
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+      const { data: remindersData } = await supabase
+        .from('review_reminders')
+        .select('order_id, last_sent_at')
+        .eq('customer_id', customerData.id)
+        .gte('last_sent_at', threeDaysAgo.toISOString());
+
+      // Si hay recordatorios enviados recientemente para órdenes sin review, activar badge
+      if (remindersData && remindersData.length > 0) {
+        const hasRecentReminders = remindersData.some(
+          r => !reviewedOrderIds.has(r.order_id)
+        );
+        
+        if (hasRecentReminders) {
+          console.log('📧 Recordatorios de email detectados - activando badge de feedback');
+          // Simular que hay feedback pendiente vía sessionStorage
+          sessionStorage.setItem('emailReminderPending', 'true');
+          window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
+        }
+      }
     } catch (error) {
       console.error('Error checking pending reviews:', error);
     }

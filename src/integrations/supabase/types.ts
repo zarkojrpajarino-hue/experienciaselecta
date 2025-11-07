@@ -373,6 +373,61 @@ export type Database = {
         }
         Relationships: []
       }
+      review_reminders: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          last_sent_at: string
+          next_send_at: string | null
+          order_id: string
+          reminder_count: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          last_sent_at?: string
+          next_send_at?: string | null
+          order_id: string
+          reminder_count?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          last_sent_at?: string
+          next_send_at?: string | null
+          order_id?: string
+          reminder_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_reminders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_reminders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_reminders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "purchases"
+            referencedColumns: ["order_id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           basket_name: string
