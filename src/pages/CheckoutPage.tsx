@@ -52,7 +52,11 @@ const CheckoutPage = () => {
         try {
           const parsedCart = JSON.parse(cart);
           console.log('✅ Carrito actualizado en checkout:', parsedCart);
-          window.location.reload();
+          
+          // NO hacer reload, solo actualizar el estado local del carrito si existe
+          // Si tienes un estado setCartItems o similar, úsalo aquí
+          // setCartItems(parsedCart);
+          
         } catch (error) {
           console.error('❌ Error parseando carrito:', error);
         }
@@ -67,45 +71,60 @@ const CheckoutPage = () => {
       if (user) {
         console.log('✅ Usuario autenticado en checkout:', user.email);
         
+        // Marcar que necesitamos actualizar el UI
+        sessionStorage.setItem('needs_checkout_update', 'true');
+        
         if (cartRestored) {
           const cart = localStorage.getItem('shopping-cart');
           if (cart) {
-            console.log('🛒 Actualizando carrito en checkout tras auth');
-            window.location.reload();
+            console.log('🛒 Carrito disponible tras auth');
+            // Actualizar estado del carrito si es necesario
           }
         }
+        
+        // Forzar re-render sin reload - disparar un evento que el componente pueda usar
+        window.dispatchEvent(new Event('checkout-needs-update'));
       }
     };
 
     const handleForceRefresh = (event: CustomEvent) => {
-      console.log('🔄 Forzando refresh del checkout...', event.detail);
+      console.log('🔄 Evento force-refresh recibido...', event.detail);
       
       const cart = localStorage.getItem('shopping-cart');
       const authCompleted = sessionStorage.getItem('auth_completed');
       
       if (authCompleted === 'true' && cart) {
-        console.log('✅ Auth completada, actualizando checkout');
+        console.log('✅ Auth completada, marcando para actualización');
         sessionStorage.removeItem('auth_completed');
-        window.location.reload();
+        sessionStorage.setItem('needs_checkout_update', 'true');
+        
+        // Disparar actualización sin reload
+        window.dispatchEvent(new Event('checkout-needs-update'));
       }
     };
 
+    // Registrar listeners
     window.addEventListener('cart-restored', handleCartRestored as EventListener);
     window.addEventListener('auth-state-changed', handleAuthStateChanged as EventListener);
     window.addEventListener('force-checkout-refresh', handleForceRefresh as EventListener);
 
+    // Verificar si hay actualización pendiente al montar
     const authCompleted = sessionStorage.getItem('auth_completed');
-    if (authCompleted === 'true') {
-      console.log('✅ Auth completada detectada al montar checkout');
+    const needsUpdate = sessionStorage.getItem('needs_checkout_update');
+    
+    if (authCompleted === 'true' || needsUpdate === 'true') {
+      console.log('✅ Actualización pendiente detectada al montar');
       sessionStorage.removeItem('auth_completed');
+      sessionStorage.removeItem('needs_checkout_update');
       
       const cart = localStorage.getItem('shopping-cart');
       if (cart) {
-        console.log('🛒 Cargando carrito guardado');
-        window.location.reload();
+        console.log('🛒 Carrito disponible al montar checkout');
+        // Aquí solo loguea, no recargas
       }
     }
 
+    // Cleanup
     return () => {
       console.log('🧹 Checkout desmontado, limpiando listeners');
       window.removeEventListener('cart-restored', handleCartRestored as EventListener);

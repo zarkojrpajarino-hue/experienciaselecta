@@ -78,13 +78,15 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     console.log('🔄 Navegando a checkout...');
     
     if (window.location.pathname !== '/checkout') {
-      window.history.pushState({}, '', '/checkout');
-      window.dispatchEvent(new PopStateEvent('popstate'));
+      // Usar href directo en lugar de pushState
+      window.location.href = '/checkout';
+    } else {
+      // Si ya estamos en checkout, solo disparar evento
+      console.log('📍 Ya en checkout, disparando actualización...');
+      window.dispatchEvent(new CustomEvent('force-checkout-refresh', {
+        detail: { timestamp: Date.now() }
+      }));
     }
-    
-    window.dispatchEvent(new CustomEvent('force-checkout-refresh', {
-      detail: { timestamp: Date.now() }
-    }));
   };
 
   const handlePostAuthentication = async (currentSession: Session) => {
