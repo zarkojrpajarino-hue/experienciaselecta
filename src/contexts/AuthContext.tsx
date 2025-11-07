@@ -32,6 +32,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   
   const isProcessingRef = useRef(false);
   const lastEventRef = useRef<{ event: string; timestamp: number } | null>(null);
+  const mountedRef = useRef(true);
 
   const restoreCart = () => {
     const cartBackup = localStorage.getItem('cart_backup');
@@ -44,7 +45,8 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         window.dispatchEvent(new CustomEvent('cart-restored', { 
           detail: { 
             restored: true,
-            cart: JSON.parse(cartBackup)
+            cart: JSON.parse(cartBackup),
+            timestamp: Date.now()
           } 
         }));
         
@@ -74,21 +76,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
-  const navigateToCheckout = () => {
-    console.log('🔄 Navegando a checkout...');
-    
-    if (window.location.pathname !== '/checkout') {
-      // Usar href directo en lugar de pushState
-      window.location.href = '/checkout';
-    } else {
-      // Si ya estamos en checkout, solo disparar evento
-      console.log('📍 Ya en checkout, disparando actualización...');
-      window.dispatchEvent(new CustomEvent('force-checkout-refresh', {
-        detail: { timestamp: Date.now() }
-      }));
-    }
-  };
-
   const handlePostAuthentication = async (currentSession: Session) => {
     if (isProcessingRef.current) {
       console.log('⚠️ Ya procesando autenticación, ignorando');
@@ -100,56 +87,61 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     try {
       identifyUser(currentSession.user);
+      await new Promise(resolve => setTimeout(resolve, 150));
 
-      await new Promise(resolve => setTimeout(resolve, 100));
       const cartRestored = restoreCart();
       console.log('🛒 Carrito restaurado:', cartRestored);
 
       const isPendingCheckout = localStorage.getItem('pendingCheckout');
       const intendedRoute = localStorage.getItem('intendedRoute');
+      const currentPath = window.location.pathname;
       
-      console.log('📍 Estado:', { 
+      console.log('📍 Estado post-auth:', { 
         isPendingCheckout, 
         intendedRoute,
-        currentPath: window.location.pathname,
-        cartRestored
+        currentPath,
+        cartRestored,
+        hasCart: !!localStorage.getItem('shopping-cart')
       });
 
-      localStorage.removeItem('pendingCheckout');
       localStorage.removeItem('oauthInProgress');
       sessionStorage.setItem('auth_completed', 'true');
+      sessionStorage.setItem('auth_timestamp', Date.now().toString());
 
       const userName = currentSession.user.user_metadata?.name 
         || currentSession.user.user_metadata?.full_name 
         || currentSession.user.email?.split('@')[0] 
         || 'Usuario';
 
-      if (isPendingCheckout) {
+      if (isPendingCheckout === 'true') {
         console.log('✅ Checkout pendiente detectado');
+        localStorage.removeItem('pendingCheckout');
         
         await new Promise(resolve => setTimeout(resolve, 200));
         
         toast.success(`¡Bienvenido, ${userName}!`, {
           description: cartRestored 
-            ? 'Tu carrito se ha preservado correctamente.' 
-            : 'Ya puedes completar tu compra.',
-          duration: 3000,
+            ? 'Tu carrito se ha preservado. Completando checkout...' 
+            : 'Redirigiendo a checkout...',
+          duration: 2500,
         });
 
-        if (window.location.pathname !== '/checkout') {
-          await new Promise(resolve => setTimeout(resolve, 300));
-          navigateToCheckout();
+        if (currentPath !== '/checkout') {
+          await new Promise(resolve => setTimeout(resolve, 400));
+          console.log('🔄 Navegando a checkout...');
+          window.location.href = '/checkout';
         } else {
-          console.log('📍 Ya en checkout, disparando actualización...');
-          window.dispatchEvent(new CustomEvent('auth-state-changed', {
+          console.log('📍 Ya en checkout, notificando actualización...');
+          window.dispatchEvent(new CustomEvent('auth-checkout-ready', {
             detail: { 
               user: currentSession.user,
               session: currentSession,
-              cartRestored 
+              cartRestored,
+              timestamp: Date.now()
             }
           }));
         }
-      } else if (intendedRoute) {
+      } else if (intendedRoute && intendedRoute !== '/checkout') {
         console.log('🔄 Redirigiendo a ruta intencional:', intendedRoute);
         
         toast.success(`¡Bienvenido de nuevo, ${userName}!`, {
@@ -157,7 +149,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         });
         
         localStorage.removeItem('intendedRoute');
-        
         await new Promise(resolve => setTimeout(resolve, 300));
         window.location.href = intendedRoute;
       } else {
@@ -165,11 +156,13 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
           duration: 2000,
         });
         
-        if (window.location.pathname === '/checkout') {
-          window.dispatchEvent(new CustomEvent('auth-state-changed', {
+        if (currentPath === '/checkout') {
+          window.dispatchEvent(new CustomEvent('auth-checkout-ready', {
             detail: { 
               user: currentSession.user,
-              session: currentSession
+              session: currentSession,
+              cartRestored,
+              timestamp: Date.now()
             }
           }));
         }
@@ -182,12 +175,12 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setTimeout(() => {
         isProcessingRef.current = false;
         console.log('🔓 Flag de procesamiento reseteado');
-      }, 3000);
+      }, 2000);
     }
   };
 
   useEffect(() => {
-    let mounted = true;
+    mountedRef.current = true;
     
     const initAuth = async () => {
       try {
@@ -196,7 +189,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         
         if (error) {
           console.error('❌ Error obteniendo sesión:', error);
-          if (mounted) {
+          if (mountedRef.current) {
             setIsLoading(false);
           }
           return;
@@ -204,7 +197,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
         console.log('📍 Sesión inicial:', session?.user?.email || 'No session');
         
-        if (mounted) {
+        if (mountedRef.current) {
           setSession(session);
           setUser(session?.user ?? null);
           
@@ -220,7 +213,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }
       } catch (error) {
         console.error('❌ Error en initAuth:', error);
-        if (mounted) {
+        if (mountedRef.current) {
           setIsLoading(false);
         }
       }
@@ -230,7 +223,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
-        if (!mounted) {
+        if (!mountedRef.current) {
           console.log('⚠️ Componente desmontado, ignorando evento:', event);
           return;
         }
@@ -267,6 +260,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             ].forEach(key => localStorage.removeItem(key));
             
             sessionStorage.removeItem('auth_completed');
+            sessionStorage.removeItem('auth_timestamp');
             
             if (window.location.pathname === '/checkout') {
               window.location.href = '/';
@@ -292,7 +286,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     );
 
     return () => {
-      mounted = false;
+      mountedRef.current = false;
       subscription.unsubscribe();
       console.log('🧹 AuthProvider desmontado');
     };

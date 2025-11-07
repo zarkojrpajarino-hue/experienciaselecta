@@ -133,6 +133,104 @@ const CheckoutPage = () => {
     };
   }, []);
 
+  // Nuevo listener mejorado para auth-checkout-ready
+  React.useEffect(() => {
+    console.log('🎯 [Checkout] Montado, iniciando listeners...');
+
+    const handleCartRestored = (event: CustomEvent) => {
+      console.log('🛒 [Checkout] Carrito restaurado:', event.detail);
+      
+      try {
+        const cart = localStorage.getItem('shopping-cart');
+        if (cart) {
+          const parsedCart = JSON.parse(cart);
+          console.log('✅ [Checkout] Carrito parseado, items:', parsedCart.length);
+          window.dispatchEvent(new Event('checkout-cart-updated'));
+        }
+      } catch (error) {
+        console.error('❌ [Checkout] Error procesando carrito:', error);
+      }
+    };
+
+    const handleAuthCheckoutReady = (event: CustomEvent) => {
+      console.log('🔐 [Checkout] Auth lista:', event.detail);
+      
+      const { user, cartRestored } = event.detail;
+      
+      if (user) {
+        console.log('✅ [Checkout] Usuario:', user.email);
+        
+        const cart = localStorage.getItem('shopping-cart');
+        
+        if (cart && cartRestored) {
+          console.log('🛒 [Checkout] Carrito disponible tras auth');
+          sessionStorage.setItem('checkout_needs_refresh', 'true');
+          
+          setTimeout(() => {
+            window.dispatchEvent(new Event('checkout-force-update'));
+          }, 100);
+        }
+        
+        sessionStorage.removeItem('auth_completed');
+      }
+    };
+
+    const handleForceUpdate = () => {
+      console.log('🔄 [Checkout] Forzando actualización...');
+      
+      const needsRefresh = sessionStorage.getItem('checkout_needs_refresh');
+      
+      if (needsRefresh === 'true') {
+        sessionStorage.removeItem('checkout_needs_refresh');
+        console.log('✅ [Checkout] Actualización aplicada');
+      }
+    };
+
+    window.addEventListener('cart-restored', handleCartRestored as EventListener);
+    window.addEventListener('auth-checkout-ready', handleAuthCheckoutReady as EventListener);
+    window.addEventListener('checkout-force-update', handleForceUpdate);
+    window.addEventListener('checkout-cart-updated', handleForceUpdate);
+
+    const checkInitialState = () => {
+      const authCompleted = sessionStorage.getItem('auth_completed');
+      const authTimestamp = sessionStorage.getItem('auth_timestamp');
+      const now = Date.now();
+      
+      if (authCompleted === 'true' && authTimestamp) {
+        const timeDiff = now - parseInt(authTimestamp);
+        
+        if (timeDiff < 3000) {
+          console.log('✅ [Checkout] Auth reciente detectada al montar');
+          
+          const cart = localStorage.getItem('shopping-cart');
+          if (cart) {
+            console.log('🛒 [Checkout] Carrito disponible al montar');
+            sessionStorage.removeItem('auth_completed');
+            sessionStorage.removeItem('auth_timestamp');
+            
+            setTimeout(() => {
+              window.dispatchEvent(new Event('checkout-force-update'));
+            }, 150);
+          }
+        } else {
+          console.log('⚠️ [Checkout] Auth antigua, ignorando');
+          sessionStorage.removeItem('auth_completed');
+          sessionStorage.removeItem('auth_timestamp');
+        }
+      }
+    };
+
+    checkInitialState();
+
+    return () => {
+      console.log('🧹 [Checkout] Limpiando listeners');
+      window.removeEventListener('cart-restored', handleCartRestored as EventListener);
+      window.removeEventListener('auth-checkout-ready', handleAuthCheckoutReady as EventListener);
+      window.removeEventListener('checkout-force-update', handleForceUpdate);
+      window.removeEventListener('checkout-cart-updated', handleForceUpdate);
+    };
+  }, []);
+
   // Verificar si hay un proceso de autenticación en curso
 React.useEffect(() => {
   const oauthInProgress = localStorage.getItem('oauthInProgress');
