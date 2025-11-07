@@ -40,10 +40,10 @@ serve(async (req) => {
     }
 
     const timestamp = parseInt(requestTimestamp, 10);
-    const now = Date.now();
+    const nowTimestamp = Date.now();
     const fiveMinutes = 5 * 60 * 1000;
 
-    if (isNaN(timestamp) || Math.abs(now - timestamp) > fiveMinutes) {
+    if (isNaN(timestamp) || Math.abs(nowTimestamp - timestamp) > fiveMinutes) {
       console.error('Invalid or expired timestamp');
       return new Response(
         JSON.stringify({ error: 'Request expired or invalid timestamp' }),
