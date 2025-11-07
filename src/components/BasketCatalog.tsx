@@ -1481,7 +1481,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                       </div>
                       
                       {/* Añadir al carrito - Justo debajo de la imagen */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row items-center gap-2 w-full">
                         <AddToCartButton 
                           onClick={(e) => handleAddToCart(basket, e)}
                           price={basket.precio}
@@ -1491,14 +1491,14 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                           {addedBasketId === basket.id && (
                             <motion.div
                               key={`added-top-${basket.id}`}
-                              initial={{ opacity: 0, scale: 0.5, x: -20 }}
-                              animate={{ opacity: 1, scale: 1, x: 0 }}
-                              exit={{ opacity: 0, scale: 0.5, x: -20 }}
+                              initial={{ opacity: 0, scale: 0.5, y: -10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.5, y: -10 }}
                               transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 20 }}
-                              className="flex items-center gap-2 bg-green-500 text-white px-3 py-1.5 rounded-lg shadow-lg font-bold text-xs whitespace-nowrap border border-green-400"
+                              className="flex items-center gap-2 bg-green-500 text-white px-3 py-1.5 rounded-lg shadow-lg font-bold text-xs border border-green-400 text-center max-w-full"
                             >
-                              <span>✓</span>
-                              <span>{basket.nombre} añadida</span>
+                              <span className="flex-shrink-0">✓</span>
+                              <span className="break-words line-clamp-2">{basket.nombre} añadida</span>
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -1722,7 +1722,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                             )}
 
                             <div className="flex flex-col gap-2">
-                              <div className="flex justify-center items-center gap-3 flex-wrap">
+                              <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full">
                                 <AddToCartButton 
                                   onClick={(e) => handleAddToCart(basket, e)}
                                   price={basket.precio}
@@ -1732,19 +1732,19 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                                   {addedBasketId === basket.id && (
                                     <motion.div
                                       key={`added-${basket.id}`}
-                                      initial={{ opacity: 0, scale: 0.5, x: -20 }}
-                                      animate={{ opacity: 1, scale: 1, x: 0 }}
-                                      exit={{ opacity: 0, scale: 0.5, x: -20 }}
+                                      initial={{ opacity: 0, scale: 0.5, y: -10 }}
+                                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                                      exit={{ opacity: 0, scale: 0.5, y: -10 }}
                                       transition={{ 
                                         duration: 0.3,
                                         type: "spring",
                                         stiffness: 300,
                                         damping: 20
                                       }}
-                                      className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-xl shadow-xl font-bold text-xs sm:text-sm whitespace-nowrap border-2 border-green-400"
+                                      className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-xl shadow-xl font-bold text-xs sm:text-sm border-2 border-green-400 text-center max-w-full"
                                     >
-                                      <span className="text-lg">✓</span>
-                                      <span>¡{basket.nombre} añadida!</span>
+                                      <span className="text-lg flex-shrink-0">✓</span>
+                                      <span className="break-words line-clamp-2">¡{basket.nombre} añadida!</span>
                                     </motion.div>
                                   )}
                                 </AnimatePresence>

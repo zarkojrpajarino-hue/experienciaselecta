@@ -85,12 +85,12 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
         // Buscar el contenedor de la imagen ampliada (ahora está arriba)
         const expandedImageContainer = document.querySelector('[data-expanded-image]');
         if (expandedImageContainer) {
-          expandedImageContainer.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
-          });
+          // Scroll con offset para evitar que quede cortado en móvil
+          const yOffset = -80;
+          const y = expandedImageContainer.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
-      }, 350); // Esperar a que la animación de expansión esté más avanzada
+      }, 150); // Reducir tiempo para móvil
     }
   };
 
