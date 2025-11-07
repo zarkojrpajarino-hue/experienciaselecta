@@ -116,35 +116,6 @@ React.useEffect(() => {
     );
   }
 
-  // Redirigir si el carrito está vacío y NO hay auth en progreso
-  React.useEffect(() => {
-    // NO redirigir si:
-    // - Hay auth en progreso
-    // - Está cargando auth
-    // - Usuario está autenticado (el carrito puede estar cargándose)
-    // - Acabamos de completar un flujo OAuth (flag temporal)
-    const oauthHandled = sessionStorage.getItem('oauthHandled');
-    if (isAuthInProgress || isAuthLoading || user || oauthHandled) {
-      console.log('⏳ Esperando a que termine auth/carga o post-OAuth, no redirigir');
-      return;
-    }
-    
-    // Evitar redirigir si hay carrito guardado en localStorage (esperando a que el contexto lo cargue)
-    try {
-      const anonCart = JSON.parse(localStorage.getItem('shopping-cart') || '[]');
-      if ((anonCart?.length ?? 0) > 0 || localStorage.getItem('pendingCheckout')) {
-        console.log('📦 Carrito detectado en localStorage, no redirigir');
-        return;
-      }
-    } catch {}
-    
-    // Solo redirigir si NO hay usuario Y el carrito está realmente vacío
-    if (cart.length === 0) {
-      console.log('⚠️ Carrito vacío sin usuario, redirigiendo a página de carrito vacío');
-      navigate('/carrito-vacio', { replace: true });
-    }
-  }, [cart.length, navigate, isAuthInProgress, isAuthLoading, user]);
-
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
   const giftItems = cart.filter((it: any) => it.isGift);
@@ -178,6 +149,24 @@ React.useEffect(() => {
       setActiveSection('gift');
     }
   }, [currentPersonalItems.length, giftItems.length, activeSection]);
+
+  // Redirigir si el carrito está completamente vacío
+  React.useEffect(() => {
+    // Solo verificar después de que auth termine de cargar
+    if (isAuthLoading || isAuthInProgress) {
+      return;
+    }
+    
+    // Si el carrito está completamente vacío (sin items personales ni regalos)
+    if (cart.length === 0 && currentPersonalItems.length === 0 && giftItems.length === 0) {
+      console.log('⚠️ Carrito completamente vacío, redirigiendo...');
+      // Pequeño delay para asegurar que no es un estado transitorio
+      const timer = setTimeout(() => {
+        navigate('/carrito-vacio', { replace: true });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [cart.length, currentPersonalItems.length, giftItems.length, navigate, isAuthLoading, isAuthInProgress]);
 
   // Expandir items de regalo por cantidad para asignación individual
   const expandedGiftItems = React.useMemo(() => {
@@ -1148,7 +1137,7 @@ React.useEffect(() => {
                                               id={`basket-${it.uniqueId}-recipient-${index}`}
                                               checked={recipient.basketIds.includes(it.uniqueId)}
                                               disabled={!canSelect}
-                                              readOnly
+                                              onChange={() => {}} 
                                               className="cursor-pointer flex-shrink-0"
                                             />
                                             <img 
