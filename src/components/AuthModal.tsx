@@ -70,7 +70,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
-            redirect_to: finalRedirectUrl
+            redirect_to: 'https://experienciaselecta.com/checkout'
           }
         }
       });
