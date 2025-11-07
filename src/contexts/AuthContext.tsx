@@ -37,6 +37,24 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
+      if (event === 'SIGNED_IN' && session?.user) {
+        try {
+          // Identificar usuario en RudderStack si está disponible
+          // @ts-ignore
+          const ra = (window as any).rudderanalytics;
+          if (ra && typeof ra.identify === 'function') {
+            ra.identify(session.user.id, {
+              email: session.user.email,
+              name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
+              avatar: session.user.user_metadata?.avatar_url,
+              provider: session.user.app_metadata?.provider || 'google'
+            });
+            console.log('RudderStack: user identified after SIGNED_IN');
+          }
+        } catch (e) {
+          console.warn('RudderStack identify failed:', e);
+        }
+      }
     });
 
     // THEN check for existing session
