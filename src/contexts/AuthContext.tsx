@@ -66,7 +66,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     console.log('   👤 session:', session ? 'PRESENTE' : 'AUSENTE');
     console.log('   ✋ oauthHandled:', oauthHandled);
 
-    if ((code || hasTokenInHash) && !session && !oauthHandled) {
+    if ((code || hasTokenInHash) && !oauthHandled) {
       console.log('✅ Condiciones cumplidas, procesando OAuth...');
       (async () => {
         try {

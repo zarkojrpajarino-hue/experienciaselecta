@@ -55,20 +55,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         localStorage.setItem('temp-cart-before-oauth', currentAnonCart);
       }
       
-      // CRÍTICO: Siempre redirigir a checkout después de Google OAuth
-      const baseOrigin = (() => {
-        try {
-          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
-          if (topOrigin && topOrigin !== window.location.origin) {
-            console.log('Using top window origin for OAuth redirect:', topOrigin);
-            return topOrigin;
-          }
-        } catch (e) {
-          console.warn('Could not read top origin, using current origin:', e);
-        }
-        return window.location.origin;
-      })();
-      const redirectUrl = `${baseOrigin}/checkout`;
+      // CRÍTICO: Usar el callback de Supabase directamente (autorizado en Google Console)
+      const redirectUrl = 'https://tyorpbzvjnasyaqbggcp.supabase.co/auth/v1/callback';
       console.log('Google OAuth redirectTo:', redirectUrl);
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
