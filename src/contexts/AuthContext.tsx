@@ -53,21 +53,27 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
           || session.user.email?.split('@')[0] 
           || 'Usuario';
         
-        toast.success(`¡Bienvenido, ${userName}!`);
-
-        // Verificar si hay checkout pendiente
-        const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+        console.log('✅ Usuario logueado:', userName);
         
-        if (hasPendingCheckout === 'true') {
-          console.log('✅ Checkout pendiente detectado, redirigiendo...');
-          localStorage.removeItem('pendingCheckout');
-          localStorage.removeItem('oauthInProgress');
-          
-          // Dar tiempo para que el toast se muestre
-          setTimeout(() => {
-            window.location.href = '/checkout';
-          }, 500);
-        }
+        // Limpiar todos los flags de OAuth
+        localStorage.removeItem('pendingCheckout');
+        localStorage.removeItem('oauthInProgress');
+        localStorage.removeItem('temp-cart-before-oauth');
+        sessionStorage.removeItem('oauthHandled');
+        
+        // SIEMPRE redirigir a checkout después del login
+        console.log('🔄 Redirigiendo a checkout...');
+        
+        toast.success(`¡Bienvenido, ${userName}!`, {
+          description: 'Redirigiendo a checkout...',
+          duration: 2000,
+        });
+        
+        // Pequeño delay para que se vea el toast
+        setTimeout(() => {
+          console.log('✅ Ejecutando redirección a /checkout');
+          window.location.href = '/checkout';
+        }, 800);
       }
     });
 
