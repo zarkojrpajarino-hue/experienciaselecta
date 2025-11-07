@@ -54,6 +54,20 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
           || 'Usuario';
         
         toast.success(`¡Bienvenido, ${userName}!`);
+
+        // Verificar si hay checkout pendiente
+        const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+        
+        if (hasPendingCheckout === 'true') {
+          console.log('✅ Checkout pendiente detectado, redirigiendo...');
+          localStorage.removeItem('pendingCheckout');
+          localStorage.removeItem('oauthInProgress');
+          
+          // Dar tiempo para que el toast se muestre
+          setTimeout(() => {
+            window.location.href = '/checkout';
+          }, 500);
+        }
       }
     });
 
