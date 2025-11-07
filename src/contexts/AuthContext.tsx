@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import type { ReactNode, FC } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -29,112 +29,159 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const isProcessingRef = useRef(false);
+  const lastEventRef = useRef<{ event: string; timestamp: number } | null>(null);
+
+  const restoreCart = () => {
+    const cartBackup = localStorage.getItem('cart_backup');
+    if (cartBackup) {
+      try {
+        localStorage.setItem('shopping-cart', cartBackup);
+        localStorage.removeItem('cart_backup');
+        console.log('✅ Carrito restaurado');
+        return true;
+      } catch (error) {
+        console.error('❌ Error restaurando carrito:', error);
+        return false;
+      }
+    }
+    return false;
+  };
+
+  const identifyUser = (user: User) => {
+    try {
+      const ra = (window as any).rudderanalytics;
+      if (ra && typeof ra.identify === 'function') {
+        ra.identify(user.id, {
+          email: user.email,
+          name: user.user_metadata?.full_name || user.user_metadata?.name,
+          avatar_url: user.user_metadata?.avatar_url,
+          provider: user.app_metadata?.provider || 'email'
+        });
+        console.log('✅ Usuario identificado en RudderStack:', user.email);
+      }
+    } catch (error) {
+      console.error('❌ Error identificando en RudderStack:', error);
+    }
+  };
 
   useEffect(() => {
-    let isProcessing = false;
+    let mounted = true;
     
-    // Primero verificar si hay una sesión existente
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('📍 Initial session check:', session?.user?.email || 'No session');
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-      
-      // Si ya hay sesión al cargar, restaurar carrito inmediatamente
-      if (session?.user) {
-        const cartBackup = localStorage.getItem('cart_backup');
-        if (cartBackup) {
-          try {
-            localStorage.setItem('shopping-cart', cartBackup);
-            localStorage.removeItem('cart_backup');
-            console.log('✅ Carrito restaurado en carga inicial');
-          } catch (error) {
-            console.error('❌ Error restaurando carrito:', error);
+    const initAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('❌ Error obteniendo sesión:', error);
+          if (mounted) {
+            setIsLoading(false);
           }
+          return;
+        }
+
+        console.log('📍 Sesión inicial:', session?.user?.email || 'No session');
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            restoreCart();
+          }
+          
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('❌ Error en initAuth:', error);
+        if (mounted) {
+          setIsLoading(false);
         }
       }
-    });
+    };
 
-    // Configurar listener de cambios de autenticación
+    initAuth();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('🔔 Auth event:', event, session?.user?.email || 'No user');
-        
-        // Prevenir procesamiento múltiple del mismo evento
-        if (isProcessing) {
-          console.log('⚠️ Ya procesando evento, ignorando duplicado');
+      async (event, currentSession) => {
+        if (!mounted) return;
+
+        const now = Date.now();
+        if (lastEventRef.current && 
+            lastEventRef.current.event === event && 
+            now - lastEventRef.current.timestamp < 1000) {
+          console.log('⚠️ Evento duplicado ignorado:', event);
           return;
         }
         
-        setSession(session);
-        setUser(session?.user ?? null);
+        lastEventRef.current = { event, timestamp: now };
+        console.log('🔔 Auth event:', event, currentSession?.user?.email || 'No user');
+
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
         setIsLoading(false);
 
-        // SOLO manejar el evento SIGNED_IN aquí
-        if (event === 'SIGNED_IN' && session?.user) {
-          isProcessing = true;
-          console.log('✅ Usuario autenticado:', session.user.email);
-          
-          // 1. Identificar en RudderStack
+        if (event === 'SIGNED_IN' && currentSession?.user) {
+          if (isProcessingRef.current) {
+            console.log('⚠️ Ya procesando SIGNED_IN, ignorando');
+            return;
+          }
+
+          isProcessingRef.current = true;
+          console.log('✅ Usuario autenticado:', currentSession.user.email);
+
           try {
-            const ra = (window as any).rudderanalytics;
-            if (ra && typeof ra.identify === 'function') {
-              ra.identify(session.user.id, {
-                email: session.user.email,
-                name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-                avatar_url: session.user.user_metadata?.avatar_url,
-                provider: session.user.app_metadata?.provider || 'google'
+            identifyUser(currentSession.user);
+            restoreCart();
+
+            const isPendingCheckout = localStorage.getItem('pendingCheckout');
+            
+            if (isPendingCheckout) {
+              console.log('🔄 Redirigiendo a checkout...');
+              
+              localStorage.removeItem('pendingCheckout');
+              localStorage.removeItem('oauthInProgress');
+              
+              const userName = currentSession.user.user_metadata?.name 
+                || currentSession.user.user_metadata?.full_name 
+                || currentSession.user.email?.split('@')[0] 
+                || 'Usuario';
+              
+              toast.success(`¡Bienvenido, ${userName}!`, {
+                description: 'Tu carrito se ha preservado correctamente.',
+                duration: 3000,
               });
-              console.log('✅ Usuario identificado en RudderStack');
+
+              sessionStorage.setItem('auth_completed', 'true');
             }
           } catch (error) {
-            console.error('❌ Error identificando en RudderStack:', error);
+            console.error('❌ Error en post-autenticación:', error);
+          } finally {
+            setTimeout(() => {
+              isProcessingRef.current = false;
+            }, 2000);
           }
+        }
 
-          // 2. Restaurar carrito si existe backup
-          const cartBackup = localStorage.getItem('cart_backup');
-          if (cartBackup) {
-            try {
-              localStorage.setItem('shopping-cart', cartBackup);
-              localStorage.removeItem('cart_backup');
-              console.log('✅ Carrito restaurado');
-            } catch (error) {
-              console.error('❌ Error restaurando carrito:', error);
-            }
-          }
+        if (event === 'SIGNED_OUT') {
+          console.log('👋 Usuario cerró sesión');
+          localStorage.removeItem('pendingCheckout');
+          localStorage.removeItem('oauthInProgress');
+          localStorage.removeItem('cart_backup');
+          sessionStorage.removeItem('auth_completed');
+        }
 
-          // 3. Verificar si venimos de OAuth (tiene el flag pendingCheckout)
-          const isPendingCheckout = localStorage.getItem('pendingCheckout');
-          
-          if (isPendingCheckout) {
-            console.log('🔄 Usuario debe volver a checkout...');
-            localStorage.removeItem('pendingCheckout');
-            localStorage.removeItem('oauthInProgress');
-            
-            // Mostrar toast de bienvenida
-            const userName = session.user.user_metadata?.name 
-              || session.user.user_metadata?.full_name 
-              || session.user.email?.split('@')[0] 
-              || 'Usuario';
-            
-            toast.success(`¡Bienvenido, ${userName}!`, {
-              description: 'Tu carrito se ha preservado correctamente.',
-              duration: 3000,
-            });
-
-            // Marcar que necesitamos navegar (lo manejará el componente Checkout)
-            sessionStorage.setItem('auth_completed', 'true');
-          }
-          
-          // Resetear flag después de 2 segundos
-          setTimeout(() => {
-            isProcessing = false;
-          }, 2000);
+        if (event === 'TOKEN_REFRESHED') {
+          console.log('🔄 Token refrescado');
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (

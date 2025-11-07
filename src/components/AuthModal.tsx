@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, ArrowRight } from "lucide-react";
+import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -24,42 +24,69 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const [resendSeconds, setResendSeconds] = useState(0);
   const [lastEmailSent, setLastEmailSent] = useState<string>("");
 
-  // Guardar la ruta/intención actual al abrir el modal y limpiar flags obsoletos
   useEffect(() => {
     if (isOpen) {
       const intended = window.location.pathname + window.location.search + window.location.hash;
       localStorage.setItem('intendedRoute', intended);
       
-      // Limpiar flag de OAuth al abrir el modal para permitir nuevos intentos
-      try { localStorage.removeItem('oauthInProgress'); } catch {}
+      const flags = ['oauthInProgress', 'auth_error'];
+      flags.forEach(flag => {
+        try {
+          localStorage.removeItem(flag);
+        } catch (error) {
+          console.warn(`No se pudo limpiar ${flag}:`, error);
+        }
+      });
     }
   }, [isOpen]);
 
   useEffect(() => {
     if (resendSeconds <= 0) return;
-    const t = setInterval(() => setResendSeconds((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
+    const timer = setInterval(() => {
+      setResendSeconds(prev => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
   }, [resendSeconds]);
+
+  const getRedirectUrl = () => {
+    try {
+      const topOrigin = window.top?.location?.origin;
+      if (topOrigin && topOrigin !== window.location.origin) {
+        console.log('✅ Usando origen de ventana superior:', topOrigin);
+        return topOrigin;
+      }
+    } catch (error) {
+      console.warn('⚠️ No se pudo acceder al origen superior:', error);
+    }
+    return window.location.origin;
+  };
+
+  const saveCartBackup = () => {
+    const currentCart = localStorage.getItem('shopping-cart');
+    if (currentCart) {
+      try {
+        localStorage.setItem('cart_backup', currentCart);
+        console.log('💾 Carrito guardado');
+        return true;
+      } catch (error) {
+        console.error('❌ Error guardando carrito:', error);
+        return false;
+      }
+    }
+    return false;
+  };
 
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
+      console.log('🚀 Iniciando OAuth con Google...');
       
-      console.log('🚀 Iniciando login con Google...');
+      saveCartBackup();
       
-      // 1. Guardar el carrito actual
-      const currentCart = localStorage.getItem('shopping-cart');
-      if (currentCart) {
-        localStorage.setItem('cart_backup', currentCart);
-        console.log('💾 Carrito guardado');
-      }
-      
-      // 2. Marcar que estamos en proceso de OAuth para checkout
       localStorage.setItem('pendingCheckout', 'true');
       localStorage.setItem('oauthInProgress', 'true');
       
-      // 3. Iniciar OAuth con Google
-      const redirectUrl = window.location.origin;
+      const redirectUrl = getRedirectUrl();
       console.log('🔗 OAuth redirectTo:', redirectUrl);
       
       const { error } = await supabase.auth.signInWithOAuth({
@@ -69,74 +96,65 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
-          }
+          },
+          skipBrowserRedirect: false,
         }
       });
 
       if (error) {
-        console.error('❌ Error en OAuth:', error);
-        
-        // Limpiar flags si falla
-        localStorage.removeItem('pendingCheckout');
-        localStorage.removeItem('oauthInProgress');
-        localStorage.removeItem('cart_backup');
-        
-        toast({
-          variant: "destructive",
-          title: "No se pudo iniciar sesión",
-          description: error.message || 'Inténtalo de nuevo',
-        });
-        
-        setIsLoading(false);
+        throw error;
       }
       
-    } catch (error: any) {
-      console.error('❌ Error inesperado:', error);
-      
-      // Limpiar flags si falla
+      console.warn('⚠️ OAuth no redirigió, limpiando flags...');
       localStorage.removeItem('pendingCheckout');
       localStorage.removeItem('oauthInProgress');
-      localStorage.removeItem('cart_backup');
+      
+    } catch (error: any) {
+      console.error('❌ Error en OAuth:', error);
+      
+      ['pendingCheckout', 'oauthInProgress', 'cart_backup'].forEach(flag => {
+        localStorage.removeItem(flag);
+      });
       
       toast({
         variant: "destructive",
-        title: "Error inesperado",
-        description: 'Por favor, inténtalo de nuevo',
+        title: "Error al iniciar sesión con Google",
+        description: error.message || 'Por favor, inténtalo de nuevo',
       });
       
       setIsLoading(false);
     }
   };
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    return emailRegex.test(email.trim().toLowerCase());
+  };
+
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isLoading) return;
+    
+    const emailClean = email.trim().toLowerCase();
+    
+    if (!validateEmail(emailClean)) {
+      toast({
+        variant: "destructive",
+        title: "Email inválido",
+        description: "Por favor, introduce un email válido (ej. usuario@dominio.com)",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const emailClean = email.trim().toLowerCase();
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailClean);
-      if (!emailValid) {
-        throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
-      }
-
-      // CRÍTICO: Establecer flag ANTES de OTP para preservar carrito
       localStorage.setItem('pendingCheckout', 'true');
       
-      // CRÍTICO: Redirigir SIEMPRE al checkout tras login por email OTP
-      const baseOrigin = (() => {
-        try {
-          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
-          if (topOrigin && topOrigin !== window.location.origin) {
-            console.log('Using top window origin for OTP redirect:', topOrigin);
-            return topOrigin;
-          }
-        } catch (e) {
-          console.warn('Could not read top origin (OTP), using current origin:', e);
-        }
-        return window.location.origin;
-      })();
-      const redirectUrl = `${baseOrigin}/checkout`;
-      console.log('Email OTP redirectTo:', redirectUrl);
+      const redirectUrl = `${getRedirectUrl()}/checkout`;
+      console.log('📧 Enviando OTP, redirectTo:', redirectUrl);
+      
       const { error } = await supabase.auth.signInWithOtp({
         email: emailClean,
         options: {
@@ -146,27 +164,30 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       });
 
       if (error) {
-        localStorage.removeItem('pendingCheckout'); // Limpiar si falla
+        localStorage.removeItem('pendingCheckout');
         throw error;
       }
 
       setShowCodeInput(true);
       setLastEmailSent(emailClean);
       setResendSeconds(30);
+      
       toast({
         title: "¡Código enviado!",
         description: "Revisa tu correo e introduce el código de verificación.",
       });
     } catch (error: any) {
-      console.error('Send code error:', error);
-      const msg = (error?.message || '').toString();
-      const friendly = msg.includes('email')
+      console.error('❌ Error enviando código:', error);
+      
+      const errorMessage = error.message?.toLowerCase() || '';
+      const friendlyMessage = errorMessage.includes('email') || errorMessage.includes('valid')
         ? 'El email no es válido. Revísalo e inténtalo de nuevo.'
-        : 'No se pudo enviar el código de verificación. Inténtalo de nuevo en unos segundos.';
+        : 'No se pudo enviar el código. Inténtalo de nuevo en unos segundos.';
+      
       toast({
         variant: "destructive",
         title: "Error al enviar el código",
-        description: friendly,
+        description: friendlyMessage,
       });
     } finally {
       setIsLoading(false);
@@ -174,101 +195,122 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   };
 
   const handleResendCode = async () => {
-    if (resendSeconds > 0) return;
+    if (resendSeconds > 0 || isLoading) return;
+    
+    const targetEmail = (lastEmailSent || email).trim().toLowerCase();
+    
+    if (!validateEmail(targetEmail)) {
+      toast({
+        variant: "destructive",
+        title: "Email inválido",
+        description: "Por favor, introduce un email válido",
+      });
+      return;
+    }
+
     setIsLoading(true);
+    
     try {
-      const targetEmail = (lastEmailSent || email).trim().toLowerCase();
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(targetEmail);
-      if (!emailValid) {
-        throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
-      }
-      const baseOrigin = (() => {
-        try {
-          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
-          if (topOrigin && topOrigin !== window.location.origin) {
-            console.log('Using top window origin for OTP resend redirect:', topOrigin);
-            return topOrigin;
-          }
-        } catch (e) {
-          console.warn('Could not read top origin (OTP resend), using current origin:', e);
-        }
-        return window.location.origin;
-      })();
-      const redirectUrl = `${baseOrigin}/checkout`;
+      const redirectUrl = `${getRedirectUrl()}/checkout`;
+      
       const { error } = await supabase.auth.signInWithOtp({
         email: targetEmail,
-        options: { shouldCreateUser: true, emailRedirectTo: redirectUrl },
+        options: { 
+          shouldCreateUser: true, 
+          emailRedirectTo: redirectUrl 
+        },
       });
+      
       if (error) throw error;
+      
       setLastEmailSent(targetEmail);
       setResendSeconds(30);
-      toast({ title: "Código reenviado", description: `Hemos reenviado el código a ${targetEmail}.` });
+      
+      toast({ 
+        title: "Código reenviado", 
+        description: `Hemos reenviado el código a ${targetEmail}` 
+      });
     } catch (error: any) {
-      console.error('Resend code error:', error);
+      console.error('❌ Error reenviando código:', error);
       toast({
         variant: "destructive",
         title: "No se pudo reenviar",
-        description: error.message || 'Inténtalo de nuevo en unos segundos.',
+        description: error.message || 'Inténtalo de nuevo en unos segundos',
       });
     } finally {
       setIsLoading(false);
     }
   };
+
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isLoading) return;
+    
+    const code = verificationCode.trim();
+    if (code.length !== 6) {
+      toast({
+        variant: "destructive",
+        title: "Código inválido",
+        description: "El código debe tener 6 dígitos",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const emailClean = email.trim().toLowerCase();
+      
       const { error } = await supabase.auth.verifyOtp({
         email: emailClean,
-        token: verificationCode.trim(),
+        token: code,
         type: 'email',
       });
 
       if (error) throw error;
 
-      // Send welcome email for new users
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        try {
-          // Check if this is a new user by checking if profile was just created
-          const { data: profiles } = await supabase
+      console.log('✅ Código verificado correctamente');
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          const { data: profiles, error: profileError } = await supabase
             .from('profiles')
             .select('created_at')
-            .eq('user_id', session.user.id);
+            .eq('user_id', session.user.id)
+            .single();
 
-          if (profiles && profiles.length > 0) {
-            const createdAt = new Date(profiles[0].created_at);
-            const now = new Date();
-            const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
+          if (!profileError && profiles) {
+            const createdAt = new Date(profiles.created_at);
+            const ageInSeconds = (Date.now() - createdAt.getTime()) / 1000;
 
-            // Send welcome email if profile was created in the last 30 seconds (to account for network delays)
-            if (diffSeconds < 30) {
-              console.log('Attempting to send welcome email to new user:', session.user.email);
+            if (ageInSeconds < 60) {
+              console.log('📧 Enviando email de bienvenida a usuario nuevo');
+              
               const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
                 headers: {
                   Authorization: `Bearer ${session.access_token}`
                 },
                 body: {
                   userEmail: session.user.email,
-                  userName: session.user.user_metadata?.name || session.user.user_metadata?.full_name || ''
+                  userName: session.user.user_metadata?.name 
+                    || session.user.user_metadata?.full_name 
+                    || ''
                 }
               });
               
               if (emailError) {
-                console.error('Error sending welcome email:', emailError);
+                console.error('⚠️ Error enviando email de bienvenida:', emailError);
               } else {
-                console.log('Welcome email sent successfully to:', session.user.email);
+                console.log('✅ Email de bienvenida enviado');
               }
-            } else {
-              console.log('User profile is older than 30 seconds, skipping welcome email');
             }
           }
-        } catch (emailError) {
-          console.error('Error in welcome email flow:', emailError);
-          // Don't fail the login if welcome email fails
         }
+      } catch (emailError) {
+        console.error('⚠️ Error en flujo de email de bienvenida:', emailError);
       }
 
       toast({
@@ -276,26 +318,29 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         description: "Has iniciado sesión correctamente.",
       });
 
-      // Limpiar flags de progreso
-      try { localStorage.removeItem('oauthInProgress'); } catch {}
-
-      // Marcar que el auth se completó
+      localStorage.removeItem('oauthInProgress');
       sessionStorage.setItem('auth_completed', 'true');
 
       setEmail("");
       setVerificationCode("");
       setShowCodeInput(false);
+      
       onSuccess();
       onClose();
 
-      // El componente Checkout detectará el flag y se actualizará automáticamente
-      console.log('OTP verification successful, checkout will refresh automatically');
+      console.log('✅ Verificación OTP completada, checkout se actualizará automáticamente');
     } catch (error: any) {
-      console.error('Verification error:', error);
+      console.error('❌ Error verificando código:', error);
+      
+      const errorMessage = error.message?.toLowerCase() || '';
+      const friendlyMessage = errorMessage.includes('invalid') || errorMessage.includes('expired')
+        ? 'El código no es válido o ha expirado. Solicita uno nuevo.'
+        : 'No se pudo verificar el código. Inténtalo de nuevo.';
+      
       toast({
         variant: "destructive",
         title: "Código incorrecto",
-        description: error.message || "El código de verificación no es válido.",
+        description: friendlyMessage,
       });
     } finally {
       setIsLoading(false);
@@ -316,151 +361,173 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         hideClose={true}
         overlayStyle={{ backgroundColor: 'transparent' }}
       >
-          {onBack && (
+        {onBack && (
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="absolute right-4 top-4 text-black hover:text-black/70 hover:bg-transparent p-2"
+          >
+            ← Volver
+          </Button>
+        )}
+        
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-xl font-semibold">
+            Accede a tu cuenta
+          </DialogTitle>
+        </DialogHeader>
+
+        <Card className="border-0 shadow-none">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-lg">Inicia sesión</CardTitle>
+            <CardDescription className="font-normal text-black text-[15px]">
+              {showCodeInput 
+                ? "Introduce el código que te enviamos." 
+                : "Inicia sesión para vincular tu compra y acceder a tu contenido exclusivo."}
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-4">
             <Button
               variant="ghost"
-              onClick={onBack}
-              className="absolute right-4 top-4 text-black hover:text-black/70 hover:bg-transparent p-2"
+              className="w-full !bg-transparent border-none text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors"
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+              type="button"
             >
-              ← Volver
-            </Button>
-          )}
-          <DialogHeader className="text-center">
-            <DialogTitle className="text-xl font-semibold">
-              Accede a tu cuenta
-            </DialogTitle>
-          </DialogHeader>
-
-          <Card className="border-0 shadow-none">
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-lg">Inicia sesión</CardTitle>
-              <CardDescription className="font-normal text-black text-[15px]">
-                {showCodeInput 
-                  ? "Introduce el código que te enviamos." 
-                  : "Es necesario que inicies sesión y te registres como usuario con un correo, para que podamos vincular la compra a tu perfil y así darte acceso a la web privada de compradores, donde está la experiencia por cada cesta adquirida. En modo regalo, los destinatarios recibirán el acceso a la web, pero aún así, necesitamos un usuario para poder realizar la compra."}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button
-                variant="ghost"
-                className="w-full !bg-transparent border-none text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors"
-                onClick={handleGoogleSignIn}
-                disabled={isLoading}
-                type="button"
-              >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
                 <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                Continuar con Google
-              </Button>
-              
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    O continuar con email
-                  </span>
-                </div>
+              )}
+              Continuar con Google
+            </Button>
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
               </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-background px-2 text-muted-foreground">
+                  O continuar con email
+                </span>
+              </div>
+            </div>
 
-              {!showCodeInput ? (
-                <form onSubmit={handleSendCode} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="tu@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-9"
-                        autoComplete="off"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
-                        Enviando código...
-                      </>
-                    ) : (
-                      <>
-                        <ArrowRight className="w-4 h-4 mr-2" />
-                        Enviar código
-                      </>
-                    )}
-                  </Button>
-                </form>
-              ) : (
-                <form onSubmit={handleVerifyCode} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="code">Código de verificación</Label>
+            {!showCodeInput ? (
+              <form onSubmit={handleSendCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="code"
-                      type="text"
-                      placeholder="123456"
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value)}
-                      autoComplete="off"
+                      id="email"
+                      type="email"
+                      placeholder="tu@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-9"
+                      autoComplete="email"
                       required
+                      disabled={isLoading}
                     />
                   </div>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Enviando código...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight className="w-4 h-4 mr-2" />
+                      Enviar código
+                    </>
+                  )}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="code">Código de verificación</Label>
+                  <Input
+                    id="code"
+                    type="text"
+                    placeholder="123456"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
 
-                  <p className="text-xs text-muted-foreground">
-                    Te hemos enviado un código a <span className="font-medium">{lastEmailSent || email}</span>. Revisa la carpeta de spam si no lo encuentras.
-                  </p>
+                <p className="text-xs text-muted-foreground">
+                  Código enviado a <span className="font-medium">{lastEmailSent || email}</span>
+                  {resendSeconds === 0 && (
+                    <span className="block mt-1">¿No lo ves? Revisa spam/promociones</span>
+                  )}
+                </p>
 
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-muted-foreground">¿No te llega?</div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={handleResendCode}
-                      disabled={isLoading || resendSeconds > 0}
-                      className="h-7 px-2"
-                    >
-                      {resendSeconds > 0 ? `Reenviar en ${resendSeconds}s` : 'Reenviar código'}
-                    </Button>
-                  </div>
-
-                  <Button type="submit" className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2" />
-                        Verificando...
-                      </>
-                    ) : (
-                      <>
-                        <ArrowRight className="w-4 h-4 mr-2" />
-                        Verificar código
-                      </>
-                    )}
-                  </Button>
-                  <Button 
-                    type="button" 
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-muted-foreground">¿No te llega?</div>
+                  <Button
+                    type="button"
                     variant="ghost"
-                    onClick={() => {
-                      setShowCodeInput(false);
-                      setVerificationCode("");
-                    }}
-                    className="w-full text-sm"
+                    onClick={handleResendCode}
+                    disabled={isLoading || resendSeconds > 0}
+                    className="h-7 px-2 text-xs"
                   >
-                    Volver a introducir email
+                    {resendSeconds > 0 ? `Reenviar en ${resendSeconds}s` : 'Reenviar código'}
                   </Button>
-                </form>
-              )}
-            </CardContent>
-          </Card>
-        </DialogContent>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full !bg-transparent text-black hover:text-[hsl(45,100%,50%)] hover:!bg-transparent transition-colors" 
+                  disabled={isLoading || verificationCode.length !== 6}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Verificando...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight className="w-4 h-4 mr-2" />
+                      Verificar código
+                    </>
+                  )}
+                </Button>
+                
+                <Button 
+                  type="button" 
+                  variant="ghost"
+                  onClick={() => {
+                    setShowCodeInput(false);
+                    setVerificationCode("");
+                  }}
+                  className="w-full text-sm"
+                  disabled={isLoading}
+                >
+                  Volver a introducir email
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+      </DialogContent>
     </Dialog>
   );
 };
