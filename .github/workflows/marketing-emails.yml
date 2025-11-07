@@ -1,0 +1,103 @@
+name: Send Marketing Emails
+
+on:
+  schedule:
+    # Ejecutar cada 12 horas (a las 00:00 y 12:00 UTC)
+    - cron: '0 */12 * * *'
+  # Permitir ejecución manual desde GitHub
+  workflow_dispatch:
+
+jobs:
+  send-emails:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Marketing Emails
+        run: |
+          curl -X POST \
+            '${{ secrets.SUPABASE_URL }}/functions/v1/send-marketing-email' \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --fail-with-body
+```
+
+### Paso 5: Guardar el archivo
+
+1. Baja hasta el final de la página
+2. En "Commit message" escribe: `Add marketing emails cron job`
+3. Deja seleccionado "Commit directly to the main branch"
+4. Haz click en **"Commit new file"** (botón verde)
+
+✅ **¡Listo!** El archivo ya está creado.
+
+---
+
+## PASO 2: Configurar los Secrets en GitHub
+
+Ahora necesitas añadir las "contraseñas" que usará el cron job.
+
+### Paso 1: Ir a Settings
+
+1. En tu repositorio, haz click en **"Settings"** (última pestaña arriba)
+2. En el menú de la izquierda, busca **"Secrets and variables"**
+3. Haz click en **"Actions"**
+
+### Paso 2: Añadir SUPABASE_URL
+
+1. Haz click en **"New repository secret"** (botón verde)
+2. En **"Name"** escribe: `SUPABASE_URL`
+3. En **"Secret"** pega tu URL de Supabase (ejemplo: `https://abcdefgh.supabase.co`)
+   - Para encontrarla: Ve a Supabase Dashboard → Project Settings → API → Project URL
+4. Haz click en **"Add secret"**
+
+### Paso 3: Añadir CRON_SECRET
+
+1. Haz click otra vez en **"New repository secret"**
+2. En **"Name"** escribe: `CRON_SECRET`
+3. En **"Secret"** pega el mismo valor que pusiste en Supabase (el que generaste en el PASO 3)
+4. Haz click en **"Add secret"**
+
+✅ **Deberías ver ahora 2 secrets:**
+- `SUPABASE_URL`
+- `CRON_SECRET`
+
+---
+
+## PASO 3: Probar que funciona
+
+### Opción A: Ejecutar manualmente (RECOMENDADO PARA PRIMERA PRUEBA)
+
+1. En tu repositorio, haz click en **"Actions"** (pestaña arriba)
+2. En el menú izquierdo, haz click en **"Send Marketing Emails"**
+3. Verás un botón azul que dice **"Run workflow"** → haz click
+4. Se abre un dropdown → haz click en **"Run workflow"** otra vez (botón verde)
+5. Espera unos segundos y verás que aparece una ejecución
+6. Haz click en ella para ver los logs
+
+**✅ Si funcionó:** Verás algo como:
+```
+✓ Send Marketing Emails
+  ✓ send-emails
+    ✓ Send Marketing Emails
+```
+
+**❌ Si falló:** Verás una X roja. Haz click para ver el error.
+
+### Opción B: Esperar al cron automático
+
+El cron se ejecutará automáticamente cada 12 horas a las:
+- 00:00 UTC (1:00 AM en España en invierno, 2:00 AM en verano)
+- 12:00 UTC (1:00 PM en España en invierno, 2:00 PM en verano)
+
+---
+
+## OPCIÓN 2: Desde Lovable (SI PREFIERES ESTO)
+
+Si tu proyecto está en Lovable y sincronizado con GitHub, puedes hacerlo así:
+
+1. En Lovable, dile:
+```
+Crea el archivo .github/workflows/marketing-emails.yml con este contenido:
+
+[pega el YAML de arriba]
+
+Y asegúrate de que use los secrets SUPABASE_URL y CRON_SECRET de GitHub Actions.
