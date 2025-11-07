@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import ClickableImage from "@/components/ClickableImage";
 
 interface CartItem {
   id: number;
@@ -187,9 +188,6 @@ React.useEffect(() => {
       { recipientName: "", recipientEmail: "", recipientPhone: "", personalNote: "", basketIds: [] as string[] }
     ]
   });
-
-  // Preview de imagen anclada a la miniatura
-  const [imagePreview, setImagePreview] = useState<{ src: string; top: number; left: number } | null>(null);
 
   // Preview de información anclada al botón
   const [infoPopover, setInfoPopover] = useState<{ top: number; left: number } | null>(null);
@@ -842,23 +840,14 @@ React.useEffect(() => {
                             {currentPersonalItems.map((item) => (
                                <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-2 bg-white rounded border gap-2">
                                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                                    <img 
-                                     src={item.imagen} 
-                                     alt={item.nombre} 
-                                     className="w-12 h-12 sm:w-10 sm:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
-                                      onClick={(e) => {
-                                        setImagePreview({ src: item.imagen, top: 0, left: 0 });
-                                        // Auto-scroll a la imagen ampliada
-                                        setTimeout(() => {
-                                          const expandedImage = document.querySelector('[data-expanded-checkout-image]');
-                                          if (expandedImage) {
-                                            const yOffset = -80;
-                                            const y = expandedImage.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                                            window.scrollTo({ top: y, behavior: 'smooth' });
-                                          }
-                                        }, 150);
-                                     }}
-                                   />
+                                    <ClickableImage 
+                                      src={item.imagen} 
+                                      alt={item.nombre}
+                                      className="w-12 h-12 sm:w-10 sm:h-10 object-cover"
+                                      containerClassName="flex-shrink-0"
+                                      rounded={false}
+                                      shadow={false}
+                                    />
                                    <div className="flex-1 min-w-0">
                                      <p className="font-medium text-xs sm:text-sm break-words">{item.nombre}</p>
                                    </div>
@@ -1140,24 +1129,16 @@ React.useEffect(() => {
                                               onChange={() => {}} 
                                               className="cursor-pointer flex-shrink-0"
                                             />
-                                            <img 
-                                              src={it.imagen} 
-                                              alt={it.nombre} 
-                                              className="w-12 h-12 sm:w-10 sm:h-10 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity hover:ring-2 hover:ring-gold flex-shrink-0" 
-                                               onClick={(e) => {
-                                                 e.stopPropagation();
-                                                 setImagePreview({ src: it.imagen, top: 0, left: 0 });
-                                                 // Auto-scroll a la imagen ampliada
-                                                 setTimeout(() => {
-                                                   const expandedImage = document.querySelector('[data-expanded-checkout-image]');
-                                                   if (expandedImage) {
-                                                     const yOffset = -80;
-                                                     const y = expandedImage.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                                                     window.scrollTo({ top: y, behavior: 'smooth' });
-                                                   }
-                                                 }, 150);
-                                              }}
-                                            />
+                                            <div onClick={(e) => e.stopPropagation()}>
+                                              <ClickableImage 
+                                                src={it.imagen} 
+                                                alt={it.nombre}
+                                                className="w-12 h-12 sm:w-10 sm:h-10 object-cover"
+                                                containerClassName="flex-shrink-0"
+                                                rounded={false}
+                                                shadow={false}
+                                              />
+                                            </div>
                                             <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-xs sm:text-sm break-words flex-1 ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
                                               {it.nombre}
                                             </label>
@@ -1312,36 +1293,6 @@ React.useEffect(() => {
           </motion.div>
         </AnimatePresence>
       )}
-
-      <AnimatePresence>
-        {imagePreview && (
-          <motion.div
-            data-expanded-checkout-image
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xl md:max-w-2xl px-4 overflow-hidden"
-          >
-            <div className="bg-white border-2 border-[#FFD700]/30 rounded-[2rem] p-4 shadow-xl">
-              <div className="flex justify-end mb-2">
-                <Button
-                  onClick={() => setImagePreview(null)}
-                  className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-black shadow-md"
-                  size="icon"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <img
-                src={imagePreview.src}
-                alt="Vista ampliada"
-                className="w-full h-auto object-contain rounded-[1.5rem]"
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Auth Modal */}
       <AuthModal 
