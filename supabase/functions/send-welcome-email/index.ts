@@ -1,7 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { Resend } from 'https://esm.sh/resend@4.0.0';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
-import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,90 +13,59 @@ serve(async (req) => {
   }
 
   try {
-    // Verify authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Authentication required' }),
-        { 
-          status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+      throw new Error('No authorization header');
     }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
     );
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      console.error('Authentication error:', authError);
-      return new Response(
-        JSON.stringify({ error: 'Invalid authentication' }),
-        { 
-          status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      throw new Error('User not authenticated');
     }
 
-    // Validate input
-    const welcomeEmailSchema = z.object({
-      userEmail: z.string().trim().email().max(255),
-      userName: z.string().trim().max(200).optional()
-    });
+    console.log('Sending welcome email to:', user.email);
 
-    const requestData = await req.json();
-    const validationResult = welcomeEmailSchema.safeParse(requestData);
+    const { userEmail, userName } = await req.json();
 
-    if (!validationResult.success) {
-      console.error('Validation error:', validationResult.error);
-      return new Response(
-        JSON.stringify({ error: 'Invalid input data', details: validationResult.error.issues }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    const { userEmail, userName } = validationResult.data;
-    console.log('Sending welcome email to:', userEmail, 'for user:', user.id);
+    const displayName = userName || userEmail?.split('@')[0] || 'Usuario';
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
-    const emailContent = `
-¡Bienvenido ${userName || 'amigo'}!
+    const plainTextContent = `
+¡Hola ${displayName}!
 
-Acabas de dar el primer paso hacia experiencias inolvidables.
+¡Bienvenido/a a Experiencia Selecta!
 
-En Experiencia Selecta no vendemos cestas. Creamos momentos.
+Nos alegra mucho que formes parte de nuestra comunidad. Aquí encontrarás las mejores cestas gourmet con productos ibéricos de la más alta calidad.
 
-✨ ¿Qué hace únicas nuestras experiencias?
+🎁 ¿Qué puedes hacer ahora?
 
-Cada cesta incluye:
-• Productos ibéricos premium seleccionados
-• 24 horas de experiencia personalizada en paragenteselecta.com
-• Contenido exclusivo diseñado para crear recuerdos
+- Explorar nuestras cestas exclusivas
+- Personalizar tu regalo perfecto
+- Acceder a ofertas especiales para miembros
+- Gestionar tus pedidos fácilmente
 
-No es solo lo que comes. Es cómo lo vives.
+👉 Descubre nuestras cestas: https://experienciaselecta.com/cestas
 
-Explora experiencias: https://experienciaselecta.com
-
-💝 ¿Es un regalo?
-
-Nuestras cestas son perfectas para sorprender. El destinatario no solo recibe productos premium, sino una experiencia completa que recordará siempre.
-
-Estamos aquí para ayudarte a crear momentos especiales.
+Si tienes alguna pregunta, no dudes en contactarnos. Estamos aquí para ayudarte.
 
 Un abrazo,
 El equipo de Experiencia Selecta
 
-PD: ¿Tienes dudas? Solo responde a este email. Nos encantará ayudarte.
-    `;
+---
+Experiencia selecta, personas auténticas.
+    `.trim();
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -105,115 +73,197 @@ PD: ¿Tienes dudas? Solo responde a este email. Nos encantará ayudarte.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .welcome-icon {
+      font-size: 64px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .features {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 25px 0;
+      border-left: 4px solid #8B4513;
+    }
+    .features h3 {
+      margin-top: 0;
+      color: #8B4513;
+    }
+    .features ul {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+    }
+    .features li {
+      padding: 8px 0;
+      padding-left: 30px;
+      position: relative;
+    }
+    .features li:before {
+      content: "✓";
+      color: #8B4513;
+      font-weight: bold;
+      font-size: 18px;
+      position: absolute;
+      left: 10px;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 30px 0;
+      transition: transform 0.2s;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+    }
+    .cta-section {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .footer {
+      background: #f8f9fa;
+      padding: 25px 30px;
+      text-align: center;
+      color: #666;
+      font-size: 13px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .footer a {
+      color: #8B4513;
+      text-decoration: none;
+    }
+    .social-links {
+      margin: 15px 0;
+    }
+    .social-links a {
+      display: inline-block;
+      margin: 0 10px;
+      color: #8B4513;
+      text-decoration: none;
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-  <table role="presentation" style="width: 100%; border-collapse: collapse;">
-    <tr>
-      <td align="center" style="padding: 40px 0;">
-        <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-          <tr>
-            <td style="padding: 40px 30px; text-align: center; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">Experiencia Selecta</h1>
-            </td>
-          </tr>
-          
-          <tr>
-            <td style="padding: 40px 30px;">
-              <h2 style="margin: 0 0 20px 0; color: #333333; font-size: 24px;">¡Bienvenido ${userName || 'amigo'}!</h2>
-              
-              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
-                Acabas de dar el primer paso hacia experiencias inolvidables.
-              </p>
-              
-              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
-                En <strong>Experiencia Selecta</strong> no vendemos cestas. Creamos momentos.
-              </p>
-              
-              <h3 style="margin: 30px 0 15px 0; color: #8B4513; font-size: 20px;">✨ ¿Qué hace únicas nuestras experiencias?</h3>
-              
-              <p style="margin: 0 0 10px 0; color: #666666; font-size: 16px; line-height: 1.6;">
-                Cada cesta incluye:
-              </p>
-              <ul style="margin: 0 0 20px 0; padding-left: 20px; color: #666666; font-size: 16px; line-height: 1.8;">
-                <li>Productos ibéricos premium seleccionados</li>
-                <li>24 horas de experiencia personalizada en paragenteselecta.com</li>
-                <li>Contenido exclusivo diseñado para crear recuerdos</li>
-              </ul>
-              
-              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6; font-style: italic; text-align: center;">
-                No es solo lo que comes. Es cómo lo vives.
-              </p>
-              
-              <table role="presentation" style="margin: 30px 0; width: 100%;">
-                <tr>
-                  <td align="center">
-                    <a href="https://experienciaselecta.com" style="display: inline-block; padding: 15px 40px; background-color: #8B4513; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold;">
-                      Explorar experiencias
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              
-              <h3 style="margin: 30px 0 15px 0; color: #8B4513; font-size: 20px;">💝 ¿Es un regalo?</h3>
-              
-              <p style="margin: 0 0 15px 0; color: #666666; font-size: 16px; line-height: 1.6;">
-                Nuestras cestas son perfectas para sorprender. El destinatario no solo recibe productos premium, sino una experiencia completa que recordará siempre.
-              </p>
-              
-              <p style="margin: 20px 0 0 0; color: #666666; font-size: 16px; line-height: 1.6;">
-                Estamos aquí para ayudarte a crear momentos especiales.
-              </p>
-              
-              <p style="margin: 10px 0 0 0; color: #666666; font-size: 16px; line-height: 1.6;">
-                Un abrazo,<br>
-                El equipo de Experiencia Selecta
-              </p>
-              
-              <p style="margin: 20px 0 0 0; color: #999999; font-size: 14px; line-height: 1.6; font-style: italic;">
-                PD: ¿Tienes dudas? Solo responde a este email. Nos encantará ayudarte.
-              </p>
-            </td>
-          </tr>
-          
-          <tr>
-            <td style="padding: 30px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #e0e0e0;">
-              <p style="margin: 0; color: #999999; font-size: 14px;">
-                © 2024 Experiencia Selecta. Todos los derechos reservados.
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>¡Bienvenido/a a Experiencia Selecta!</h1>
+    </div>
+    
+    <div class="content">
+      <div class="welcome-icon">🎉</div>
+      
+      <p>¡Hola <strong>${displayName}</strong>!</p>
+      
+      <p>Nos alegra mucho que formes parte de nuestra comunidad. Aquí encontrarás las mejores <strong>cestas gourmet</strong> con productos ibéricos de la más alta calidad.</p>
+      
+      <div class="features">
+        <h3>🎁 ¿Qué puedes hacer ahora?</h3>
+        <ul>
+          <li>Explorar nuestras cestas exclusivas</li>
+          <li>Personalizar tu regalo perfecto</li>
+          <li>Acceder a ofertas especiales para miembros</li>
+          <li>Gestionar tus pedidos fácilmente</li>
+        </ul>
+      </div>
+      
+      <div class="cta-section">
+        <h3 style="color: #8B4513; margin-bottom: 10px;">👉 Empieza a explorar</h3>
+        <a href="https://experienciaselecta.com/cestas" class="cta-button">
+          Ver Nuestras Cestas
+        </a>
+      </div>
+      
+      <p style="text-align: center; color: #666; margin-top: 30px;">
+        Si tienes alguna pregunta, no dudes en<br>
+        <a href="https://experienciaselecta.com/contacto" style="color: #8B4513; text-decoration: none; font-weight: bold;">contactarnos</a>. Estamos aquí para ayudarte.
+      </p>
+      
+      <p style="margin-top: 40px;">Un abrazo,<br><strong>El equipo de Experiencia Selecta</strong></p>
+    </div>
+    
+    <div class="footer">
+      <p><strong>Experiencia selecta, personas auténticas.</strong></p>
+      
+      <div class="social-links">
+        <a href="https://instagram.com/experienciaselecta">Instagram</a> •
+        <a href="https://facebook.com/experienciaselecta">Facebook</a>
+      </div>
+      
+      <p style="margin-top: 15px; color: #999;">
+        © 2025 Experiencia Selecta. Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
 </body>
 </html>
     `;
 
-    await resend.emails.send({
+    const { error: emailError } = await resend.emails.send({
       from: 'Experiencia Selecta <noreply@experienciaselecta.com>',
       to: [userEmail],
-      subject: '✨ Bienvenido a Experiencia Selecta, ' + (userName || 'amigo'),
-      text: emailContent,
+      subject: '🎉 ¡Bienvenido/a a Experiencia Selecta!',
+      text: plainTextContent,
       html: htmlContent,
     });
+
+    if (emailError) {
+      console.error('Error sending welcome email:', emailError);
+      throw emailError;
+    }
 
     console.log('Welcome email sent successfully to:', userEmail);
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, message: 'Welcome email sent' }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       }
     );
+
   } catch (error: any) {
-    console.error('Error sending welcome email:', error);
+    console.error('Error in send-welcome-email function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
+        status: 500,
       }
     );
   }
