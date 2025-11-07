@@ -222,8 +222,7 @@ const RegalosPage = () => {
   return (
     <div className="min-h-screen bg-[#F5F5DC] pt-24 px-4 pb-12">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8 pt-8">
-          <Gift className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-primary" />
+        <div className="text-center mb-8 pt-20 md:pt-8">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">🎁 Tus Regalos</h1>
         </div>
 

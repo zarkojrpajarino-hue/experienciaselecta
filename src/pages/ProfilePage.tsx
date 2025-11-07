@@ -346,7 +346,7 @@ const ProfilePage = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="orders" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 gap-6 md:gap-12 mb-8 bg-transparent">
+            <TabsList className="grid w-full grid-cols-2 gap-8 md:gap-16 mb-8 bg-transparent">
               <TabsTrigger value="orders" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
                 <Package className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="font-bungee tracking-wider text-xs md:text-base">Mis pedidos.</span>
@@ -360,20 +360,20 @@ const ProfilePage = () => {
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6 animate-fade-in">
               {/* Título de sección */}
-              <h2 className="text-2xl md:text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-4 tracking-wider text-center">
+              <h2 className="text-xl md:text-2xl font-bungee font-bold text-white mb-6 tracking-wider text-center">
                 Pedidos:
               </h2>
               
               {/* Active/Paid Orders */}
               {orders.length === 0 ? (
-                <Card className="bg-white/10 border-none shadow-lg">
+                <Card className="bg-white border-black border-2 shadow-lg">
                   <CardContent className="pt-12 pb-12 text-center space-y-6">
-                    <p className="text-xl md:text-2xl text-white font-poppins font-bold">
+                    <p className="text-xl md:text-2xl text-black font-poppins font-bold">
                       Aún no has realizado ninguna experiencia.
                     </p>
                     <Button
                         onClick={() => navigate('/comprar-cestas')}
-                      className="bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-bungee tracking-wider uppercase"
+                      className="bg-black hover:bg-black/80 text-white font-bungee tracking-wider uppercase border-2 border-black"
                     >
                       Ver catálogo
                     </Button>
@@ -381,7 +381,7 @@ const ProfilePage = () => {
                 </Card>
               ) : (
                 orders.map((order) => (
-                  <Card key={order.id} className="overflow-hidden bg-transparent border-none shadow-lg">
+                  <Card key={order.id} className="overflow-hidden bg-white border-black border-2 shadow-lg">
                     <CardHeader className="p-6">
                       <Collapsible
                         open={openOrders[order.id]}
@@ -390,10 +390,10 @@ const ProfilePage = () => {
                           <div className="space-y-4">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 px-2 md:px-4">
                             <div className="flex-1 text-center md:text-right md:pr-4">
-                              <h2 className="text-xl md:text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-2 tracking-wider">
+                              <h2 className="text-xl md:text-3xl font-bungee font-bold text-black mb-2 tracking-wider">
                                 ¡Enhorabuena!
                               </h2>
-                              <p className="text-xs md:text-sm text-white font-poppins font-bold">
+                              <p className="text-xs md:text-sm text-black font-poppins font-bold">
                                 📅 {new Date(order.created_at).toLocaleDateString("es-ES", {
                                   year: "numeric",
                                   month: "long",
@@ -404,7 +404,7 @@ const ProfilePage = () => {
                               </p>
                             </div>
                             <div className="flex-1 text-center px-2 md:px-4">
-                              <p className="font-poppins font-bold text-white text-xl md:text-3xl">
+                              <p className="font-poppins font-bold text-black text-xl md:text-3xl">
                                 {(
                                   order.items.reduce((sum, i) => sum + ((basketData[i.basket_name]?.precio ? basketData[i.basket_name].precio * 100 : i.price_per_item) * i.quantity), 0) / 100
                                 ).toFixed(2)}€.
@@ -420,7 +420,7 @@ const ProfilePage = () => {
                           <CollapsibleTrigger asChild>
                             <Button
                               variant="ghost"
-                              className="w-full flex items-center justify-center gap-2 text-white hover:text-[hsl(45,100%,65%)] hover:bg-transparent font-poppins font-bold transition-colors"
+                              className="w-full flex items-center justify-center gap-2 text-black hover:text-black hover:bg-gray-100 font-poppins font-bold transition-colors"
                             >
                               {openOrders[order.id] ? (
                                 <>
@@ -444,8 +444,8 @@ const ProfilePage = () => {
                             <div className="flex flex-col items-start justify-start h-full">
                               {order.items.map((item, idx) => (
                                 <div key={idx} className="inline-block">
-                                  <p className="font-poppins font-bold text-white inline">{item.basket_name}.</p>
-                                  <p className="text-sm text-white font-poppins font-bold inline ml-2">{( (basketData[item.basket_name]?.precio ?? (item.price_per_item / 100)) ).toFixed(2)}€.</p>
+                                  <p className="font-poppins font-bold text-black inline">{item.basket_name}.</p>
+                                  <p className="text-sm text-black font-poppins font-bold inline ml-2">{( (basketData[item.basket_name]?.precio ?? (item.price_per_item / 100)) ).toFixed(2)}€.</p>
                                 </div>
                               ))}
                             </div>
@@ -523,12 +523,12 @@ const ProfilePage = () => {
                             {/* Dirección de envío - escalera de derecha a izquierda bajando */}
                             {/* Dirección de envío - escalera de derecha a izquierda bajando */}
                             <div className="flex flex-col items-end justify-start h-full">
-                              <p className="text-sm text-white font-poppins font-bold">{order.shipping_address_line1}.</p>
+                              <p className="text-sm text-black font-poppins font-bold">{order.shipping_address_line1}.</p>
                               {order.shipping_address_line2 && (
-                                <p className="text-sm text-white font-poppins font-bold">{order.shipping_address_line2}.</p>
+                                <p className="text-sm text-black font-poppins font-bold">{order.shipping_address_line2}.</p>
                               )}
-                              <p className="text-sm text-white font-poppins font-bold">{order.shipping_city}, {order.shipping_postal_code}.</p>
-                              <p className="text-sm text-white font-poppins font-bold">{order.shipping_country}.</p>
+                              <p className="text-sm text-black font-poppins font-bold">{order.shipping_city}, {order.shipping_postal_code}.</p>
+                              <p className="text-sm text-black font-poppins font-bold">{order.shipping_country}.</p>
                             </div>
                           </div>
                         </CollapsibleContent>
@@ -542,7 +542,7 @@ const ProfilePage = () => {
             {/* Reviews Tab */}
             <TabsContent value="reviews" className="space-y-6 animate-fade-in">
               {/* Título de sección */}
-              <h2 className="text-2xl md:text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-4 tracking-wider text-center">
+              <h2 className="text-xl md:text-2xl font-bungee font-bold text-white mb-6 tracking-wider text-center">
                 Valoraciones:
               </h2>
               
@@ -568,34 +568,34 @@ const ProfilePage = () => {
                           const imgSrc = matchKey ? basketData[matchKey].imagen : parejaGourmetImg;
 
                           return (
-                          <Card key={review.id} className="bg-white/10 border-none shadow-lg">
+                          <Card key={review.id} className="bg-white border-black border-2 shadow-lg">
                             <CardHeader>
                               <div className="flex justify-between items-start">
                                 <div>
-                                  <CardTitle className="text-lg text-white font-poppins font-bold">{displayName}.</CardTitle>
+                                  <CardTitle className="text-lg text-black font-poppins font-bold">{displayName}.</CardTitle>
                                   <div className="flex gap-1 mt-2">
                                     {[...Array(5)].map((_, i) => (
                                       <Star
                                         key={i}
                                         className={`w-5 h-5 ${
                                           i < review.rating
-                                            ? "fill-[hsl(45,100%,65%)] text-[hsl(45,100%,65%)]"
-                                            : "text-white"
+                                            ? "fill-yellow-400 text-yellow-400"
+                                            : "text-gray-300"
                                         }`}
                                       />
                                     ))}
                                   </div>
                                   {precio !== undefined && (
-                                    <p className="text-white font-poppins font-bold mt-1">{precio}€.</p>
+                                    <p className="text-black font-poppins font-bold mt-1">{precio}€.</p>
                                   )}
                                   {review.profiles?.name && (
-                                    <p className="text-sm text-white/80 font-poppins mt-1">
+                                    <p className="text-sm text-black/70 font-poppins mt-1">
                                       Valoración tuya en paragenteselecta.com
                                     </p>
                                   )}
                                 </div>
                               </div>
-                              <p className="text-sm text-white font-poppins font-bold">
+                              <p className="text-sm text-black font-poppins font-bold">
                                 {new Date(review.created_at).toLocaleDateString("es-ES", {
                                   year: "numeric",
                                   month: "long",
@@ -616,21 +616,21 @@ const ProfilePage = () => {
                                   />
                                 </div>
                               </div>
-                              <p className="text-white font-poppins font-bold">{review.comment}.</p>
+                              <p className="text-black font-poppins font-bold">{review.comment}.</p>
                             </CardContent>
                           </Card>
                         );
                         })}
                 </div>
               ) : (
-                <Card className="bg-white/10 border-none shadow-lg">
+                <Card className="bg-white border-black border-2 shadow-lg">
                   <CardContent className="pt-12 pb-12 text-center space-y-6">
-                    <p className="text-xl md:text-2xl text-white font-poppins font-bold">
+                    <p className="text-xl md:text-2xl text-black font-poppins font-bold">
                       Aún no has realizado ninguna experiencia.
                     </p>
                     <Button
                       onClick={() => navigate('/comprar-cestas')}
-                      className="bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-black font-bungee tracking-wider uppercase"
+                      className="bg-black hover:bg-black/80 text-white font-bungee tracking-wider uppercase border-2 border-black"
                     >
                       Ver catálogo
                     </Button>

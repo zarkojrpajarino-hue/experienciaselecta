@@ -1334,7 +1334,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                     {/* Top Left: Título, Descripción y Maridaje */}
                     <div className="col-span-1">
                       <div className="flex items-start gap-1 mb-1 relative">
-                        <h3 data-basket-title className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-black break-words max-w-[90%]">
+                        <h3 data-basket-title className="font-poppins font-bold text-sm sm:text-base md:text-xl transition-colors basket-title text-black break-words hyphens-auto max-w-[90%]" style={{ wordBreak: 'break-word' }}>
                           {basket.nombre}
                         </h3>
                       <button 
