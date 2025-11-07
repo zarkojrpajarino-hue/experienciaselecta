@@ -90,7 +90,48 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             console.error('❌ Error identificando en RudderStack:', error);
           }
 
-          // 2. Restaurar carrito si existe backup
+          // 2. Enviar email de bienvenida si es usuario nuevo
+          try {
+            const { data: profiles, error: profileError } = await supabase
+              .from('profiles')
+              .select('created_at')
+              .eq('user_id', session.user.id)
+              .single();
+
+            if (!profileError && profiles) {
+              const createdAt = new Date(profiles.created_at);
+              const ageInSeconds = (Date.now() - createdAt.getTime()) / 1000;
+
+              // Si el usuario se creó hace menos de 60 segundos, es nuevo
+              if (ageInSeconds < 60) {
+                console.log('📧 Usuario nuevo detectado, enviando email de bienvenida');
+                
+                const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
+                  headers: {
+                    Authorization: `Bearer ${session.access_token}`
+                  },
+                  body: {
+                    userEmail: session.user.email,
+                    userName: session.user.user_metadata?.name 
+                      || session.user.user_metadata?.full_name 
+                      || ''
+                  }
+                });
+                
+                if (emailError) {
+                  console.error('⚠️ Error enviando email de bienvenida:', emailError);
+                } else {
+                  console.log('✅ Email de bienvenida enviado');
+                }
+              } else {
+                console.log('ℹ️ Usuario existente, no se envía email de bienvenida');
+              }
+            }
+          } catch (emailError) {
+            console.error('⚠️ Error en flujo de email de bienvenida:', emailError);
+          }
+
+          // 3. Restaurar carrito si existe backup
           const cartBackup = localStorage.getItem('cart_backup');
           if (cartBackup) {
             try {
@@ -102,7 +143,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             }
           }
 
-          // 3. Verificar si venimos de OAuth (tiene el flag pendingCheckout)
+          // 4. Verificar si venimos de OAuth (tiene el flag pendingCheckout)
           const isPendingCheckout = localStorage.getItem('pendingCheckout');
           
           if (isPendingCheckout) {
