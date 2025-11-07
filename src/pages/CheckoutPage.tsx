@@ -637,8 +637,96 @@ React.useEffect(() => {
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
+            {/* Resumen del pedido - PRIMERO en desktop */}
+            <div className="lg:col-span-1 lg:order-2">
+              <Card className="border-2 border-black sticky top-16 md:top-20">
+                <CardHeader className="pb-2 md:pb-3 px-2 md:px-4">
+                  <CardTitle className="text-sm md:text-base font-poppins font-bold">Resumen Total</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 md:space-y-3 text-[10px] md:text-xs px-2 md:px-4">
+                  {currentPersonalItems.length > 0 && (
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex justify-between items-center py-1 hover:bg-gray-50 rounded">
+                          <span className="text-[10px] md:text-xs">Tus cestas</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-[10px] md:text-xs">{getCurrentPersonalTotal().toFixed(2)}€</span>
+                            <ChevronDown className="w-3 h-3" />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-1 space-y-1 pl-2">
+                        {currentPersonalItems.map((item) => (
+                          <div key={item.id} className="flex justify-between text-[9px] md:text-[10px] text-gray-600">
+                            <span>{item.nombre} (x{item.quantity})</span>
+                            <span>{(item.precio * item.quantity).toFixed(2)}€</span>
+                          </div>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
+                  {giftItems.length > 0 && (
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <button className="w-full flex justify-between items-center py-1 hover:bg-gray-50 rounded">
+                          <span className="text-[10px] md:text-xs">Cestas para regalar</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-[10px] md:text-xs">{getAssignedGiftTotal().toFixed(2)}€</span>
+                            <ChevronDown className="w-3 h-3" />
+                          </div>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-1 space-y-1 pl-2">
+                        {giftAssignment.recipients.map((recipient, recipientIdx) =>
+                          recipient.basketIds.map((uniqueId) => {
+                            const basketItem = expandedGiftItems.find(it => it.uniqueId === uniqueId);
+                            if (!basketItem) return null;
+                            return (
+                              <div key={uniqueId} className="flex justify-between text-[9px] md:text-[10px] text-gray-600">
+                                <span>{basketItem.nombre} → {recipient.recipientName || 'Sin nombre'}</span>
+                                <span>{basketItem.precio.toFixed(2)}€</span>
+                              </div>
+                            );
+                          })
+                        )}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
+                  <Separator />
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm md:text-base font-poppins font-bold">Total</span>
+                    <span className="text-base md:text-lg font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>
+                  </div>
+                  <Button
+                    onClick={handleContinueToPayment}
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3"
+                  >
+                    Continuar al pago ({getTotalAmount().toFixed(2)}€)
+                  </Button>
+                  
+                  {/* Error message toast */}
+                  <AnimatePresence>
+                    {showErrorMessage && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="mt-2 p-3 bg-red-50 border-2 border-red-600 rounded-lg text-center"
+                      >
+                        <p className="text-sm font-medium text-red-600">{errorMessage}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  
+                  <p className="text-xs text-gray-500 text-center">
+                    Pago seguro con Stripe
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Formulario de asignación */}
-            <div className="lg:col-span-2 space-y-2 md:space-y-3">
+            <div className="lg:col-span-2 lg:order-1 space-y-2 md:space-y-3">
               {/* Resumen visual - Tus cestas PRIMERO */}
               <Card>
                 <CardContent className="p-2 md:p-3">
@@ -1186,92 +1274,6 @@ React.useEffect(() => {
                       </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
-
-            {/* Resumen del pedido */}
-              <Card className="border-2 border-black sticky top-16 md:top-20">
-                <CardHeader className="pb-2 md:pb-3 px-2 md:px-4">
-                  <CardTitle className="text-sm md:text-base font-poppins font-bold">Resumen Total</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 md:space-y-3 text-[10px] md:text-xs px-2 md:px-4">
-                  {currentPersonalItems.length > 0 && (
-                    <Collapsible>
-                      <CollapsibleTrigger asChild>
-                        <button className="w-full flex justify-between items-center py-1 hover:bg-gray-50 rounded">
-                          <span className="text-[10px] md:text-xs">Tus cestas</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-[10px] md:text-xs">{getCurrentPersonalTotal().toFixed(2)}€</span>
-                            <ChevronDown className="w-3 h-3" />
-                          </div>
-                        </button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-1 space-y-1 pl-2">
-                        {currentPersonalItems.map((item) => (
-                          <div key={item.id} className="flex justify-between text-[9px] md:text-[10px] text-gray-600">
-                            <span>{item.nombre} (x{item.quantity})</span>
-                            <span>{(item.precio * item.quantity).toFixed(2)}€</span>
-                          </div>
-                        ))}
-                      </CollapsibleContent>
-                    </Collapsible>
-                  )}
-                  {giftItems.length > 0 && (
-                    <Collapsible>
-                      <CollapsibleTrigger asChild>
-                        <button className="w-full flex justify-between items-center py-1 hover:bg-gray-50 rounded">
-                          <span className="text-[10px] md:text-xs">Cestas para regalar</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-[10px] md:text-xs">{getAssignedGiftTotal().toFixed(2)}€</span>
-                            <ChevronDown className="w-3 h-3" />
-                          </div>
-                        </button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-1 space-y-1 pl-2">
-                        {giftAssignment.recipients.map((recipient, recipientIdx) =>
-                          recipient.basketIds.map((uniqueId) => {
-                            const basketItem = expandedGiftItems.find(it => it.uniqueId === uniqueId);
-                            if (!basketItem) return null;
-                            return (
-                              <div key={uniqueId} className="flex justify-between text-[9px] md:text-[10px] text-gray-600">
-                                <span>{basketItem.nombre} → {recipient.recipientName || 'Sin nombre'}</span>
-                                <span>{basketItem.precio.toFixed(2)}€</span>
-                              </div>
-                            );
-                          })
-                        )}
-                      </CollapsibleContent>
-                    </Collapsible>
-                  )}
-                  <Separator />
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm md:text-base font-poppins font-bold">Total</span>
-                    <span className="text-base md:text-lg font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>
-                  </div>
-                  <Button
-                    onClick={handleContinueToPayment}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3"
-                  >
-                    Continuar al pago ({getTotalAmount().toFixed(2)}€)
-                  </Button>
-                  
-                  {/* Error message toast */}
-                  <AnimatePresence>
-                    {showErrorMessage && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="mt-2 p-3 bg-red-50 border-2 border-red-600 rounded-lg text-center"
-                      >
-                        <p className="text-sm font-medium text-red-600">{errorMessage}</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  
-                  <p className="text-xs text-gray-500 text-center">
-                    Pago seguro con Stripe
-                  </p>
                 </CardContent>
               </Card>
             </div>

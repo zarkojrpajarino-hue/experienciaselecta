@@ -346,7 +346,7 @@ const ProfilePage = () => {
 
           {/* Tabs */}
           <Tabs defaultValue="orders" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 gap-4 md:gap-8 mb-8 bg-transparent">
+            <TabsList className="grid w-full grid-cols-2 gap-6 md:gap-12 mb-8 bg-transparent">
               <TabsTrigger value="orders" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
                 <Package className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="font-bungee tracking-wider text-xs md:text-base">Mis pedidos.</span>
@@ -359,6 +359,11 @@ const ProfilePage = () => {
 
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6 animate-fade-in">
+              {/* Título de sección */}
+              <h2 className="text-2xl md:text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-4 tracking-wider text-center">
+                Pedidos:
+              </h2>
+              
               {/* Active/Paid Orders */}
               {orders.length === 0 ? (
                 <Card className="bg-white/10 border-none shadow-lg">
@@ -536,6 +541,11 @@ const ProfilePage = () => {
 
             {/* Reviews Tab */}
             <TabsContent value="reviews" className="space-y-6 animate-fade-in">
+              {/* Título de sección */}
+              <h2 className="text-2xl md:text-3xl font-bungee font-bold text-[hsl(45,100%,65%)] mb-4 tracking-wider text-center">
+                Valoraciones:
+              </h2>
+              
               {/* Valoraciones desde paragenteselecta.com */}
               {reviews.length > 0 ? (
                 <div className="space-y-4">

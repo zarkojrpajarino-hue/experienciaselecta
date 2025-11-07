@@ -133,7 +133,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
 
       {/* Image Modal */}
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-[2rem] overflow-hidden">
+        <DialogContent hideClose className="max-w-7xl bg-white border-2 border-black/10 p-2 shadow-2xl rounded-[2rem] overflow-hidden">
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
           <Button 
@@ -143,7 +143,7 @@ const CarouselSection = ({ slides, position = "left", autoPlay = true, autoPlayD
           >
             <X className="h-6 w-6" />
           </Button>
-          <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white">
+          <div className="rounded-[1.5rem] overflow-hidden">
             <img 
               src={currentSlide.image} 
               alt="Ampliado" 
