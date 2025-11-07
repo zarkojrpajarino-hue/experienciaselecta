@@ -43,18 +43,9 @@ const CheckoutPage = () => {
   // Listener para recargar el carrito cuando cambie el auth
   React.useEffect(() => {
     const handleAuthChange = () => {
-      // Recargar el carrito desde localStorage
-      const savedCart = localStorage.getItem('shopping-cart');
-      if (savedCart) {
-        try {
-          const parsedCart = JSON.parse(savedCart);
-          console.log('🛒 Carrito recargado después de auth', parsedCart.length, 'items');
-          // El CartContext ya maneja esto automáticamente, pero podemos forzar una actualización
-          window.location.reload();
-        } catch (error) {
-          console.error('Error recargando carrito:', error);
-        }
-      }
+      console.log('🛒 Evento de cambio de auth recibido en Checkout');
+      // El CartContext ya maneja la actualización automáticamente
+      // No necesitamos hacer nada más aquí, solo dejar que React re-renderice
     };
     
     window.addEventListener('auth-state-changed', handleAuthChange);
