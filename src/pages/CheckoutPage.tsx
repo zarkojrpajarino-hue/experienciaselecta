@@ -40,16 +40,78 @@ const CheckoutPage = () => {
   
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
 
-  // Listener para recargar el carrito cuando cambie el auth
+  // Listener para eventos de autenticación y carrito
   React.useEffect(() => {
-    const handleAuthChange = () => {
-      console.log('🛒 Evento de cambio de auth recibido en Checkout');
-      // El CartContext ya maneja la actualización automáticamente
-      // No necesitamos hacer nada más aquí, solo dejar que React re-renderice
+    console.log('🎯 Checkout montado, escuchando eventos...');
+
+    const handleCartRestored = (event: CustomEvent) => {
+      console.log('🛒 Evento cart-restored recibido:', event.detail);
+      
+      const cart = localStorage.getItem('shopping-cart');
+      if (cart) {
+        try {
+          const parsedCart = JSON.parse(cart);
+          console.log('✅ Carrito actualizado en checkout:', parsedCart);
+          window.location.reload();
+        } catch (error) {
+          console.error('❌ Error parseando carrito:', error);
+        }
+      }
     };
-    
-    window.addEventListener('auth-state-changed', handleAuthChange);
-    return () => window.removeEventListener('auth-state-changed', handleAuthChange);
+
+    const handleAuthStateChanged = (event: CustomEvent) => {
+      console.log('🔐 Evento auth-state-changed recibido:', event.detail);
+      
+      const { user, session, cartRestored } = event.detail;
+      
+      if (user) {
+        console.log('✅ Usuario autenticado en checkout:', user.email);
+        
+        if (cartRestored) {
+          const cart = localStorage.getItem('shopping-cart');
+          if (cart) {
+            console.log('🛒 Actualizando carrito en checkout tras auth');
+            window.location.reload();
+          }
+        }
+      }
+    };
+
+    const handleForceRefresh = (event: CustomEvent) => {
+      console.log('🔄 Forzando refresh del checkout...', event.detail);
+      
+      const cart = localStorage.getItem('shopping-cart');
+      const authCompleted = sessionStorage.getItem('auth_completed');
+      
+      if (authCompleted === 'true' && cart) {
+        console.log('✅ Auth completada, actualizando checkout');
+        sessionStorage.removeItem('auth_completed');
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('cart-restored', handleCartRestored as EventListener);
+    window.addEventListener('auth-state-changed', handleAuthStateChanged as EventListener);
+    window.addEventListener('force-checkout-refresh', handleForceRefresh as EventListener);
+
+    const authCompleted = sessionStorage.getItem('auth_completed');
+    if (authCompleted === 'true') {
+      console.log('✅ Auth completada detectada al montar checkout');
+      sessionStorage.removeItem('auth_completed');
+      
+      const cart = localStorage.getItem('shopping-cart');
+      if (cart) {
+        console.log('🛒 Cargando carrito guardado');
+        window.location.reload();
+      }
+    }
+
+    return () => {
+      console.log('🧹 Checkout desmontado, limpiando listeners');
+      window.removeEventListener('cart-restored', handleCartRestored as EventListener);
+      window.removeEventListener('auth-state-changed', handleAuthStateChanged as EventListener);
+      window.removeEventListener('force-checkout-refresh', handleForceRefresh as EventListener);
+    };
   }, []);
 
   // Verificar si hay un proceso de autenticación en curso

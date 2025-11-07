@@ -262,24 +262,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
     try {
       const emailClean = email.trim().toLowerCase();
       
-      const { error } = await supabase.auth.verifyOtp({
+      console.log('🔐 Verificando código OTP...');
+      
+      const { data, error } = await supabase.auth.verifyOtp({
         email: emailClean,
         token: code,
         type: 'email',
       });
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       console.log('✅ Código verificado correctamente');
 
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session?.user) {
+      if (data.session?.user) {
+        try {
           const { data: profiles, error: profileError } = await supabase
             .from('profiles')
             .select('created_at')
-            .eq('user_id', session.user.id)
+            .eq('user_id', data.session.user.id)
             .single();
 
           if (!profileError && profiles) {
@@ -291,12 +293,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
               
               const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
                 headers: {
-                  Authorization: `Bearer ${session.access_token}`
+                  Authorization: `Bearer ${data.session.access_token}`
                 },
                 body: {
-                  userEmail: session.user.email,
-                  userName: session.user.user_metadata?.name 
-                    || session.user.user_metadata?.full_name 
+                  userEmail: data.session.user.email,
+                  userName: data.session.user.user_metadata?.name 
+                    || data.session.user.user_metadata?.full_name 
                     || ''
                 }
               });
@@ -308,9 +310,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
               }
             }
           }
+        } catch (emailError) {
+          console.error('⚠️ Error en flujo de email de bienvenida:', emailError);
         }
-      } catch (emailError) {
-        console.error('⚠️ Error en flujo de email de bienvenida:', emailError);
       }
 
       toast({
@@ -325,10 +327,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       setVerificationCode("");
       setShowCodeInput(false);
       
-      onSuccess();
       onClose();
+      onSuccess();
 
-      console.log('✅ Verificación OTP completada, checkout se actualizará automáticamente');
+      setTimeout(() => {
+        const isPendingCheckout = localStorage.getItem('pendingCheckout');
+        
+        if (isPendingCheckout && window.location.pathname !== '/checkout') {
+          console.log('🔄 Navegando a checkout después de verificación OTP');
+          window.location.href = '/checkout';
+        } else if (window.location.pathname === '/checkout') {
+          console.log('📍 Ya en checkout, disparando evento de actualización');
+          window.dispatchEvent(new CustomEvent('auth-state-changed', {
+            detail: { 
+              user: data.session?.user,
+              session: data.session
+            }
+          }));
+        }
+      }, 500);
+
     } catch (error: any) {
       console.error('❌ Error verificando código:', error);
       
