@@ -86,7 +86,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       localStorage.setItem('pendingCheckout', 'true');
       localStorage.setItem('oauthInProgress', 'true');
       
-      const redirectUrl = getRedirectUrl();
+      const redirectUrl = window.location.origin;
       console.log('🔗 OAuth redirectTo:', redirectUrl);
       
       const { error } = await supabase.auth.signInWithOAuth({
@@ -320,32 +320,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         description: "Has iniciado sesión correctamente.",
       });
 
-      localStorage.removeItem('oauthInProgress');
-      sessionStorage.setItem('auth_completed', 'true');
+      // Limpiar flags de progreso
+      try { 
+        localStorage.removeItem('oauthInProgress');
+        localStorage.removeItem('pendingCheckout');
+      } catch {}
 
       setEmail("");
       setVerificationCode("");
       setShowCodeInput(false);
-      
-      onClose();
       onSuccess();
+      onClose();
 
-      setTimeout(() => {
-        const isPendingCheckout = localStorage.getItem('pendingCheckout');
-        
-        if (isPendingCheckout && window.location.pathname !== '/checkout') {
-          console.log('🔄 Navegando a checkout después de verificación OTP');
-          window.location.href = '/checkout';
-        } else if (window.location.pathname === '/checkout') {
-          console.log('📍 Ya en checkout, disparando evento de actualización');
-          window.dispatchEvent(new CustomEvent('auth-state-changed', {
-            detail: { 
-              user: data.session?.user,
-              session: data.session
-            }
-          }));
-        }
-      }, 500);
+      // NO hacer nada más - el AuthContext manejará todo
+      console.log('✅ OTP verificado - cerrando modal');
 
     } catch (error: any) {
       console.error('❌ Error verificando código:', error);
