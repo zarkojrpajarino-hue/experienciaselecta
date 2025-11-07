@@ -57,7 +57,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       
       // CRÍTICO: Usar el callback de Supabase directamente (autorizado en Google Console)
       const redirectUrl = 'https://tyorpbzvjnasyaqbggcp.supabase.co/auth/v1/callback';
+      
+      // Determinar la URL final de redirección después del callback
+      const finalRedirectUrl = `${window.location.origin}/checkout`;
       console.log('Google OAuth redirectTo:', redirectUrl);
+      console.log('Final redirect after callback:', finalRedirectUrl);
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -65,6 +70,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
+            redirect_to: finalRedirectUrl
           }
         }
       });
