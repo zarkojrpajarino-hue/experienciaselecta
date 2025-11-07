@@ -273,49 +273,34 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         type: 'email',
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       console.log('✅ Código verificado correctamente');
 
+      // Email de bienvenida para usuarios nuevos (fire and forget)
       if (data.session?.user) {
-        try {
-          const { data: profiles, error: profileError } = await supabase
-            .from('profiles')
-            .select('created_at')
-            .eq('user_id', data.session.user.id)
-            .single();
+        supabase
+          .from('profiles')
+          .select('created_at')
+          .eq('user_id', data.session.user.id)
+          .single()
+          .then(({ data: profiles, error: profileError }) => {
+            if (!profileError && profiles) {
+              const createdAt = new Date(profiles.created_at);
+              const ageInSeconds = (Date.now() - createdAt.getTime()) / 1000;
 
-          if (!profileError && profiles) {
-            const createdAt = new Date(profiles.created_at);
-            const ageInSeconds = (Date.now() - createdAt.getTime()) / 1000;
-
-            if (ageInSeconds < 60) {
-              console.log('📧 Enviando email de bienvenida a usuario nuevo');
-              
-              const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
-                headers: {
-                  Authorization: `Bearer ${data.session.access_token}`
-                },
-                body: {
-                  userEmail: data.session.user.email,
-                  userName: data.session.user.user_metadata?.name 
-                    || data.session.user.user_metadata?.full_name 
-                    || ''
-                }
-              });
-              
-              if (emailError) {
-                console.error('⚠️ Error enviando email de bienvenida:', emailError);
-              } else {
-                console.log('✅ Email de bienvenida enviado');
+              if (ageInSeconds < 60) {
+                console.log('📧 Enviando email de bienvenida');
+                supabase.functions.invoke('send-welcome-email', {
+                  headers: { Authorization: `Bearer ${data.session.access_token}` },
+                  body: {
+                    userEmail: data.session.user.email,
+                    userName: data.session.user.user_metadata?.name || ''
+                  }
+                });
               }
             }
-          }
-        } catch (emailError) {
-          console.error('⚠️ Error en flujo de email de bienvenida:', emailError);
-        }
+          });
       }
 
       toast({
@@ -323,17 +308,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         description: "Has iniciado sesión correctamente.",
       });
 
-      // Limpiar y cerrar
-      localStorage.removeItem('oauthInProgress');
-      
+      // Limpiar formulario
       setEmail("");
       setVerificationCode("");
       setShowCodeInput(false);
-      onSuccess();
+      
+      // Cerrar modal
       onClose();
+      onSuccess();
 
-      // El AuthContext se encargará de la navegación
-      console.log('✅ OTP verificado, AuthContext manejará la navegación');
+      // AuthContext se encarga de navegar a checkout automáticamente
 
     } catch (error: any) {
       console.error('❌ Error verificando código:', error);
