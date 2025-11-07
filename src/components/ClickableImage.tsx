@@ -23,11 +23,26 @@ const ClickableImage = ({
 }: ClickableImageProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleOpenModal = () => {
+    setIsOpen(true);
+    
+    // Auto-scroll to center the modal after it opens
+    setTimeout(() => {
+      const modalElement = document.querySelector('[role="dialog"]');
+      if (modalElement) {
+        modalElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }
+    }, 150);
+  };
+
   return (
     <>
       <div 
         className={`relative group cursor-pointer ${containerClassName}`} 
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpenModal}
       >
         <div className={`overflow-hidden ${rounded ? 'rounded-3xl' : ''} ${shadow ? 'shadow-2xl group-hover:shadow-gold/50' : ''} transition-all duration-300`}>
           <img

@@ -226,7 +226,7 @@ const ConocenosPage = () => {
           slides={processSlides} 
           titleBold={false} 
           hideMainTitle={true}
-          carouselTitle="Porque no vendemos cestas."
+          carouselTitle="Porque no vendemos simples cestas."
         />
         
       </div>
@@ -254,7 +254,7 @@ const ConocenosPage = () => {
             aria-label="Abrir menú para saber más"
           >
             <span className="text-xl sm:text-2xl md:text-3xl font-extrabold font-poppins text-black uppercase">
-              SABER MÁS
+              SABER MÁS.
             </span>
             <motion.span
               className="text-xl sm:text-2xl md:text-3xl"

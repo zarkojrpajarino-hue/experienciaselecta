@@ -118,6 +118,17 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
   const handleOpenImage = useCallback((imageSrc: string) => {
     setSelectedImage(imageSrc);
     setImageModalOpen(true);
+    
+    // Auto-scroll to center the modal after it opens
+    setTimeout(() => {
+      const modalElement = document.querySelector('.fixed.inset-0.z-\\[100\\]');
+      if (modalElement) {
+        modalElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }
+    }, 150);
   }, []);
   
   // Callback optimizado para cerrar imagen
@@ -1321,11 +1332,11 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                 <div className="relative w-full px-4 mt-2 bg-white border-2 border-gold/30 rounded-lg py-6 shadow-lg">
                   <div className="grid grid-cols-2 gap-4">
                     {/* Top Left: Título, Descripción y Maridaje */}
-                  <div className="col-span-1">
-                    <div className="flex items-start gap-1 mb-1 relative">
-                      <h3 data-basket-title className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-black whitespace-nowrap">
-                        {basket.nombre}
-                      </h3>
+                    <div className="col-span-1">
+                      <div className="flex items-start gap-1 mb-1 relative">
+                        <h3 data-basket-title className="font-poppins font-bold text-base sm:text-xl transition-colors basket-title text-black break-words max-w-[90%]">
+                          {basket.nombre}
+                        </h3>
                       <button 
                         onClick={() => handleCardToggle(basket.id)}
                         className="text-gold hover:opacity-70 transition-opacity hover:scale-110"
@@ -1341,7 +1352,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
                         </Badge>
                       )}
                       
-                      <p className="text-[10px] sm:text-xs leading-tight font-bold text-black/80 basket-descripcion mb-2 whitespace-nowrap">
+                      <p className="text-[10px] sm:text-xs leading-tight font-bold text-black/80 basket-descripcion mb-2 break-words">
                         {basket.descripcion}
                       </p>
                     </div>

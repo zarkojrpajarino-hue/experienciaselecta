@@ -98,6 +98,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [openOrders, setOpenOrders] = useState<{ [key: string]: boolean }>({});
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [expandedImages, setExpandedImages] = useState<{ [key: string]: boolean }>({});
   const [activeTab, setActiveTab] = useState<string>("orders");
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -445,7 +446,7 @@ const ProfilePage = () => {
                             </div>
 
                             {/* Imagen de la cesta en el centro */}
-                            <div className="flex justify-center items-start">
+                            <div className="flex flex-col items-center justify-start gap-2">
                               {order.items && order.items.length > 0 ? (
                                 (() => {
                                   const item = order.items[0];
@@ -460,16 +461,55 @@ const ProfilePage = () => {
                                         : undefined;
                                   const imgSrc = byName || byCategory || parejaInicialImg;
                                   return (
-                                    <div 
-                                      className="w-28 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
-                                      onClick={() => setZoomedImage(imgSrc)}
-                                    >
-                                      <img 
-                                        src={imgSrc} 
-                                        alt={item.basket_name}
-                                        className="w-full h-auto object-cover"
-                                      />
-                                    </div>
+                                    <>
+                                      {/* Imagen ampliada - Collapsible arriba */}
+                                      <Collapsible
+                                        open={expandedImages[order.id]}
+                                        onOpenChange={(open) => {
+                                          setExpandedImages(prev => ({ ...prev, [order.id]: open }));
+                                          if (open) {
+                                            setTimeout(() => {
+                                              const expandedImg = document.querySelector(`[data-expanded-order="${order.id}"]`);
+                                              if (expandedImg) {
+                                                expandedImg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                              }
+                                            }, 150);
+                                          }
+                                        }}
+                                        className="w-full"
+                                      >
+                                        <CollapsibleContent>
+                                          <div data-expanded-order={order.id} className="bg-white/10 border-2 border-[#FFD700]/30 rounded-2xl p-3 mb-3 shadow-xl">
+                                            <div className="flex justify-end mb-2">
+                                              <Button 
+                                                onClick={() => setExpandedImages(prev => ({ ...prev, [order.id]: false }))}
+                                                className="h-6 w-6 rounded-full bg-white hover:bg-gray-100 text-black shadow-md" 
+                                                size="icon"
+                                              >
+                                                <X className="h-3 w-3" />
+                                              </Button>
+                                            </div>
+                                            <img
+                                              src={imgSrc}
+                                              alt={item.basket_name}
+                                              className="w-full h-auto object-contain rounded-xl"
+                                            />
+                                          </div>
+                                        </CollapsibleContent>
+                                      </Collapsible>
+
+                                      {/* Imagen pequeña clickeable */}
+                                      <div 
+                                        className="w-28 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg"
+                                        onClick={() => setExpandedImages(prev => ({ ...prev, [order.id]: !prev[order.id] }))}
+                                      >
+                                        <img 
+                                          src={imgSrc} 
+                                          alt={item.basket_name}
+                                          className="w-full h-auto object-cover"
+                                        />
+                                      </div>
+                                    </>
                                   );
                                 })()
                               ) : null}

@@ -126,7 +126,7 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
       </button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white">
+        <DialogContent className="w-[95vw] max-w-2xl h-[90vh] max-h-[90vh] overflow-y-auto bg-white p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-[hsl(271,100%,20%)]">
               <User className="w-5 h-5" />
