@@ -44,39 +44,28 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      // CRÍTICO: Establecer flags ANTES de OAuth para preservar carrito y mostrar loader
+      
+      console.log('🚀 Iniciando login con Google...');
+      
+      // 1. Guardar el carrito actual
+      const currentCart = localStorage.getItem('shopping-cart');
+      if (currentCart) {
+        localStorage.setItem('cart_backup', currentCart);
+        console.log('💾 Carrito guardado');
+      }
+      
+      // 2. Marcar que estamos en proceso de OAuth para checkout
       localStorage.setItem('pendingCheckout', 'true');
       localStorage.setItem('oauthInProgress', 'true');
       
-      // NUEVO: Guardar una copia del carrito anónimo actual en un key temporal
-      const currentAnonCart = localStorage.getItem('shopping-cart');
-      if (currentAnonCart) {
-        console.log('Preserving anonymous cart before OAuth:', currentAnonCart);
-        localStorage.setItem('temp-cart-before-oauth', currentAnonCart);
-        localStorage.setItem('cart_backup', currentAnonCart);
-      }
-      
-      // Redirigir de vuelta a nuestra app (no al callback de Supabase)
-      const baseOrigin = (() => {
-        try {
-          const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
-          if (topOrigin && topOrigin !== window.location.origin) {
-            console.log('Using top window origin for OAuth redirect:', topOrigin);
-            return topOrigin;
-          }
-        } catch (e) {
-          console.warn('Could not read top origin (OAuth), using current origin:', e);
-        }
-        return window.location.origin;
-      })();
-      const redirectUrl = `${baseOrigin}/checkout`;
-      console.log('Google OAuth redirectTo:', redirectUrl);
-      try { localStorage.setItem('auth_redirect_url', redirectUrl); } catch {}
+      // 3. Iniciar OAuth con Google
+      const redirectUrl = window.location.origin;
+      console.log('🔗 OAuth redirectTo:', redirectUrl);
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -84,17 +73,37 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error en OAuth:', error);
+        
+        // Limpiar flags si falla
+        localStorage.removeItem('pendingCheckout');
+        localStorage.removeItem('oauthInProgress');
+        localStorage.removeItem('cart_backup');
+        
+        toast({
+          variant: "destructive",
+          title: "No se pudo iniciar sesión",
+          description: error.message || 'Inténtalo de nuevo',
+        });
+        
+        setIsLoading(false);
+      }
+      
     } catch (error: any) {
-      console.error('Error en login con Google:', error);
-      localStorage.removeItem('pendingCheckout'); // Limpiar si falla
-      localStorage.removeItem('temp-cart-before-oauth'); // Limpiar carrito temporal
-      try { localStorage.removeItem('oauthInProgress'); } catch {}
+      console.error('❌ Error inesperado:', error);
+      
+      // Limpiar flags si falla
+      localStorage.removeItem('pendingCheckout');
+      localStorage.removeItem('oauthInProgress');
+      localStorage.removeItem('cart_backup');
+      
       toast({
         variant: "destructive",
-        title: "No se pudo iniciar sesión",
-        description: error.message || 'Inténtalo de nuevo',
+        title: "Error inesperado",
+        description: 'Por favor, inténtalo de nuevo',
       });
+      
       setIsLoading(false);
     }
   };

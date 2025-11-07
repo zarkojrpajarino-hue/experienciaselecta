@@ -31,177 +31,85 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session);
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-      
-      if (event === 'SIGNED_IN' && session?.user) {
-        // Identificar usuario en RudderStack
-        try {
-          const ra = (window as any).rudderanalytics;
-          if (ra && typeof ra.identify === 'function') {
-            ra.identify(session.user.id, {
-              email: session.user.email,
-              name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-              avatar_url: session.user.user_metadata?.avatar_url,
-              provider: session.user.app_metadata?.provider || 'google'
-            });
-            console.log('Usuario identificado en RudderStack:', session.user.id);
-          }
-        } catch (error) {
-          console.error('Error identificando usuario en RudderStack:', error);
-        }
-
-        // Restaurar el carrito si existe un backup
-        const cartBackup = localStorage.getItem('cart_backup');
-        if (cartBackup) {
-          localStorage.setItem('shopping-cart', cartBackup);
-          localStorage.removeItem('cart_backup');
-          console.log('Carrito restaurado después del login');
-        }
-
-        // Redireccionar a la URL guardada
-        try {
-          const savedUrl = localStorage.getItem('auth_redirect_url') || '/checkout';
-          if (savedUrl) {
-            localStorage.removeItem('auth_redirect_url');
-            try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
-            try { localStorage.removeItem('oauthInProgress'); } catch {}
-            console.log('Redirigiendo a:', savedUrl);
-            // Usar setTimeout para asegurar que el estado se actualice primero
-            setTimeout(() => {
-              window.location.href = savedUrl;
-            }, 100);
-          }
-        } catch {}
-      }
-    });
-
-    // THEN check for existing session
+    // Primero verificar si hay una sesión existente
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session:', session?.user?.email);
+      console.log('📍 Initial session check:', session?.user?.email || 'No session');
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+    // Configurar listener de cambios de autenticación
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('🔔 Auth event:', event, session?.user?.email || 'No user');
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsLoading(false);
 
-  // Manejar callback OAuth globalmente para asegurar creación de sesión y mantener el carrito
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    const hasTokenInHash = window.location.hash.includes('access_token=');
-    const oauthHandled = sessionStorage.getItem('oauthHandled');
-
-    console.log('🔍 OAuth useEffect ejecutado');
-    console.log('   📍 URL:', window.location.href);
-    console.log('   🔑 code:', code ? 'PRESENTE' : 'AUSENTE');
-    console.log('   🔑 hasTokenInHash:', hasTokenInHash);
-    console.log('   👤 session:', session ? 'PRESENTE' : 'AUSENTE');
-    console.log('   ✋ oauthHandled:', oauthHandled);
-
-    if ((code || hasTokenInHash) && !oauthHandled) {
-      console.log('✅ Condiciones cumplidas, procesando OAuth...');
-      (async () => {
-        try {
-          if (code) {
-            console.log('Processing OAuth code...');
-            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-            if (error) {
-              console.error('OAuth exchange error:', error);
-            } else if (data.session) {
-              console.log('✅ OAuth exchange success, session created for:', data.session.user.email);
-              
-              // Enviar email de bienvenida para nuevos usuarios
-              try {
-                const { data: profiles } = await supabase
-                  .from('profiles')
-                  .select('created_at')
-                  .eq('user_id', data.session.user.id);
-
-                if (profiles && profiles.length > 0) {
-                  const createdAt = new Date(profiles[0].created_at);
-                  const now = new Date();
-                  const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
-
-                  // Enviar email de bienvenida si el perfil se creó recientemente (últimos 30 segundos)
-                  if (diffSeconds < 30) {
-                    console.log('Sending welcome email to new OAuth user:', data.session.user.email);
-                    const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
-                      headers: {
-                        Authorization: `Bearer ${data.session.access_token}`
-                      },
-                      body: {
-                        userEmail: data.session.user.email,
-                        userName: data.session.user.user_metadata?.name || data.session.user.user_metadata?.full_name || ''
-                      }
-                    });
-                    
-                    if (emailError) {
-                      console.error('Error sending welcome email:', emailError);
-                    } else {
-                      console.log('Welcome email sent successfully');
-                    }
-                  }
-                }
-              } catch (emailError) {
-                console.error('Error in welcome email flow:', emailError);
-                // No fallar el login si falla el email
-              }
-              
-              // CRÍTICO: Siempre redirigir a checkout después del login con OAuth
-              console.log('Redirecting to /checkout after OAuth login');
-              try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
-              try { localStorage.removeItem('oauthInProgress'); } catch {}
-              const baseOrigin = (() => {
-                try {
-                  const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
-                  if (topOrigin && topOrigin !== window.location.origin) {
-                    console.log('Using top window origin for post-OAuth redirect:', topOrigin);
-                    return topOrigin;
-                  }
-                } catch (e) {
-                  console.warn('Could not read top origin (post-OAuth), using current origin:', e);
-                }
-                return window.location.origin;
-              })();
-              window.location.replace(`${baseOrigin}/checkout`);
-              console.log('✅ OAuth flow completed, redirected to /checkout');
-              
-              // Mostrar toast de confirmación con nombre del usuario
-              const userName = data.session.user.user_metadata?.name 
-                || data.session.user.user_metadata?.full_name 
-                || data.session.user.email?.split('@')[0] 
-                || 'Usuario';
-              
-              toast.success(`¡Bienvenido, ${userName}!`, {
-                description: 'Tu carrito se ha preservado correctamente.',
-                duration: 4000,
+        // SOLO manejar el evento SIGNED_IN aquí
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('✅ Usuario autenticado:', session.user.email);
+          
+          // 1. Identificar en RudderStack
+          try {
+            const ra = (window as any).rudderanalytics;
+            if (ra && typeof ra.identify === 'function') {
+              ra.identify(session.user.id, {
+                email: session.user.email,
+                name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
+                avatar_url: session.user.user_metadata?.avatar_url,
+                provider: session.user.app_metadata?.provider || 'google'
               });
+              console.log('✅ Usuario identificado en RudderStack');
+            }
+          } catch (error) {
+            console.error('❌ Error identificando en RudderStack:', error);
+          }
+
+          // 2. Restaurar carrito si existe backup
+          const cartBackup = localStorage.getItem('cart_backup');
+          if (cartBackup) {
+            try {
+              localStorage.setItem('shopping-cart', cartBackup);
+              localStorage.removeItem('cart_backup');
+              console.log('✅ Carrito restaurado');
+            } catch (error) {
+              console.error('❌ Error restaurando carrito:', error);
             }
           }
-        } catch (e) {
-          console.error('Global OAuth exchange error:', e);
-          toast.error('Error al iniciar sesión', {
-            description: 'Por favor, inténtalo de nuevo.',
-          });
-        } finally {
-          try { sessionStorage.setItem('oauthHandled', 'true'); } catch {}
-          try { localStorage.removeItem('oauthInProgress'); } catch {}
+
+          // 3. Verificar si venimos de OAuth (tiene el flag pendingCheckout)
+          const isPendingCheckout = localStorage.getItem('pendingCheckout');
+          
+          if (isPendingCheckout) {
+            console.log('🔄 Redirigiendo a checkout después de OAuth...');
+            localStorage.removeItem('pendingCheckout');
+            localStorage.removeItem('oauthInProgress');
+            
+            // Mostrar toast de bienvenida
+            const userName = session.user.user_metadata?.name 
+              || session.user.user_metadata?.full_name 
+              || session.user.email?.split('@')[0] 
+              || 'Usuario';
+            
+            toast.success(`¡Bienvenido, ${userName}!`, {
+              description: 'Tu carrito se ha preservado correctamente.',
+              duration: 3000,
+            });
+
+            // Redirigir al checkout después de un pequeño delay
+            setTimeout(() => {
+              window.location.href = '/checkout';
+            }, 500);
+          }
         }
-      })();
-    } else {
-      console.log('❌ Condiciones NO cumplidas para procesar OAuth');
-      console.log('   Razón: code=' + (code ? 'SÍ' : 'NO') + ', hasTokenInHash=' + hasTokenInHash + ', session=' + (session ? 'SÍ' : 'NO') + ', oauthHandled=' + oauthHandled);
-    }
-  }, [session]);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, session, isLoading }}>
