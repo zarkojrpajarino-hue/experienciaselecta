@@ -11,7 +11,6 @@ import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import AuthModal from "@/components/AuthModal";
-import CheckoutAuthListener from "@/components/CheckoutAuthListener";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -537,7 +536,6 @@ React.useEffect(() => {
 
   return (
     <>
-      <CheckoutAuthListener />
       <Navbar />
       <div className="min-h-screen pt-16 pb-6 px-2 bg-white">
         <div className="container mx-auto max-w-6xl">

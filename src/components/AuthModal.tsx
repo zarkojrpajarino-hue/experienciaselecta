@@ -317,23 +317,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       toast({
         title: "¡Acceso correcto!",
-        description: "Has iniciado sesión correctamente.",
+        description: "Redirigiendo al checkout...",
       });
 
-      // Limpiar flags de progreso
-      try { 
-        localStorage.removeItem('oauthInProgress');
-        localStorage.removeItem('pendingCheckout');
-      } catch {}
-
+      // Limpiar
+      localStorage.removeItem('oauthInProgress');
+      localStorage.setItem('pendingCheckout', 'true');
+      
       setEmail("");
       setVerificationCode("");
       setShowCodeInput(false);
       onSuccess();
       onClose();
 
-      // NO hacer nada más - el AuthContext manejará todo
-      console.log('✅ OTP verificado - cerrando modal');
+      // CRÍTICO: Navegar a checkout después de OTP
+      console.log('✅ OTP verificado, navegando a checkout...');
+      setTimeout(() => {
+        window.location.href = '/checkout';
+      }, 500);
 
     } catch (error: any) {
       console.error('❌ Error verificando código:', error);

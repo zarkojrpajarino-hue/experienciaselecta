@@ -65,60 +65,69 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setUser(session?.user ?? null);
         setIsLoading(false);
 
-        // SOLO manejar el evento SIGNED_IN aquí
-        if (event === 'SIGNED_IN' && session?.user) {
-          console.log('✅ Usuario autenticado:', session.user.email);
-          
-          // 1. Identificar en RudderStack
-          try {
-            const ra = (window as any).rudderanalytics;
-            if (ra && typeof ra.identify === 'function') {
-              ra.identify(session.user.id, {
-                email: session.user.email,
-                name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
-                avatar_url: session.user.user_metadata?.avatar_url,
-                provider: session.user.app_metadata?.provider || 'google'
-              });
-              console.log('✅ Usuario identificado en RudderStack');
-            }
-          } catch (error) {
-            console.error('❌ Error identificando en RudderStack:', error);
-          }
-
-          // 2. Restaurar carrito si existe backup
-          const cartBackup = localStorage.getItem('cart_backup');
-          if (cartBackup) {
-            try {
-              localStorage.setItem('shopping-cart', cartBackup);
-              localStorage.removeItem('cart_backup');
-              console.log('✅ Carrito restaurado después de login');
-            } catch (error) {
-              console.error('❌ Error restaurando carrito:', error);
-            }
-          }
-
-          // 3. Limpiar flags de OAuth
-          const isPendingCheckout = localStorage.getItem('pendingCheckout');
-          if (isPendingCheckout) {
-            console.log('✅ Limpiando flags de OAuth checkout');
-            localStorage.removeItem('pendingCheckout');
-            localStorage.removeItem('oauthInProgress');
-            
-            // Mostrar toast de bienvenida
-            const userName = session.user.user_metadata?.name 
-              || session.user.user_metadata?.full_name 
-              || session.user.email?.split('@')[0] 
-              || 'Usuario';
-            
-            toast.success(`¡Bienvenido, ${userName}!`, {
-              description: 'Has iniciado sesión correctamente.',
-              duration: 3000,
+      // SOLO manejar el evento SIGNED_IN aquí
+      if (event === 'SIGNED_IN' && session?.user) {
+        console.log('✅ Usuario autenticado:', session.user.email);
+        
+        // 1. Identificar en RudderStack
+        try {
+          const ra = (window as any).rudderanalytics;
+          if (ra && typeof ra.identify === 'function') {
+            ra.identify(session.user.id, {
+              email: session.user.email,
+              name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
+              avatar_url: session.user.user_metadata?.avatar_url,
+              provider: session.user.app_metadata?.provider || 'google'
             });
+            console.log('✅ Usuario identificado en RudderStack');
           }
-          
-          // NO hacer nada más - dejar que React actualice naturalmente
-          console.log('✅ Login completado - React actualizará la UI automáticamente');
+        } catch (error) {
+          console.error('❌ Error identificando en RudderStack:', error);
         }
+
+        // 2. Restaurar carrito si existe backup
+        const cartBackup = localStorage.getItem('cart_backup');
+        if (cartBackup) {
+          try {
+            localStorage.setItem('shopping-cart', cartBackup);
+            localStorage.removeItem('cart_backup');
+            console.log('✅ Carrito restaurado después de login');
+          } catch (error) {
+            console.error('❌ Error restaurando carrito:', error);
+          }
+        }
+
+        // 3. Mostrar toast de bienvenida
+        const userName = session.user.user_metadata?.name 
+          || session.user.user_metadata?.full_name 
+          || session.user.email?.split('@')[0] 
+          || 'Usuario';
+        
+        toast.success(`¡Bienvenido, ${userName}!`, {
+          description: 'Redirigiendo al checkout...',
+          duration: 2000,
+        });
+
+        // 4. Limpiar flags de OAuth
+        localStorage.removeItem('pendingCheckout');
+        localStorage.removeItem('oauthInProgress');
+        
+        // 5. CRÍTICO: SIEMPRE navegar al checkout después de login
+        console.log('🔄 Navegando al checkout...');
+        
+        // Usar setTimeout para permitir que el toast se muestre
+        setTimeout(() => {
+          // Verificar si ya estamos en checkout para evitar bucles
+          const currentPath = window.location.pathname;
+          if (currentPath !== '/checkout') {
+            console.log('➡️ Redirigiendo desde', currentPath, 'a /checkout');
+            window.location.href = '/checkout';
+          } else {
+            console.log('✅ Ya estamos en checkout, solo recargar');
+            window.location.reload();
+          }
+        }, 500);
+      }
       }
     );
 
