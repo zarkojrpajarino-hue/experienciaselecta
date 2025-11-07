@@ -34,24 +34,56 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const hasRedirectedRef = useRef(false);
 
   useEffect(() => {
+    let mounted = true;
+    
     // Obtener sesión inicial
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
+      
+      // Si hay sesión al cargar Y hay pendingCheckout → redirigir a checkout
+      if (session?.user && localStorage.getItem('pendingCheckout') === 'true') {
+        const currentPath = window.location.pathname;
+        
+        if (currentPath !== '/checkout') {
+          console.log('🔄 Sesión detectada con pendingCheckout, redirigiendo a checkout');
+          localStorage.removeItem('pendingCheckout');
+          localStorage.removeItem('oauthInProgress');
+          
+          const userName = session.user.user_metadata?.name 
+            || session.user.user_metadata?.full_name 
+            || session.user.email?.split('@')[0] 
+            || 'Usuario';
+          
+          toast.success(`¡Bienvenido, ${userName}!`);
+          
+          setTimeout(() => {
+            window.location.href = '/checkout';
+          }, 500);
+        } else {
+          console.log('✅ Ya en checkout con sesión activa');
+          localStorage.removeItem('pendingCheckout');
+          localStorage.removeItem('oauthInProgress');
+        }
+      }
     });
 
     // Escuchar cambios de autenticación
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      
       console.log('🔔 Auth event:', _event);
       
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
 
-      // Solo procesar SIGNED_IN si NO hemos redirigido ya
+      // Solo procesar SIGNED_IN (nuevo login)
       if (_event === 'SIGNED_IN' && session?.user && !hasRedirectedRef.current) {
         const userName = session.user.user_metadata?.name 
           || session.user.user_metadata?.full_name 
@@ -60,30 +92,19 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         
         console.log('✅ Usuario logueado:', userName);
         
-        // Marcar que ya procesamos este login
         hasRedirectedRef.current = true;
-        sessionStorage.setItem('login_redirect_done', 'true');
-        
-        // Limpiar flags de OAuth
         localStorage.removeItem('pendingCheckout');
         localStorage.removeItem('oauthInProgress');
-        localStorage.removeItem('temp-cart-before-oauth');
-        sessionStorage.removeItem('oauthHandled');
         
-        // Solo redirigir si NO estamos ya en checkout
         const currentPath = window.location.pathname;
         
         if (currentPath !== '/checkout') {
           console.log('🔄 Redirigiendo de', currentPath, 'a /checkout');
-          
-          toast.success(`¡Bienvenido, ${userName}!`, {
-            description: 'Redirigiendo a checkout...',
-            duration: 2000,
-          });
+          toast.success(`¡Bienvenido, ${userName}!`);
           
           setTimeout(() => {
             window.location.href = '/checkout';
-          }, 800);
+          }, 500);
         } else {
           console.log('✅ Ya en checkout, no redirigir');
           toast.success(`¡Bienvenido, ${userName}!`);
@@ -92,8 +113,8 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
-      // Reset ref al desmontar
       hasRedirectedRef.current = false;
     };
   }, []);
