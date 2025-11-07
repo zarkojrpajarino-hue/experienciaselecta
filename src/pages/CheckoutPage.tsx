@@ -11,6 +11,7 @@ import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import AuthModal from "@/components/AuthModal";
+import CheckoutAuthListener from "@/components/CheckoutAuthListener";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,9 +38,45 @@ const CheckoutPage = () => {
   // Obtener items desde el carrito global
   const { cart, removeFromCart, updateQuantity } = useCart();
   
-  
+  const [isAuthInProgress, setIsAuthInProgress] = useState(false);
+
+  // Listener para recargar el carrito cuando cambie el auth
+  React.useEffect(() => {
+    const handleAuthChange = () => {
+      console.log('🛒 Evento de cambio de auth recibido en Checkout');
+      // El CartContext ya maneja la actualización automáticamente
+      // No necesitamos hacer nada más aquí, solo dejar que React re-renderice
+    };
+    
+    window.addEventListener('auth-state-changed', handleAuthChange);
+    return () => window.removeEventListener('auth-state-changed', handleAuthChange);
+  }, []);
 
   // Verificar si hay un proceso de autenticación en curso
+React.useEffect(() => {
+  const oauthInProgress = localStorage.getItem('oauthInProgress');
+  const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
+  const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
+  
+  console.log('🔍 CheckoutPage OAuth detection:', {
+    oauthInProgress,
+    hasOauthParams,
+    hasOauthHash,
+    session: session ? 'PRESENTE' : 'AUSENTE',
+    url: location.pathname + location.search
+  });
+  
+  // Si hay sesión, el OAuth ya se completó, no mostrar loader
+  const isProcessingOAuth = !!(oauthInProgress || hasOauthParams || hasOauthHash) && !session;
+  
+  if (isProcessingOAuth) {
+    console.log('🔄 Detectado código OAuth, mostrando loader...');
+  } else if ((hasOauthParams || hasOauthHash) && session) {
+    console.log('✅ OAuth completado, sesión activa');
+  }
+  
+  setIsAuthInProgress(isProcessingOAuth);
+}, [location.search, location.hash, session]);
 
 // Seguridad adicional: limpiar flags OAuth si ya hay sesión
 React.useEffect(() => {
@@ -50,20 +87,63 @@ React.useEffect(() => {
 }, [session]);
 
 // Fallback: si oauthInProgress persiste pero no llegan parámetros ni sesión, limpiar en 7s
+React.useEffect(() => {
+  const oauthInProgress = localStorage.getItem('oauthInProgress');
+  const hasOauthParams = location.search.includes('code=') || location.search.includes('access_token=');
+  const hasOauthHash = location.hash?.includes('access_token=') || location.hash?.includes('code=');
+
+  if (oauthInProgress && !session && !(hasOauthParams || hasOauthHash)) {
+    console.warn('⏱️ OAuth timeout sin código: limpiando flags y continuando');
+    const timeout = window.setTimeout(() => {
+      try { localStorage.removeItem('oauthInProgress'); } catch {}
+      try { sessionStorage.setItem('oauthHandled', 'timeout'); } catch {}
+      setIsAuthInProgress(false);
+    }, 7000);
+    return () => window.clearTimeout(timeout);
+  }
+}, [location.search, location.hash, session]);
 
 
   // Esperar a que termine la carga inicial de autenticación
-  if (isAuthLoading) {
+  if (isAuthLoading || isAuthInProgress) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="text-muted-foreground">Cargando...</p>
+          <p className="text-muted-foreground">Cargando tus datos...</p>
         </div>
       </div>
     );
   }
 
+  // Redirigir si el carrito está vacío y NO hay auth en progreso
+  React.useEffect(() => {
+    // NO redirigir si:
+    // - Hay auth en progreso
+    // - Está cargando auth
+    // - Usuario está autenticado (el carrito puede estar cargándose)
+    // - Acabamos de completar un flujo OAuth (flag temporal)
+    const oauthHandled = sessionStorage.getItem('oauthHandled');
+    if (isAuthInProgress || isAuthLoading || user || oauthHandled) {
+      console.log('⏳ Esperando a que termine auth/carga o post-OAuth, no redirigir');
+      return;
+    }
+    
+    // Evitar redirigir si hay carrito guardado en localStorage (esperando a que el contexto lo cargue)
+    try {
+      const anonCart = JSON.parse(localStorage.getItem('shopping-cart') || '[]');
+      if ((anonCart?.length ?? 0) > 0 || localStorage.getItem('pendingCheckout')) {
+        console.log('📦 Carrito detectado en localStorage, no redirigir');
+        return;
+      }
+    } catch {}
+    
+    // Solo redirigir si NO hay usuario Y el carrito está realmente vacío
+    if (cart.length === 0) {
+      console.log('⚠️ Carrito vacío sin usuario, redirigiendo a home');
+      navigate('/#categoria-cestas', { replace: true });
+    }
+  }, [cart.length, navigate, isAuthInProgress, isAuthLoading, user]);
 
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
@@ -146,6 +226,7 @@ React.useEffect(() => {
   // Load user profile when user changes
   React.useEffect(() => {
     if (user?.id) {
+      setIsAuthInProgress(false);
       try { localStorage.removeItem('oauthInProgress'); } catch {}
       loadUserProfile(user.id);
       
@@ -156,6 +237,7 @@ React.useEffect(() => {
         toast.success("¡Sesión iniciada! Tu carrito se ha cargado correctamente.");
       }
     } else {
+      setIsAuthInProgress(false);
       try { localStorage.removeItem('oauthInProgress'); } catch {}
     }
   }, [user?.id]);
@@ -536,6 +618,7 @@ React.useEffect(() => {
 
   return (
     <>
+      <CheckoutAuthListener />
       <Navbar />
       <div className="min-h-screen pt-16 pb-6 px-2 bg-white">
         <div className="container mx-auto max-w-6xl">
