@@ -29,6 +29,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       const intended = window.location.pathname + window.location.search + window.location.hash;
       localStorage.setItem('intendedRoute', intended);
       
+      // Limpiar flag de login procesado para permitir nuevo login
+      sessionStorage.removeItem('login_processed');
+      
       const flags = ['oauthInProgress', 'auth_error'];
       flags.forEach(flag => {
         try {
@@ -317,12 +320,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       toast({
         title: "¡Acceso correcto!",
-        description: "Redirigiendo al checkout...",
+        description: "Has iniciado sesión correctamente.",
       });
 
-      // Limpiar
+      // Limpiar y cerrar
       localStorage.removeItem('oauthInProgress');
-      localStorage.setItem('pendingCheckout', 'true');
       
       setEmail("");
       setVerificationCode("");
@@ -330,11 +332,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       onSuccess();
       onClose();
 
-      // CRÍTICO: Navegar a checkout después de OTP
-      console.log('✅ OTP verificado, navegando a checkout...');
-      setTimeout(() => {
-        window.location.href = '/checkout';
-      }, 500);
+      // El AuthContext se encargará de la navegación
+      console.log('✅ OTP verificado, AuthContext manejará la navegación');
 
     } catch (error: any) {
       console.error('❌ Error verificando código:', error);
