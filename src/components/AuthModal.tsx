@@ -312,7 +312,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent 
-        className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto bg-white flex items-center justify-center" 
+        className="w-[95vw] sm:max-w-md max-h-[85vh] overflow-y-auto bg-white mx-auto my-auto flex flex-col" 
         hideClose={true}
         overlayStyle={{ backgroundColor: 'transparent' }}
       >

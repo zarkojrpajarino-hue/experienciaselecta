@@ -27,6 +27,7 @@ const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
+const EmptyCartPage = lazy(() => import("./pages/EmptyCartPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import CookieBanner from "./components/CookieBanner";
 import AutoUpdater from "./components/AutoUpdater";
@@ -72,6 +73,7 @@ const App = () => (
                 <Route path="/perfil" element={<ProfilePage />} />
                 <Route path="/carrito" element={<CheckoutPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/carrito-vacio" element={<EmptyCartPage />} />
                 <Route path="/pago" element={<PaymentPage />} />
                 <Route path="/pago-exitoso" element={<PaymentSuccessPage />} />
                 <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />

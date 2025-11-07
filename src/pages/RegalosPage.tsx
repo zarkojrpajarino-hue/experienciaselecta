@@ -222,7 +222,7 @@ const RegalosPage = () => {
   return (
     <div className="min-h-screen bg-[#F5F5DC] pt-24 px-4 pb-12">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8 pt-20 md:pt-8">
+        <div className="text-center mb-8 pt-32 md:pt-8">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">🎁 Tus Regalos</h1>
         </div>
 
@@ -252,9 +252,9 @@ const RegalosPage = () => {
                   </Button>
                   
                   <div className="bg-card rounded-lg p-6 border border-border shadow-lg">
-                    <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
+                    <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6">
                       <div 
-                        className="w-32 h-32 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
+                        className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 shadow-lg flex-shrink-0"
                         onClick={() => setZoomedImage(basketImg)}
                       >
                         <img
@@ -263,19 +263,19 @@ const RegalosPage = () => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h2 className="text-xs sm:text-sm md:text-base font-bold mb-2 leading-tight break-words">
                           🎁 {userName || gift.recipient_name}, tienes un regalo pendiente de: {gift.sender_email}
                         </h2>
-                        <p className="text-sm sm:text-base text-muted-foreground mb-2">
-                          Te ha regalado: <strong>{gift.basket_name}</strong>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-2 break-words">
+                          Te ha regalado: <strong className="break-words">{gift.basket_name}</strong>
                         </p>
                         {gift.personal_note && (
-                          <p className="text-sm sm:text-base text-muted-foreground mb-2 italic">
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-2 italic break-words">
                             Nota: "{gift.personal_note}"
                           </p>
                         )}
-                          <p className="text-[0.65rem] sm:text-sm md:text-base font-poppins font-bold text-center uppercase tracking-[0.05em] sm:tracking-[0.1em] mt-4 leading-tight text-black">
+                          <p className="text-[0.6rem] sm:text-xs md:text-sm font-poppins font-bold text-center uppercase tracking-tight sm:tracking-wide mt-4 leading-tight text-black">
                             Rellena la información para que podamos enviártelo
                           </p>
                       </div>
@@ -374,23 +374,36 @@ const RegalosPage = () => {
         {/* Image Zoom Modal */}
         {zoomedImage && (
           <div 
-            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-white flex items-center justify-center z-50 p-4"
             onClick={(e) => {
-              if (e.target === e.currentTarget) setZoomedImage(null);
+              if (e.target === e.currentTarget) {
+                setZoomedImage(null);
+              }
             }}
           >
-            <Button 
-              onClick={() => setZoomedImage(null)} 
-              className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
-              size="icon"
+            <div 
+              className="relative bg-white border-4 border-black rounded-lg shadow-2xl max-w-[90vw] max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="h-6 w-6" />
-            </Button>
-            <img 
-              src={zoomedImage} 
-              alt="Cesta ampliada"
-              className="max-w-full max-h-full object-contain rounded-lg"
-            />
+              <Button 
+                onClick={() => setZoomedImage(null)} 
+                className="absolute top-2 right-2 z-50 h-10 w-10 rounded-full bg-black hover:bg-black/90 text-white shadow-xl" 
+                size="icon"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+              <img 
+                src={zoomedImage} 
+                alt="Cesta ampliada"
+                className="max-w-full max-h-[85vh] object-contain"
+                onLoad={(e) => {
+                  // Auto scroll to center the image
+                  setTimeout(() => {
+                    e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 100);
+                }}
+              />
+            </div>
           </div>
         )}
       </div>

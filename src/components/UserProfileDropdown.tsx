@@ -126,27 +126,27 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
       </button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-[95vw] max-w-2xl h-[90vh] max-h-[90vh] overflow-y-auto bg-white p-4 sm:p-6">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] bg-white border-2 border-black p-4 sm:p-6 overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-[hsl(271,100%,20%)]">
+            <DialogTitle className="flex items-center gap-2 text-black">
               <User className="w-5 h-5" />
               Mi Perfil
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-y-auto flex-1 pr-2">
             {/* Avatar Section */}
-            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-              <Avatar className="w-20 h-20 border-4 border-[hsl(45,100%,65%)]">
-                <AvatarFallback className="bg-[hsl(45,100%,65%)] text-[hsl(271,100%,20%)] font-bold text-2xl">
+            <div className="flex items-center gap-4 p-4 bg-white border-2 border-black rounded-lg">
+              <Avatar className="w-20 h-20 border-4 border-black">
+                <AvatarFallback className="bg-white text-black font-bold text-2xl border-2 border-black">
                   {getUserInitials()}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-lg font-bold text-[hsl(271,100%,20%)]">
+                <h3 className="text-lg font-bold text-black">
                   {editedProfile.name || "Usuario"}
                 </h3>
-                <p className="text-sm text-gray-600 flex items-center gap-1">
+                <p className="text-sm text-black flex items-center gap-1">
                   <Mail className="w-4 h-4" />
                   {user?.email}
                 </p>
@@ -158,7 +158,7 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
               {!isEditing ? (
                 <Button
                   onClick={() => setIsEditing(true)}
-                  className="gap-2 bg-[hsl(45,100%,65%)] hover:bg-[hsl(45,100%,55%)] text-[hsl(271,100%,20%)]"
+                  className="gap-2 bg-black hover:bg-black/90 text-white border-2 border-black"
                 >
                   <Edit2 className="w-4 h-4" />
                   Editar datos
@@ -179,14 +179,14 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                       });
                     }}
                     variant="ghost"
-                    className="gap-2"
+                    className="gap-2 border-2 border-black hover:bg-black/5"
                   >
                     <X className="w-4 h-4" />
                     Cancelar
                   </Button>
                   <Button
                     onClick={handleSave}
-                    className="gap-2 bg-green-600 hover:bg-green-700 text-white"
+                    className="gap-2 bg-black hover:bg-black/90 text-white border-2 border-black"
                   >
                     <Check className="w-4 h-4" />
                     Guardar cambios
@@ -198,7 +198,7 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
             {/* Profile Information */}
             <div className="space-y-4">
               <div>
-                <Label htmlFor="name" className="text-[hsl(271,100%,20%)]">
+                <Label htmlFor="name" className="text-black">
                   Nombre completo
                 </Label>
                 <Input
@@ -208,12 +208,12 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                     setEditedProfile({ ...editedProfile, name: e.target.value })
                   }
                   disabled={!isEditing}
-                  className="mt-1"
+                  className="mt-1 border-2 border-black text-black"
                 />
               </div>
 
               <div>
-                <Label htmlFor="phone" className="text-[hsl(271,100%,20%)]">
+                <Label htmlFor="phone" className="text-black">
                   <Phone className="w-4 h-4 inline mr-1" />
                   Teléfono
                 </Label>
@@ -224,18 +224,18 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                     setEditedProfile({ ...editedProfile, phone: e.target.value })
                   }
                   disabled={!isEditing}
-                  className="mt-1"
+                  className="mt-1 border-2 border-black text-black"
                 />
               </div>
 
-              <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-bold text-[hsl(271,100%,20%)] flex items-center gap-2">
+              <div className="space-y-4 p-4 bg-white border-2 border-black rounded-lg">
+                <h4 className="font-bold text-black flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
                   Dirección de envío
                 </h4>
 
                 <div>
-                  <Label htmlFor="address_line1" className="text-[hsl(271,100%,20%)]">
+                  <Label htmlFor="address_line1" className="text-black">
                     Dirección (línea 1)
                   </Label>
                   <Input
@@ -248,12 +248,12 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                       })
                     }
                     disabled={!isEditing}
-                    className="mt-1"
+                    className="mt-1 border-2 border-black text-black"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="address_line2" className="text-[hsl(271,100%,20%)]">
+                  <Label htmlFor="address_line2" className="text-black">
                     Dirección (línea 2) - Opcional
                   </Label>
                   <Input
@@ -266,13 +266,13 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                       })
                     }
                     disabled={!isEditing}
-                    className="mt-1"
+                    className="mt-1 border-2 border-black text-black"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="city" className="text-[hsl(271,100%,20%)]">
+                    <Label htmlFor="city" className="text-black">
                       Ciudad
                     </Label>
                     <Input
@@ -282,12 +282,12 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                         setEditedProfile({ ...editedProfile, city: e.target.value })
                       }
                       disabled={!isEditing}
-                      className="mt-1"
+                      className="mt-1 border-2 border-black text-black"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="postal_code" className="text-[hsl(271,100%,20%)]">
+                    <Label htmlFor="postal_code" className="text-black">
                       Código postal
                     </Label>
                     <Input
@@ -300,13 +300,13 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                         })
                       }
                       disabled={!isEditing}
-                      className="mt-1"
+                      className="mt-1 border-2 border-black text-black"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="country" className="text-[hsl(271,100%,20%)]">
+                  <Label htmlFor="country" className="text-black">
                     País
                   </Label>
                   <Input
@@ -316,7 +316,7 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
                       setEditedProfile({ ...editedProfile, country: e.target.value })
                     }
                     disabled={!isEditing}
-                    className="mt-1"
+                    className="mt-1 border-2 border-black text-black"
                   />
                 </div>
               </div>

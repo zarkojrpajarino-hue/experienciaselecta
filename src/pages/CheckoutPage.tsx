@@ -140,8 +140,8 @@ React.useEffect(() => {
     
     // Solo redirigir si NO hay usuario Y el carrito está realmente vacío
     if (cart.length === 0) {
-      console.log('⚠️ Carrito vacío sin usuario, redirigiendo a home');
-      navigate('/#categoria-cestas', { replace: true });
+      console.log('⚠️ Carrito vacío sin usuario, redirigiendo a página de carrito vacío');
+      navigate('/carrito-vacio', { replace: true });
     }
   }, [cart.length, navigate, isAuthInProgress, isAuthLoading, user]);
 
@@ -1129,7 +1129,8 @@ React.useEffect(() => {
                                           className={`flex items-center justify-between p-2 rounded ${
                                             canSelect ? 'hover:bg-muted/50 cursor-pointer' : 'opacity-50 cursor-not-allowed bg-gray-100'
                                           }`}
-                                          onClick={() => {
+                                          onClick={(e) => {
+                                            e.preventDefault();
                                             if (!canSelect) return;
                                             const newRecipients = [...giftAssignment.recipients];
                                             const isChecked = recipient.basketIds.includes(it.uniqueId);
@@ -1147,8 +1148,8 @@ React.useEffect(() => {
                                               id={`basket-${it.uniqueId}-recipient-${index}`}
                                               checked={recipient.basketIds.includes(it.uniqueId)}
                                               disabled={!canSelect}
-                                              onChange={() => {}} // Handled by parent div onClick
-                                              onClick={(e) => e.stopPropagation()}
+                                              readOnly
+                                              className="cursor-pointer"
                                             />
                                             <img 
                                               src={it.imagen} 
