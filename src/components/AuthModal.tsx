@@ -279,17 +279,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       // Limpiar flags de progreso
       try { localStorage.removeItem('oauthInProgress'); } catch {}
 
+      // Marcar que el auth se completó
+      sessionStorage.setItem('auth_completed', 'true');
+
       setEmail("");
       setVerificationCode("");
       setShowCodeInput(false);
       onSuccess();
       onClose();
-      
-      // CRÍTICO: Después del OTP, siempre redirigir a /checkout
-      console.log('OTP verification successful, redirecting to /checkout');
-      setTimeout(() => {
-        window.location.href = '/checkout';
-      }, 100); // Small delay para que se ejecute onSuccess primero
+
+      // El componente Checkout detectará el flag y se actualizará automáticamente
+      console.log('OTP verification successful, checkout will refresh automatically');
     } catch (error: any) {
       console.error('Verification error:', error);
       toast({

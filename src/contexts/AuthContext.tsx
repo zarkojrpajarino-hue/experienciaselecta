@@ -31,12 +31,28 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isProcessing = false;
+    
     // Primero verificar si hay una sesión existente
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('📍 Initial session check:', session?.user?.email || 'No session');
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
+      
+      // Si ya hay sesión al cargar, restaurar carrito inmediatamente
+      if (session?.user) {
+        const cartBackup = localStorage.getItem('cart_backup');
+        if (cartBackup) {
+          try {
+            localStorage.setItem('shopping-cart', cartBackup);
+            localStorage.removeItem('cart_backup');
+            console.log('✅ Carrito restaurado en carga inicial');
+          } catch (error) {
+            console.error('❌ Error restaurando carrito:', error);
+          }
+        }
+      }
     });
 
     // Configurar listener de cambios de autenticación
@@ -44,12 +60,19 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       async (event, session) => {
         console.log('🔔 Auth event:', event, session?.user?.email || 'No user');
         
+        // Prevenir procesamiento múltiple del mismo evento
+        if (isProcessing) {
+          console.log('⚠️ Ya procesando evento, ignorando duplicado');
+          return;
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
 
         // SOLO manejar el evento SIGNED_IN aquí
         if (event === 'SIGNED_IN' && session?.user) {
+          isProcessing = true;
           console.log('✅ Usuario autenticado:', session.user.email);
           
           // 1. Identificar en RudderStack
@@ -84,7 +107,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
           const isPendingCheckout = localStorage.getItem('pendingCheckout');
           
           if (isPendingCheckout) {
-            console.log('🔄 Redirigiendo a checkout después de OAuth...');
+            console.log('🔄 Usuario debe volver a checkout...');
             localStorage.removeItem('pendingCheckout');
             localStorage.removeItem('oauthInProgress');
             
@@ -99,11 +122,14 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
               duration: 3000,
             });
 
-            // Redirigir al checkout después de un pequeño delay
-            setTimeout(() => {
-              window.location.href = '/checkout';
-            }, 500);
+            // Marcar que necesitamos navegar (lo manejará el componente Checkout)
+            sessionStorage.setItem('auth_completed', 'true');
           }
+          
+          // Resetear flag después de 2 segundos
+          setTimeout(() => {
+            isProcessing = false;
+          }, 2000);
         }
       }
     );

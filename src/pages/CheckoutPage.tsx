@@ -11,6 +11,7 @@ import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import AuthModal from "@/components/AuthModal";
+import CheckoutAuthListener from "@/components/CheckoutAuthListener";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +39,27 @@ const CheckoutPage = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
   
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
+
+  // Listener para recargar el carrito cuando cambie el auth
+  React.useEffect(() => {
+    const handleAuthChange = () => {
+      // Recargar el carrito desde localStorage
+      const savedCart = localStorage.getItem('shopping-cart');
+      if (savedCart) {
+        try {
+          const parsedCart = JSON.parse(savedCart);
+          console.log('🛒 Carrito recargado después de auth', parsedCart.length, 'items');
+          // El CartContext ya maneja esto automáticamente, pero podemos forzar una actualización
+          window.location.reload();
+        } catch (error) {
+          console.error('Error recargando carrito:', error);
+        }
+      }
+    };
+    
+    window.addEventListener('auth-state-changed', handleAuthChange);
+    return () => window.removeEventListener('auth-state-changed', handleAuthChange);
+  }, []);
 
   // Verificar si hay un proceso de autenticación en curso
 React.useEffect(() => {
@@ -605,6 +627,7 @@ React.useEffect(() => {
 
   return (
     <>
+      <CheckoutAuthListener />
       <Navbar />
       <div className="min-h-screen pt-16 pb-6 px-2 bg-white">
         <div className="container mx-auto max-w-6xl">
