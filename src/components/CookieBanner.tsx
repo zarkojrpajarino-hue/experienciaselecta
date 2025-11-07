@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import headerBg from "@/assets/iberian-products-background.jpg";
 
 const CookieBanner = () => {
@@ -12,6 +13,7 @@ const CookieBanner = () => {
   const [analytics, setAnalytics] = useState(false);
   const [marketing, setMarketing] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -54,17 +56,26 @@ const CookieBanner = () => {
     setAnalytics(true);
     setMarketing(true);
 
-    // Guardar (opcional) en BD si el usuario está autenticado
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.email) {
-        await supabase.from('cookie_consents').insert({
-          user_id: user.id,
-          email: user.email,
-        });
+    // Registrar consentimiento en BD si el usuario está autenticado
+    if (user && user.email) {
+      try {
+        const { error } = await supabase
+          .from('cookie_consents')
+          .upsert({
+            user_id: user.id,
+            email: user.email,
+          }, {
+            onConflict: 'user_id'
+          });
+
+        if (error) {
+          console.error('Error registering cookie consent:', error);
+        } else {
+          console.log('✅ Cookie consent registered');
+        }
+      } catch (error) {
+        console.error('Error in cookie consent:', error);
       }
-    } catch (e) {
-      console.warn('No se pudo registrar el consentimiento en BD:', e);
     }
   };
 
@@ -84,15 +95,27 @@ const CookieBanner = () => {
     setShowPreferences(false);
     toast({ title: "Preferencias guardadas", description: "Tus ajustes de cookies han sido aplicados." });
 
-    // Opcional: registrar si hay alguna categoría de marketing/analítica aceptada
-    try {
-      if (analytics || marketing) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user?.email) {
-          await supabase.from('cookie_consents').insert({ user_id: user.id, email: user.email });
+    // Registrar consentimiento si acepta marketing o analíticas
+    if ((analytics || marketing) && user && user.email) {
+      try {
+        const { error } = await supabase
+          .from('cookie_consents')
+          .upsert({
+            user_id: user.id,
+            email: user.email,
+          }, {
+            onConflict: 'user_id'
+          });
+
+        if (error) {
+          console.error('Error registering cookie consent:', error);
+        } else {
+          console.log('✅ Cookie consent registered');
         }
+      } catch (error) {
+        console.error('Error in cookie consent:', error);
       }
-    } catch {}
+    }
   };
 
   if (!isVisible) return null;
