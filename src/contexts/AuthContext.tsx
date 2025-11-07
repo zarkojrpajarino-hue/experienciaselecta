@@ -40,31 +40,36 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!mounted) return;
       
+      console.log('🔍 Sesión inicial:', session?.user?.email || 'NO SESSION');
+      
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
       
-      // Si hay sesión al cargar Y hay pendingCheckout → redirigir a checkout
-      if (session?.user && localStorage.getItem('pendingCheckout') === 'true') {
+      // Si hay sesión al cargar Y NO estamos ya en checkout/pago → redirigir
+      if (session?.user) {
         const currentPath = window.location.pathname;
+        console.log('📍 Ruta actual:', currentPath);
         
-        if (currentPath !== '/checkout') {
-          console.log('🔄 Sesión detectada con pendingCheckout, redirigiendo a checkout');
-          localStorage.removeItem('pendingCheckout');
-          localStorage.removeItem('oauthInProgress');
+        if (currentPath !== '/checkout' && currentPath !== '/pago' && currentPath !== '/pago-exitoso') {
+          console.log('🔄 Usuario con sesión detectado, redirigiendo a checkout');
           
           const userName = session.user.user_metadata?.name 
             || session.user.user_metadata?.full_name 
             || session.user.email?.split('@')[0] 
             || 'Usuario';
           
-          toast.success(`¡Bienvenido, ${userName}!`);
+          toast.success(`¡Bienvenido de nuevo, ${userName}!`);
+          
+          // Limpiar flags
+          localStorage.removeItem('pendingCheckout');
+          localStorage.removeItem('oauthInProgress');
           
           setTimeout(() => {
             window.location.href = '/checkout';
           }, 500);
         } else {
-          console.log('✅ Ya en checkout con sesión activa');
+          console.log('✅ Ya en checkout/pago, no redirigir');
           localStorage.removeItem('pendingCheckout');
           localStorage.removeItem('oauthInProgress');
         }
@@ -77,7 +82,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
       
-      console.log('🔔 Auth event:', _event);
+      console.log('🔔 Auth event:', _event, session?.user?.email || 'NO USER');
       
       setSession(session);
       setUser(session?.user ?? null);
@@ -98,7 +103,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         
         const currentPath = window.location.pathname;
         
-        if (currentPath !== '/checkout') {
+        if (currentPath !== '/checkout' && currentPath !== '/pago' && currentPath !== '/pago-exitoso') {
           console.log('🔄 Redirigiendo de', currentPath, 'a /checkout');
           toast.success(`¡Bienvenido, ${userName}!`);
           
@@ -106,7 +111,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             window.location.href = '/checkout';
           }, 500);
         } else {
-          console.log('✅ Ya en checkout, no redirigir');
+          console.log('✅ Ya en checkout/pago, no redirigir');
           toast.success(`¡Bienvenido, ${userName}!`);
         }
       }
