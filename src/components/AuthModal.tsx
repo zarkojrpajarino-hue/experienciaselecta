@@ -239,49 +239,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       if (error) throw error;
 
-      // Send welcome email for new users
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        try {
-          // Check if this is a new user by checking if profile was just created
-          const { data: profiles } = await supabase
-            .from('profiles')
-            .select('created_at')
-            .eq('user_id', session.user.id);
-
-          if (profiles && profiles.length > 0) {
-            const createdAt = new Date(profiles[0].created_at);
-            const now = new Date();
-            const diffSeconds = (now.getTime() - createdAt.getTime()) / 1000;
-
-            // Send welcome email if profile was created in the last 30 seconds (to account for network delays)
-            if (diffSeconds < 30) {
-              console.log('Attempting to send welcome email to new user:', session.user.email);
-              const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
-                headers: {
-                  Authorization: `Bearer ${session.access_token}`
-                },
-                body: {
-                  userEmail: session.user.email,
-                  userName: session.user.user_metadata?.name || session.user.user_metadata?.full_name || ''
-                }
-              });
-              
-              if (emailError) {
-                console.error('Error sending welcome email:', emailError);
-              } else {
-                console.log('Welcome email sent successfully to:', session.user.email);
-              }
-            } else {
-              console.log('User profile is older than 30 seconds, skipping welcome email');
-            }
-          }
-        } catch (emailError) {
-          console.error('Error in welcome email flow:', emailError);
-          // Don't fail the login if welcome email fails
-        }
-      }
-
       toast({
         title: "¡Acceso correcto!",
         description: "Has iniciado sesión correctamente.",
