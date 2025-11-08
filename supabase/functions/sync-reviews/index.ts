@@ -69,6 +69,8 @@ serve(async (req) => {
     }
 
     console.log('Fetching reviews from paragenteselecta.com API...');
+    console.log('Using SHOP_API_KEY:', shopApiKey);
+    console.log('API Key length:', shopApiKey?.length);
 
     // Llamar a la API get-completed-reviews de paragenteselecta
     const apiUrl = 'https://qktosxxluytztxhhupya.supabase.co/functions/v1/get-completed-reviews';
@@ -81,6 +83,9 @@ serve(async (req) => {
         'x-api-key': shopApiKey,
       }
     });
+
+    console.log('Response status:', apiResponse.status);
+    console.log('Response headers:', Object.fromEntries(apiResponse.headers));
 
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
