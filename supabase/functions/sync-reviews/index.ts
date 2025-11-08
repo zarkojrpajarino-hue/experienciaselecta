@@ -54,14 +54,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Validate environment variables for remote Supabase
-    const remoteUrl = Deno.env.get('PARAGENTESELECTA_SUPABASE_URL');
-    const remoteKey = Deno.env.get('PARAGENTESELECTA_SERVICE_ROLE_KEY');
-
-    if (!remoteUrl || !remoteKey) {
-      console.error('Missing remote Supabase credentials');
+    // Validate SHOP_API_KEY
+    const shopApiKey = Deno.env.get('SHOP_API_KEY');
+    if (!shopApiKey) {
+      console.error('Missing SHOP_API_KEY');
       return new Response(
-        JSON.stringify({ error: 'Configuration error - missing remote credentials' }),
+        JSON.stringify({ error: 'Configuration error - missing SHOP_API_KEY' }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 500,
@@ -69,24 +67,37 @@ serve(async (req) => {
       );
     }
 
-    // Cliente para paragenteselecta.com
-    const remoteSupabase = createClient(remoteUrl, remoteKey);
+    console.log('Fetching reviews from paragenteselecta.com API...');
 
-    console.log('Fetching reviews from paragenteselecta.com...');
+    // Llamar a la API get-completed-reviews de paragenteselecta
+    const apiUrl = 'https://tyorpbzvjnasyaqbggcp.supabase.co/functions/v1/get-completed-reviews';
+    console.log(`Calling API: ${apiUrl}`);
+    
+    const apiResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': shopApiKey,
+      },
+      body: JSON.stringify({
+        limit: 1000,
+        offset: 0
+      })
+    });
 
-    // Obtener solo columnas necesarias
-    const { data: remoteReviews, error: fetchError } = await remoteSupabase
-      .from('reviews')
-      .select('id,rating,comment,basket_name,user_id,order_id,created_at')
-      .order('created_at', { ascending: false });
-
-    if (fetchError) {
-      console.error('Error fetching remote reviews:', fetchError);
-      throw new Error(`Failed to fetch reviews: ${fetchError.message}`);
+    if (!apiResponse.ok) {
+      const errorText = await apiResponse.text();
+      console.error(`API request failed with status ${apiResponse.status}:`, errorText);
+      throw new Error(`API request failed: ${apiResponse.status} - ${errorText}`);
     }
 
+    const apiData = await apiResponse.json();
+    console.log('API response received:', JSON.stringify(apiData).substring(0, 200));
+
+    const remoteReviews = apiData.reviews || [];
+    
     if (!remoteReviews || remoteReviews.length === 0) {
-      console.log('No reviews found in paragenteselecta.com');
+      console.log('No reviews found in API response');
       return new Response(
         JSON.stringify({ 
           success: true, 
@@ -99,6 +110,7 @@ serve(async (req) => {
         }
       );
     }
+
 
     console.log(`Found ${remoteReviews.length} reviews from paragenteselecta.com`);
 
