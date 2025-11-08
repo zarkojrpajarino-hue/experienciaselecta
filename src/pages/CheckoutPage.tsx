@@ -161,10 +161,10 @@ React.useEffect(() => {
     // Si el carrito está completamente vacío (sin items personales ni regalos)
     if (cart.length === 0 && currentPersonalItems.length === 0 && giftItems.length === 0) {
       console.log('⚠️ Carrito completamente vacío, redirigiendo...');
-      // Pequeño delay para asegurar que no es un estado transitorio
+      // Delay más largo para transición suave
       const timer = setTimeout(() => {
         navigate('/carrito-vacio', { replace: true });
-      }, 500);
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, [cart.length, currentPersonalItems.length, giftItems.length, navigate, isAuthLoading, isAuthInProgress]);
@@ -215,14 +215,20 @@ React.useEffect(() => {
     if (user?.id) {
       setIsAuthInProgress(false);
       try { localStorage.removeItem('oauthInProgress'); } catch {}
-      loadUserProfile(user.id);
       
-      // Handle post-login actions
-      const hasPendingCheckout = localStorage.getItem('pendingCheckout');
-      if (hasPendingCheckout) {
-        localStorage.removeItem('pendingCheckout');
-        toast.success("¡Sesión iniciada! Tu carrito se ha cargado correctamente.");
-      }
+      // Pequeño delay para transición suave después del login
+      const timer = setTimeout(() => {
+        loadUserProfile(user.id);
+        
+        // Handle post-login actions
+        const hasPendingCheckout = localStorage.getItem('pendingCheckout');
+        if (hasPendingCheckout) {
+          localStorage.removeItem('pendingCheckout');
+          toast.success("¡Sesión iniciada! Tu carrito se ha cargado correctamente.");
+        }
+      }, 200);
+      
+      return () => clearTimeout(timer);
     } else {
       setIsAuthInProgress(false);
       try { localStorage.removeItem('oauthInProgress'); } catch {}

@@ -22,8 +22,8 @@ export const PageLayout = ({ children }: PageLayoutProps) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{
-          duration: 0.25,
-          ease: [0.4, 0, 0.2, 1], // cubic-bezier easing para suavidad
+          duration: 0.35,
+          ease: [0.25, 0.1, 0.25, 1], // Transición más suave y elegante
         }}
         style={{
           width: '100%',
