@@ -70,19 +70,15 @@ serve(async (req) => {
     console.log('Fetching reviews from paragenteselecta.com API...');
 
     // Llamar a la API get-completed-reviews de paragenteselecta
-    const apiUrl = 'https://tyorpbzvjnasyaqbggcp.supabase.co/functions/v1/get-completed-reviews';
+    const apiUrl = 'https://qktosxxluytztxhhupya.supabase.co/functions/v1/get-completed-reviews';
     console.log(`Calling API: ${apiUrl}`);
     
     const apiResponse = await fetch(apiUrl, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': shopApiKey,
-      },
-      body: JSON.stringify({
-        limit: 1000,
-        offset: 0
-      })
+      }
     });
 
     if (!apiResponse.ok) {
@@ -94,7 +90,7 @@ serve(async (req) => {
     const apiData = await apiResponse.json();
     console.log('API response received:', JSON.stringify(apiData).substring(0, 200));
 
-    const remoteReviews = apiData.reviews || [];
+    const remoteReviews = apiData.data || [];
     
     if (!remoteReviews || remoteReviews.length === 0) {
       console.log('No reviews found in API response');
