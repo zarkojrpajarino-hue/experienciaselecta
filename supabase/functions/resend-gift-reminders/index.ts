@@ -233,14 +233,11 @@ PD: Si tienes alguna duda, solo responde a este email.
             const senderEmailContent = `
 Hola ${escapeHtml(customerData.name)},
 
-${escapeHtml(gift.recipient_name)} aún no ha entrado a experienciaselecta.com a reclamar su regalo.
+${escapeHtml(gift.recipient_name)} aún no ha reclamado su regalo.
 
 ¿Puedes ayudarnos a recordárselo?
 
 A veces los emails se pierden entre la bandeja de entrada. Un mensaje tuyo puede hacer la diferencia para que disfrute de tu regalo.
-
-Si necesitas reenviar el enlace:
-→ https://experienciaselecta.com/regalos
 
 Gracias por tu ayuda 💝
 
@@ -282,11 +279,9 @@ El equipo de Experiencia Selecta
   </div>
   <div class="content">
     <p>Hola ${escapeHtml(customerData.name)},</p>
-    <p><strong>${escapeHtml(gift.recipient_name)}</strong> aún no ha entrado a experienciaselecta.com a reclamar su regalo.</p>
+    <p><strong>${escapeHtml(gift.recipient_name)}</strong> aún no ha reclamado su regalo.</p>
     <p>¿Puedes ayudarnos a recordárselo?</p>
     <p>A veces los emails se pierden entre la bandeja de entrada. Un mensaje tuyo puede hacer la diferencia para que disfrute de tu regalo.</p>
-    <p>Si necesitas reenviar el enlace:<br>
-    → <a href="https://experienciaselecta.com/regalos">https://experienciaselecta.com/regalos</a></p>
     <p>Gracias por tu ayuda 💝</p>
     <p><strong>El equipo de Experiencia Selecta</strong></p>
   </div>

@@ -192,7 +192,7 @@ const RegalosPage = () => {
       // Call edge function to send confirmation emails
       const gift = pendingGifts.find(g => g.id === giftId);
       if (gift) {
-        await supabase.functions.invoke('process-gift-shipping', {
+      await supabase.functions.invoke('process-gift-shipping', {
           body: {
             giftId,
             recipientName: gift.recipient_name,
@@ -203,7 +203,7 @@ const RegalosPage = () => {
         });
       }
 
-      toast.success('¡Información enviada! Tu regalo está de camino.');
+      toast.success('¡Regalo reclamado! Tu información ha sido enviada.');
       loadPendingGifts();
     } catch (error: any) {
       console.error('Error submitting shipping:', error);

@@ -193,8 +193,8 @@ serve(async (req) => {
           continue;
         }
 
-        // URL corregida: llevar a perfil con tab de orders
-        const reviewUrl = `https://experienciaselecta.com/perfil?tab=orders`;
+        // URL directa a FeedbackPage
+        const reviewUrl = `https://experienciaselecta.com/feedback`;
         
         const emailContent = `
 ¡Hola ${customerName}!

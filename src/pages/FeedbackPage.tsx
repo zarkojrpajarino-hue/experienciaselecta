@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,6 +6,7 @@ import { Star, Send, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useSearchParams } from "react-router-dom";
 
 
 const feedbackSchema = z.object({
@@ -17,6 +18,7 @@ const feedbackSchema = z.object({
 });
 
 const FeedbackPage = () => {
+  const [searchParams] = useSearchParams();
   
   const [generalRating, setGeneralRating] = useState(0);
   const [hoveredGeneralRating, setHoveredGeneralRating] = useState(0);
@@ -25,10 +27,20 @@ const FeedbackPage = () => {
   const [intuitiveComment, setIntuitiveComment] = useState("");
   const [suggestion, setSuggestion] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [basketName, setBasketName] = useState("");
 
   const showPurchaseQuestion = Boolean(sessionStorage.getItem('pendingPurchaseFeedback')) && !sessionStorage.getItem('feedbackGiven');
   const [purchaseRating, setPurchaseRating] = useState(0);
   const [hoveredPurchaseRating, setHoveredPurchaseRating] = useState(0);
+
+  // Pre-fill basket_name if coming from email
+  useEffect(() => {
+    const basket = searchParams.get('basket');
+    if (basket) {
+      setBasketName(decodeURIComponent(basket));
+      setHowKnewUs(`Email recordatorio - ${decodeURIComponent(basket)}`);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
