@@ -135,6 +135,23 @@ serve(async (req) => {
 
         const userName = profileValidation.data?.name || '';
 
+        // Generate magic link for auto-login
+        const { data: magicLinkData, error: magicLinkError } = await supabase.auth.admin.generateLink({
+          type: 'magiclink',
+          email: consent.email,
+          options: {
+            redirectTo: 'https://experienciaselecta.com/',
+          },
+        });
+
+        if (magicLinkError || !magicLinkData) {
+          console.error(`Error generating magic link for ${consent.email}:`, magicLinkError);
+          errorCount++;
+          continue;
+        }
+
+        const magicLink = magicLinkData.properties.action_link;
+
         const emailContent = `
 ¡Hola ${userName || 'amigo/a'}!
 
@@ -148,7 +165,7 @@ En Experiencia Selecta no vendemos cestas, creamos momentos únicos.
 • Una forma diferente de disfrutar y compartir
 
 Descubre cómo transformamos productos en experiencias inolvidables:
-👉 https://experienciaselecta.com
+👉 ${magicLink}
 
 Estamos aquí para hacer que cada momento sea especial.
 
@@ -216,7 +233,7 @@ El equipo de Experiencia Selecta
     </ul>
     
     <p style="text-align: center; margin: 30px 0;">
-      <a href="https://experienciaselecta.com" class="cta-button">Descubrir experiencias</a>
+      <a href="${magicLink}" class="cta-button">Descubrir experiencias</a>
     </p>
     
     <p style="font-style: italic; text-align: center;">Transformamos productos en experiencias inolvidables.</p>
