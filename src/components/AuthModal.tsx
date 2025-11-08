@@ -32,6 +32,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       
       // Limpiar flag de OAuth al abrir el modal para permitir nuevos intentos
       try { localStorage.removeItem('oauthInProgress'); } catch {}
+      
+      // Auto-scroll to center the modal after it opens
+      setTimeout(() => {
+        const modalElement = document.querySelector('[role="dialog"]');
+        if (modalElement) {
+          modalElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }
+      }, 150);
     }
   }, [isOpen]);
 

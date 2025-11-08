@@ -28,7 +28,7 @@ const EmptyCartPage = () => {
             Ir a la página principal
           </Button>
           <Button
-            onClick={() => navigate('/#categoria-cestas')}
+            onClick={() => navigate('/#catalogo')}
             variant="outline"
             size="lg"
             className="gap-2 border-2 border-black hover:bg-black/5"
