@@ -195,7 +195,9 @@ const FeedbackPage = () => {
             {showPurchaseQuestion && (
               <div className="space-y-4">
                 <label className="text-base sm:text-lg font-poppins font-medium text-white block">
-                  ¿Cómo calificarías el sistema de compras de la web?
+                  {basketName 
+                    ? `¿Cómo calificarías la experiencia de compra de ${basketName}?`
+                    : '¿Cómo calificarías el sistema de compras de la web?'}
                 </label>
                 <div className="flex justify-center gap-2 sm:gap-3">
                   {[1,2,3,4,5].map((star) => (
