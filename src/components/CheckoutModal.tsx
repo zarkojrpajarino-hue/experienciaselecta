@@ -602,29 +602,26 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setStep('success');
     
     // Tras el pago correcto, marcar feedback de compra como pendiente (una sola vez por sesión)
-    if (!isGiftMode) {
-      try {
-        const alreadyGiven = sessionStorage.getItem('feedbackGiven');
-        const alreadyPending = sessionStorage.getItem('pendingPurchaseFeedback');
-        if (!alreadyGiven && !alreadyPending) {
-          sessionStorage.setItem('pendingPurchaseFeedback', JSON.stringify({ orderId, ts: Date.now() }));
-          // Notificar al header para refrescar el badge inmediatamente
-          window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
-          console.log('Pending purchase feedback set - orderId:', orderId);
-        } else {
-          console.log('Skipping pending feedback flag (alreadyGiven:', !!alreadyGiven, ', alreadyPending:', !!alreadyPending, ')');
-        }
-      } catch (e) {
-        console.warn('Could not set pendingPurchaseFeedback flag:', e);
+    // AHORA TAMBIÉN PARA REGALOS
+    try {
+      const alreadyGiven = sessionStorage.getItem('feedbackGiven');
+      const alreadyPending = sessionStorage.getItem('pendingPurchaseFeedback');
+      if (!alreadyGiven && !alreadyPending) {
+        sessionStorage.setItem('pendingPurchaseFeedback', JSON.stringify({ orderId, ts: Date.now() }));
+        // Notificar al header para refrescar el badge inmediatamente
+        window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
+        console.log('Pending purchase feedback set - orderId:', orderId, 'isGift:', isGiftMode);
+      } else {
+        console.log('Skipping pending feedback flag (alreadyGiven:', !!alreadyGiven, ', alreadyPending:', !!alreadyPending, ')');
       }
-    } else {
-      console.log('Feedback modal NOT shown - isGiftMode:', isGiftMode);
+    } catch (e) {
+      console.warn('Could not set pendingPurchaseFeedback flag:', e);
     }
   };
 
   const handleClose = () => {
     // Si hay un pedido completado y el modal de feedback debería mostrarse, no cerrar aún
-    if (completedOrderId && !isGiftMode && !showFeedbackModal) {
+    if (completedOrderId && !showFeedbackModal) {
       const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
       if (!generalFeedbackGiven) {
         console.log('Preventing close - feedback modal should show');
@@ -1797,13 +1794,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <Button 
               onClick={() => {
                 const generalFeedbackGiven = sessionStorage.getItem('feedbackGiven');
-                if (!isGiftMode && completedOrderId && !generalFeedbackGiven) {
+                if (completedOrderId && !generalFeedbackGiven) {
                   console.log('Showing feedback modal and hiding checkout dialog');
                   setShowFeedbackModal(true);
                 } else {
                   handleClose();
                 }
-              }} 
+              }}
               className="w-full" 
               size="lg"
             >
@@ -1822,7 +1819,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     </Dialog>
       
     {/* Feedback Modal - Rendered OUTSIDE the checkout Dialog to prevent blocking */}
-    {!isGiftMode && completedOrderId && showFeedbackModal && (
+    {completedOrderId && showFeedbackModal && (
       <FeedbackModal
         isOpen={showFeedbackModal}
         onClose={() => {
