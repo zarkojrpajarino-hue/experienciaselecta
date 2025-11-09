@@ -201,10 +201,10 @@ serve(async (req) => {
           .select('basket_name, basket_category')
           .eq('order_id', order.id)
           .limit(1)
-          .single();
+          .maybeSingle();
 
-        const basketName = orderItems?.basket_name || '';
-        const basketCategory = orderItems?.basket_category || '';
+        const basketName = orderItems?.basket_name || 'experiencia';
+        const basketCategory = orderItems?.basket_category || 'experiencias';
 
         // Generar token de auto-login
         const loginToken = crypto.randomUUID();
@@ -233,11 +233,11 @@ serve(async (req) => {
         const emailContent = `
 ¡Hola ${customerName}!
 
-Esperamos que hayas disfrutado tu experiencia con Experiencia Selecta.
+Esperamos que hayas disfrutado tu ${basketName} para ${basketCategory.toLowerCase()}.
 
 Tu opinión es súper importante para nosotros y nos ayuda a seguir mejorando.
 
-¿Nos dejas tu valoración? Solo te llevará un minuto:
+¿Nos dejas tu valoración? Solo te llevará un minuto y accederás automáticamente:
 👉 ${reviewUrl}
 
 Muchas gracias por tu tiempo y por confiar en nosotros.
@@ -297,17 +297,17 @@ El equipo de Experiencia Selecta
   </div>
   <div class="content">
     <p>¡Hola ${customerName}!</p>
-    <p>Esperamos que hayas disfrutado tu experiencia con <strong>Experiencia Selecta</strong>.</p>
+    <p>Esperamos que hayas disfrutado tu <strong>${basketName}</strong> para <strong>${basketCategory.toLowerCase()}</strong>.</p>
     <p>Tu opinión es súper importante para nosotros y nos ayuda a seguir mejorando.</p>
     
     <div style="text-align: center; margin: 30px 0;">
       <a href="${reviewUrl}" class="cta-button">
-        Dejar mi valoración
+        Valorar mi ${basketName} para ${basketCategory.toLowerCase()}
       </a>
     </div>
     
     <p style="font-size: 14px; color: #666;">
-      Solo te llevará un minuto y nos ayudará enormemente.
+      Solo te llevará un minuto, accederás automáticamente y nos ayudará enormemente.
     </p>
     
     <p style="margin-top: 30px;">Muchas gracias por tu tiempo y por confiar en nosotros.</p>
