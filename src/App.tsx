@@ -17,6 +17,7 @@ import NuestrosClientesPage from "./pages/NuestrosClientesPage";
 import SobreNosotrosDetalle from "./pages/SobreNosotrosDetalle";
 import PreguntasFrecuentesPage from "./pages/PreguntasFrecuentesPage";
 import ConocenosPage from "./pages/ConocenosPage";
+import AutoLogin from "./pages/AutoLogin";
 
 // Lazy load non-critical pages for better performance
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
@@ -28,10 +29,10 @@ const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
 const EmptyCartPage = lazy(() => import("./pages/EmptyCartPage"));
-const AutoLogin = lazy(() => import("./pages/AutoLogin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import CookieBanner from "./components/CookieBanner";
 import AutoUpdater from "./components/AutoUpdater";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // (React Query deshabilitado temporalmente para evitar error de hook)
 
@@ -89,7 +90,14 @@ const App = () => (
                 <Route path="/feedback" element={<FeedbackPage />} />
                 <Route path="/review/:orderId" element={<ReviewPage />} />
                 <Route path="/conocenos" element={<ConocenosPage />} />
-                <Route path="/auto-login" element={<AutoLogin />} />
+                <Route 
+                  path="/auto-login" 
+                  element={
+                    <ErrorBoundary fallback={<div className="min-h-screen flex items-center justify-center p-6"><div className="text-center"><h1 className="text-2xl font-bold mb-4">Error al cargar el inicio de sesión automático</h1><p className="text-muted-foreground">Por favor, intenta acceder desde el enlace nuevamente.</p></div></div>}>
+                      <AutoLogin />
+                    </ErrorBoundary>
+                  } 
+                />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
