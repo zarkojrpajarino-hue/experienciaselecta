@@ -27,7 +27,9 @@ const AutoLogin = () => {
 
         console.log('🔍 Token extraído de URL:', token);
         console.log('📍 Redirect parámetro recibido:', searchParams.get('redirect'));
-        console.log('📍 Redirect final (después de fallback):', redirect || '/ (home)');
+          console.log('📍 Redirect final (después de fallback):', redirect || '/ (home)');
+          console.log('Token from URL:', token);
+          console.log('Redirect param:', redirect);
 
         if (!token) {
           console.error('❌ No token provided');
@@ -133,7 +135,9 @@ const AutoLogin = () => {
           const targetPath = decodedRedirect ? `/${decodedRedirect}` : '/';
           console.log('🔄 Redirect decodificado:', decodedRedirect || '(vacío)');
           console.log('🔄 Redirigiendo a:', targetPath);
-          navigate(targetPath);
+          const finalPath = targetPath;
+          console.log('Final redirect path:', finalPath);
+          navigate(finalPath);
         }, 1000);
 
       } catch (error: any) {
