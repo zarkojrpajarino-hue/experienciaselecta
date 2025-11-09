@@ -97,8 +97,7 @@ serve(async (req) => {
     const { error: updateError } = await supabaseAdmin
       .from('login_tokens')
       .update({
-        used: true,
-        used_at: new Date().toISOString()
+        used: true
       })
       .eq('token', token);
 
