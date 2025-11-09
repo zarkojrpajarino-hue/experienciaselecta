@@ -9,6 +9,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { usePendingReviews } from "@/hooks/usePendingReviews";
 import AuthModal from "./AuthModal";
 import logo from "@/assets/logo-experiencia-selecta.png";
 import headerBg from "@/assets/iberian-products-background.jpg";
@@ -21,22 +22,19 @@ const Navbar = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, session } = useAuth();
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
-  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
+  const { pendingReviewsCount } = usePendingReviews(user?.id);
   const [hasPendingFeedback, setHasPendingFeedback] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, getTotalItems, getTotalAmount, removeFromCart } = useCart();
   const { toast } = useToast();
 
-  // Check pending gifts and reviews when user changes
+  // Check pending gifts when user changes
   useEffect(() => {
     if (user?.email) {
       checkPendingGifts(user.email);
     }
-    if (user?.id) {
-      checkPendingReviews(user.id);
-    }
-  }, [user?.id, user?.email]);
+  }, [user?.email]);
 
   // Listen for pending feedback changes (session-based or email reminders)
   useEffect(() => {
@@ -69,70 +67,6 @@ const Navbar = () => {
     }
   }, []);
 
-  const checkPendingReviews = useCallback(async (userId: string) => {
-    try {
-      const { data: customerData } = await supabase
-        .from('customers')
-        .select('id')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (!customerData) return;
-
-      const tenDaysAgo = new Date();
-      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
-      const { data: ordersData } = await supabase
-        .from('orders')
-        .select('id')
-        .eq('customer_id', customerData.id)
-        .eq('status', 'completed')
-        .lt('created_at', tenDaysAgo.toISOString());
-
-      if (!ordersData || ordersData.length === 0) {
-        setPendingReviewsCount(0);
-        return;
-      }
-
-      const orderIds = ordersData.map(o => o.id);
-      const { data: reviewsData } = await supabase
-        .from('reviews')
-        .select('order_id')
-        .in('order_id', orderIds)
-        .eq('user_id', userId);
-
-      const reviewedOrderIds = new Set(reviewsData?.map(r => r.order_id) || []);
-      const pendingCount = ordersData.filter(o => !reviewedOrderIds.has(o.id)).length;
-      
-      setPendingReviewsCount(pendingCount);
-
-      // Verificar si hay recordatorios de email enviados recientemente (últimas 72h)
-      const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-
-      const { data: remindersData } = await supabase
-        .from('review_reminders')
-        .select('order_id, last_sent_at')
-        .eq('customer_id', customerData.id)
-        .gte('last_sent_at', threeDaysAgo.toISOString());
-
-      // Si hay recordatorios enviados recientemente para órdenes sin review, activar badge
-      if (remindersData && remindersData.length > 0) {
-        const hasRecentReminders = remindersData.some(
-          r => !reviewedOrderIds.has(r.order_id)
-        );
-        
-        if (hasRecentReminders) {
-          console.log('📧 Recordatorios de email detectados - activando badge de feedback');
-          // Simular que hay feedback pendiente vía sessionStorage
-          sessionStorage.setItem('emailReminderPending', 'true');
-          window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
-        }
-      }
-    } catch (error) {
-      console.error('Error checking pending reviews:', error);
-    }
-  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
