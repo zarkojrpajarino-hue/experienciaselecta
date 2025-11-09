@@ -122,37 +122,50 @@ serve(async (req) => {
     let errorCount = 0;
 
     for (const review of remoteReviews) {
-      // Verificar si la review ya existe en este proyecto
-      const { data: existingReview } = await localSupabase
-        .from('reviews')
-        .select('id')
-        .eq('id', review.id)
-        .maybeSingle();
-
-      // Upsert basado en ID; omitimos created_at/updated_at para usar defaults
-      const payload = {
-        id: review.id,
-        user_id: review.user_id,
-        order_id: review.order_id,
-        basket_name: review.basket_name,
-        rating: review.rating,
-        comment: review.comment,
-        source_site: 'paragenteselecta',
-      };
-
-      const { error: upsertError } = await localSupabase
-        .from('reviews')
-        .upsert(payload, { onConflict: 'id' });
-
-      if (upsertError) {
-        console.error(`Error upserting review ${review.id}:`, upsertError);
-        errorCount++;
-      } else {
-        if (existingReview) {
+      try {
+        // Saltar reviews sin user_id o order_id válido (valoraciones antiguas)
+        if (!review.user_id || !review.order_id) {
+          console.log(`Skipping review ${review.id} - missing user_id or order_id`);
           skippedCount++;
-        } else {
-          syncedCount++;
+          continue;
         }
+
+        // Verificar si la review ya existe en este proyecto
+        const { data: existingReview } = await localSupabase
+          .from('reviews')
+          .select('id')
+          .eq('id', review.id)
+          .maybeSingle();
+
+        // Upsert basado en ID
+        const payload = {
+          id: review.id,
+          user_id: review.user_id,
+          order_id: review.order_id,
+          basket_name: review.basket_name,
+          rating: review.rating,
+          comment: review.comment,
+          source_site: 'paragenteselecta',
+        };
+
+        const { error: upsertError } = await localSupabase
+          .from('reviews')
+          .upsert(payload, { onConflict: 'id' });
+
+        if (upsertError) {
+          console.error(`Error upserting review ${review.id}:`, upsertError);
+          errorCount++;
+        } else {
+          if (existingReview) {
+            skippedCount++;
+          } else {
+            syncedCount++;
+            console.log(`Successfully synced review ${review.id}`);
+          }
+        }
+      } catch (error) {
+        console.error(`Error processing review ${review.id}:`, error);
+        errorCount++;
       }
     }
 
