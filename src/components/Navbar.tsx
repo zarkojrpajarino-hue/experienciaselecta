@@ -9,7 +9,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { usePendingReviews } from "@/hooks/usePendingReviews";
 import AuthModal from "./AuthModal";
 import logo from "@/assets/logo-experiencia-selecta.png";
 import headerBg from "@/assets/iberian-products-background.jpg";
@@ -22,7 +21,6 @@ const Navbar = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, session } = useAuth();
   const [pendingGiftsCount, setPendingGiftsCount] = useState(0);
-  const { pendingReviewsCount } = usePendingReviews(user?.id);
   const [hasPendingFeedback, setHasPendingFeedback] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -235,7 +233,7 @@ const Navbar = () => {
 
           {/* Right: User, Gift, Cart and Menu */}
           <div className="flex items-center gap-2">
-            {/* User Button with Badge */}
+            {/* User Button */}
             {user ? (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -247,19 +245,10 @@ const Navbar = () => {
                     aria-label="Mi perfil"
                   >
                     <User size={20} />
-                    {pendingReviewsCount > 0 && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                      >
-                        {pendingReviewsCount}
-                      </motion.span>
-                    )}
                   </motion.button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{pendingReviewsCount > 0 ? 'Experiencias por valorar' : 'Mi perfil'}</p>
+                  <p>Mi perfil</p>
                 </TooltipContent>
               </Tooltip>
             ) : null}

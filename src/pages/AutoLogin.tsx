@@ -118,6 +118,13 @@ const AutoLogin = () => {
         clearTimeout(timeoutId);
         setStatus('success');
         
+        // Si viene con redirect=feedback, activar badge de feedback pendiente
+        if (redirect === 'feedback') {
+          console.log('🎯 AutoLogin con redirect=feedback - activando badge de feedback');
+          sessionStorage.setItem('emailReminderPending', 'true');
+          window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
+        }
+        
         // Obtener el nombre del usuario de los metadatos o usar el email como fallback
         const userName = session.user.user_metadata?.full_name || 
                         session.user.user_metadata?.name || 

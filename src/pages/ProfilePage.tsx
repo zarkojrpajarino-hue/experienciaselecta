@@ -9,7 +9,6 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Star, Package, LogOut, Loader2, ChevronDown, ChevronUp, X, ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { UserProfileDropdown } from "@/components/UserProfileDropdown";
-import { usePendingReviews } from "@/hooks/usePendingReviews";
 
 // Import images
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -103,7 +102,6 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<string>("orders");
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { pendingReviewsCount } = usePendingReviews(user?.id);
 
   useEffect(() => {
     checkAuthAndLoadData();
@@ -353,14 +351,9 @@ const ProfilePage = () => {
                 <Package className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="font-bungee tracking-wider text-xs md:text-base">Mis pedidos.</span>
               </TabsTrigger>
-              <TabsTrigger value="reviews" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold relative">
+              <TabsTrigger value="reviews" className="gap-1 md:gap-2 text-white data-[state=active]:text-[hsl(45,100%,65%)] border-b-2 border-transparent data-[state=active]:border-[hsl(45,100%,65%)] rounded-none bg-transparent font-poppins font-bold">
                 <Star className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="font-bungee tracking-wider text-xs md:text-base">Mis valoraciones.</span>
-                {pendingReviewsCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                    {pendingReviewsCount}
-                  </span>
-                )}
               </TabsTrigger>
             </TabsList>
 
