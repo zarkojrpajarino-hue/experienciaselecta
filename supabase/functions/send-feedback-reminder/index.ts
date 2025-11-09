@@ -73,6 +73,7 @@ serve(async (req) => {
         customer_id,
         completed_at,
         customers!inner(
+          user_id,
           email,
           name
         )
@@ -186,6 +187,7 @@ serve(async (req) => {
         const customer = (order as any).customers;
         const customerName = customer?.name || 'cliente';
         const customerEmail = customer?.email;
+        const userId = customer?.user_id;
 
         if (!customerEmail) {
           console.error(`No email for order ${order.id}`);
@@ -193,8 +195,40 @@ serve(async (req) => {
           continue;
         }
 
-        // URL directa a FeedbackPage
-        const reviewUrl = `https://experienciaselecta.com/feedback`;
+        // Obtener información del pedido (basket_name y basket_category)
+        const { data: orderItems } = await supabase
+          .from('order_items')
+          .select('basket_name, basket_category')
+          .eq('order_id', order.id)
+          .limit(1)
+          .single();
+
+        const basketName = orderItems?.basket_name || '';
+        const basketCategory = orderItems?.basket_category || '';
+
+        // Generar token de auto-login
+        const loginToken = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+
+        const { error: tokenError } = await supabase
+          .from('login_tokens')
+          .insert({
+            token: loginToken,
+            user_id: userId,
+            user_email: customerEmail,
+            expires_at: expiresAt.toISOString(),
+            purpose: 'feedback_reminder'
+          });
+
+        if (tokenError) {
+          console.error(`Error creating login token for order ${order.id}:`, tokenError);
+          errorCount++;
+          continue;
+        }
+
+        // URL con auto-login y parámetros pre-rellenados
+        const redirectPath = `feedback?basket=${encodeURIComponent(basketName)}&category=${encodeURIComponent(basketCategory)}`;
+        const reviewUrl = `https://experienciaselecta.com/auto-login?token=${loginToken}&redirect=${encodeURIComponent(redirectPath)}`;
         
         const emailContent = `
 ¡Hola ${customerName}!

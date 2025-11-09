@@ -33,12 +33,14 @@ const FeedbackPage = () => {
   const [purchaseRating, setPurchaseRating] = useState(0);
   const [hoveredPurchaseRating, setHoveredPurchaseRating] = useState(0);
 
-  // Pre-fill basket_name if coming from email
+  // Pre-fill basket_name and category if coming from email
   useEffect(() => {
     const basket = searchParams.get('basket');
+    const category = searchParams.get('category');
     if (basket) {
       setBasketName(decodeURIComponent(basket));
-      setHowKnewUs(`Email recordatorio - ${decodeURIComponent(basket)}`);
+      const categoryText = category ? ` - ${decodeURIComponent(category)}` : '';
+      setHowKnewUs(`Email recordatorio${categoryText}`);
     }
   }, [searchParams]);
 
