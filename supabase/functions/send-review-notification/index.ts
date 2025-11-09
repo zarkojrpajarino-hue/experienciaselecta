@@ -1,8 +1,29 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { Resend } from 'https://esm.sh/resend@4.0.0'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+
+// Input validation schema
+const reviewNotificationSchema = z.object({
+  userEmail: z.string().trim().email('Invalid email address').max(255, 'Email too long'),
+  userName: z.string().trim().min(1, 'Name cannot be empty').max(200, 'Name too long'),
+  basketName: z.string().trim().min(1, 'Basket name cannot be empty').max(200, 'Basket name too long'),
+  basketCategory: z.string().trim().min(1, 'Category cannot be empty').max(100, 'Category too long'),
+  rating: z.number().int('Rating must be an integer').min(1, 'Rating must be at least 1').max(5, 'Rating must be at most 5'),
+  userId: z.string().uuid('Invalid user ID format')
+});
+
+// HTML escaping function to prevent XSS
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,7 +36,10 @@ serve(async (req) => {
   }
 
   try {
-    const { userEmail, userName, basketName, basketCategory, rating, userId } = await req.json();
+    // Parse and validate input
+    const rawInput = await req.json();
+    const validatedInput = reviewNotificationSchema.parse(rawInput);
+    const { userEmail, userName, basketName, basketCategory, rating, userId } = validatedInput;
 
     console.log('Sending review notification to:', userEmail);
 
@@ -82,11 +106,11 @@ serve(async (req) => {
             <tr>
               <td style="padding: 40px 30px;">
                 <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
-                  Hola <strong>${userName}</strong>,
+                  Hola <strong>${escapeHtml(userName)}</strong>,
                 </p>
                 
                 <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
-                  ¡Tenemos buenas noticias! 🎉 Tu valoración de <strong>${basketName}</strong> para <strong>${articlePrefix} ${basketCategory}</strong> ha sido publicada y ya está visible en nuestra página.
+                  ¡Tenemos buenas noticias! 🎉 Tu valoración de <strong>${escapeHtml(basketName)}</strong> para <strong>${articlePrefix} ${escapeHtml(basketCategory)}</strong> ha sido publicada y ya está visible en nuestra página.
                 </p>
 
                 <p style="margin: 0 0 30px; color: #333333; font-size: 16px; line-height: 1.6;">
@@ -139,7 +163,7 @@ serve(async (req) => {
     const { data, error } = await resend.emails.send({
       from: 'Experiencias Selecta <onboarding@resend.dev>',
       to: [userEmail],
-      subject: `¡Tu valoración de ${basketName} está publicada! ${stars}`,
+      subject: `¡Tu valoración de ${escapeHtml(basketName)} está publicada! ${stars}`,
       html,
     });
 
@@ -164,6 +188,21 @@ serve(async (req) => {
 
   } catch (error: any) {
     console.error('Error in send-review-notification:', error);
+    
+    // Handle validation errors specifically
+    if (error instanceof z.ZodError) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input data',
+          details: error.errors
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ 
         error: 'Failed to send review notification',
