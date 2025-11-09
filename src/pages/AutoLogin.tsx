@@ -23,10 +23,11 @@ const AutoLogin = () => {
 
       try {
         const token = searchParams.get('token');
-        const redirect = searchParams.get('redirect') || 'perfil';
+        const redirect = searchParams.get('redirect') || '';
 
         console.log('🔍 Token extraído de URL:', token);
-        console.log('📍 Redirect destino:', redirect);
+        console.log('📍 Redirect parámetro recibido:', searchParams.get('redirect'));
+        console.log('📍 Redirect final (después de fallback):', redirect || '/ (home)');
 
         if (!token) {
           console.error('❌ No token provided');
@@ -128,9 +129,11 @@ const AutoLogin = () => {
 
         // Redirigir a la página especificada
         setTimeout(() => {
-          const decodedRedirect = decodeURIComponent(redirect);
-          console.log('🔄 Redirigiendo a:', `/${decodedRedirect}`);
-          navigate(`/${decodedRedirect}`);
+          const decodedRedirect = redirect ? decodeURIComponent(redirect) : '';
+          const targetPath = decodedRedirect ? `/${decodedRedirect}` : '/';
+          console.log('🔄 Redirect decodificado:', decodedRedirect || '(vacío)');
+          console.log('🔄 Redirigiendo a:', targetPath);
+          navigate(targetPath);
         }, 1000);
 
       } catch (error: any) {
