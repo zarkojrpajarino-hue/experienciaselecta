@@ -114,8 +114,16 @@ const AutoLogin = () => {
         console.log('✅ Session found, user authenticated:', session.user.email);
         clearTimeout(timeoutId);
         setStatus('success');
-        toast.success('¡Bienvenido de vuelta!', {
-          description: 'Has iniciado sesión correctamente'
+        
+        // Obtener el nombre del usuario de los metadatos o usar el email como fallback
+        const userName = session.user.user_metadata?.full_name || 
+                        session.user.user_metadata?.name || 
+                        session.user.email?.split('@')[0] || 
+                        'usuario';
+        
+        toast.success(`🎉 ¡Bienvenido de nuevo, ${userName}!`, {
+          description: 'Has iniciado sesión correctamente',
+          duration: 3000
         });
 
         // Redirigir a la página especificada
