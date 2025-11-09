@@ -79,8 +79,13 @@ const FeedbackModal = ({
 
       if (error) throw error;
 
-      // Mark feedback as given in this session (same key for both types)
+      // Mark feedback as given and clear all pending flags
       sessionStorage.setItem('feedbackGiven', 'true');
+      sessionStorage.removeItem('pendingPurchaseFeedback');
+      sessionStorage.removeItem('emailReminderPending');
+      
+      // Notify Navbar to update badge
+      window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
 
       toast.success('¡Gracias por tu feedback!', {
         description: 'Tu opinión nos ayuda a mejorar.',
