@@ -137,7 +137,7 @@ Tienes un regalo esperándote 🎁
 
 ${escapeHtml(gift.sender_name)} te envió ${escapeHtml(gift.basket_name)} hace unos días, pero aún no has dejado tu dirección de envío.
 
-Solo te llevará un minuto y tu regalo estará en camino: https://experienciaselecta.com/regalos
+Solo te llevará un minuto y tu regalo estará en camino: https://experienciaselecta.com
 
 No dejes pasar esta experiencia única que ${escapeHtml(gift.sender_name)} ha preparado para ti.
 
@@ -195,7 +195,7 @@ PD: Si tienes alguna duda, solo responde a este email.
     <p>Tienes un regalo esperándote 🎁</p>
     <p>${escapeHtml(gift.sender_name)} te envió <strong>${escapeHtml(gift.basket_name)}</strong> hace unos días, pero aún no has dejado tu dirección de envío.</p>
     <p style="text-align: center;">
-      <a href="https://experienciaselecta.com/regalos" class="cta-button">Reclamar ahora</a>
+      <a href="https://experienciaselecta.com" class="cta-button">Reclamar ahora</a>
     </p>
     <p>Solo te llevará un minuto y tu regalo estará en camino.</p>
     <p>No dejes pasar esta experiencia única que ${escapeHtml(gift.sender_name)} ha preparado para ti.</p>
