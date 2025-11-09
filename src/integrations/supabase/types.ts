@@ -134,6 +134,39 @@ export type Database = {
         }
         Relationships: []
       }
+      login_tokens: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: string
+          purpose: string | null
+          token: string
+          used: boolean | null
+          user_email: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          purpose?: string | null
+          token?: string
+          used?: boolean | null
+          user_email: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          purpose?: string | null
+          token?: string
+          used?: boolean | null
+          user_email?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           basket_category: string
@@ -253,6 +286,7 @@ export type Database = {
           recipient_email: string
           recipient_name: string
           recipient_user_id: string | null
+          reminder_count: number | null
           reminder_sent_at: string | null
           sender_email: string | null
           sender_name: string
@@ -278,6 +312,7 @@ export type Database = {
           recipient_email: string
           recipient_name: string
           recipient_user_id?: string | null
+          reminder_count?: number | null
           reminder_sent_at?: string | null
           sender_email?: string | null
           sender_name: string
@@ -303,6 +338,7 @@ export type Database = {
           recipient_email?: string
           recipient_name?: string
           recipient_user_id?: string | null
+          reminder_count?: number | null
           reminder_sent_at?: string | null
           sender_email?: string | null
           sender_name?: string
@@ -479,6 +515,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       completed_purchases: {
@@ -513,10 +570,16 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -643,6 +706,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
