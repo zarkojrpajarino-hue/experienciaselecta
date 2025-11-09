@@ -239,9 +239,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
 
       if (error) throw error;
 
+      // Obtener información del usuario para el toast
+      const { data: { user } } = await supabase.auth.getUser();
+      const userName = user?.user_metadata?.full_name || 
+                      user?.user_metadata?.name || 
+                      user?.email?.split('@')[0] || 
+                      'usuario';
+
       toast({
         title: "¡Acceso correcto!",
-        description: "Has iniciado sesión correctamente.",
+        description: `¡Bienvenido, ${userName}!`,
       });
 
       // Limpiar flags de progreso

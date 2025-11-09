@@ -143,6 +143,12 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
             // Marcar que necesitamos navegar (lo manejará el componente Checkout)
             sessionStorage.setItem('auth_completed', 'true');
+          } else {
+            // Login normal (sin checkout pendiente) - Mostrar toast de bienvenida
+            toast.success(`¡Bienvenido, ${userName}!`, {
+              description: 'Has iniciado sesión correctamente.',
+              duration: 3000,
+            });
           }
           
           // Resetear flag después de 2 segundos
