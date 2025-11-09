@@ -161,6 +161,26 @@ serve(async (req) => {
           } else {
             syncedCount++;
             console.log(`Successfully synced review ${review.id}`);
+            
+            // 🆕 ENVIAR NOTIFICACIÓN AUTOMÁTICA POR EMAIL
+            try {
+              // Obtener datos del usuario para el email
+              const { data: userData } = await localSupabase.auth.admin.getUserById(review.user_id);
+              
+              await localSupabase.functions.invoke('send-review-notification', {
+                body: {
+                  userEmail: userData?.user?.email || review.user_email,
+                  userName: userData?.user?.user_metadata?.name || review.user_name,
+                  basketName: review.basket_name,
+                  basketCategory: review.basket_category || 'una ocasión especial',
+                  rating: review.rating
+                }
+              });
+              console.log(`Review notification sent for ${review.id} to ${userData?.user?.email}`);
+            } catch (notificationError) {
+              console.error(`Error sending notification for review ${review.id}:`, notificationError);
+              // No afecta la sincronización si el email falla
+            }
           }
         }
       } catch (error) {
