@@ -11,146 +11,92 @@ const AutoLogin = () => {
 
   useEffect(() => {
     const processAutoLogin = async () => {
-      // Timeout de 30 segundos para evitar loading infinito
-      const timeoutId = setTimeout(() => {
-        console.error('⏱️ Timeout: La validación del token tardó más de 30 segundos');
-        setStatus('error');
-        toast.error('Tiempo de espera agotado', {
-          description: 'La validación del token tardó demasiado. Por favor, intenta de nuevo.'
-        });
-        setTimeout(() => navigate('/'), 3000);
-      }, 30000);
+      let timeoutId: NodeJS.Timeout | null = null;
 
       try {
+        // Timeout de 30 segundos
+        timeoutId = setTimeout(() => {
+          setStatus('error');
+          toast.error('Tiempo de espera agotado');
+          setTimeout(() => navigate('/'), 3000);
+        }, 30000);
+
         const token = searchParams.get('token');
         const redirect = searchParams.get('redirect') || '';
 
-        console.log('Token from URL:', token);
-        console.log('Redirect param:', redirect);
-        console.log('Final redirect path:', redirect || '/');
-
         if (!token) {
-          console.error('❌ No token provided');
-          clearTimeout(timeoutId);
+          if (timeoutId) clearTimeout(timeoutId);
           setStatus('error');
-          toast.error('Enlace inválido', {
-            description: 'No se proporcionó un token de acceso'
-          });
+          toast.error('Enlace inválido');
           setTimeout(() => navigate('/'), 3000);
           return;
         }
 
-        console.log('🚀 Llamando validate-login-token con token:', token);
-
-        // Verificar el token llamando a la edge function
+        // Validar token
         const { data: tokenData, error: tokenError } = await supabase.functions.invoke(
           'validate-login-token',
-          {
-            body: { token }
-          }
+          { body: { token } }
         );
 
-        console.log('📥 Respuesta recibida de validate-login-token:');
-        console.log('  - Data:', tokenData);
-        console.log('  - Error:', tokenError);
-
-        if (tokenError) {
-          console.error('❌ Error en la llamada a la función:', tokenError);
-          clearTimeout(timeoutId);
+        if (tokenError || !tokenData?.valid) {
+          if (timeoutId) clearTimeout(timeoutId);
           setStatus('error');
-          toast.error('Error de validación', {
-            description: `Error al validar el token: ${tokenError.message || 'Error desconocido'}`
-          });
+          toast.error('Enlace expirado o inválido');
           setTimeout(() => navigate('/'), 3000);
           return;
         }
 
-        if (!tokenData?.valid) {
-          console.error('❌ Token no válido o expirado:', tokenData);
-          clearTimeout(timeoutId);
-          setStatus('error');
-          toast.error('Enlace expirado', {
-            description: tokenData?.error || 'Este enlace ha expirado o ya fue utilizado.'
-          });
-          setTimeout(() => navigate('/'), 3000);
-          return;
-        }
+        if (timeoutId) clearTimeout(timeoutId);
 
-        console.log('✅ Token validated successfully:', tokenData);
-        clearTimeout(timeoutId);
-
-        console.log('🔐 Usando hashed_token para autenticar...');
-
-        // Usar el hashed_token para autenticar al usuario
+        // Autenticar usuario
         const { error: verifyError } = await supabase.auth.verifyOtp({
           token_hash: tokenData.hashed_token,
           type: 'magiclink',
         });
 
         if (verifyError) {
-          console.error('❌ Error verifying OTP:', verifyError);
-          clearTimeout(timeoutId);
           setStatus('error');
-          toast.error('Error de verificación', {
-            description: `No se pudo verificar el token: ${verifyError.message}`
-          });
+          toast.error('Error de verificación');
           setTimeout(() => navigate('/'), 3000);
           return;
         }
 
-        console.log('✅ OTP verified, checking session...');
+        // Verificar sesión
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
         if (sessionError || !session) {
-          console.error('❌ No session after token validation:', sessionError);
-          clearTimeout(timeoutId);
           setStatus('error');
-          toast.error('Error de autenticación', {
-            description: 'No se pudo iniciar sesión automáticamente. Por favor, inicia sesión normalmente.'
-          });
+          toast.error('Error de autenticación');
           setTimeout(() => navigate('/'), 3000);
           return;
         }
 
-        console.log('✅ Session found, user authenticated:', session.user.email);
-        clearTimeout(timeoutId);
         setStatus('success');
         
-        // Si viene con redirect=feedback, activar badge de feedback pendiente
+        // Activar badge si viene redirect=feedback
         if (redirect === 'feedback') {
-          console.log('🎯 AutoLogin con redirect=feedback - activando badge de feedback');
           sessionStorage.setItem('emailReminderPending', 'true');
           window.dispatchEvent(new CustomEvent('pendingFeedbackChanged'));
         }
         
-        // Obtener el nombre del usuario de los metadatos o usar el email como fallback
         const userName = session.user.user_metadata?.full_name || 
                         session.user.user_metadata?.name || 
                         session.user.email?.split('@')[0] || 
                         'usuario';
         
-        toast.success(`🎉 ¡Bienvenido de nuevo, ${userName}!`, {
-          description: 'Has iniciado sesión correctamente',
-          duration: 3000
-        });
+        toast.success(`¡Bienvenido de nuevo, ${userName}!`);
 
-        // Redirigir a la página especificada
+        // Redirigir
         setTimeout(() => {
           const decodedRedirect = redirect ? decodeURIComponent(redirect) : '';
           const targetPath = decodedRedirect ? `/${decodedRedirect}` : '/';
-          console.log('Redirecting to:', targetPath);
           navigate(targetPath);
         }, 1000);
 
       } catch (error: any) {
-        console.error('💥 Error during auto-login:', error);
-        console.error('   Message:', error.message);
-        console.error('   Stack:', error.stack);
-        clearTimeout(timeoutId);
+        if (timeoutId) clearTimeout(timeoutId);
         setStatus('error');
-        toast.error('Error inesperado', {
-          description: error.message || 'Ocurrió un error al procesar tu solicitud.'
-        });
+        toast.error('Error inesperado');
         setTimeout(() => navigate('/'), 3000);
       }
     };
