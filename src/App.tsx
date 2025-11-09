@@ -28,6 +28,7 @@ const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
 const EmptyCartPage = lazy(() => import("./pages/EmptyCartPage"));
+const AutoLogin = lazy(() => import("./pages/AutoLogin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import CookieBanner from "./components/CookieBanner";
 import AutoUpdater from "./components/AutoUpdater";
@@ -88,6 +89,7 @@ const App = () => (
                 <Route path="/feedback" element={<FeedbackPage />} />
                 <Route path="/review/:orderId" element={<ReviewPage />} />
                 <Route path="/conocenos" element={<ConocenosPage />} />
+                <Route path="/auto-login" element={<AutoLogin />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

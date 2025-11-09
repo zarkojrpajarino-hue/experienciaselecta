@@ -173,7 +173,8 @@ serve(async (req) => {
                   userName: userData?.user?.user_metadata?.name || review.user_name,
                   basketName: review.basket_name,
                   basketCategory: review.basket_category || 'una ocasión especial',
-                  rating: review.rating
+                  rating: review.rating,
+                  userId: review.user_id
                 }
               });
               console.log(`Review notification sent for ${review.id} to ${userData?.user?.email}`);
