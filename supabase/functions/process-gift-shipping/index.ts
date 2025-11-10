@@ -35,10 +35,37 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      );
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+
+    // Verify JWT and get authenticated user
+    const jwt = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabase.auth.getUser(jwt);
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      );
+    }
+
+    console.log('User authenticated:', user.id);
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
     const shippingData = await req.json();
@@ -52,7 +79,8 @@ serve(async (req) => {
       .from('pending_gifts')
       .select(`
         order_id, 
-        recipient_email, 
+        recipient_email,
+        recipient_user_id,
         recipient_name, 
         sender_name, 
         basket_name,
@@ -70,6 +98,24 @@ serve(async (req) => {
       console.error('Error fetching gift:', giftError);
       throw new Error('Gift not found');
     }
+
+    // Authorization: Verify user owns this gift
+    const userEmail = user.email?.toLowerCase();
+    const recipientEmail = gift.recipient_email?.toLowerCase();
+    const recipientUserId = gift.recipient_user_id;
+
+    if (recipientUserId !== user.id && recipientEmail !== userEmail) {
+      console.error('Unauthorized gift claim attempt:', { userId: user.id, giftId: validatedData.giftId });
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: You do not own this gift' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 403,
+        }
+      );
+    }
+
+    console.log('Authorization verified for gift:', validatedData.giftId);
 
     // Mark the order as completed now that recipient has provided shipping info
     const { error: orderUpdateError } = await supabase
