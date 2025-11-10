@@ -11,6 +11,17 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+const escapeHtml = (text: string): string => {
+  const map: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+};
+
 const reviewRequestSchema = z.object({
   email: z.string().trim().email().max(255),
   customerName: z.string().trim().min(1).max(200),
@@ -62,7 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Enviando solicitud de valoración a:", email);
 
-    const basketsList = basketNames.map(name => `<li style="margin: 5px 0;">${name}</li>`).join('');
+    const basketsList = basketNames.map(name => `<li style="margin: 5px 0;">${escapeHtml(name)}</li>`).join('');
 
     const emailResponse = await resend.emails.send({
       from: "Experiencia Selecta <noreply@experienciaselecta.com>",
@@ -89,7 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <h1>⭐ Tu opinión nos importa</h1>
               </div>
               <div class="content">
-                <p>Hola ${customerName},</p>
+                <p>Hola ${escapeHtml(customerName)},</p>
                 <p>Esperamos que hayas disfrutado de tu experiencia con nosotros.</p>
                 
                 <p>Nos encantaría conocer tu opinión sobre:</p>

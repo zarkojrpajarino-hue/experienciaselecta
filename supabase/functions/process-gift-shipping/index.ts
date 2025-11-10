@@ -176,15 +176,15 @@ serve(async (req) => {
     <div class="header"><h1>📦 Regalo reclamado - Acción requerida</h1></div>
     <div class="content">
       <div class="info-box">
-        <p><strong>Comprador:</strong> ${validatedData.senderName}</p>
-        <p><strong>Destinatario:</strong> ${validatedData.recipientName}</p>
+        <p><strong>Comprador:</strong> ${escapeHtml(validatedData.senderName)}</p>
+        <p><strong>Destinatario:</strong> ${escapeHtml(validatedData.recipientName)}</p>
         <p><strong>Pedido:</strong> #${gift.order_id}</p>
         <p><strong>Fecha reclamación:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
       </div>
       <h3>📦 PRODUCTOS:</h3>
-      <p>${validatedData.basketName}</p>
+      <p>${escapeHtml(validatedData.basketName)}</p>
       <h3>📍 DIRECCIÓN DE ENVÍO:</h3>
-      <p>${validatedData.shippingAddress}</p>
+      <p>${escapeHtml(validatedData.shippingAddress)}</p>
       <p><strong>🚚 Acción requerida: Preparar y enviar</strong></p>
     </div>
   </div>
@@ -193,16 +193,16 @@ serve(async (req) => {
       `,
       text: `Regalo reclamado - Acción requerida
 
-Comprador: ${validatedData.senderName}
-Destinatario: ${validatedData.recipientName}
+Comprador: ${escapeHtml(validatedData.senderName)}
+Destinatario: ${escapeHtml(validatedData.recipientName)}
 Pedido: #${gift.order_id}
 Fecha reclamación: ${new Date().toLocaleDateString('es-ES')}
 
 📦 PRODUCTOS:
-${validatedData.basketName}
+${escapeHtml(validatedData.basketName)}
 
 📍 DIRECCIÓN DE ENVÍO:
-${validatedData.shippingAddress}
+${escapeHtml(validatedData.shippingAddress)}
 
 🚚 Acción requerida: Preparar y enviar
 
@@ -231,11 +231,11 @@ Sistema Experiencia Selecta`,
 </head>
 <body>
   <div class="container">
-    <div class="header"><h1>🎉 ¡Enhorabuena ${validatedData.recipientName}!</h1></div>
+    <div class="header"><h1>🎉 ¡Enhorabuena ${escapeHtml(validatedData.recipientName)}!</h1></div>
     <div class="content">
       <p><strong>¡Perfecto!</strong> Hemos recibido tu dirección de envío correctamente.</p>
       
-      <p>Tu regalo <strong>${validatedData.basketName}</strong> ${validatedData.senderName ? `de parte de ${validatedData.senderName}` : ''} está en camino y pronto lo disfrutarás.</p>
+      <p>Tu regalo <strong>${escapeHtml(validatedData.basketName)}</strong> ${validatedData.senderName ? `de parte de ${escapeHtml(validatedData.senderName)}` : ''} está en camino y pronto lo disfrutarás.</p>
       
       <div class="info-box">
         <h3>📦 Tiempo estimado de entrega:</h3>
@@ -279,11 +279,11 @@ Sistema Experiencia Selecta`,
 </body>
 </html>
       `,
-      text: `¡Enhorabuena ${validatedData.recipientName}!
+      text: `¡Enhorabuena ${escapeHtml(validatedData.recipientName)}!
 
 ¡Perfecto! Hemos recibido tu dirección de envío correctamente.
 
-Tu regalo ${validatedData.basketName} ${validatedData.senderName ? `de parte de ${validatedData.senderName}` : ''} está en camino y pronto lo disfrutarás.
+Tu regalo ${escapeHtml(validatedData.basketName)} ${validatedData.senderName ? `de parte de ${escapeHtml(validatedData.senderName)}` : ''} está en camino y pronto lo disfrutarás.
 
 📦 Tiempo estimado de entrega: 3-5 días laborables
 
@@ -335,8 +335,8 @@ El equipo de Experiencia Selecta`,
   <div class="container">
     <div class="header"><h1>🎉 ¡Buenas noticias!</h1></div>
     <div class="content">
-      <p>¡Hola ${validatedData.senderName}!</p>
-      <p>Tenemos buenas noticias: <strong>${validatedData.recipientName}</strong> ya reclamó su regalo y está de camino.</p>
+      <p>¡Hola ${escapeHtml(validatedData.senderName)}!</p>
+      <p>Tenemos buenas noticias: <strong>${escapeHtml(validatedData.recipientName)}</strong> ya reclamó su regalo y está de camino.</p>
       <p>Tu detalle llegará pronto a su destino. Seguro que le encantará 💝</p>
       <p>Gracias por elegir Experiencia Selecta para crear momentos especiales.</p>
       <p style="margin-top: 30px;">Un abrazo,<br><strong>El equipo de Experiencia Selecta</strong></p>
@@ -347,9 +347,9 @@ El equipo de Experiencia Selecta`,
 </body>
 </html>
         `,
-        text: `¡Hola ${validatedData.senderName}!
+        text: `¡Hola ${escapeHtml(validatedData.senderName)}!
 
-Tenemos buenas noticias: ${validatedData.recipientName} ya reclamó su regalo y está de camino.
+Tenemos buenas noticias: ${escapeHtml(validatedData.recipientName)} ya reclamó su regalo y está de camino.
 
 Tu detalle llegará pronto a su destino. Seguro que le encantará 💝
 

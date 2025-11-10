@@ -11,6 +11,17 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+const escapeHtml = (text: string): string => {
+  const map: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+};
+
 const giftNotificationSchema = z.object({
   recipientEmail: z.string().trim().email().max(255),
   recipientName: z.string().trim().min(1).max(200),
@@ -77,14 +88,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     const imageHtml = basketImage ? `
       <div style="text-align: center; margin: 30px 0;">
-        <img src="${basketImage}" alt="${basketName}" style="max-width: 400px; width: 100%; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+        <img src="${escapeHtml(basketImage)}" alt="${escapeHtml(basketName)}" style="max-width: 400px; width: 100%; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
       </div>
     ` : '';
 
     const noteHtml = personalNote ? `
       <div style="background: #f8f9fa; padding: 20px; border-left: 4px solid #4F46E5; margin: 20px 0; border-radius: 5px;">
-        <p style="margin: 0; font-style: italic; color: #555;">"${personalNote}"</p>
-        <p style="margin: 10px 0 0 0; text-align: right; color: #888;">- ${senderName}</p>
+        <p style="margin: 0; font-style: italic; color: #555;">"${escapeHtml(personalNote)}"</p>
+        <p style="margin: 10px 0 0 0; text-align: right; color: #888;">- ${escapeHtml(senderName)}</p>
       </div>
     ` : '';
 
@@ -113,12 +124,12 @@ const handler = async (req: Request): Promise<Response> => {
                 <h1>🎁 ¡Tienes un regalo!</h1>
               </div>
               <div class="content">
-                <p>Hola ${recipientName},</p>
-                <p><strong>${senderName}</strong> te ha enviado un regalo especial:</p>
+                <p>Hola ${escapeHtml(recipientName)},</p>
+                <p><strong>${escapeHtml(senderName)}</strong> te ha enviado un regalo especial:</p>
                 
                 ${imageHtml}
                 
-                <h2 style="color: #4F46E5; text-align: center;">${basketName}</h2>
+                <h2 style="color: #4F46E5; text-align: center;">${escapeHtml(basketName)}</h2>
                 
                 ${noteHtml}
                 
