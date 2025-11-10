@@ -56,6 +56,36 @@ export type Database = {
         }
         Relationships: []
       }
+      basket_experiences: {
+        Row: {
+          basket_category: string
+          basket_name: string
+          created_at: string | null
+          id: string
+          purchase_date: string
+          status: string
+          user_email: string
+        }
+        Insert: {
+          basket_category: string
+          basket_name: string
+          created_at?: string | null
+          id?: string
+          purchase_date: string
+          status?: string
+          user_email: string
+        }
+        Update: {
+          basket_category?: string
+          basket_name?: string
+          created_at?: string | null
+          id?: string
+          purchase_date?: string
+          status?: string
+          user_email?: string
+        }
+        Relationships: []
+      }
       cookie_consents: {
         Row: {
           consented_at: string
@@ -196,6 +226,13 @@ export type Database = {
           quantity?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "completed_purchases"
+            referencedColumns: ["order_id"]
+          },
           {
             foreignKeyName: "order_items_order_id_fkey"
             columns: ["order_id"]
@@ -355,6 +392,13 @@ export type Database = {
             foreignKeyName: "pending_gifts_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
+            referencedRelation: "completed_purchases"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "pending_gifts_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -452,6 +496,13 @@ export type Database = {
             foreignKeyName: "review_reminders_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: true
+            referencedRelation: "completed_purchases"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "review_reminders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -503,6 +554,13 @@ export type Database = {
             foreignKeyName: "reviews_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
+            referencedRelation: "completed_purchases"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -541,7 +599,7 @@ export type Database = {
       completed_purchases: {
         Row: {
           basket_category: string | null
-          basket_id: string | null
+          basket_image: string | null
           basket_name: string | null
           order_id: string | null
           price: number | null
@@ -550,7 +608,6 @@ export type Database = {
           quantity: number | null
           total_paid: number | null
           user_email: string | null
-          user_id: string | null
           user_name: string | null
         }
         Relationships: []
