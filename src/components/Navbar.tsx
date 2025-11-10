@@ -233,25 +233,30 @@ const Navbar = () => {
 
           {/* Right: User, Gift, Cart and Menu */}
           <div className="flex items-center gap-2">
-            {/* User Button */}
-            {user ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate("/perfil")}
-                    className="relative p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
-                    aria-label="Mi perfil"
-                  >
-                    <User size={20} />
-                  </motion.button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Mi perfil</p>
-                </TooltipContent>
-              </Tooltip>
-            ) : null}
+            {/* User Button - Siempre visible */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    if (user) {
+                      navigate("/perfil");
+                    } else {
+                      localStorage.setItem('pendingCheckout', 'true');
+                      setShowAuthModal(true);
+                    }
+                  }}
+                  className="relative p-2 text-white hover:text-[hsl(45,100%,65%)] rounded-lg transition-all duration-300"
+                  aria-label={user ? "Mi perfil" : "Iniciar sesión"}
+                >
+                  <User size={20} />
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{user ? "Mi perfil" : "Iniciar sesión"}</p>
+              </TooltipContent>
+            </Tooltip>
 
 
             {/* Pending Gifts Badge */}
