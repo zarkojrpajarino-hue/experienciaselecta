@@ -363,6 +363,10 @@ React.useEffect(() => {
     return /^[\d\s\+\-\(\)]{9,}$/.test(phone);
   };
 
+  const validatePostalCode = (postalCode: string) => {
+    return /^\d{5}$/.test(postalCode);
+  };
+
   const handleContinueToPayment = async () => {
     setAttemptedSubmit(true);
     setShowErrorMessage(false);
@@ -384,8 +388,8 @@ React.useEffect(() => {
     
     // Validar datos personales si hay cestas propias
     if (currentPersonalItems.length > 0) {
-      if (!personalData.name.trim()) {
-        toast.error("Completa tu nombre en 'Tus datos de envío'");
+      if (!personalData.name.trim() || personalData.name.trim().length < 2) {
+        toast.error("El nombre debe tener al menos 2 caracteres");
         setActiveSection('personal');
         return;
       }
@@ -395,22 +399,22 @@ React.useEffect(() => {
         return;
       }
       if (!personalData.phone.trim() || !validatePhone(personalData.phone)) {
-        toast.error("Introduce un teléfono válido en 'Tus datos de envío'");
+        toast.error("Introduce un teléfono válido (al menos 9 dígitos)");
         setActiveSection('personal');
         return;
       }
-      if (!personalData.address.trim()) {
-        toast.error("Completa tu dirección en 'Tus datos de envío'");
+      if (!personalData.address.trim() || personalData.address.trim().length < 5) {
+        toast.error("La dirección debe tener al menos 5 caracteres");
         setActiveSection('personal');
         return;
       }
-      if (!personalData.city.trim()) {
-        toast.error("Completa tu ciudad en 'Tus datos de envío'");
+      if (!personalData.city.trim() || personalData.city.trim().length < 2) {
+        toast.error("El nombre de la ciudad debe tener al menos 2 caracteres");
         setActiveSection('personal');
         return;
       }
-      if (!personalData.postalCode.trim()) {
-        toast.error("Completa tu código postal en 'Tus datos de envío'");
+      if (!personalData.postalCode.trim() || !validatePostalCode(personalData.postalCode.trim())) {
+        toast.error("El código postal debe tener exactamente 5 dígitos");
         setActiveSection('personal');
         return;
       }

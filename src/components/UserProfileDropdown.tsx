@@ -137,18 +137,18 @@ export const UserProfileDropdown = ({ user, profile, onProfileUpdate }: UserProf
           <div className="space-y-6 overflow-y-auto flex-1 pr-2">
             {/* Avatar Section */}
             <div className="flex items-center gap-4 p-4 bg-white border-2 border-black rounded-lg">
-              <Avatar className="w-20 h-20 border-4 border-black">
+              <Avatar className="w-20 h-20 border-4 border-black flex-shrink-0">
                 <AvatarFallback className="bg-white text-black font-bold text-2xl border-2 border-black">
                   {getUserInitials()}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <h3 className="text-lg font-bold text-black">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-lg font-bold text-black truncate">
                   {editedProfile.name || "Usuario"}
                 </h3>
-                <p className="text-xs sm:text-sm text-black flex items-center gap-1 truncate max-w-full">
-                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                  <span className="truncate">{user?.email}</span>
+                <p className="text-xs sm:text-sm text-black flex items-start gap-1 max-w-full">
+                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 mt-0.5" />
+                  <span className="break-all leading-tight">{user?.email}</span>
                 </p>
               </div>
             </div>

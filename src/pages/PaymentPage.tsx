@@ -112,16 +112,28 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement onReady={() => setElementReady(true)} />
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <div className="min-h-[200px]">
+        <PaymentElement 
+          onReady={() => setElementReady(true)}
+          options={{
+            layout: {
+              type: 'accordion',
+              defaultCollapsed: false,
+              radios: true,
+              spacedAccordionItems: false
+            }
+          }}
+        />
+      </div>
       
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
         <Button
           type="button"
           variant="outline"
           onClick={() => navigate('/checkout')}
           disabled={isProcessing}
-          className="flex-1"
+          className="w-full sm:flex-1 order-2 sm:order-1"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Volver
@@ -130,7 +142,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
         <Button
           type="submit"
           disabled={!stripe || isProcessing}
-          className="flex-1 bg-gold hover:bg-gold/90 text-black font-bold"
+          className="w-full sm:flex-1 bg-gold hover:bg-gold/90 text-black font-bold order-1 sm:order-2 text-sm sm:text-base"
         >
           {isProcessing ? "Procesando..." : `Pagar ${totalAmount.toFixed(2)}€`}
         </Button>
@@ -245,28 +257,28 @@ const PaymentPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen pt-16 pb-6 px-2 bg-white">
+      <div className="min-h-screen pt-16 pb-6 px-3 sm:px-4 bg-white">
         <div className="container mx-auto max-w-2xl">
           <Button
             onClick={() => navigate('/checkout')}
             variant="link"
-            className="text-black hover:text-gold mb-4 p-0"
+            className="text-black hover:text-gold mb-4 p-0 text-sm"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver al checkout
           </Button>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl font-poppins font-bold">
+          <Card className="border-2">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl sm:text-2xl font-poppins font-bold">
                 💳 Pago Seguro
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="mb-6 p-4 bg-gold/10 rounded-lg border-2 border-gold">
+            <CardContent className="space-y-4 sm:space-y-6 px-3 sm:px-6">
+              <div className="p-3 sm:p-4 bg-gold/10 rounded-lg border-2 border-gold">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold">Total a pagar:</span>
-                  <span className="text-2xl font-bold text-gold">
+                  <span className="font-semibold text-sm sm:text-base">Total a pagar:</span>
+                  <span className="text-xl sm:text-2xl font-bold text-gold">
                     {totalAmount.toFixed(2)}€
                   </span>
                 </div>

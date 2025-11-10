@@ -159,9 +159,29 @@ const RegalosPage = () => {
         return;
       }
       
-      if (!shippingData.name || !shippingData.email || !shippingData.address_line1 || !shippingData.city || !shippingData.postal_code) {
-        console.error('Campos obligatorios faltantes');
-        toast.error('Por favor completa todos los campos obligatorios');
+      // Validación mejorada de campos
+      if (!shippingData.name || shippingData.name.trim().length < 2) {
+        toast.error('El nombre debe tener al menos 2 caracteres');
+        return;
+      }
+      
+      if (!shippingData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingData.email)) {
+        toast.error('Por favor introduce un email válido');
+        return;
+      }
+      
+      if (!shippingData.address_line1 || shippingData.address_line1.trim().length < 5) {
+        toast.error('La dirección debe tener al menos 5 caracteres');
+        return;
+      }
+      
+      if (!shippingData.city || shippingData.city.trim().length < 2) {
+        toast.error('La ciudad debe tener al menos 2 caracteres');
+        return;
+      }
+      
+      if (!shippingData.postal_code || !/^\d{5}$/.test(shippingData.postal_code.trim())) {
+        toast.error('El código postal debe tener exactamente 5 dígitos');
         return;
       }
 
