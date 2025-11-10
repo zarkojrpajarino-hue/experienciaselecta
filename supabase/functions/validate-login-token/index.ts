@@ -1,10 +1,16 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// Validation schema for incoming token
+const tokenSchema = z.object({
+  token: z.string().uuid('Invalid token format - must be a valid UUID')
+})
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,19 +18,27 @@ serve(async (req) => {
   }
 
   try {
-    const { token } = await req.json();
+    // Validate incoming request body
+    const requestData = await req.json();
+    const validationResult = tokenSchema.safeParse(requestData);
 
-    console.log('Validating login token:', token);
-
-    if (!token) {
+    if (!validationResult.success) {
+      console.log('Invalid token format:', validationResult.error.errors);
       return new Response(
-        JSON.stringify({ valid: false, error: 'No token provided' }),
+        JSON.stringify({ 
+          valid: false, 
+          error: 'Invalid token format',
+          details: validationResult.error.errors[0]?.message 
+        }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 400,
         }
       );
     }
+
+    const { token } = validationResult.data;
+    console.log('Validating login token:', token);
 
     // Crear cliente Supabase con service role
     const supabaseAdmin = createClient(
