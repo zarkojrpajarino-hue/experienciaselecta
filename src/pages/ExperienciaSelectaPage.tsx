@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import Navbar from "@/components/Navbar";
 import PageNavigation from "@/components/PageNavigation";
 import ImageCarousel3D from "@/components/ImageCarousel3D";
 import { Button } from "@/components/ui/button";
@@ -110,10 +111,12 @@ const ExperienciaSelectaPage = () => {
   ];
 
   return (
-    <div className="min-h-screen font-work-sans bg-white">
-      
-      {/* Experiencia Section */}
-      <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
+    <>
+      <Navbar />
+      <div className="min-h-screen font-work-sans bg-white pt-16">
+        
+        {/* Experiencia Section */}
+        <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <motion.div
@@ -242,7 +245,8 @@ const ExperienciaSelectaPage = () => {
           </motion.div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 
