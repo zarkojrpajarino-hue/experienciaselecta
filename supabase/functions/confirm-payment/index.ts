@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -39,7 +40,13 @@ serve(async (req) => {
 
     console.log('User authenticated:', user.id);
 
-    const { paymentIntentId } = await req.json();
+    // Validate request body
+    const paymentSchema = z.object({
+      paymentIntentId: z.string().trim().min(1).max(255)
+    });
+
+    const requestData = await req.json();
+    const { paymentIntentId } = paymentSchema.parse(requestData);
 
     console.log('Processing payment confirmation');
 
