@@ -114,20 +114,35 @@ const ProfilePage = () => {
 
 
   const checkAuthAndLoadData = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session?.user) {
-      setLoading(false);
-      return;
-    }
+    try {
+      console.log('[ProfilePage] Checking auth...');
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
+        console.log('[ProfilePage] No session found');
+        setLoading(false);
+        return;
+      }
 
-    setSession(session);
-    setUser(session.user);
-    await loadUserData(session.user.id);
+      console.log('[ProfilePage] Session found, loading user data...');
+      setSession(session);
+      setUser(session.user);
+      await loadUserData(session.user.id);
+      console.log('[ProfilePage] User data loaded successfully');
+    } catch (error) {
+      console.error('[ProfilePage] Error in checkAuthAndLoadData:', error);
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo cargar el perfil.",
+      });
+    }
   };
 
   const loadUserData = async (userId: string) => {
     try {
+      console.log('[ProfilePage] Loading profile and customer data...');
       // Load all data in parallel for better performance
       const [
         profileResponse,
@@ -145,9 +160,12 @@ const ProfilePage = () => {
           .maybeSingle()
       ]);
 
+      console.log('[ProfilePage] Profile:', profileResponse.data);
+      console.log('[ProfilePage] Customer:', customerResponse.data);
       setProfile(profileResponse.data);
 
       if (customerResponse.data) {
+        console.log('[ProfilePage] Loading orders...');
         // Load orders with items in a single optimized query
         // CRITICAL: Only show completed orders (payment confirmed)
         const [ordersResponse, giftedItemsResponse, receivedGiftsResponse] = await Promise.all([
@@ -177,10 +195,12 @@ const ProfilePage = () => {
             .eq("shipping_completed", true)
         ]);
 
+        console.log('[ProfilePage] Orders loaded:', ordersResponse.data?.length);
         if (ordersResponse.error) throw ordersResponse.error;
 
         const giftedOrderIds = new Set(giftedItemsResponse.data?.map(g => g.order_id) || []);
         const orderIds = ordersResponse.data?.filter(o => !giftedOrderIds.has(o.id)).map(o => o.id) || [];
+        console.log('[ProfilePage] Order IDs to load items for:', orderIds.length);
 
         // Load all order items in a single query
         const { data: allOrderItems } = orderIds.length > 0 
@@ -235,19 +255,22 @@ const ProfilePage = () => {
           });
         }
 
+        console.log('[ProfilePage] Total expanded orders:', expandedOrders.length);
         setOrders(expandedOrders);
       }
 
+      console.log('[ProfilePage] Loading reviews via edge function...');
       // Load user's reviews via Edge Function (pull from remote endpoint)
       const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
         body: { limit: 200 }
       });
 
       if (fnErr) {
-        console.error("Error fetching remote reviews:", fnErr);
+        console.error("[ProfilePage] Error fetching remote reviews:", fnErr);
       }
 
       const remoteReviews = (fnRes as any)?.data || [];
+      console.log('[ProfilePage] Remote reviews:', remoteReviews.length);
       const reviewsMapped = remoteReviews.map((r: any) => ({
         id: r.id,
         basket_name: r.basket_name,
@@ -259,14 +282,18 @@ const ProfilePage = () => {
         profiles: profileResponse.data
       }));
 
+      console.log('[ProfilePage] Reviews mapped:', reviewsMapped.length);
       setReviews(reviewsMapped);
+      console.log('[ProfilePage] All data loaded successfully');
     } catch (error: any) {
+      console.error('[ProfilePage] Error loading user data:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "No se pudieron cargar tus datos.",
       });
     } finally {
+      console.log('[ProfilePage] Setting loading to false');
       setLoading(false);
     }
   };
