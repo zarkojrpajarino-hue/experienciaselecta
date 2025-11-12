@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Mail, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -166,7 +167,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
       setResendSeconds(30);
       toast({
         title: "¡Código enviado!",
-        description: "Revisa tu correo e introduce el código de verificación.",
+        description: "Revisa tu correo e introduce el código de verificación. Si no lo ves, revisa la carpeta de spam o emails de marketing.",
       });
     } catch (error: any) {
       console.error('Send code error:', error);
@@ -373,6 +374,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
                       </>
                     )}
                   </Button>
+                  {/* Mensaje informativo desplegable */}
+                  {lastEmailSent && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="p-3 bg-amber-50 border border-amber-200 rounded-lg"
+                    >
+                      <p className="text-xs sm:text-sm text-amber-800 text-center">
+                        📧 <strong>Recuerda revisar spam o correos promocionales</strong> si no ves el código en tu bandeja principal.
+                      </p>
+                    </motion.div>
+                  )}
                 </form>
               ) : (
                 <form onSubmit={handleVerifyCode} className="space-y-4">
