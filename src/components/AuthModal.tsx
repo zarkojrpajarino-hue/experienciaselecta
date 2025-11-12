@@ -374,18 +374,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
                       </>
                     )}
                   </Button>
-                  {/* Mensaje informativo desplegable */}
-                  {lastEmailSent && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="p-3 bg-amber-50 border border-amber-200 rounded-lg"
-                    >
-                      <p className="text-xs sm:text-sm text-amber-800 text-center">
-                        📧 <strong>Recuerda revisar spam o correos promocionales</strong> si no ves el código en tu bandeja principal.
-                      </p>
-                    </motion.div>
-                  )}
                 </form>
               ) : (
                 <form onSubmit={handleVerifyCode} className="space-y-4">
@@ -444,6 +432,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
                     Volver a introducir email
                   </Button>
                 </form>
+              )}
+              
+              {/* Mensaje informativo desplegable - fuera del condicional para que siempre se muestre */}
+              {lastEmailSent && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="p-3 bg-amber-50 border border-amber-200 rounded-lg mt-3"
+                >
+                  <p className="text-xs sm:text-sm text-amber-800 text-center">
+                    📧 <strong>Recuerda revisar spam o correos promocionales</strong> si no ves el código en tu bandeja principal.
+                  </p>
+                </motion.div>
               )}
             </CardContent>
           </Card>
