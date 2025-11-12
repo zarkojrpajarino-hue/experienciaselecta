@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -90,20 +90,20 @@ interface Review {
 }
 
 const ProfilePage = () => {
-  const [user, setUser] = React.useState<any>(null);
-  const [session, setSession] = React.useState<any>(null);
-  const [profile, setProfile] = React.useState<any>(null);
-  const [orders, setOrders] = React.useState<Order[]>([]);
-  const [reviews, setReviews] = React.useState<Review[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [openOrders, setOpenOrders] = React.useState<{ [key: string]: boolean }>({});
-  const [zoomedImage, setZoomedImage] = React.useState<string | null>(null);
-  const [expandedImages, setExpandedImages] = React.useState<{ [key: string]: boolean }>({});
-  const [activeTab, setActiveTab] = React.useState<string>("orders");
+  const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [openOrders, setOpenOrders] = useState<{ [key: string]: boolean }>({});
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [expandedImages, setExpandedImages] = useState<{ [key: string]: boolean }>({});
+  const [activeTab, setActiveTab] = useState<string>("orders");
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkAuthAndLoadData();
   }, []);
 

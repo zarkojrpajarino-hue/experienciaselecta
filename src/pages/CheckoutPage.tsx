@@ -41,73 +41,6 @@ const CheckoutPage = () => {
   
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
 
-  // Derivar items personales y de regalo desde el carrito
-  const personalItems = cart.filter((it: any) => !it.isGift);
-  const giftItems = cart.filter((it: any) => it.isGift);
-  const total = cart.reduce((sum: number, it: any) => sum + (it.precio * it.quantity), 0);
-
-  // State para controlar qué sección está abierta (solo una a la vez)
-  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(() => {
-    if (personalItems.length > 0) return 'personal';
-    if (giftItems.length > 0) return 'gift';
-    return null;
-  });
-  
-  // State para rastrear si se intentó enviar (para validación visual)
-  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
-  
-  // State para mostrar mensaje de error personalizado
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Estado para items personales (puede eliminar cestas)
-  const [currentPersonalItems, setCurrentPersonalItems] = useState(personalItems);
-  
-  // Controlar qué sección está abierta
-  const isPersonalOpen = activeSection === 'personal';
-  const isGiftOpen = activeSection === 'gift';
-
-  // Expandir items de regalo por cantidad para asignación individual
-  const expandedGiftItems = React.useMemo(() => {
-    const out: Array<CartItem & { uniqueId: string }> = [];
-    giftItems.forEach((it) => {
-      const qty = it.quantity || 1;
-      for (let i = 0; i < qty; i++) {
-        out.push({ ...it, uniqueId: `${it.id}-${i}` });
-      }
-    });
-    return out;
-  }, [giftItems]);
-
-  const [giftAssignment, setGiftAssignment] = useState({
-    senderName: "",
-    senderEmail: "",
-    recipients: [
-      { recipientName: "", recipientEmail: "", recipientPhone: "", personalNote: "", basketIds: [] as string[] }
-    ]
-  });
-
-  // Preview de información anclada al botón
-  const [infoPopover, setInfoPopover] = useState<{ top: number; left: number } | null>(null);
-
-  // Datos personales para cestas propias
-  const [personalData, setPersonalData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    postalCode: ""
-  });
-
-  // Cómo nos has conocido
-  const [howFoundUs, setHowFoundUs] = useState("");
-  const [howFoundUsOpen, setHowFoundUsOpen] = useState(false);
-
-  // Authentication
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
-
   // Listener para recargar el carrito cuando cambie el auth
   React.useEffect(() => {
     const handleAuthChange = () => {
@@ -172,6 +105,45 @@ React.useEffect(() => {
 }, [location.search, location.hash, session]);
 
 
+  // Esperar a que termine la carga inicial de autenticación
+  if (isAuthLoading || isAuthInProgress) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+          <p className="text-muted-foreground">Cargando tus datos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Derivar items personales y de regalo desde el carrito
+  const personalItems = cart.filter((it: any) => !it.isGift);
+  const giftItems = cart.filter((it: any) => it.isGift);
+  const total = cart.reduce((sum: number, it: any) => sum + (it.precio * it.quantity), 0);
+
+  // State para controlar qué sección está abierta (solo una a la vez)
+  // Inicializar con la primera sección que tenga items
+  const [activeSection, setActiveSection] = useState<'personal' | 'gift' | null>(() => {
+    if (personalItems.length > 0) return 'personal';
+    if (giftItems.length > 0) return 'gift';
+    return null;
+  });
+  
+  // State para rastrear si se intentó enviar (para validación visual)
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  
+  // State para mostrar mensaje de error personalizado
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Estado para items personales (puede eliminar cestas)
+  const [currentPersonalItems, setCurrentPersonalItems] = useState(personalItems);
+  
+  // Controlar qué sección está abierta
+  const isPersonalOpen = activeSection === 'personal';
+  const isGiftOpen = activeSection === 'gift';
+
   // Ajustar activeSection cuando se eliminan todos los items personales
   React.useEffect(() => {
     if (currentPersonalItems.length === 0 && giftItems.length > 0 && activeSection === 'personal') {
@@ -196,6 +168,47 @@ React.useEffect(() => {
       return () => clearTimeout(timer);
     }
   }, [cart.length, currentPersonalItems.length, giftItems.length, navigate, isAuthLoading, isAuthInProgress]);
+
+  // Expandir items de regalo por cantidad para asignación individual
+  const expandedGiftItems = React.useMemo(() => {
+    const out: Array<CartItem & { uniqueId: string }> = [];
+    giftItems.forEach((it) => {
+      const qty = it.quantity || 1;
+      for (let i = 0; i < qty; i++) {
+        out.push({ ...it, uniqueId: `${it.id}-${i}` });
+      }
+    });
+    return out;
+  }, [giftItems]);
+
+  const [giftAssignment, setGiftAssignment] = useState({
+    senderName: "",
+    senderEmail: "",
+    recipients: [
+      { recipientName: "", recipientEmail: "", recipientPhone: "", personalNote: "", basketIds: [] as string[] }
+    ]
+  });
+
+  // Preview de información anclada al botón
+  const [infoPopover, setInfoPopover] = useState<{ top: number; left: number } | null>(null);
+
+  // Datos personales para cestas propias
+  const [personalData, setPersonalData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    postalCode: ""
+  });
+
+  // Cómo nos has conocido
+  const [howFoundUs, setHowFoundUs] = useState("");
+  const [howFoundUsOpen, setHowFoundUsOpen] = useState(false);
+
+  // Authentication
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
   // Load user profile when user changes
   React.useEffect(() => {
@@ -312,18 +325,6 @@ React.useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [howFoundUsOpen]);
-
-  // Esperar a que termine la carga inicial de autenticación
-  if (isAuthLoading || isAuthInProgress) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="text-muted-foreground">Cargando tus datos...</p>
-        </div>
-      </div>
-    );
-  }
 
   const getCurrentPersonalTotal = () => {
     return currentPersonalItems.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
