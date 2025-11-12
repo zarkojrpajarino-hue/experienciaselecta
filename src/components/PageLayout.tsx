@@ -22,14 +22,12 @@ export const PageLayout = ({ children }: PageLayoutProps) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{
-          duration: 0.35,
-          ease: [0.25, 0.1, 0.25, 1], // Transición más suave y elegante
+          duration: 0.15,
+          ease: "easeOut",
         }}
         style={{
           width: '100%',
           minHeight: '100vh',
-          willChange: 'opacity',
-          transform: 'translateZ(0)', // Force GPU acceleration
         }}
       >
         {children}

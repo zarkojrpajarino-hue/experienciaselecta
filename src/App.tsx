@@ -18,10 +18,10 @@ import SobreNosotrosDetalle from "./pages/SobreNosotrosDetalle";
 import PreguntasFrecuentesPage from "./pages/PreguntasFrecuentesPage";
 import ConocenosPage from "./pages/ConocenosPage";
 import AutoLogin from "./pages/AutoLogin";
+import ProfilePage from "./pages/ProfilePage";
+import PaymentPage from "./pages/PaymentPage";
 
-// Lazy load non-critical pages for better performance
-const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const PaymentPage = lazy(() => import("./pages/PaymentPage"));
+// Lazy load only non-critical pages
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
 const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
