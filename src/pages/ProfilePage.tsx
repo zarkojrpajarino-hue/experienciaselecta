@@ -121,6 +121,11 @@ const ProfilePage = () => {
       if (!session?.user) {
         console.log('[ProfilePage] No session found');
         setLoading(false);
+        toast({
+          title: 'Inicia sesión',
+          description: 'Accede para ver tu perfil.',
+        });
+        navigate('/');
         return;
       }
 
@@ -334,6 +339,29 @@ const ProfilePage = () => {
         <Navbar />
         <div className="min-h-screen flex items-center justify-center pt-20">
           <Loader2 className="w-8 h-8 animate-spin text-[hsl(45,100%,65%)]" />
+        </div>
+      </>
+    );
+  }
+
+  // Not authenticated: show CTA instead of blank page (safety guard)
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center pt-24 px-4">
+          <Card className="max-w-md w-full bg-white border-black border-2 shadow-lg text-center">
+            <CardHeader>
+              <CardTitle className="font-bungee">Inicia sesión</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="font-poppins">Necesitas iniciar sesión para ver tu perfil.</p>
+              <Button onClick={() => navigate('/')}
+                className="bg-black hover:bg-black/80 text-white font-bungee uppercase border-2 border-black">
+                Ir a la página principal
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </>
     );
