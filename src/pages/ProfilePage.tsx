@@ -259,38 +259,59 @@ const ProfilePage = () => {
         setOrders(expandedOrders);
       }
 
-      console.log('[ProfilePage] Loading reviews via edge function...');
-      // Load user's reviews via Edge Function (pull from remote endpoint)
-      const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
-        body: { limit: 200 }
-      });
+      // Render the page immediately after core data to avoid blocking on remote services
+      console.log('[ProfilePage] Initial data loaded, rendering page while fetching reviews...');
+      setLoading(false);
 
-      if (fnErr) {
-        console.error("[ProfilePage] Error fetching remote reviews:", fnErr);
-      }
+      // Load user's reviews via Edge Function (non-blocking with timeout)
+      const fetchReviews = async () => {
+        console.log('[ProfilePage] Loading reviews via edge function...');
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 6000); // 6s safety timeout
 
-      const remoteReviews = (fnRes as any)?.data || [];
-      console.log('[ProfilePage] Remote reviews:', remoteReviews.length);
-      const reviewsMapped = remoteReviews.map((r: any) => ({
-        id: r.id,
-        basket_name: r.basket_name,
-        rating: r.rating,
-        comment: r.comment || '',
-        created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
-        user_id: userId,
-        source_site: 'paragenteselecta',
-        profiles: profileResponse.data
-      }));
+          const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
+            body: { limit: 200 },
+            // @ts-ignore - Aborting fetch via internal fetch is supported by supabase-js
+            signal: (controller as any).signal
+          } as any);
 
-      console.log('[ProfilePage] Reviews mapped:', reviewsMapped.length);
-      setReviews(reviewsMapped);
-      console.log('[ProfilePage] All data loaded successfully');
+          clearTimeout(timeout);
+
+          if (fnErr) {
+            console.error('[ProfilePage] Error fetching remote reviews:', fnErr);
+            return;
+          }
+
+          const remoteReviews = (fnRes as any)?.data || [];
+          console.log('[ProfilePage] Remote reviews:', remoteReviews.length);
+          const reviewsMapped = remoteReviews.map((r: any) => ({
+            id: r.id,
+            basket_name: r.basket_name,
+            rating: r.rating,
+            comment: r.comment || '',
+            created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
+            user_id: userId,
+            source_site: 'paragenteselecta',
+            profiles: profileResponse.data
+          }));
+
+          console.log('[ProfilePage] Reviews mapped:', reviewsMapped.length);
+          setReviews(reviewsMapped);
+          console.log('[ProfilePage] All data loaded successfully');
+        } catch (error) {
+          console.error('[ProfilePage] Reviews fetch failed:', error);
+        }
+      };
+
+      // Defer reviews to next tick so UI can paint first
+      setTimeout(fetchReviews, 0);
     } catch (error: any) {
       console.error('[ProfilePage] Error loading user data:', error);
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudieron cargar tus datos.",
+        variant: 'destructive',
+        title: 'Error',
+        description: 'No se pudieron cargar tus datos.',
       });
     } finally {
       console.log('[ProfilePage] Setting loading to false');
