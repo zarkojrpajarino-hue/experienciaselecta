@@ -643,7 +643,15 @@ React.useEffect(() => {
     }
   };
 
-  // Función para verificar si un destinatario puede marcar cestas
+  // Click handler robusto para el botón de pago
+  const handlePayClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+    } catch {}
+    console.log('🔵 pay button clicked');
+    handleContinueToPayment();
+  };
   const canSelectBasketsForRecipient = (index: number) => {
     const recipient = giftAssignment.recipients[index];
     return recipient.recipientName && (recipient.recipientEmail || recipient.recipientPhone);
@@ -1309,8 +1317,9 @@ React.useEffect(() => {
                     <span className="text-base md:text-lg font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>
                   </div>
                   <Button
-                    onClick={handleContinueToPayment}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3"
+                    type="button"
+                    onClick={handlePayClick}
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3 relative z-20 cursor-pointer active:scale-[0.99]"
                   >
                     Continuar al pago ({getTotalAmount().toFixed(2)}€)
                   </Button>
