@@ -1363,6 +1363,23 @@ React.useEffect(() => {
 
       {infoPopover && (
         <AnimatePresence>
+          {/* Backdrop para cerrar al hacer clic fuera */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setInfoPopover(null)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 100,
+              backgroundColor: 'transparent'
+            }}
+          />
+          
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -1373,7 +1390,8 @@ React.useEffect(() => {
               top: `${infoPopover.top}px`, 
               left: `${infoPopover.left}px`, 
               transform: 'translateX(-50%)',
-              zIndex: 110
+              zIndex: 110,
+              pointerEvents: 'auto'
             }}
             className="hidden md:block max-w-md"
           >
