@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Gift, X, Home, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AddressInput from "@/components/AddressInput";
 
 // Import basket images
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -329,45 +331,36 @@ const RegalosPage = () => {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Dirección *</label>
-                    <Input
-                      value={shippingData.address_line1}
-                      onChange={(e) => setShippingData({...shippingData, address_line1: e.target.value})}
-                      placeholder="Calle y número"
-                      required
-                    />
-                  </div>
+                  <AddressInput
+                    address={shippingData.address_line1}
+                    city={shippingData.city}
+                    postalCode={shippingData.postal_code}
+                    onAddressChange={(field, value) => {
+                      const fieldMap: any = {
+                        'address': 'address_line1',
+                        'city': 'city',
+                        'postalCode': 'postal_code'
+                      };
+                      setShippingData({ 
+                        ...shippingData, 
+                        [fieldMap[field]]: value 
+                      });
+                    }}
+                    onValidationComplete={(valid) => {
+                      console.log('Dirección de regalo válida:', valid);
+                    }}
+                    showValidation={true}
+                  />
 
+                  {/* Mantén el campo address_line2 (opcional) separado */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Dirección adicional</label>
+                    <Label htmlFor="address_line2">Piso/Puerta (opcional)</Label>
                     <Input
+                      id="address_line2"
+                      placeholder="Piso 3, Puerta B"
                       value={shippingData.address_line2}
-                      onChange={(e) => setShippingData({...shippingData, address_line2: e.target.value})}
-                      placeholder="Piso, puerta, etc."
+                      onChange={(e) => setShippingData({ ...shippingData, address_line2: e.target.value })}
                     />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Ciudad *</label>
-                      <Input
-                        value={shippingData.city}
-                        onChange={(e) => setShippingData({...shippingData, city: e.target.value})}
-                        placeholder="Ciudad"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Código Postal *</label>
-                      <Input
-                        value={shippingData.postal_code}
-                        onChange={(e) => setShippingData({...shippingData, postal_code: e.target.value})}
-                        placeholder="00000"
-                        required
-                      />
-                    </div>
                   </div>
 
                   <Button
