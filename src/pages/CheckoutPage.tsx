@@ -217,6 +217,19 @@ React.useEffect(() => {
     }
   }, [user?.id]);
 
+  // Cerrar dropdown cuando se hace clic fuera
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (howFoundUsOpen && !target.closest('.how-found-us-dropdown')) {
+        setHowFoundUsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [howFoundUsOpen]);
+
   // ===== EARLY RETURNS DESPUÉS DE TODOS LOS HOOKS =====
   // Esperar a que termine la carga inicial de autenticación
   if (isAuthLoading || isAuthInProgress) {
@@ -309,18 +322,6 @@ React.useEffect(() => {
     }
   };
 
-  // Cerrar dropdown cuando se hace clic fuera
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (howFoundUsOpen && !target.closest('.how-found-us-dropdown')) {
-        setHowFoundUsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [howFoundUsOpen]);
 
   const getCurrentPersonalTotal = () => {
     return currentPersonalItems.reduce((sum, item) => sum + (item.precio * item.quantity), 0);
