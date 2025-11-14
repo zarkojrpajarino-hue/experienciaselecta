@@ -104,15 +104,17 @@ const ProfilePage = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('[ProfilePage] 🟢 Iniciando...');
+    console.log('[ProfilePage] 🚀🚀🚀 NUEVA VERSION CARGANDO 🚀🚀🚀');
     
     const initAuth = async () => {
       try {
-        console.log('[ProfilePage] 🔄 Obteniendo sesión...');
+        console.log('[ProfilePage] 🔄 Paso 1: Obteniendo sesión...');
         const { data: { session }, error } = await supabase.auth.getSession();
         
+        console.log('[ProfilePage] 🔄 Paso 2: Session obtenida:', !!session);
+        
         if (error) {
-          console.error('[ProfilePage] ❌ Error:', error);
+          console.error('[ProfilePage] ❌ Error en getSession:', error);
           setUser(null);
           setSession(null);
           setLoading(false);
@@ -120,20 +122,20 @@ const ProfilePage = () => {
         }
         
         if (!session?.user) {
-          console.log('[ProfilePage] ℹ️ No hay sesión');
+          console.log('[ProfilePage] ℹ️ Paso 3: No hay sesión activa');
           setUser(null);
           setSession(null);
           setLoading(false);
           return;
         }
 
-        console.log('[ProfilePage] ✅ Usuario autenticado:', session.user.email);
+        console.log('[ProfilePage] ✅ Paso 3: Usuario encontrado:', session.user.email);
         setSession(session);
         setUser(session.user);
         
-        // ✅ CRÍTICO: Llamar a loadUserData AQUÍ
-        console.log('[ProfilePage] 📊 Llamando a loadUserData...');
+        console.log('[ProfilePage] 🎯 Paso 4: LLAMANDO A loadUserData');
         await loadUserData(session.user.id);
+        console.log('[ProfilePage] ✅ Paso 5: loadUserData completado');
         
       } catch (error) {
         console.error('[ProfilePage] ❌ Error inesperado:', error);
