@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Plus, X, Info, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import AuthModal from "@/components/AuthModal";
@@ -1107,26 +1107,19 @@ React.useEffect(() => {
                                                 shadow={false}
                                               />
                                             </div>
-                                            <label htmlFor={`basket-${it.uniqueId}-recipient-${index}`} className={`text-xs sm:text-sm break-words flex-1 ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
-                                              {it.nombre}
+                                            <label 
+                                              htmlFor={`basket-${it.uniqueId}-recipient-${index}`} 
+                                              className={`text-xs sm:text-sm break-words flex-1 ${canSelect ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                                            >
+                                              {it.nombre} ({it.precio}€)
                                             </label>
                                           </div>
-                                          <div className="flex items-center gap-2">
-                                            <span className="text-sm font-semibold">{it.precio.toFixed(2)}€</span>
-                                            <Button
-                                              variant="ghost"
-                                              size="sm"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                // Eliminar del carrito global
-                                                removeFromCart(it.id, true); // true = es regalo
-                                                toast.success("Cesta eliminada");
-                                              }}
-                                              className="h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600"
-                                            >
-                                              <X className="w-4 h-4" />
-                                            </Button>
-                                          </div>
+                                          {recipient.basketIds.includes(it.uniqueId) && (
+                                            <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 ml-8 sm:ml-0">
+                                              <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                                              <span>Asignada</span>
+                                            </div>
+                                          )}
                                         </div>
                                       );
                                     })}
