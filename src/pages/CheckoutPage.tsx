@@ -1074,20 +1074,8 @@ React.useEffect(() => {
                                           <div 
                                           key={it.uniqueId} 
                                           className={`flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded gap-2 ${
-                                            canSelect ? 'hover:bg-muted/50 cursor-pointer' : 'opacity-50 cursor-not-allowed bg-gray-100'
+                                            canSelect ? 'hover:bg-muted/50' : 'opacity-50 cursor-not-allowed bg-gray-100'
                                           }`}
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            if (!canSelect) return;
-                                            const newRecipients = [...giftAssignment.recipients];
-                                            const isChecked = recipient.basketIds.includes(it.uniqueId);
-                                            if (!isChecked) {
-                                              newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
-                                            } else {
-                                              newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id: string) => id !== it.uniqueId);
-                                            }
-                                            setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
-                                          }}
                                         >
                                           <div className="flex items-center space-x-2 flex-1 min-w-0">
                                             <input
