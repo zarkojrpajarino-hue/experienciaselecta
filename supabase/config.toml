@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.validate-discount-code]
 verify_jwt = false
+
+[functions.validate-address]
+verify_jwt = false
