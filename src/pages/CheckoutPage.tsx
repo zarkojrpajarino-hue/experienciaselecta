@@ -399,11 +399,17 @@ React.useEffect(() => {
   };
 
   const handleContinueToPayment = async () => {
+    console.log('🔵 handleContinueToPayment - Botón presionado');
+    console.log('🔵 User:', user ? 'Logged in' : 'Not logged in');
+    console.log('🔵 Personal data:', personalData);
+    console.log('🔵 How found us:', howFoundUs);
+    
     setAttemptedSubmit(true);
     setShowErrorMessage(false);
     
     // Require authentication
     if (!user) {
+      console.log('🔴 No user - showing auth modal');
       // Establecer flag ANTES de abrir modal para preservar carrito tras login
       localStorage.setItem('pendingCheckout', 'true');
       setShowAuthModal(true);
@@ -411,8 +417,11 @@ React.useEffect(() => {
       return;
     }
     
+    console.log('✅ User authenticated, continuing...');
+    
     // Validar "Cómo nos has conocido"
     if (!howFoundUs) {
+      console.log('🔴 Validation failed: howFoundUs missing');
       toast.error("Por favor, selecciona cómo nos has conocido");
       scrollToSection(howFoundUsSectionRef);
       return;
