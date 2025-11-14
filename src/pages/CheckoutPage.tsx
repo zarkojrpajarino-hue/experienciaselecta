@@ -19,6 +19,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import ClickableImage from "@/components/ClickableImage";
 import DiscountCodeInput from "@/components/DiscountCodeInput";
+import AddressInput from "@/components/AddressInput";
 
 interface CartItem {
   id: number;
@@ -736,41 +737,18 @@ React.useEffect(() => {
                               />
                             </div>
                           </div>
-                          <div>
-                            <Label htmlFor="personalAddress" className="text-xs md:text-sm">Dirección *</Label>
-                            <Input
-                              id="personalAddress"
-                              value={personalData.address}
-                              onChange={(e) => setPersonalData((prev) => ({ ...prev, address: e.target.value }))}
-                              onFocus={handleInputFocus}
-                              placeholder="Calle, número, piso..."
-                              className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.address.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 md:gap-4">
-                            <div>
-                              <Label htmlFor="personalCity" className="text-xs md:text-sm">Ciudad *</Label>
-                              <Input
-                                id="personalCity"
-                                value={personalData.city}
-                                onChange={(e) => setPersonalData((prev) => ({ ...prev, city: e.target.value }))}
-                                onFocus={handleInputFocus}
-                                placeholder="Tu ciudad"
-                                className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.city.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="personalPostalCode" className="text-xs md:text-sm">Código postal *</Label>
-                              <Input
-                                id="personalPostalCode"
-                                value={personalData.postalCode}
-                                onChange={(e) => setPersonalData((prev) => ({ ...prev, postalCode: e.target.value }))}
-                                onFocus={handleInputFocus}
-                                placeholder="28001"
-                                className={`border-2 text-xs md:text-sm ${attemptedSubmit && !personalData.postalCode.trim() ? 'border-red-600 animate-shake' : 'border-black'}`}
-                              />
-                            </div>
-                          </div>
+                          <AddressInput
+                            address={personalData.address}
+                            city={personalData.city}
+                            postalCode={personalData.postalCode}
+                            onAddressChange={(field, value) => {
+                              setPersonalData({ ...personalData, [field]: value });
+                            }}
+                            onValidationComplete={(valid) => {
+                              console.log('Dirección válida:', valid);
+                            }}
+                            showValidation={true}
+                          />
                         </div>
 
                         <Separator />
