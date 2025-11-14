@@ -1319,7 +1319,10 @@ React.useEffect(() => {
                   <Button
                     type="button"
                     onClick={handlePayClick}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3 relative z-20 cursor-pointer active:scale-[0.99]"
+                    onMouseDown={() => console.log('🟢 mousedown on pay button')}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { console.log('🟢 keydown Enter on pay button'); handlePayClick(e as any); } }}
+                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3 relative z-[999] cursor-pointer active:scale-[0.99] pointer-events-auto"
+                    data-testid="pay-button"
                   >
                     Continuar al pago ({getTotalAmount().toFixed(2)}€)
                   </Button>
