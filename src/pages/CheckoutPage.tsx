@@ -1089,13 +1089,24 @@ React.useEffect(() => {
                                             setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
                                           }}
                                         >
-                                         <div className="flex items-center space-x-2 flex-1 min-w-0">
+                                          <div className="flex items-center space-x-2 flex-1 min-w-0">
                                             <input
                                               type="checkbox"
                                               id={`basket-${it.uniqueId}-recipient-${index}`}
                                               checked={recipient.basketIds.includes(it.uniqueId)}
                                               disabled={!canSelect}
-                                              onChange={() => {}} 
+                                              onChange={(e) => {
+                                                e.stopPropagation();
+                                                if (!canSelect) return;
+                                                const newRecipients = [...giftAssignment.recipients];
+                                                const isChecked = recipient.basketIds.includes(it.uniqueId);
+                                                if (!isChecked) {
+                                                  newRecipients[index].basketIds = [...newRecipients[index].basketIds, it.uniqueId];
+                                                } else {
+                                                  newRecipients[index].basketIds = newRecipients[index].basketIds.filter((id: string) => id !== it.uniqueId);
+                                                }
+                                                setGiftAssignment((prev) => ({ ...prev, recipients: newRecipients }));
+                                              }}
                                               className="cursor-pointer flex-shrink-0"
                                             />
                                             <div onClick={(e) => e.stopPropagation()}>
