@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,6 +43,11 @@ const CheckoutPage = () => {
   
   // ===== TODOS LOS HOOKS DEBEN IR ANTES DE CUALQUIER RETURN CONDICIONAL =====
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
+  
+  // Referencias para auto-scroll
+  const personalSectionRef = useRef<HTMLDivElement>(null);
+  const giftSectionRef = useRef<HTMLDivElement>(null);
+  const howFoundUsSectionRef = useRef<HTMLDivElement>(null);
   
   // Derivar items personales y de regalo desde el carrito
   const personalItems = cart.filter((it: any) => !it.isGift);
@@ -381,6 +386,18 @@ React.useEffect(() => {
     return /^\d{5}$/.test(postalCode);
   };
 
+  // Función para hacer scroll suave a una sección con error
+  const scrollToSection = (sectionRef: React.RefObject<HTMLDivElement>) => {
+    setTimeout(() => {
+      if (sectionRef.current) {
+        sectionRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 100);
+  };
+
   const handleContinueToPayment = async () => {
     setAttemptedSubmit(true);
     setShowErrorMessage(false);
@@ -397,6 +414,7 @@ React.useEffect(() => {
     // Validar "Cómo nos has conocido"
     if (!howFoundUs) {
       toast.error("Por favor, selecciona cómo nos has conocido");
+      scrollToSection(howFoundUsSectionRef);
       return;
     }
     
@@ -405,31 +423,37 @@ React.useEffect(() => {
       if (!personalData.name.trim() || personalData.name.trim().length < 2) {
         toast.error("El nombre debe tener al menos 2 caracteres");
         setActiveSection('personal');
+        scrollToSection(personalSectionRef);
         return;
       }
       if (!personalData.email.trim() || !validateEmail(personalData.email)) {
         toast.error("Introduce un email válido en 'Tus datos de envío'");
         setActiveSection('personal');
+        scrollToSection(personalSectionRef);
         return;
       }
       if (!personalData.phone.trim() || !validatePhone(personalData.phone)) {
         toast.error("Introduce un teléfono válido (al menos 9 dígitos)");
         setActiveSection('personal');
+        scrollToSection(personalSectionRef);
         return;
       }
       if (!personalData.address.trim() || personalData.address.trim().length < 5) {
         toast.error("La dirección debe tener al menos 5 caracteres");
         setActiveSection('personal');
+        scrollToSection(personalSectionRef);
         return;
       }
       if (!personalData.city.trim() || personalData.city.trim().length < 2) {
         toast.error("El nombre de la ciudad debe tener al menos 2 caracteres");
         setActiveSection('personal');
+        scrollToSection(personalSectionRef);
         return;
       }
       if (!personalData.postalCode.trim() || !validatePostalCode(personalData.postalCode.trim())) {
         toast.error("El código postal debe tener exactamente 5 dígitos");
         setActiveSection('personal');
+        scrollToSection(personalSectionRef);
         return;
       }
     }
@@ -443,16 +467,19 @@ React.useEffect(() => {
           if (!r.recipientName.trim() || (!r.recipientEmail.trim() && !r.recipientPhone.trim())) {
             toast.error("Completa los datos obligatorios de los destinatarios con cestas asignadas");
             setActiveSection('gift');
+            scrollToSection(giftSectionRef);
             return;
           }
           if (r.recipientEmail.trim() && !validateEmail(r.recipientEmail)) {
             toast.error("El email del destinatario no es válido");
             setActiveSection('gift');
+            scrollToSection(giftSectionRef);
             return;
           }
           if (r.recipientPhone.trim() && !validatePhone(r.recipientPhone)) {
             toast.error("El teléfono del destinatario no es válido");
             setActiveSection('gift');
+            scrollToSection(giftSectionRef);
             return;
           }
         }
@@ -460,11 +487,13 @@ React.useEffect(() => {
       if (!giftAssignment.senderName.trim() || !giftAssignment.senderEmail.trim()) {
         toast.error("Completa tus datos como remitente para los regalos");
         setActiveSection('gift');
+        scrollToSection(giftSectionRef);
         return;
       }
       if (!validateEmail(giftAssignment.senderEmail)) {
         toast.error("Tu email como remitente no es válido");
         setActiveSection('gift');
+        scrollToSection(giftSectionRef);
         return;
       }
     }
@@ -693,7 +722,10 @@ React.useEffect(() => {
               {currentPersonalItems.length > 0 && (
                 <Collapsible open={isPersonalOpen}>
                   <CollapsibleContent>
-                    <Card className="border-2 border-black">
+                    <Card 
+                      ref={personalSectionRef}
+                      className={`border-2 ${attemptedSubmit && (!personalData.name.trim() || !personalData.email.trim() || !personalData.phone.trim() || !personalData.address.trim() || !personalData.city.trim() || !personalData.postalCode.trim()) ? 'border-red-600 animate-shake' : 'border-black'}`}
+                    >
                       <CardHeader>
                         <CardTitle className="text-xl font-poppins font-bold">Tus datos de envío</CardTitle>
                       </CardHeader>
@@ -839,9 +871,9 @@ React.useEffect(() => {
               {giftItems.length > 0 && (
                 <Collapsible open={isGiftOpen}>
                   <CollapsibleContent>
-                    <div className="space-y-4">
+                    <div ref={giftSectionRef} className="space-y-4">
                       {/* Datos del remitente */}
-                      <Card className="border-2 border-black">
+                      <Card className={`border-2 ${attemptedSubmit && (!giftAssignment.senderName.trim() || !giftAssignment.senderEmail.trim()) ? 'border-red-600 animate-shake' : 'border-black'}`}>
                         <CardHeader>
                           <CardTitle className="text-xl font-poppins font-bold">Datos del remitente</CardTitle>
                         </CardHeader>
@@ -1119,7 +1151,10 @@ React.useEffect(() => {
 
             {/* Cómo nos has conocido */}
             <div>
-              <Card className="border-2 border-black mb-2 md:mb-3">
+              <Card 
+                ref={howFoundUsSectionRef}
+                className={`border-2 mb-2 md:mb-3 ${attemptedSubmit && !howFoundUs ? 'border-red-600 animate-shake' : 'border-black'}`}
+              >
                 <CardHeader className="pb-2 md:pb-3 px-2 md:px-4">
                   <CardTitle className="text-sm md:text-base font-poppins font-bold">¿Cómo nos has conocido?</CardTitle>
                 </CardHeader>
