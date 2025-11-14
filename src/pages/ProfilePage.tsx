@@ -104,48 +104,52 @@ const ProfilePage = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('[ProfilePage] 🚀🚀🚀 NUEVA VERSION CARGANDO 🚀🚀🚀');
+    console.log('[ProfilePage] 🚀 NUEVA VERSION - Usando onAuthStateChange');
     
-    const initAuth = async () => {
-      try {
-        console.log('[ProfilePage] 🔄 Paso 1: Obteniendo sesión...');
-        const { data: { session }, error } = await supabase.auth.getSession();
+    let mounted = true;
+    
+    // ✅ Usar el listener de auth en lugar de getSession
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('[ProfilePage] 🔔 Auth event:', event, session?.user?.email);
         
-        console.log('[ProfilePage] 🔄 Paso 2: Session obtenida:', !!session);
+        if (!mounted) return;
         
-        if (error) {
-          console.error('[ProfilePage] ❌ Error en getSession:', error);
+        if (session?.user) {
+          console.log('[ProfilePage] ✅ Usuario autenticado:', session.user.email);
+          setSession(session);
+          setUser(session.user);
+          
+          console.log('[ProfilePage] 📊 Cargando datos...');
+          await loadUserData(session.user.id);
+        } else {
+          console.log('[ProfilePage] ℹ️ Sin sesión');
           setUser(null);
           setSession(null);
           setLoading(false);
-          return;
         }
-        
-        if (!session?.user) {
-          console.log('[ProfilePage] ℹ️ Paso 3: No hay sesión activa');
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return;
-        }
+      }
+    );
 
-        console.log('[ProfilePage] ✅ Paso 3: Usuario encontrado:', session.user.email);
+    // Trigger inicial inmediato
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (mounted && session?.user) {
+        console.log('[ProfilePage] ⚡ Sesión inicial:', session.user.email);
         setSession(session);
         setUser(session.user);
-        
-        console.log('[ProfilePage] 🎯 Paso 4: LLAMANDO A loadUserData');
-        await loadUserData(session.user.id);
-        console.log('[ProfilePage] ✅ Paso 5: loadUserData completado');
-        
-      } catch (error) {
-        console.error('[ProfilePage] ❌ Error inesperado:', error);
-        setUser(null);
-        setSession(null);
+        loadUserData(session.user.id);
+      } else if (mounted) {
+        console.log('[ProfilePage] ⚡ No hay sesión inicial');
         setLoading(false);
       }
-    };
+    }).catch(() => {
+      if (mounted) setLoading(false);
+    });
 
-    initAuth();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const loadUserData = async (userId: string) => {
