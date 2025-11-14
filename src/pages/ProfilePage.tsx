@@ -156,63 +156,53 @@ const ProfilePage = () => {
     try {
       console.log('[ProfilePage] 📊 INICIO loadUserData para:', userId);
       
-      // Query profile
+      // ✅ Query 1: Profile con timeout de 5s
       console.log('[ProfilePage] 🔍 Query 1: profiles...');
-      const profileResponse = await supabase
+      const profileTimeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Profile timeout')), 5000)
+      );
+      
+      const profileQuery = supabase
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
         .maybeSingle();
       
-      console.log('[ProfilePage] ✅ Profile obtenido:', profileResponse.data);
-      setProfile(profileResponse.data);
+      const profileResponse = await Promise.race([profileQuery, profileTimeout]) as any;
       
-      // Query customer
+      if (profileResponse?.data) {
+        console.log('[ProfilePage] ✅ Profile:', profileResponse.data);
+        setProfile(profileResponse.data);
+      } else {
+        console.log('[ProfilePage] ⏱️ Profile timeout o sin datos');
+      }
+      
+      // ✅ Query 2: Customer con timeout
       console.log('[ProfilePage] 🔍 Query 2: customers...');
-      const customerResponse = await supabase
+      const customerTimeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Customer timeout')), 5000)
+      );
+      
+      const customerQuery = supabase
         .from("customers")
         .select("id")
         .eq("user_id", userId)
         .maybeSingle();
       
-      console.log('[ProfilePage] ✅ Customer obtenido:', customerResponse.data);
-
-      // Query orders si hay customer
-      if (customerResponse.data) {
-        console.log('[ProfilePage] 🔍 Query 3: orders...');
-        const { data: ordersData } = await supabase
-          .from("orders")
-          .select(`
-            id,
-            created_at,
-            total_amount,
-            status,
-            shipping_address_line1,
-            shipping_address_line2,
-            shipping_city,
-            shipping_postal_code,
-            shipping_country
-          `)
-          .eq("customer_id", customerResponse.data.id)
-          .eq("status", "completed")
-          .limit(5);
-
-        console.log('[ProfilePage] ✅ Orders obtenidas:', ordersData?.length || 0);
-        
-        // Map orders with empty items array to satisfy type
-        const ordersWithItems = (ordersData || []).map(order => ({
-          ...order,
-          items: []
-        }));
-        
-        setOrders(ordersWithItems);
+      const customerResponse = await Promise.race([customerQuery, customerTimeout]) as any;
+      
+      if (customerResponse?.data) {
+        console.log('[ProfilePage] ✅ Customer:', customerResponse.data);
+      } else {
+        console.log('[ProfilePage] ⏱️ Customer timeout - sin orders');
       }
       
-      console.log('[ProfilePage] ✅ FIN loadUserData - quitando loading');
+      // ✅ SIEMPRE quitar loading aunque fallen las queries
+      console.log('[ProfilePage] ✅ FIN - quitando loading');
       setLoading(false);
       
     } catch (error) {
-      console.error('[ProfilePage] ❌ ERROR en loadUserData:', error);
+      console.error('[ProfilePage] ❌ ERROR:', error);
       setLoading(false);
     }
   };
