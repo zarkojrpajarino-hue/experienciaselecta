@@ -147,34 +147,34 @@ const ProfilePage = () => {
 
   const loadUserData = async (userId: string) => {
     try {
-      console.log('[ProfilePage] Loading profile and customer data...');
-      // Load all data in parallel for better performance
-      const [
-        profileResponse,
-        customerResponse
-      ] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("*")
-          .eq("user_id", userId)
-          .maybeSingle(),
-        supabase
-          .from("customers")
-          .select("id")
-          .eq("user_id", userId)
-          .maybeSingle()
-      ]);
-
-      console.log('[ProfilePage] Profile:', profileResponse.data);
-      console.log('[ProfilePage] Customer:', customerResponse.data);
-      setProfile(profileResponse.data);
-
-      if (customerResponse.data) {
-        console.log('[ProfilePage] Loading orders...');
-        // Load orders with items in a single optimized query
-        // CRITICAL: Only show completed orders (payment confirmed)
-        const [ordersResponse, giftedItemsResponse, receivedGiftsResponse] = await Promise.all([
+      console.log('[ProfilePage] 📊 Cargando datos del usuario...');
+      
+      // ✅ TIMEOUT de 10 segundos
+      const timeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout loading data')), 10000)
+      );
+      
+      const loadData = async () => {
+        const [profileResponse, customerResponse] = await Promise.all([
           supabase
+            .from("profiles")
+            .select("*")
+            .eq("user_id", userId)
+            .maybeSingle(),
+          supabase
+            .from("customers")
+            .select("id")
+            .eq("user_id", userId)
+            .maybeSingle()
+        ]);
+
+        console.log('[ProfilePage] Profile:', profileResponse.data);
+        console.log('[ProfilePage] Customer:', customerResponse.data);
+        
+        setProfile(profileResponse.data);
+
+        if (customerResponse.data) {
+          const { data: ordersData } = await supabase
             .from("orders")
             .select(`
               id,
@@ -189,138 +189,49 @@ const ProfilePage = () => {
             `)
             .eq("customer_id", customerResponse.data.id)
             .eq("status", "completed")
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("pending_gifts")
-            .select("order_id"),
-          supabase
-            .from("pending_gifts")
-            .select("*")
-            .eq("recipient_user_id", userId)
-            .eq("shipping_completed", true)
-        ]);
+            .order("created_at", { ascending: false })
+            .limit(10);
 
-        console.log('[ProfilePage] Orders loaded:', ordersResponse.data?.length);
-        if (ordersResponse.error) throw ordersResponse.error;
-
-        const giftedOrderIds = new Set(giftedItemsResponse.data?.map(g => g.order_id) || []);
-        const orderIds = ordersResponse.data?.filter(o => !giftedOrderIds.has(o.id)).map(o => o.id) || [];
-        console.log('[ProfilePage] Order IDs to load items for:', orderIds.length);
-
-        // Load all order items in a single query
-        const { data: allOrderItems } = orderIds.length > 0 
-          ? await supabase
+          console.log('[ProfilePage] Orders:', ordersData?.length || 0);
+          
+          // Load order items for all orders
+          if (ordersData && ordersData.length > 0) {
+            const orderIds = ordersData.map(o => o.id);
+            const { data: itemsData } = await supabase
               .from("order_items")
               .select("order_id, basket_name, basket_category, quantity, price_per_item")
-              .in("order_id", orderIds)
-          : { data: [] };
+              .in("order_id", orderIds);
 
-        // Group items by order
-        const itemsByOrder = new Map<string, OrderItem[]>();
-        allOrderItems?.forEach(item => {
-          if (!itemsByOrder.has(item.order_id)) {
-            itemsByOrder.set(item.order_id, []);
-          }
-          itemsByOrder.get(item.order_id)?.push(item);
-        });
-
-        // Expand orders with their items
-        const expandedOrders: Order[] = [];
-        
-        for (const order of ordersResponse.data || []) {
-          if (giftedOrderIds.has(order.id)) continue;
-
-          const items = itemsByOrder.get(order.id) || [];
-          for (const item of items) {
-            expandedOrders.push({
-              ...order,
-              items: [item],
+            // Group items by order
+            const itemsByOrder = new Map<string, OrderItem[]>();
+            itemsData?.forEach(item => {
+              if (!itemsByOrder.has(item.order_id)) {
+                itemsByOrder.set(item.order_id, []);
+              }
+              itemsByOrder.get(item.order_id)?.push(item);
             });
+
+            // Attach items to orders
+            const ordersWithItems = ordersData.map(order => ({
+              ...order,
+              items: itemsByOrder.get(order.id) || []
+            }));
+
+            setOrders(ordersWithItems);
+          } else {
+            setOrders([]);
           }
         }
-
-        // Add received gifts (only show shipped gifts to avoid showing pending items)
-        for (const gift of receivedGiftsResponse.data || []) {
-          expandedOrders.push({
-            id: gift.order_id,
-            created_at: gift.created_at,
-            total_amount: gift.price * gift.quantity,
-            status: "completed",
-            shipping_address_line1: gift.shipping_address_line1 || "",
-            shipping_address_line2: gift.shipping_address_line2,
-            shipping_city: gift.shipping_city || "",
-            shipping_postal_code: gift.shipping_postal_code || "",
-            shipping_country: gift.shipping_country || "España",
-            items: [{
-              basket_name: gift.basket_name,
-              basket_category: gift.basket_category,
-              quantity: gift.quantity,
-              price_per_item: gift.price,
-            }],
-          });
-        }
-
-        console.log('[ProfilePage] Total expanded orders:', expandedOrders.length);
-        setOrders(expandedOrders);
-      }
-
-      // Render the page immediately after core data to avoid blocking on remote services
-      console.log('[ProfilePage] Initial data loaded, rendering page while fetching reviews...');
-      setLoading(false);
-
-      // Load user's reviews via Edge Function (non-blocking with timeout)
-      const fetchReviews = async () => {
-        console.log('[ProfilePage] Loading reviews via edge function...');
-        try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 6000); // 6s safety timeout
-
-          const { data: fnRes, error: fnErr } = await supabase.functions.invoke('get-user-reviews', {
-            body: { limit: 200 },
-            // @ts-ignore - Aborting fetch via internal fetch is supported by supabase-js
-            signal: (controller as any).signal
-          } as any);
-
-          clearTimeout(timeout);
-
-          if (fnErr) {
-            console.error('[ProfilePage] Error fetching remote reviews:', fnErr);
-            return;
-          }
-
-          const remoteReviews = (fnRes as any)?.data || [];
-          console.log('[ProfilePage] Remote reviews:', remoteReviews.length);
-          const reviewsMapped = remoteReviews.map((r: any) => ({
-            id: r.id,
-            basket_name: r.basket_name,
-            rating: r.rating,
-            comment: r.comment || '',
-            created_at: r.created_at || r.experience_end_date || new Date().toISOString(),
-            user_id: userId,
-            source_site: 'paragenteselecta',
-            profiles: profileResponse.data
-          }));
-
-          console.log('[ProfilePage] Reviews mapped:', reviewsMapped.length);
-          setReviews(reviewsMapped);
-          console.log('[ProfilePage] All data loaded successfully');
-        } catch (error) {
-          console.error('[ProfilePage] Reviews fetch failed:', error);
-        }
+        
+        setLoading(false);
+        console.log('[ProfilePage] ✅ Datos cargados');
       };
 
-      // Defer reviews to next tick so UI can paint first
-      setTimeout(fetchReviews, 0);
-    } catch (error: any) {
-      console.error('[ProfilePage] Error loading user data:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'No se pudieron cargar tus datos.',
-      });
-    } finally {
-      console.log('[ProfilePage] Setting loading to false');
-      setLoading(false);
+      await Promise.race([loadData(), timeout]);
+      
+    } catch (error) {
+      console.error('[ProfilePage] ❌ Error cargando datos:', error);
+      setLoading(false); // ← CRÍTICO: Aunque falle, quitar loading
     }
   };
 
