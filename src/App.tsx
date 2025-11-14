@@ -65,9 +65,9 @@ const App = () => (
         <Toaster />
         <Sonner position="bottom-right" />
         <AutoUpdater />
-        <ScrollToTopOnRouteChange />
         
         <div className="min-h-screen bg-background gpu-accelerated">
+          <ScrollToTopOnRouteChange />
           <Suspense fallback={<PageLoader />}>
             <PageLayout>
               <Routes>
