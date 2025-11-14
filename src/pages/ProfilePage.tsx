@@ -115,36 +115,49 @@ const ProfilePage = () => {
 
   const checkAuthAndLoadData = async () => {
     try {
-      console.log('[ProfilePage] Checking auth...');
+      console.log('[ProfilePage] 🔵 Starting auth check...');
+      setLoading(true);
       
-      // ✅ TIMEOUT DE 5 SEGUNDOS
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Auth timeout')), 5000)
+        setTimeout(() => {
+          console.log('[ProfilePage] ⏱️ TIMEOUT después de 5s');
+          reject(new Error('Auth timeout'));
+        }, 5000)
       );
       
       const sessionPromise = supabase.auth.getSession();
+      console.log('[ProfilePage] 🔄 Esperando getSession...');
       
-      const { data: { session } } = await Promise.race([
+      const result = await Promise.race([
         sessionPromise,
         timeoutPromise
       ]) as any;
       
+      console.log('[ProfilePage] ✅ getSession completado:', result);
+      
+      const session = result?.data?.session;
+      
       if (!session?.user) {
-        console.log('[ProfilePage] No session found');
+        console.log('[ProfilePage] ❌ No session found');
         setUser(null);
         setSession(null);
         setLoading(false);
         return;
       }
 
-      console.log('[ProfilePage] Session found, loading user data...');
+      console.log('[ProfilePage] ✅ Session found:', session.user.email);
       setSession(session);
       setUser(session.user);
+      
+      console.log('[ProfilePage] 📊 Loading user data...');
       await loadUserData(session.user.id);
+      console.log('[ProfilePage] ✅ User data loaded');
+      
     } catch (error) {
-      console.error('[ProfilePage] Error in checkAuthAndLoadData:', error);
+      console.error('[ProfilePage] ❌ ERROR:', error);
       setLoading(false);
       setUser(null);
+      setSession(null);
       toast({
         variant: "destructive",
         title: "Error",
