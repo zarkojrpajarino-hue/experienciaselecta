@@ -120,12 +120,13 @@ const ProfilePage = () => {
       
       if (!session?.user) {
         console.log('[ProfilePage] No session found');
+        setUser(null);
+        setSession(null);
         setLoading(false);
         toast({
           title: 'Inicia sesión',
           description: 'Accede para ver tu perfil.',
         });
-        navigate('/');
         return;
       }
 
