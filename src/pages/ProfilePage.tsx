@@ -131,7 +131,8 @@ const ProfilePage = () => {
         setSession(session);
         setUser(session.user);
         
-        // Cargar datos del usuario
+        // ✅ CRÍTICO: Llamar a loadUserData AQUÍ
+        console.log('[ProfilePage] 📊 Llamando a loadUserData...');
         await loadUserData(session.user.id);
         
       } catch (error) {
