@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import ClickableImage from "@/components/ClickableImage";
+import DiscountCodeInput from "@/components/DiscountCodeInput";
 
 interface CartItem {
   id: number;
@@ -94,6 +95,7 @@ const CheckoutPage = () => {
   const [howFoundUsOpen, setHowFoundUsOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [appliedDiscount, setAppliedDiscount] = useState<any>(null);
   
   const isPersonalOpen = activeSection === 'personal';
   const isGiftOpen = activeSection === 'gift';
@@ -339,7 +341,21 @@ React.useEffect(() => {
   };
 
   const getTotalAmount = () => {
+    const subtotal = getCurrentPersonalTotal() + getAssignedGiftTotal();
+    if (appliedDiscount && appliedDiscount.valid) {
+      return appliedDiscount.final_amount;
+    }
+    return subtotal;
+  };
+
+  const getSubtotalAmount = () => {
     return getCurrentPersonalTotal() + getAssignedGiftTotal();
+  };
+
+  const getBasketName = () => {
+    const allItems = [...currentPersonalItems, ...giftItems];
+    if (allItems.length === 0) return "Pedido";
+    return allItems.length === 1 ? allItems[0].nombre : "Pedido Mixto";
   };
 
   const handleRemovePersonalItem = (itemId: number) => {
@@ -532,7 +548,8 @@ React.useEffect(() => {
       console.log('Calling create-payment-intent with:', {
         totalAmount: totalToCharge,
         basketItemsCount: basketItems.length,
-        hasGifts: hasAssignedGifts
+        hasGifts: hasAssignedGifts,
+        hasDiscount: !!appliedDiscount
       });
       
       const { data, error } = await supabase.functions.invoke('create-payment-intent', {
@@ -541,7 +558,13 @@ React.useEffect(() => {
           basketItems,
           totalAmount: totalToCharge,
           isGiftMode: hasAssignedGifts,
-          giftData
+          giftData,
+          discountCode: appliedDiscount && appliedDiscount.valid ? {
+            code_id: appliedDiscount.discount_code_id,
+            code: appliedDiscount.code,
+            discount_amount: appliedDiscount.discount_amount,
+            original_amount: appliedDiscount.original_amount
+          } : null
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -1231,7 +1254,34 @@ React.useEffect(() => {
                       </CollapsibleContent>
                     </Collapsible>
                   )}
+                  
+                  {/* Código de descuento */}
+                  <div className="pt-2">
+                    <DiscountCodeInput
+                      basketName={getBasketName()}
+                      purchaseAmount={getSubtotalAmount()}
+                      userEmail={personalData.email || user?.email || ""}
+                      onDiscountApplied={(discount) => setAppliedDiscount(discount)}
+                      onDiscountRemoved={() => setAppliedDiscount(null)}
+                    />
+                  </div>
+
                   <Separator />
+                  
+                  {appliedDiscount && appliedDiscount.valid && (
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Subtotal</span>
+                      <span className="line-through">{getSubtotalAmount().toFixed(2)}€</span>
+                    </div>
+                  )}
+                  
+                  {appliedDiscount && appliedDiscount.valid && (
+                    <div className="flex justify-between text-xs text-green-600 dark:text-green-400">
+                      <span>Descuento ({appliedDiscount.code})</span>
+                      <span>-{appliedDiscount.discount_amount?.toFixed(2)}€</span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between items-center">
                     <span className="text-sm md:text-base font-poppins font-bold">Total</span>
                     <span className="text-base md:text-lg font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>

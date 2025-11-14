@@ -123,6 +123,46 @@ serve(async (req) => {
         throw new Error('Failed to update order status');
       }
 
+      // Handle discount code usage if applicable
+      if (paymentIntent.metadata?.discount_code) {
+        console.log('Processing discount code usage:', paymentIntent.metadata.discount_code);
+        
+        // Get the discount code ID from the order
+        const { data: orderWithDiscount } = await supabase
+          .from('orders')
+          .select('discount_code_id, customers!inner(email)')
+          .eq('stripe_payment_intent_id', paymentIntentId)
+          .single();
+
+        if (orderWithDiscount?.discount_code_id) {
+          const userEmail = (orderWithDiscount.customers as any).email;
+          
+          // Insert usage record
+          const { error: usageError } = await supabase
+            .from('discount_code_usage')
+            .insert({
+              discount_code_id: orderWithDiscount.discount_code_id,
+              user_email: userEmail,
+              order_id: orderCheck.id
+            });
+
+          if (usageError) {
+            console.error('Error recording discount usage:', usageError);
+          } else {
+            console.log('Discount usage recorded successfully');
+            
+            // Increment the current_uses counter
+            const { error: incrementError } = await supabase.rpc('increment_discount_uses', {
+              p_discount_code_id: orderWithDiscount.discount_code_id
+            });
+
+            if (incrementError) {
+              console.error('Error incrementing discount uses:', incrementError);
+            }
+          }
+        }
+      }
+
       // Get order details for email
       const { data: order, error: orderError } = await supabase
         .from('orders')

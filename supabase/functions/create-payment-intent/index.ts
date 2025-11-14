@@ -68,9 +68,9 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     });
 
-    const { customerData, basketItems, totalAmount, isGiftMode, giftData } = await req.json();
+    const { customerData, basketItems, totalAmount, isGiftMode, giftData, discountCode } = await req.json();
     
-    console.log('Processing payment intent creation', isGiftMode ? '(Gift Mode)' : '');
+    console.log('Processing payment intent creation', isGiftMode ? '(Gift Mode)' : '', discountCode ? '(With Discount)' : '');
 
     // Validate customer data
     try {
@@ -231,7 +231,9 @@ serve(async (req) => {
         shipping_address_line2: customerData.address_line2,
         shipping_city: customerData.city,
         shipping_postal_code: customerData.postal_code,
-        shipping_country: customerData.country || 'España'
+        shipping_country: customerData.country || 'España',
+        discount_code_id: discountCode?.code_id || null,
+        discount_amount: discountCode?.discount_amount ? Math.round(discountCode.discount_amount * 100) : null
       })
       .select('id')
       .single();
@@ -270,7 +272,10 @@ serve(async (req) => {
         is_gift: isGiftMode ? 'true' : 'false',
         sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
         sender_email: isGiftMode && giftData?.senderEmail ? giftData.senderEmail : '',
-        recipients_count: isGiftMode && giftData?.recipients ? String(giftData.recipients.length) : '0'
+        recipients_count: isGiftMode && giftData?.recipients ? String(giftData.recipients.length) : '0',
+        discount_code: discountCode?.code || '',
+        discount_amount: discountCode?.discount_amount ? String(discountCode.discount_amount) : '0',
+        original_amount: discountCode?.original_amount ? String(discountCode.original_amount) : String(serverCalculatedTotal)
       },
       automatic_payment_methods: {
         enabled: true,
