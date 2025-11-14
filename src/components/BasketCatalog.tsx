@@ -287,7 +287,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Salchichón de pato 250 gr",
             "Jamón Reserva 100 gr",
-            "Paté de morcilla 100 gr",
+            "Paté de perdiz, 150 gr",
             "Ricardo del Duero Ricardo Dumas 75 cl",
             "Piquitos 250 gr"
           ],
@@ -311,7 +311,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Salchichón de pato 250 gr",
             "Jamón Reserva 100 gr",
-            "Paté de ciervo 100 gr",
+            "Paté de perdiz, 150 gr",
             "Chorizo de gamo 250 gr",
             "Queso de Oveja Diablo 200 gr",
             "Piquitos 250 gr"
@@ -337,7 +337,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Vino Tinto Entrechuelos Roble 75 cl",
             "Jamón 100% Ibérico 100 gr",
             "Chorizo de pato 250 gr",
-            "Paté de pato 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de oveja de trufa 200 gr",
             "Piquitos 250 gr"
           ],
@@ -364,7 +364,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Chorizo de pato 250 gr",
             "Jamón Reserva 100 gr",
-            "Paté de morcilla 100 gr",
+            "Paté de perdiz, 150 gr",
             "Salchichón de jabalí loncheado 80 gr",
             "Piquitos",
             "El Paje Rueda Verdejo 75 cl"
@@ -395,7 +395,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Queso oveja curado trufa negra 200 gr",
             "Jamón Ibérico 50% 100 gr",
             "Piquitos",
-            "Paté de pato tarro 100 gr",
+            "Paté de perdiz, 150 gr",
             "Salchichón de ciervo 250 gr",
             "Mermelada Arbequina",
             "Chorizo de gamo loncheado 80 gr"
@@ -427,7 +427,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Queso oveja curado boletus 200 gr",
             "Jamón ibérico 50% 100 gr",
             "Mermelada arbequina",
-            "Paté de jabalí tarro 100 gr",
+            "Paté de perdiz, 150 gr",
             "Reina de Castilla Verdejo 75 cl",
             "Salchichón de pato 250 gr"
           ],
@@ -456,7 +456,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Jamón 50% Ibérico 100 gr",
             "Piquitos 250 gr",
-            "Paté de morcilla 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de Oveja Boletus 200 gr",
             "Chorizo de gamo 250 gr",
             "Salchichón de pato 250 gr",
@@ -488,7 +488,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Jamón 50% Ibérico 100 gr",
             "Piquitos 250 gr",
-            "Paté de perdiz 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de Oveja Diablo 200 gr",
             "Chorizo de jabalí 250 gr",
             "Salchichón de ciervo 250 gr",
@@ -521,7 +521,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Jamón 100% Ibérico 100 gr",
             "Piquitos 250 gr",
-            "Paté de ciervo 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de Oveja Ajo Negro 200 gr",
             "Cecina de ciervo loncheada 80 gr",
             "Chorizo de ciervo 250 gr",
@@ -556,7 +556,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón 50% Ibérico 100 gr",
             "Jamón 50% Ibérico 100 gr",
             "Piquitos 250 gr",
-            "Paté de morcilla 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de Oveja Ajo Negro 200 gr",
             "Vino Entrechuelos Blanco Chardonnay 75 cl",
             "Vino Entrechuelos Roble 75 cl",
@@ -591,7 +591,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón 50% Ibérico 100 gr",
             "Jamón 50% Ibérico 100 gr",
             "Piquitos 250 gr",
-            "Paté de jabalí 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de Oveja Boletus 200 gr",
             "Queso de Oveja Ajo Negro 200 gr",
             "Mermelada Arbequina 100 gr",
@@ -626,7 +626,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón 100% Ibérico 100 gr",
             "Jamón 100% Ibérico 100 gr",
             "Piquitos 250 gr",
-            "Paté de perdiz 100 gr",
+            "Paté de perdiz, 150 gr",
             "Queso de Oveja de Trufa 200 gr",
             "Queso de Oveja Boletus 200 gr",
             "Ribera del Duero Ricardo Dumas 75 cl",
@@ -910,7 +910,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Jamón 75% 100g",
             "Queso trufa 100g",
-            "Paté perdiz",
+            "Paté de perdiz, 150 gr",
             "Piquitos",
             "Ribera Ricardo Dumas",
             "Aceite Picualia Premium 100ml"
@@ -933,7 +933,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón 75% 100g",
             "Lomo Bellota 100g",
             "Queso boletus 100g",
-            "Paté ciervo",
+            "Paté de perdiz, 150 gr",
             "Piquitos",
             "Aceite Picualia Premium 100ml",
             "Cecina ciervo loncheada",
@@ -961,7 +961,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón Bellota 75% 100g",
             "Lomo Bellota 100g",
             "Queso ajo negro 100g",
-            "Paté Perdiz Real",
+            "Paté de perdiz, 150 gr",
             "Piquitos",
             "Condado de Laxas Albariño",
             "Aceite Picualia Premium 100ml",
@@ -987,7 +987,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
           productos: [
             "Jamón 75% 100g",
             "Queso trufa 100g",
-            "Paté perdiz",
+            "Paté de perdiz, 150 gr",
             "Piquitos",
             "Ribera Ricardo Dumas",
             "Aceite Picualia Premium 100ml"
@@ -1010,7 +1010,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón Bellota 75% 100g",
             "Lomo Bellota 100g", 
             "Queso boletus 100g",
-            "Paté ciervo",
+            "Paté de perdiz, 150 gr",
             "Piquitos",
             "Aceite Picualia Premium 100ml",
             "Cecina ciervo loncheada",
@@ -1034,7 +1034,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
             "Jamón Bellota 100% 100g",
             "Lomo Bellota 100g",
             "Queso ajo negro 100g", 
-            "Paté Perdiz Real",
+            "Paté de perdiz, 150 gr",
             "Piquitos",
             "Pago Capellanes Joven",
             "Aceite Picualia Premium 100ml",
