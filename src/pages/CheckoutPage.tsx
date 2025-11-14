@@ -1316,16 +1316,26 @@ React.useEffect(() => {
                     <span className="text-sm md:text-base font-poppins font-bold">Total</span>
                     <span className="text-base md:text-lg font-poppins font-bold text-gold">{getTotalAmount().toFixed(2)}€</span>
                   </div>
-                  <Button
-                    type="button"
-                    onClick={handlePayClick}
-                    onMouseDown={() => console.log('🟢 mousedown on pay button')}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { console.log('🟢 keydown Enter on pay button'); handlePayClick(e as any); } }}
-                    className="w-full bg-gold hover:bg-gold/90 text-black font-poppins font-bold text-sm md:text-base py-3 md:py-3 relative z-[999] cursor-pointer active:scale-[0.99] pointer-events-auto"
-                    data-testid="pay-button"
+                  <button
+                    onClick={() => {
+                      console.log('🔴 CLICK DIRECTO');
+                      handleContinueToPayment();
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      backgroundColor: '#D4AF37',
+                      color: 'black',
+                      fontWeight: 'bold',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      zIndex: 9999
+                    }}
                   >
                     Continuar al pago ({getTotalAmount().toFixed(2)}€)
-                  </Button>
+                  </button>
                   
                   {/* Error message toast */}
                   <AnimatePresence>
