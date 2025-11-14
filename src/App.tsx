@@ -20,6 +20,7 @@ import ConocenosPage from "./pages/ConocenosPage";
 import AutoLogin from "./pages/AutoLogin";
 import ProfilePage from "./pages/ProfilePage";
 import PaymentPage from "./pages/PaymentPage";
+import EmptyCartPage from "./pages/EmptyCartPage";
 
 // Lazy load only non-critical pages
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
@@ -28,7 +29,6 @@ const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
-const EmptyCartPage = lazy(() => import("./pages/EmptyCartPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import CookieBanner from "./components/CookieBanner";
 import AutoUpdater from "./components/AutoUpdater";
