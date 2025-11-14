@@ -104,67 +104,46 @@ const ProfilePage = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    checkAuthAndLoadData();
-  }, []);
+    console.log('[ProfilePage] 🟢 Iniciando...');
+    
+    const initAuth = async () => {
+      try {
+        console.log('[ProfilePage] 🔄 Obteniendo sesión...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('[ProfilePage] ❌ Error:', error);
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+        
+        if (!session?.user) {
+          console.log('[ProfilePage] ℹ️ No hay sesión');
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+          return;
+        }
 
-  // Optimized real-time subscriptions - removed for better performance
-  // Real-time updates not needed - data loads on page mount
-
-  // Removed auto-refresh for better performance - data loads on tab change only
-
-
-  const checkAuthAndLoadData = async () => {
-    try {
-      console.log('[ProfilePage] 🔵 Starting auth check...');
-      setLoading(true);
-      
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => {
-          console.log('[ProfilePage] ⏱️ TIMEOUT después de 5s');
-          reject(new Error('Auth timeout'));
-        }, 5000)
-      );
-      
-      const sessionPromise = supabase.auth.getSession();
-      console.log('[ProfilePage] 🔄 Esperando getSession...');
-      
-      const result = await Promise.race([
-        sessionPromise,
-        timeoutPromise
-      ]) as any;
-      
-      console.log('[ProfilePage] ✅ getSession completado:', result);
-      
-      const session = result?.data?.session;
-      
-      if (!session?.user) {
-        console.log('[ProfilePage] ❌ No session found');
+        console.log('[ProfilePage] ✅ Usuario autenticado:', session.user.email);
+        setSession(session);
+        setUser(session.user);
+        
+        // Cargar datos del usuario
+        await loadUserData(session.user.id);
+        
+      } catch (error) {
+        console.error('[ProfilePage] ❌ Error inesperado:', error);
         setUser(null);
         setSession(null);
         setLoading(false);
-        return;
       }
+    };
 
-      console.log('[ProfilePage] ✅ Session found:', session.user.email);
-      setSession(session);
-      setUser(session.user);
-      
-      console.log('[ProfilePage] 📊 Loading user data...');
-      await loadUserData(session.user.id);
-      console.log('[ProfilePage] ✅ User data loaded');
-      
-    } catch (error) {
-      console.error('[ProfilePage] ❌ ERROR:', error);
-      setLoading(false);
-      setUser(null);
-      setSession(null);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo cargar el perfil.",
-      });
-    }
-  };
+    initAuth();
+  }, []);
 
   const loadUserData = async (userId: string) => {
     try {
@@ -358,8 +337,9 @@ const ProfilePage = () => {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center pt-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[hsl(45,100%,65%)]" />
+        <div className="min-h-screen flex flex-col items-center justify-center pt-20 gap-4">
+          <Loader2 className="w-12 h-12 animate-spin text-[hsl(45,100%,65%)]" />
+          <p className="text-lg font-poppins text-gray-700">Cargando tu perfil...</p>
         </div>
       </>
     );
@@ -371,15 +351,19 @@ const ProfilePage = () => {
       <>
         <Navbar />
         <div className="min-h-screen flex items-center justify-center pt-24 px-4">
-          <Card className="max-w-md w-full bg-white border-black border-2 shadow-lg text-center">
+          <Card className="max-w-md w-full bg-white border-black border-2 shadow-lg">
             <CardHeader>
-              <CardTitle className="font-bungee">Inicia sesión</CardTitle>
+              <CardTitle className="font-bungee text-center text-2xl">INICIA SESIÓN</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="font-poppins">Necesitas iniciar sesión para ver tu perfil.</p>
-              <Button onClick={() => navigate('/')}
-                className="bg-black hover:bg-black/80 text-white font-bungee uppercase border-2 border-black">
-                Ir a la página principal
+            <CardContent className="space-y-4 text-center">
+              <p className="font-poppins text-gray-700">
+                Necesitas iniciar sesión para ver tu perfil.
+              </p>
+              <Button 
+                onClick={() => navigate('/')}
+                className="w-full bg-black text-white hover:bg-gray-800 font-bungee"
+              >
+                IR A LA PÁGINA PRINCIPAL
               </Button>
             </CardContent>
           </Card>
