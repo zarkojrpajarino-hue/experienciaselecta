@@ -154,91 +154,66 @@ const ProfilePage = () => {
 
   const loadUserData = async (userId: string) => {
     try {
-      console.log('[ProfilePage] 📊 Cargando datos del usuario...');
+      console.log('[ProfilePage] 📊 INICIO loadUserData para:', userId);
       
-      // ✅ TIMEOUT de 10 segundos
-      const timeout = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout loading data')), 10000)
-      );
+      // Query profile
+      console.log('[ProfilePage] 🔍 Query 1: profiles...');
+      const profileResponse = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
       
-      const loadData = async () => {
-        const [profileResponse, customerResponse] = await Promise.all([
-          supabase
-            .from("profiles")
-            .select("*")
-            .eq("user_id", userId)
-            .maybeSingle(),
-          supabase
-            .from("customers")
-            .select("id")
-            .eq("user_id", userId)
-            .maybeSingle()
-        ]);
+      console.log('[ProfilePage] ✅ Profile obtenido:', profileResponse.data);
+      setProfile(profileResponse.data);
+      
+      // Query customer
+      console.log('[ProfilePage] 🔍 Query 2: customers...');
+      const customerResponse = await supabase
+        .from("customers")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      
+      console.log('[ProfilePage] ✅ Customer obtenido:', customerResponse.data);
 
-        console.log('[ProfilePage] Profile:', profileResponse.data);
-        console.log('[ProfilePage] Customer:', customerResponse.data);
+      // Query orders si hay customer
+      if (customerResponse.data) {
+        console.log('[ProfilePage] 🔍 Query 3: orders...');
+        const { data: ordersData } = await supabase
+          .from("orders")
+          .select(`
+            id,
+            created_at,
+            total_amount,
+            status,
+            shipping_address_line1,
+            shipping_address_line2,
+            shipping_city,
+            shipping_postal_code,
+            shipping_country
+          `)
+          .eq("customer_id", customerResponse.data.id)
+          .eq("status", "completed")
+          .limit(5);
+
+        console.log('[ProfilePage] ✅ Orders obtenidas:', ordersData?.length || 0);
         
-        setProfile(profileResponse.data);
-
-        if (customerResponse.data) {
-          const { data: ordersData } = await supabase
-            .from("orders")
-            .select(`
-              id,
-              created_at,
-              total_amount,
-              status,
-              shipping_address_line1,
-              shipping_address_line2,
-              shipping_city,
-              shipping_postal_code,
-              shipping_country
-            `)
-            .eq("customer_id", customerResponse.data.id)
-            .eq("status", "completed")
-            .order("created_at", { ascending: false })
-            .limit(10);
-
-          console.log('[ProfilePage] Orders:', ordersData?.length || 0);
-          
-          // Load order items for all orders
-          if (ordersData && ordersData.length > 0) {
-            const orderIds = ordersData.map(o => o.id);
-            const { data: itemsData } = await supabase
-              .from("order_items")
-              .select("order_id, basket_name, basket_category, quantity, price_per_item")
-              .in("order_id", orderIds);
-
-            // Group items by order
-            const itemsByOrder = new Map<string, OrderItem[]>();
-            itemsData?.forEach(item => {
-              if (!itemsByOrder.has(item.order_id)) {
-                itemsByOrder.set(item.order_id, []);
-              }
-              itemsByOrder.get(item.order_id)?.push(item);
-            });
-
-            // Attach items to orders
-            const ordersWithItems = ordersData.map(order => ({
-              ...order,
-              items: itemsByOrder.get(order.id) || []
-            }));
-
-            setOrders(ordersWithItems);
-          } else {
-            setOrders([]);
-          }
-        }
+        // Map orders with empty items array to satisfy type
+        const ordersWithItems = (ordersData || []).map(order => ({
+          ...order,
+          items: []
+        }));
         
-        setLoading(false);
-        console.log('[ProfilePage] ✅ Datos cargados');
-      };
-
-      await Promise.race([loadData(), timeout]);
+        setOrders(ordersWithItems);
+      }
+      
+      console.log('[ProfilePage] ✅ FIN loadUserData - quitando loading');
+      setLoading(false);
       
     } catch (error) {
-      console.error('[ProfilePage] ❌ Error cargando datos:', error);
-      setLoading(false); // ← CRÍTICO: Aunque falle, quitar loading
+      console.error('[ProfilePage] ❌ ERROR en loadUserData:', error);
+      setLoading(false);
     }
   };
 
