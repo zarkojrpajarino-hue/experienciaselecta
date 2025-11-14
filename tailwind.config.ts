@@ -145,7 +145,7 @@ export default {
         "slide-in-right": "slide-in-right 0.4s ease-out",
         "slide-in-left": "slide-in-left 0.4s ease-out",
         "fade-in-up": "fade-in-up 0.5s ease-out",
-        "shake": "shake 1s ease-in-out",
+        "shake": "shake 2s ease-in-out",
       },
     },
   },
