@@ -116,17 +116,24 @@ const ProfilePage = () => {
   const checkAuthAndLoadData = async () => {
     try {
       console.log('[ProfilePage] Checking auth...');
-      const { data: { session } } = await supabase.auth.getSession();
+      
+      // ✅ TIMEOUT DE 5 SEGUNDOS
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Auth timeout')), 5000)
+      );
+      
+      const sessionPromise = supabase.auth.getSession();
+      
+      const { data: { session } } = await Promise.race([
+        sessionPromise,
+        timeoutPromise
+      ]) as any;
       
       if (!session?.user) {
         console.log('[ProfilePage] No session found');
         setUser(null);
         setSession(null);
         setLoading(false);
-        toast({
-          title: 'Inicia sesión',
-          description: 'Accede para ver tu perfil.',
-        });
         return;
       }
 
@@ -134,10 +141,10 @@ const ProfilePage = () => {
       setSession(session);
       setUser(session.user);
       await loadUserData(session.user.id);
-      console.log('[ProfilePage] User data loaded successfully');
     } catch (error) {
       console.error('[ProfilePage] Error in checkAuthAndLoadData:', error);
       setLoading(false);
+      setUser(null);
       toast({
         variant: "destructive",
         title: "Error",
