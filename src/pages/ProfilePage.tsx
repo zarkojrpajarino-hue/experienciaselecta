@@ -104,47 +104,60 @@ const ProfilePage = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('[ProfilePage] 🚀 NUEVA VERSION - Usando onAuthStateChange');
+    console.log('[ProfilePage] 🚀 Inicializando ProfilePage');
     
     let mounted = true;
+    let initialCheckDone = false;
     
-    // ✅ Usar el listener de auth en lugar de getSession
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('[ProfilePage] 🔔 Auth event:', event, session?.user?.email);
+    // Primero verificar sesión actual de forma síncrona
+    const checkInitialSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
         
         if (!mounted) return;
         
         if (session?.user) {
-          console.log('[ProfilePage] ✅ Usuario autenticado:', session.user.email);
+          console.log('[ProfilePage] ⚡ Usuario ya logueado:', session.user.email);
           setSession(session);
           setUser(session.user);
-          
-          console.log('[ProfilePage] 📊 Cargando datos...');
+          // Cargar datos sin await para no bloquear
+          loadUserData(session.user.id);
+        } else {
+          console.log('[ProfilePage] ℹ️ No hay sesión activa');
+          setLoading(false);
+        }
+        
+        initialCheckDone = true;
+      } catch (error) {
+        console.error('[ProfilePage] ❌ Error al verificar sesión:', error);
+        if (mounted) setLoading(false);
+      }
+    };
+    
+    // Ejecutar verificación inicial inmediatamente
+    checkInitialSession();
+    
+    // Configurar listener para cambios futuros
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('[ProfilePage] 🔔 Auth cambió:', event);
+        
+        if (!mounted || !initialCheckDone) return;
+        
+        if (session?.user) {
+          console.log('[ProfilePage] ✅ Nuevo login detectado:', session.user.email);
+          setSession(session);
+          setUser(session.user);
+          setLoading(true);
           await loadUserData(session.user.id);
         } else {
-          console.log('[ProfilePage] ℹ️ Sin sesión');
+          console.log('[ProfilePage] 🚪 Usuario deslogueado');
           setUser(null);
           setSession(null);
           setLoading(false);
         }
       }
     );
-
-    // Trigger inicial inmediato
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (mounted && session?.user) {
-        console.log('[ProfilePage] ⚡ Sesión inicial:', session.user.email);
-        setSession(session);
-        setUser(session.user);
-        loadUserData(session.user.id);
-      } else if (mounted) {
-        console.log('[ProfilePage] ⚡ No hay sesión inicial');
-        setLoading(false);
-      }
-    }).catch(() => {
-      if (mounted) setLoading(false);
-    });
 
     return () => {
       mounted = false;
@@ -154,47 +167,31 @@ const ProfilePage = () => {
 
   const loadUserData = async (userId: string) => {
     try {
-      console.log('[ProfilePage] 📊 INICIO loadUserData para:', userId);
+      console.log('[ProfilePage] 📊 Cargando datos para:', userId);
       
-      // ✅ Query 1: Profile con timeout de 5s
-      console.log('[ProfilePage] 🔍 Query 1: profiles...');
-      const profileTimeout = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Profile timeout')), 5000)
-      );
-      
-      const profileQuery = supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
-      
-      const profileResponse = await Promise.race([profileQuery, profileTimeout]) as any;
+      // Cargar profile y customer en paralelo SIN timeout
+      const [profileResponse, customerResponse] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase
+          .from("customers")
+          .select("id")
+          .eq("user_id", userId)
+          .maybeSingle()
+      ]);
       
       if (profileResponse?.data) {
-        console.log('[ProfilePage] ✅ Profile:', profileResponse.data);
+        console.log('[ProfilePage] ✅ Profile cargado');
         setProfile(profileResponse.data);
-      } else {
-        console.log('[ProfilePage] ⏱️ Profile timeout o sin datos');
       }
       
-      // ✅ Query 2: Customer con timeout
-      console.log('[ProfilePage] 🔍 Query 2: customers...');
-      const customerTimeout = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Customer timeout')), 5000)
-      );
-      
-      const customerQuery = supabase
-        .from("customers")
-        .select("id")
-        .eq("user_id", userId)
-        .maybeSingle();
-      
-      const customerResponse = await Promise.race([customerQuery, customerTimeout]) as any;
-      
       if (customerResponse?.data) {
-        console.log('[ProfilePage] ✅ Customer:', customerResponse.data);
+        console.log('[ProfilePage] ✅ Customer encontrado');
       } else {
-        console.log('[ProfilePage] ⏱️ Customer timeout - sin orders');
+        console.log('[ProfilePage] ℹ️ Sin customer - usuario nuevo');
       }
       
       // ✅ SIEMPRE quitar loading aunque fallen las queries

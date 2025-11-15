@@ -418,6 +418,7 @@ React.useEffect(() => {
     }
     
     console.log('✅ User authenticated, continuing...');
+    console.log('🔍 Validando howFoundUs:', howFoundUs);
     
     // Validar "Cómo nos has conocido"
     if (!howFoundUs) {
@@ -427,7 +428,10 @@ React.useEffect(() => {
       return;
     }
     
+    console.log('✅ howFoundUs validado:', howFoundUs);
+    
     // Validar datos personales si hay cestas propias
+    console.log('🔍 Validando datos personales. Items:', currentPersonalItems.length);
     if (currentPersonalItems.length > 0) {
       if (!personalData.name.trim() || personalData.name.trim().length < 2) {
         toast.error("El nombre debe tener al menos 2 caracteres");
@@ -465,10 +469,13 @@ React.useEffect(() => {
         scrollToSection(personalSectionRef);
         return;
       }
+      console.log('✅ Datos personales validados correctamente');
     }
 
     // Validar asignación de regalos solo si hay cestas asignadas
+    console.log('🔍 Validando regalos...');
     const assignedGiftBaskets = giftAssignment.recipients.flatMap((r) => r.basketIds);
+    console.log('🎁 Cestas asignadas:', assignedGiftBaskets.length);
     if (assignedGiftBaskets.length > 0) {
       // Validar solo los destinatarios que tienen cestas asignadas
       for (const r of giftAssignment.recipients) {
@@ -505,11 +512,23 @@ React.useEffect(() => {
         scrollToSection(giftSectionRef);
         return;
       }
+      console.log('✅ Regalos validados correctamente');
+    } else {
+      console.log('✅ No hay regalos para validar');
     }
 
     // Save profile data before continuing to payment
-    await saveProfileData();
+    console.log('💾 Guardando perfil...');
+    try {
+      await saveProfileData();
+      console.log('✅ Perfil guardado');
+    } catch (error) {
+      console.error('❌ Error guardando perfil:', error);
+      toast.error("Error al guardar tus datos");
+      return;
+    }
 
+    console.log('🎉 Todas las validaciones pasadas. Preparando pago...');
     toast.success("Preparando pago...");
     
     // Prepare data for payment intent

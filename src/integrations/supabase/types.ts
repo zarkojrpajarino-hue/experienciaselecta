@@ -164,6 +164,155 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_code_usage: {
+        Row: {
+          basket_category: string | null
+          basket_name: string | null
+          code: string
+          discount_amount: number
+          discount_code_id: string
+          final_amount: number
+          id: string
+          ip_address: unknown
+          order_id: string | null
+          original_amount: number
+          used_at: string | null
+          user_agent: string | null
+          user_email: string
+          user_id: string | null
+        }
+        Insert: {
+          basket_category?: string | null
+          basket_name?: string | null
+          code: string
+          discount_amount: number
+          discount_code_id: string
+          final_amount: number
+          id?: string
+          ip_address?: unknown
+          order_id?: string | null
+          original_amount: number
+          used_at?: string | null
+          user_agent?: string | null
+          user_email: string
+          user_id?: string | null
+        }
+        Update: {
+          basket_category?: string | null
+          basket_name?: string | null
+          code?: string
+          discount_amount?: number
+          discount_code_id?: string
+          final_amount?: number
+          id?: string
+          ip_address?: unknown
+          order_id?: string | null
+          original_amount?: number
+          used_at?: string | null
+          user_agent?: string | null
+          user_email?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discount_code_usage_discount_code_id_fkey"
+            columns: ["discount_code_id"]
+            isOneToOne: false
+            referencedRelation: "discount_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discount_code_usage_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "completed_purchases"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "discount_code_usage_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discount_code_usage_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["order_id"]
+          },
+        ]
+      }
+      discount_codes: {
+        Row: {
+          allowed_emails: string[] | null
+          applicable_baskets: string[] | null
+          code: string
+          created_at: string | null
+          current_uses: number | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          excluded_baskets: string[] | null
+          first_purchase_only: boolean | null
+          id: string
+          internal_notes: string | null
+          is_active: boolean | null
+          max_discount_amount: number | null
+          max_uses: number | null
+          max_uses_per_user: number | null
+          min_purchase_amount: number | null
+          updated_at: string | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          allowed_emails?: string[] | null
+          applicable_baskets?: string[] | null
+          code: string
+          created_at?: string | null
+          current_uses?: number | null
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          excluded_baskets?: string[] | null
+          first_purchase_only?: boolean | null
+          id?: string
+          internal_notes?: string | null
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          max_uses?: number | null
+          max_uses_per_user?: number | null
+          min_purchase_amount?: number | null
+          updated_at?: string | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          allowed_emails?: string[] | null
+          applicable_baskets?: string[] | null
+          code?: string
+          created_at?: string | null
+          current_uses?: number | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          excluded_baskets?: string[] | null
+          first_purchase_only?: boolean | null
+          id?: string
+          internal_notes?: string | null
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          max_uses?: number | null
+          max_uses_per_user?: number | null
+          min_purchase_amount?: number | null
+          updated_at?: string | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       login_tokens: {
         Row: {
           created_at: string | null
@@ -453,6 +602,76 @@ export type Database = {
         }
         Relationships: []
       }
+      qr_activation_codes: {
+        Row: {
+          activated_at: string | null
+          activated_by_email: string | null
+          activated_by_name: string | null
+          basket_category: string
+          basket_image: string | null
+          basket_name: string
+          code: string
+          corporate_order_id: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_used: boolean | null
+          notes: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          activated_by_email?: string | null
+          activated_by_name?: string | null
+          basket_category: string
+          basket_image?: string | null
+          basket_name: string
+          code: string
+          corporate_order_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_used?: boolean | null
+          notes?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          activated_by_email?: string | null
+          activated_by_name?: string | null
+          basket_category?: string
+          basket_image?: string | null
+          basket_name?: string
+          code?: string
+          corporate_order_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_used?: boolean | null
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_activation_codes_corporate_order_id_fkey"
+            columns: ["corporate_order_id"]
+            isOneToOne: false
+            referencedRelation: "completed_purchases"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "qr_activation_codes_corporate_order_id_fkey"
+            columns: ["corporate_order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qr_activation_codes_corporate_order_id_fkey"
+            columns: ["corporate_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["order_id"]
+          },
+        ]
+      }
       review_reminders: {
         Row: {
           created_at: string
@@ -633,6 +852,19 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_discount_uses: {
+        Args: { p_discount_code_id: string }
+        Returns: undefined
+      }
+      validate_discount_code: {
+        Args: {
+          p_basket_name: string
+          p_code: string
+          p_purchase_amount: number
+          p_user_email: string
+        }
+        Returns: Json
       }
     }
     Enums: {
