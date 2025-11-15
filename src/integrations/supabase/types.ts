@@ -404,6 +404,8 @@ export type Database = {
           created_at: string
           currency: string
           customer_id: string
+          discount_amount: number | null
+          discount_code_id: string | null
           id: string
           shipping_address_line1: string
           shipping_address_line2: string | null
@@ -420,6 +422,8 @@ export type Database = {
           created_at?: string
           currency?: string
           customer_id: string
+          discount_amount?: number | null
+          discount_code_id?: string | null
           id?: string
           shipping_address_line1: string
           shipping_address_line2?: string | null
@@ -436,6 +440,8 @@ export type Database = {
           created_at?: string
           currency?: string
           customer_id?: string
+          discount_amount?: number | null
+          discount_code_id?: string | null
           id?: string
           shipping_address_line1?: string
           shipping_address_line2?: string | null
@@ -453,6 +459,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_discount_code_id_fkey"
+            columns: ["discount_code_id"]
+            isOneToOne: false
+            referencedRelation: "discount_codes"
             referencedColumns: ["id"]
           },
         ]
