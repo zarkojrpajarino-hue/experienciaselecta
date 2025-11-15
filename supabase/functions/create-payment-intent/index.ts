@@ -222,7 +222,7 @@ serve(async (req) => {
 
     // Create order using server-calculated total
     const { data: order, error: orderError } = await supabase
-      .from('orders')
+.from('orders')
       .insert({
         customer_id: customerId,
         total_amount: Math.round(serverCalculatedTotal * 100), // Convert to cents
@@ -231,9 +231,7 @@ serve(async (req) => {
         shipping_address_line2: customerData.address_line2,
         shipping_city: customerData.city,
         shipping_postal_code: customerData.postal_code,
-        shipping_country: customerData.country || 'España',
-        discount_code_id: discountCode?.code_id || null,
-        discount_amount: discountCode?.discount_amount ? Math.round(discountCode.discount_amount * 100) : null
+        shipping_country: customerData.country || 'España'
       })
       .select('id')
       .single();
