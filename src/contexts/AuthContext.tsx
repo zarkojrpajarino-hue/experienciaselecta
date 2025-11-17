@@ -105,23 +105,22 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             
             if (!currentSession?.access_token) {
               console.error('❌ No hay access_token disponible');
-              return;
-            }
-            
-            const { data, error } = await supabase.functions.invoke('send-welcome-email', {
-              headers: {
-                Authorization: `Bearer ${currentSession.access_token}`
-              },
-              body: {
-                userEmail: session.user.email,
-                userName: userName
-              }
-            });
-            
-            if (error) {
-              console.error('❌ Error enviando email:', error);
             } else {
-              console.log('✅ Email de bienvenida enviado:', data);
+              const { data, error } = await supabase.functions.invoke('send-welcome-email', {
+                headers: {
+                  Authorization: `Bearer ${currentSession.access_token}`
+                },
+                body: {
+                  userEmail: session.user.email,
+                  userName: userName
+                }
+              });
+              
+              if (error) {
+                console.error('❌ Error enviando email:', error);
+              } else {
+                console.log('✅ Email de bienvenida enviado:', data);
+              }
             }
           } catch (emailError) {
             console.error('❌ Error enviando email de bienvenida:', emailError);
@@ -139,24 +138,36 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             }
           }
 
-          // 5. Verificar si venimos de OAuth (tiene el flag pendingCheckout)
+          // 5. Verificar el contexto del login
           const isPendingCheckout = localStorage.getItem('pendingCheckout');
+          const loginSource = localStorage.getItem('loginSource');
           
           if (isPendingCheckout) {
             console.log('🔄 Usuario debe volver a checkout...');
             localStorage.removeItem('pendingCheckout');
             localStorage.removeItem('oauthInProgress');
+            localStorage.removeItem('loginSource');
             
-            // Mostrar toast de bienvenida (userName ya obtenido arriba)
             toast.success(`¡Bienvenido, ${userName}!`, {
-              description: 'Tu carrito se ha preservado correctamente.',
+              description: 'Ya puedes completar tu compra.',
               duration: 3000,
             });
 
             // Marcar que necesitamos navegar (lo manejará el componente Checkout)
             sessionStorage.setItem('auth_completed', 'true');
+          } else if (loginSource === 'navbar') {
+            // Login desde Navbar → NO redirigir
+            console.log('✅ Login desde Navbar - Usuario permanece en página actual');
+            localStorage.removeItem('loginSource');
+            
+            toast.success(`¡Bienvenido, ${userName}!`, {
+              description: 'Has iniciado sesión correctamente.',
+              duration: 3000,
+            });
           } else {
-            // Login normal (sin checkout pendiente) - Mostrar toast de bienvenida
+            // Login normal
+            localStorage.removeItem('loginSource');
+            
             toast.success(`¡Bienvenido, ${userName}!`, {
               description: 'Has iniciado sesión correctamente.',
               duration: 3000,
