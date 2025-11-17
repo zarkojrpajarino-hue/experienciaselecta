@@ -66,8 +66,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         console.log('💾 Carrito guardado');
       }
       
-      // 2. Marcar que estamos en proceso de OAuth para checkout
-      localStorage.setItem('pendingCheckout', 'true');
+      // 2. Solo marcar pendingCheckout si NO es login desde navbar
+      const loginSource = localStorage.getItem('loginSource');
+      if (loginSource !== 'navbar') {
+        localStorage.setItem('pendingCheckout', 'true');
+      }
       localStorage.setItem('oauthInProgress', 'true');
       
       // 3. Iniciar OAuth con Google
@@ -131,10 +134,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         throw new Error("Introduce un email válido (ej. usuario@dominio.com)");
       }
 
-      // CRÍTICO: Establecer flag ANTES de OTP para preservar carrito
-      localStorage.setItem('pendingCheckout', 'true');
+      // CRÍTICO: Solo establecer flag si NO es login desde navbar
+      const loginSource = localStorage.getItem('loginSource');
+      if (loginSource !== 'navbar') {
+        localStorage.setItem('pendingCheckout', 'true');
+      }
       
-      // CRÍTICO: Redirigir SIEMPRE al checkout tras login por email OTP
+      // CRÍTICO: Redirigir según el origen del login
       const baseOrigin = (() => {
         try {
           const topOrigin = (window.top && window.top.location && window.top.location.origin) as string | undefined;
@@ -147,7 +153,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onBac
         }
         return window.location.origin;
       })();
-      const redirectUrl = `${baseOrigin}/checkout`;
+      // Redirigir a checkout solo si no es login desde navbar
+      const redirectUrl = loginSource === 'navbar' 
+        ? baseOrigin 
+        : `${baseOrigin}/checkout`;
       console.log('Email OTP redirectTo:', redirectUrl);
       const { error } = await supabase.auth.signInWithOtp({
         email: emailClean,
