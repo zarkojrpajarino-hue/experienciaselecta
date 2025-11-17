@@ -96,13 +96,21 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             || session.user.email?.split('@')[0] 
             || 'Usuario';
 
-          // 3. NUEVO: Enviar email de bienvenida SIEMPRE tras login
+          // 3. Enviar email de bienvenida tras login
           try {
             console.log('🎉 Enviando email de bienvenida tras login:', session.user.email);
             
-            await supabase.functions.invoke('send-welcome-email', {
+            // Obtener sesión actualizada
+            const { data: { session: currentSession } } = await supabase.auth.getSession();
+            
+            if (!currentSession?.access_token) {
+              console.error('❌ No hay access_token disponible');
+              return;
+            }
+            
+            const { data, error } = await supabase.functions.invoke('send-welcome-email', {
               headers: {
-                Authorization: `Bearer ${session.access_token}`
+                Authorization: `Bearer ${currentSession.access_token}`
               },
               body: {
                 userEmail: session.user.email,
@@ -110,7 +118,11 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
               }
             });
             
-            console.log('✅ Email de bienvenida enviado');
+            if (error) {
+              console.error('❌ Error enviando email:', error);
+            } else {
+              console.log('✅ Email de bienvenida enviado:', data);
+            }
           } catch (emailError) {
             console.error('❌ Error enviando email de bienvenida:', emailError);
           }
