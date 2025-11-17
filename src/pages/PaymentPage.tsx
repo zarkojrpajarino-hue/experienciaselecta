@@ -113,7 +113,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-      <div className="min-h-[200px]">
+      <div className="min-h-[200px] relative z-0">
         <PaymentElement 
           onReady={() => setElementReady(true)}
           options={{
@@ -122,8 +122,16 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
               defaultCollapsed: false,
               radios: true,
               spacedAccordionItems: false
+            },
+            fields: {
+              billingDetails: {
+                name: 'auto',
+                email: 'auto',
+                phone: 'auto',
+              }
             }
           }}
+          className="stripe-payment-element"
         />
       </div>
       
@@ -257,7 +265,14 @@ const PaymentPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen pt-16 pb-6 px-3 sm:px-4 bg-white">
+      <div 
+        className="min-h-screen pt-16 pb-6 px-3 sm:px-4 bg-white overflow-y-auto"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          touchAction: 'pan-y',
+          overscrollBehavior: 'contain'
+        }}
+      >
         <div className="container mx-auto max-w-2xl">
           <Button
             onClick={() => navigate('/checkout')}
