@@ -119,12 +119,7 @@ const ExperienciaSelectaPage = () => {
         <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
+          <div className="mb-8">
             <Button
               onClick={() => navigate("/#categoria-cestas")}
               variant="ghost"
@@ -133,14 +128,10 @@ const ExperienciaSelectaPage = () => {
               <ArrowLeft className="mr-2 h-5 w-5" />
               Volver
             </Button>
-          </motion.div>
+          </div>
 
-          <motion.div 
+          <div 
             id="experiencia"
-            initial={{ opacity: 0, x: -100 }} 
-            whileInView={{ opacity: 1, x: 0 }} 
-            transition={{ duration: 0.8 }} 
-            viewport={{ once: true }} 
             className="mb-12 max-w-6xl mx-auto"
           >
             <div className="p-8 md:p-12 rounded-3xl transition-all duration-500" style={{ backgroundColor: '#FFFFFF' }}>
@@ -185,19 +176,15 @@ const ExperienciaSelectaPage = () => {
               </div>
               <ImageCarousel3D slides={experienciaSlides} title="Experiencia" carouselId="experiencia" />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Selecta Section */}
       <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <div 
             id="selecta"
-            initial={{ opacity: 0, x: 100 }} 
-            whileInView={{ opacity: 1, x: 0 }} 
-            transition={{ duration: 0.8 }} 
-            viewport={{ once: true }} 
             className="mb-12 max-w-6xl mx-auto"
           >
             <div className="p-8 md:p-12 transition-all duration-500">
@@ -242,10 +229,10 @@ const ExperienciaSelectaPage = () => {
               </div>
               <ImageCarousel3D slides={selectaSlides} title="Selecta" carouselId="selecta" />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
-      </div>
+    </div>
     </>
   );
 };

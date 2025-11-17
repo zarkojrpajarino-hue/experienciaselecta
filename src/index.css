@@ -303,4 +303,41 @@
     will-change: transform, opacity;
     backface-visibility: hidden;
   }
+
+  /* Stripe Payment Element Styles - Fix overlay and visibility issues */
+  .stripe-payment-element {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Ensure Stripe inputs are visible and not covered */
+  .StripeElement,
+  .StripeElement iframe {
+    z-index: 10 !important;
+    position: relative !important;
+  }
+
+  /* Fix input field visibility in Stripe elements */
+  .p-Input,
+  .p-Input input,
+  input[name="name"],
+  input[name="phone"],
+  input[type="tel"],
+  .Input,
+  .Input input {
+    background-color: white !important;
+    color: black !important;
+    z-index: 10 !important;
+    position: relative !important;
+    opacity: 1 !important;
+  }
+
+  /* Ensure text is visible in Stripe input fields */
+  .p-Input input::placeholder,
+  input[name="name"]::placeholder,
+  input[name="phone"]::placeholder {
+    color: #999 !important;
+    opacity: 1 !important;
+  }
 }
+
