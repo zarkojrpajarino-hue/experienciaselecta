@@ -243,7 +243,7 @@ const Navbar = () => {
                     if (user) {
                       navigate("/perfil");
                     } else {
-                      localStorage.setItem('pendingCheckout', 'true');
+                      localStorage.setItem('loginSource', 'navbar');
                       setShowAuthModal(true);
                     }
                   }}
