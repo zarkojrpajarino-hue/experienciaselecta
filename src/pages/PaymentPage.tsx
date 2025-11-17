@@ -123,6 +123,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
               radios: true,
               spacedAccordionItems: false
             },
+            // Desactivar Link ("Guardar mi información para un pago más rápido")
+            wallets: {
+              applePay: 'never',
+              googlePay: 'never',
+              link: 'never'
+            },
             fields: {
               billingDetails: {
                 name: 'auto',
