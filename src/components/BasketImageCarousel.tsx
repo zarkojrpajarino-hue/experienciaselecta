@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 // Import images - muestrario de cestas del catálogo
 import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
@@ -53,46 +53,39 @@ const BasketImageCarousel = () => {
   return (
     <div className="relative w-full h-32 md:h-40 mb-6 overflow-hidden">
       <div className="relative w-full h-full flex items-center justify-center">
-        <AnimatePresence mode="sync">
-          {visibleIndices.map((idx, position) => {
-            const isCenter = position === 1;
-            const offset = position === 0 ? -1 : position === 2 ? 1 : 0;
+        {visibleIndices.map((idx, position) => {
+          const isCenter = position === 1;
+          const offset = position === 0 ? -1 : position === 2 ? 1 : 0;
 
-            return (
-              <motion.div
-                key={`${idx}-${currentIndex}`}
-                initial={{
-                  x: offset * 150,
-                  scale: isCenter ? 1 : 0.7,
-                  opacity: isCenter ? 1 : 0.4,
-                  zIndex: isCenter ? 20 : 10,
-                }}
-                animate={{
-                  x: offset * 150,
-                  scale: isCenter ? 1 : 0.7,
-                  opacity: isCenter ? 1 : 0.4,
-                  zIndex: isCenter ? 20 : 10,
-                }}
-                exit={{
-                  x: offset * 150,
-                  scale: 0.7,
-                  opacity: 0,
-                }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="absolute"
-              >
-                <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-lg border-2 border-black/10">
-                  <img
-                    src={basketImages[idx]}
-                    alt={`Cesta ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+          return (
+            <motion.div
+              key={`${idx}-${currentIndex}`}
+              initial={{
+                x: offset * 150,
+                scale: isCenter ? 1 : 0.7,
+                opacity: isCenter ? 1 : 0.4,
+                zIndex: isCenter ? 20 : 10,
+              }}
+              animate={{
+                x: offset * 150,
+                scale: isCenter ? 1 : 0.7,
+                opacity: isCenter ? 1 : 0.4,
+                zIndex: isCenter ? 20 : 10,
+              }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="absolute"
+            >
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-lg border-2 border-black/10">
+                <img
+                  src={basketImages[idx]}
+                  alt={`Cesta ${idx + 1}`}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Indicadores */}
