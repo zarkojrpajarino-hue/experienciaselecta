@@ -129,19 +129,39 @@ const BasketImageCarousel = () => {
           </div>
         </div>
 
-        {/* Indicadores - más pequeños en móvil */}
-        <div className="flex justify-center gap-1 sm:gap-1.5 mt-2">
-          {basketImages.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300"
-              style={{
-                backgroundColor: idx === currentIndex ? '#D4AF37' : '#D1D5DB',
-              }}
-              aria-label={`Ir a imagen ${idx + 1}`}
-            />
-          ))}
+        {/* Botones de navegación con flechas */}
+        <div className="flex justify-center items-center gap-4 mt-2">
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev - 1 + basketImages.length) % basketImages.length)}
+            className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+            aria-label="Imagen anterior"
+          >
+            <svg 
+              className="w-4 h-4 sm:w-5 sm:h-5" 
+              fill="none" 
+              stroke="#D4AF37" 
+              viewBox="0 0 24 24"
+              strokeWidth={3}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev + 1) % basketImages.length)}
+            className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+            aria-label="Imagen siguiente"
+          >
+            <svg 
+              className="w-4 h-4 sm:w-5 sm:h-5" 
+              fill="none" 
+              stroke="#D4AF37" 
+              viewBox="0 0 24 24"
+              strokeWidth={3}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
 
