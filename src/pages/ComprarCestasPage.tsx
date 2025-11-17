@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
+import BasketImageCarousel from "@/components/BasketImageCarousel";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
 
@@ -58,6 +59,9 @@ const ComprarCestasPage = () => {
                   ← Volver al inicio
                 </Button>
               </div>
+
+              {/* Carrusel de imágenes de cestas */}
+              <BasketImageCarousel />
 
               {/* Texto "ELIGE:" - Siempre visible encima del toggle */}
               <motion.div
