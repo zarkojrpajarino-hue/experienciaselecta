@@ -249,39 +249,37 @@ const RoundedImageCarousel = ({ slides, autoPlay = true, autoPlayDelay = 5000, h
           )}
         </AnimatePresence>
 
-        {/* Image */}
-        <div 
-          ref={containerRef}
-          data-rounded-carousel-root
-          className={`mx-auto relative flex items-center justify-center rounded-[2rem] overflow-hidden ${
-            isSecondCarousel 
-              ? 'w-[60%] sm:w-[50%] md:w-[40%] h-[25vh] md:h-[30vh]' 
-              : 'w-full max-w-2xl md:max-w-3xl h-[25vh] md:h-[30vh]'
-          }`}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {slides.map((s, i) => (
-            <motion.div
-              key={i}
-              initial={false}
-              animate={{ opacity: index === i ? 1 : 0 }}
-              transition={{ duration: 0.6 }}
-              className="absolute inset-0 cursor-pointer rounded-[2rem] overflow-hidden"
-              style={{ pointerEvents: index === i ? "auto" : "none" }}
-              onClick={toggleImageExpand}
-            >
-              <img
-                src={s.image}
-                alt={s.alt || (typeof s.title === 'string' ? s.title : 'Imagen del carrusel')}
-                loading={i === index ? "eager" : "lazy"}
-                decoding="async"
-                className="w-full h-full object-cover rounded-[2rem]"
-              />
-            </motion.div>
-          ))}
-        </div>
+        {/* Image - oculta si es el segundo carrusel */}
+        {!isSecondCarousel && (
+          <div 
+            ref={containerRef}
+            data-rounded-carousel-root
+            className="mx-auto relative flex items-center justify-center rounded-[2rem] overflow-hidden w-full max-w-2xl md:max-w-3xl h-[25vh] md:h-[30vh]"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {slides.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={false}
+                animate={{ opacity: index === i ? 1 : 0 }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0 cursor-pointer rounded-[2rem] overflow-hidden"
+                style={{ pointerEvents: index === i ? "auto" : "none" }}
+                onClick={toggleImageExpand}
+              >
+                <img
+                  src={s.image}
+                  alt={s.alt || (typeof s.title === 'string' ? s.title : 'Imagen del carrusel')}
+                  loading={i === index ? "eager" : "lazy"}
+                  decoding="async"
+                  className="w-full h-full object-cover rounded-[2rem]"
+                />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
 
     </section>

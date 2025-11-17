@@ -318,10 +318,35 @@ const BasketCategories = () => {
                       type="button"
                       aria-label={`Abrir catálogo: ${category.title}`}
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCategoryClick(category.title); }}
-                      className="relative bg-transparent rounded-3xl p-3 md:p-6 shadow-2xl border-0 w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      className="relative rounded-3xl p-3 md:p-6 shadow-2xl border-0 w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent overflow-hidden"
                     >
+                      {/* Fondo animado con imagen de la cesta */}
+                      <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                        <motion.div
+                          className="absolute inset-0"
+                          animate={{
+                            scale: [1, 1.1, 1],
+                            opacity: [0.15, 0.25, 0.15]
+                          }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          <img
+                            src={category.basketImage}
+                            alt=""
+                            className="w-full h-full object-cover blur-sm"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </motion.div>
+                        <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]" />
+                      </div>
+
                       {/* Imagen */}
-                      <div className="w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
+                      <div className="relative w-full h-[75px] md:h-[280px] mb-3 rounded-3xl overflow-hidden px-0 md:px-2">
                         <img
                           src={category.basketImage}
                           alt={`${category.title} cestas`}
@@ -332,7 +357,7 @@ const BasketCategories = () => {
                       </div>
 
                       {/* Título y Flecha */}
-                      <div className="flex items-center justify-center gap-2 md:gap-3">
+                      <div className="relative flex items-center justify-center gap-2 md:gap-3">
                         <h3 
                           className="font-bebas font-bold text-2xl md:text-4xl whitespace-nowrap tracking-[0.2em]"
                           style={{ 
