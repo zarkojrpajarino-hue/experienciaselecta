@@ -37,16 +37,29 @@ const BasketImageCarousel = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [isAutoPaused, setIsAutoPaused] = useState(false);
 
   const minSwipeDistance = 50;
 
   useEffect(() => {
+    if (isAutoPaused) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % basketImages.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAutoPaused]);
+
+  useEffect(() => {
+    if (!isAutoPaused) return;
+
+    const timeout = setTimeout(() => {
+      setIsAutoPaused(false);
+    }, 7000);
+
+    return () => clearTimeout(timeout);
+  }, [isAutoPaused]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -66,8 +79,19 @@ const BasketImageCarousel = () => {
 
     if (isLeftSwipe) {
       setCurrentIndex((prev) => (prev + 1) % basketImages.length);
+      setIsAutoPaused(true);
     } else if (isRightSwipe) {
       setCurrentIndex((prev) => (prev - 1 + basketImages.length) % basketImages.length);
+      setIsAutoPaused(true);
+    }
+  };
+
+  const handleNavigationClick = (direction: 'prev' | 'next') => {
+    setIsAutoPaused(true);
+    if (direction === 'prev') {
+      setCurrentIndex((prev) => (prev - 1 + basketImages.length) % basketImages.length);
+    } else {
+      setCurrentIndex((prev) => (prev + 1) % basketImages.length);
     }
   };
 
@@ -132,7 +156,7 @@ const BasketImageCarousel = () => {
         {/* Botones de navegación con flechas */}
         <div className="flex justify-center items-center gap-4 mt-2">
           <button
-            onClick={() => setCurrentIndex((prev) => (prev - 1 + basketImages.length) % basketImages.length)}
+            onClick={() => handleNavigationClick('prev')}
             className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             aria-label="Imagen anterior"
           >
@@ -148,7 +172,7 @@ const BasketImageCarousel = () => {
           </button>
           
           <button
-            onClick={() => setCurrentIndex((prev) => (prev + 1) % basketImages.length)}
+            onClick={() => handleNavigationClick('next')}
             className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             aria-label="Imagen siguiente"
           >
