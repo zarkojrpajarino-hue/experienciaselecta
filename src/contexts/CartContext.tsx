@@ -22,6 +22,7 @@ interface CartContextType {
   removeMultipleItems: (itemsToRemove: Array<{ id: number; isGift?: boolean; quantityToRemove?: number }>) => void;
   getTotalItems: () => number;
   getTotalAmount: () => number;
+  isCartLoading: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -37,10 +38,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [prevUserId, setPrevUserId] = useState<string | null>(null);
+  const [isCartLoading, setIsCartLoading] = useState(true);
 
   // Load cart when user changes
   useEffect(() => {
     const userId = user?.id || null;
+    setIsCartLoading(true);
     
     // User logged in (from anonymous to authenticated)
     if (userId && !prevUserId) {
@@ -83,6 +86,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         console.error('Error handling cart on login:', error);
       }
       setPrevUserId(userId);
+      setIsCartLoading(false);
     }
     // User changed (switching accounts)
     else if (userId && prevUserId && userId !== prevUserId) {
@@ -95,23 +99,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setCart([]);
       }
       setPrevUserId(userId);
+      setIsCartLoading(false);
     }
     // User logged out
     else if (!userId && prevUserId) {
       setCart([]);
       setPrevUserId(null);
+      setIsCartLoading(false);
     }
     // Initial load for authenticated or anonymous user
     else if (prevUserId === null) {
       try {
         const storageKey = getCartStorageKey(userId);
         const savedCart = localStorage.getItem(storageKey);
-        setCart(savedCart ? JSON.parse(savedCart) : []);
+        const loadedCart = savedCart ? JSON.parse(savedCart) : [];
+        console.log('🛒 CartContext: Initial cart load', { 
+          userId: userId || 'anonymous', 
+          storageKey, 
+          itemCount: loadedCart.length 
+        });
+        setCart(loadedCart);
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
         setCart([]);
       }
       setPrevUserId(userId);
+      setIsCartLoading(false);
+    } else {
+      // No cambió nada, solo marcar como cargado
+      setIsCartLoading(false);
     }
   }, [user?.id]);
 
@@ -212,6 +228,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeMultipleItems,
         getTotalItems,
         getTotalAmount,
+        isCartLoading,
       }}
     >
       {children}

@@ -39,7 +39,7 @@ const CheckoutPage = () => {
   const { user, session, isLoading: isAuthLoading } = useAuth();
   
   // Obtener items desde el carrito global
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const { cart, removeFromCart, updateQuantity, isCartLoading } = useCart();
   
   // ===== TODOS LOS HOOKS DEBEN IR ANTES DE CUALQUIER RETURN CONDICIONAL =====
   const [isAuthInProgress, setIsAuthInProgress] = useState(false);
@@ -217,21 +217,22 @@ React.useEffect(() => {
 
   // Redirigir si el carrito está completamente vacío
   React.useEffect(() => {
-    // Solo verificar después de que auth termine de cargar
-    if (isAuthLoading || isAuthInProgress) {
+    // Solo verificar después de que auth Y carrito terminen de cargar
+    if (isAuthLoading || isAuthInProgress || isCartLoading) {
+      console.log('⏳ Esperando carga completa...', { isAuthLoading, isAuthInProgress, isCartLoading });
       return;
     }
     
     // Si el carrito está completamente vacío (sin items personales ni regalos)
     if (cart.length === 0 && currentPersonalItems.length === 0 && giftItems.length === 0) {
-      console.log('⚠️ Carrito completamente vacío, redirigiendo...');
+      console.log('⚠️ Carrito completamente vacío después de cargar, redirigiendo...');
       // Delay más largo para transición suave
       const timer = setTimeout(() => {
         navigate('/carrito-vacio', { replace: true });
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [cart.length, currentPersonalItems.length, giftItems.length, navigate, isAuthLoading, isAuthInProgress]);
+  }, [cart.length, currentPersonalItems.length, giftItems.length, navigate, isAuthLoading, isAuthInProgress, isCartLoading]);
 
 
   // ===== EMPEZAR useEffect HOOKS =====
