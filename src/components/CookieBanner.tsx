@@ -17,39 +17,20 @@ const CookieBanner = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Mostrar banner si NO hay consentimiento guardado
-    const stored = localStorage.getItem("cookieConsent");
+    // Mostrar banner solo si NO se ha mostrado en esta sesión
+    const shownThisSession = sessionStorage.getItem("cookieBannerShown");
     
-    if (!stored) {
+    if (!shownThisSession) {
       setIsVisible(true);
-      console.log('🍪 Cookie banner shown - no consent found');
+      console.log('🍪 Cookie banner shown - new session detected');
     } else {
-      try {
-        const parsed = JSON.parse(stored);
-        setAnalytics(!!parsed.analytics);
-        setMarketing(!!parsed.marketing);
-        console.log('🍪 Cookie consent loaded from localStorage:', parsed);
-      } catch {
-        // Si hay error al parsear, mostrar el banner
-        setIsVisible(true);
-      }
+      console.log('🍪 Cookie banner hidden - already shown in this session');
     }
   }, [location.pathname]);
 
-  const persistConsent = (prefs: { analytics: boolean; marketing: boolean }) => {
-    const payload = {
-      essential: true,
-      analytics: prefs.analytics,
-      marketing: prefs.marketing,
-      timestamp: Date.now(),
-      version: "1.0",
-    };
-    // Guardar de forma persistente hasta decisión del usuario
-    localStorage.setItem("cookieConsent", JSON.stringify(payload));
-  };
-
   const handleAcceptAll = async () => {
-    persistConsent({ analytics: true, marketing: true });
+    // Marcar como mostrado en esta sesión
+    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     setAnalytics(true);
@@ -72,6 +53,7 @@ const CookieBanner = () => {
           console.error('❌ Error registering cookie consent:', error);
         } else {
           console.log('✅ Cookie consent registered successfully:', data);
+          console.log('📧 Marketing email will be sent in 24 hours');
         }
       } catch (error) {
         console.error('❌ Error in cookie consent:', error);
@@ -82,16 +64,18 @@ const CookieBanner = () => {
   };
 
   const handleRejectAll = () => {
-    persistConsent({ analytics: false, marketing: false });
+    // Marcar como mostrado en esta sesión
+    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     setAnalytics(false);
     setMarketing(false);
-    console.log('🍪 All cookies rejected');
+    console.log('🍪 All cookies rejected - banner hidden for this session');
   };
 
   const handleSavePreferences = async () => {
-    persistConsent({ analytics, marketing });
+    // Marcar como mostrado en esta sesión
+    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     toast({ title: "Preferencias guardadas", description: "Tus ajustes de cookies han sido aplicados." });
@@ -113,6 +97,7 @@ const CookieBanner = () => {
           console.error('❌ Error registering cookie consent:', error);
         } else {
           console.log('✅ Cookie consent registered successfully:', data);
+          console.log('📧 Marketing email will be sent in 24 hours');
         }
       } catch (error) {
         console.error('❌ Error in cookie consent:', error);
