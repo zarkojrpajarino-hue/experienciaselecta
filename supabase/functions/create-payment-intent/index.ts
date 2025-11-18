@@ -70,7 +70,14 @@ serve(async (req) => {
 
     const { customerData, basketItems, totalAmount, isGiftMode, giftData, discountCode } = await req.json();
     
-    console.log('Processing payment intent creation', isGiftMode ? '(Gift Mode)' : '', discountCode ? '(With Discount)' : '');
+    // Extract discount code string if it comes as an object
+    const discountCodeString = typeof discountCode === 'object' && discountCode?.code 
+      ? discountCode.code 
+      : typeof discountCode === 'string' 
+        ? discountCode 
+        : null;
+    
+    console.log('Processing payment intent creation', isGiftMode ? '(Gift Mode)' : '', discountCodeString ? '(With Discount)' : '');
 
     // Validate customer data
     try {
@@ -129,8 +136,8 @@ serve(async (req) => {
     let discountCodeId = null;
     let expectedTotal = serverCalculatedTotal;
 
-    if (discountCode) {
-      console.log('Validating discount code:', discountCode);
+    if (discountCodeString) {
+      console.log('Validating discount code:', discountCodeString);
       
       // Get the first basket item to validate the discount
       const basketName = validatedItems[0]?.name;
@@ -138,7 +145,7 @@ serve(async (req) => {
       // Call the validate_discount_code RPC function
       const { data: validationResult, error: validationError } = await supabase
         .rpc('validate_discount_code', {
-          p_code: discountCode,
+          p_code: discountCodeString,
           p_user_email: customerData.email,
           p_basket_name: basketName,
           p_purchase_amount: serverCalculatedTotal
@@ -329,7 +336,7 @@ serve(async (req) => {
         sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
         sender_email: isGiftMode && giftData?.senderEmail ? giftData.senderEmail : '',
         recipients_count: isGiftMode && giftData?.recipients ? String(giftData.recipients.length) : '0',
-        discount_code: discountCode || '',
+        discount_code: discountCodeString || '',
         discount_amount: discountAmount ? String(discountAmount) : '0',
         original_amount: String(serverCalculatedTotal)
       },
