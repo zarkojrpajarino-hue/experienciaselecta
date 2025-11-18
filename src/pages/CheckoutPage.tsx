@@ -102,9 +102,45 @@ const CheckoutPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [appliedDiscount, setAppliedDiscount] = useState<any>(null);
+  const [hasLoadedFromStorage, setHasLoadedFromStorage] = useState(false);
   
   const isPersonalOpen = activeSection === 'personal';
   const isGiftOpen = activeSection === 'gift';
+
+  // Cargar datos del formulario desde localStorage al montar
+  React.useEffect(() => {
+    try {
+      const savedData = localStorage.getItem('checkoutFormData');
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        if (parsed.personalData) setPersonalData(parsed.personalData);
+        if (parsed.giftAssignment) setGiftAssignment(parsed.giftAssignment);
+        if (parsed.howFoundUs) setHowFoundUs(parsed.howFoundUs);
+        console.log('✅ Datos del formulario cargados desde localStorage');
+      }
+    } catch (error) {
+      console.error('Error cargando datos del formulario:', error);
+    }
+    setHasLoadedFromStorage(true);
+  }, []);
+
+  // Guardar datos del formulario en localStorage cada vez que cambien
+  React.useEffect(() => {
+    // No guardar hasta haber cargado desde storage primero
+    if (!hasLoadedFromStorage) return;
+    
+    try {
+      const dataToSave = {
+        personalData,
+        giftAssignment,
+        howFoundUs,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem('checkoutFormData', JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error('Error guardando datos del formulario:', error);
+    }
+  }, [personalData, giftAssignment, howFoundUs, hasLoadedFromStorage]);
 
   // Listener para recargar el carrito cuando cambie el auth
   React.useEffect(() => {

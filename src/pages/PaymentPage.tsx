@@ -88,6 +88,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
         if (data?.success) {
           toast.success("¡Pago completado con éxito!");
           
+          // Limpiar datos del formulario de checkout guardados
+          try {
+            localStorage.removeItem('checkoutFormData');
+            console.log('✅ Datos del formulario limpiados después del pago');
+          } catch (error) {
+            console.error('Error limpiando datos del formulario:', error);
+          }
+          
           // Redirect to success page
           navigate('/pago-exitoso', { 
             state: { 
