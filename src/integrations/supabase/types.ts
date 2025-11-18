@@ -859,6 +859,13 @@ export type Database = {
       }
     }
     Functions: {
+      check_user_exists_by_email: {
+        Args: { user_email: string }
+        Returns: {
+          user_exists: boolean
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

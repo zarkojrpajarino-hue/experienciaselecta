@@ -1,11 +1,16 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
 }
+
+// Validation schemas for Stripe metadata
+const emailSchema = z.string().trim().email().max(255)
+const nameSchema = z.string().trim().min(1).max(200).regex(/^[\p{L}\s'\-\.]+$/u)
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -60,38 +65,51 @@ serve(async (req) => {
       
       console.log('Payment succeeded for payment intent:', paymentIntent.id);
 
-      // Get customer email from payment intent
-      const customerEmail = paymentIntent.receipt_email || 
-                           (paymentIntent.customer_details as any)?.email ||
-                           paymentIntent.metadata?.customer_email;
+      // Get and validate customer email from payment intent
+      const rawEmail = paymentIntent.receipt_email || 
+                       (paymentIntent.customer_details as any)?.email ||
+                       paymentIntent.metadata?.customer_email;
 
-      if (!customerEmail) {
+      if (!rawEmail) {
         console.error('No customer email found in payment intent');
         throw new Error('Customer email not found');
       }
 
+      // Validate email
+      const emailValidation = emailSchema.safeParse(rawEmail);
+      if (!emailValidation.success) {
+        console.error('Invalid email format:', rawEmail);
+        throw new Error('Invalid customer email format');
+      }
+      const customerEmail = emailValidation.data;
+
       console.log('Customer email:', customerEmail);
 
-      // Get customer name from metadata or payment intent
-      const customerName = paymentIntent.metadata?.customer_name || 
-                          (paymentIntent.customer_details as any)?.name ||
-                          'Usuario';
+      // Get and validate customer name from metadata or payment intent
+      const rawName = paymentIntent.metadata?.customer_name || 
+                      (paymentIntent.customer_details as any)?.name ||
+                      'Usuario';
+
+      // Validate name
+      const nameValidation = nameSchema.safeParse(rawName);
+      const customerName = nameValidation.success ? nameValidation.data : 'Usuario';
 
       console.log('Customer name:', customerName);
 
-      // Check if user already exists in auth.users
-      const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+      // Check if user already exists using secure database function
+      const { data: userCheck, error: checkError } = await supabase
+        .rpc('check_user_exists_by_email', { user_email: customerEmail });
       
-      if (listError) {
-        console.error('Error listing users:', listError);
+      if (checkError) {
+        console.error('Error checking user existence:', checkError);
         throw new Error('Failed to check existing users');
       }
 
-      const existingUser = users.find(u => u.email === customerEmail);
+      const existingUser = userCheck && userCheck.length > 0 ? userCheck[0] : null;
 
       let userId: string;
 
-      if (!existingUser) {
+      if (!existingUser || !existingUser.user_exists) {
         console.log('User does not exist, creating new user...');
         
         // Create new user with random password
@@ -131,7 +149,7 @@ serve(async (req) => {
           // Don't throw - we don't want to fail the webhook if email fails
         }
       } else {
-        userId = existingUser.id;
+        userId = existingUser.user_id;
         console.log('User already exists:', userId);
       }
 
