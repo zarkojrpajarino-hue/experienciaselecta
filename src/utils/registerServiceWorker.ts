@@ -1,6 +1,16 @@
 export const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     try {
+      // Unregister existing service workers to force update
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+      
+      // Clear all caches
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map(name => caches.delete(name)));
+      
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
       });

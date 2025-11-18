@@ -1,7 +1,7 @@
 // Service Worker for auto-update with optimized caching
-const CACHE_NAME = 'experiencia-selecta-v2';
-const STATIC_CACHE = 'static-v2';
-const DYNAMIC_CACHE = 'dynamic-v2';
+const CACHE_NAME = 'experiencia-selecta-v3';
+const STATIC_CACHE = 'static-v3';
+const DYNAMIC_CACHE = 'dynamic-v3';
 
 // Resources to cache on install
 const STATIC_ASSETS = [
@@ -57,10 +57,13 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
+          // Only cache successful responses
+          if (response && response.ok) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
           return response;
         })
         .catch(() => {
@@ -70,38 +73,32 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for other resources (images, fonts, CSS, JS)
+  // Network-first for assets to ensure fresh content
   event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Return cached version and update in background
-        fetch(request)
-          .then((response) => {
-            caches.open(DYNAMIC_CACHE).then((cache) => {
-              cache.put(request, response);
-            });
-          })
-          .catch(() => {});
-        return cachedResponse;
-      }
-
-      // Not in cache, fetch from network
-      return fetch(request)
-        .then((response) => {
+    fetch(request)
+      .then((response) => {
+        // Only cache successful responses
+        if (response && response.ok) {
           const responseClone = response.clone();
           caches.open(DYNAMIC_CACHE).then((cache) => {
             cache.put(request, responseClone);
           });
-          return response;
-        })
-        .catch(() => {
+        }
+        return response;
+      })
+      .catch(() => {
+        // Fallback to cache only if network fails
+        return caches.match(request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
           // Return a fallback if both cache and network fail
           return new Response('Network error', {
             status: 408,
             headers: { 'Content-Type': 'text/plain' }
           });
         });
-    })
+      })
   );
 });
 
