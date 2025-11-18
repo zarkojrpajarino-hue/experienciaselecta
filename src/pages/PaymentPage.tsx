@@ -122,13 +122,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
               defaultCollapsed: false,
               radios: true,
               spacedAccordionItems: false
-            },
-            fields: {
-              billingDetails: {
-                name: 'auto',
-                email: 'auto',
-                phone: 'auto',
-              }
             }
           }}
           className="stripe-payment-element"
