@@ -181,33 +181,30 @@ serve(async (req) => {
     
     let existingCustomer = null;
     
-    if (user) {
-      // For authenticated users, search by user_id and email
-      const { data } = await supabase
-        .from('customers')
-        .select('id, stripe_customer_id')
-        .eq('user_id', user.id)
-        .eq('email', customerEmail)
-        .maybeSingle();
-      existingCustomer = data;
-    } else {
-      // For guests, search by email only
-      const { data } = await supabase
-        .from('customers')
-        .select('id, stripe_customer_id')
-        .eq('email', customerEmail)
-        .is('user_id', null)
-        .maybeSingle();
-      existingCustomer = data;
+    // Search existing customer by email (for both authenticated users and guests)
+    const { data: existingCustomerData, error: existingCustomerError } = await supabase
+      .from('customers')
+      .select('id, stripe_customer_id, user_id')
+      .eq('email', customerEmail)
+      .maybeSingle();
+
+    if (existingCustomerError) {
+      console.error('Error fetching existing customer:', existingCustomerError);
     }
+
+    existingCustomer = existingCustomerData || null;
 
     if (existingCustomer) {
       customerId = existingCustomer.id;
+
+      const updatedUserId = user?.id ?? existingCustomer.user_id ?? null;
       
-      // Update customer data
+      // Update customer data (and link to user if now authenticated)
       await supabase
         .from('customers')
         .update({
+          user_id: updatedUserId,
+          email: customerEmail,
           name: customerName,
           phone: customerData.phone,
           address_line1: customerData.address_line1,
