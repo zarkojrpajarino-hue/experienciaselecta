@@ -134,7 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
                 ${noteHtml}
                 
                 <p style="text-align: center;">
-                  <a href="https://tyorpbzvjnasyaqbggcp.supabase.co/functions/v1/claim-gift?giftId=${giftId}" class="cta-button">
+                  <a href="https://experienciaselecta.com/regalos?giftId=${giftId}" class="cta-button">
                     Reclamar mi regalo
                   </a>
                 </p>
