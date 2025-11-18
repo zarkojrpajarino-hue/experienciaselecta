@@ -1,10 +1,19 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// Validation schema for input
+const discountValidationSchema = z.object({
+  code: z.string().trim().min(1, 'Code is required').max(50, 'Code too long'),
+  user_email: z.string().trim().email('Invalid email format').max(255, 'Email too long'),
+  basket_name: z.string().trim().min(1, 'Basket name required').max(200, 'Basket name too long'),
+  purchase_amount: z.number().positive('Amount must be positive').finite().max(100000, 'Amount exceeds maximum')
+})
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -15,7 +24,24 @@ serve(async (req) => {
   try {
     console.log('🎫 validate-discount-code: Starting validation');
     
-    const { code, user_email, basket_name, purchase_amount } = await req.json();
+    const requestBody = await req.json();
+
+    // Validate input with Zod
+    const validationResult = discountValidationSchema.safeParse(requestBody);
+    
+    if (!validationResult.success) {
+      console.error('❌ Input validation failed:', validationResult.error.errors);
+      return new Response(
+        JSON.stringify({ 
+          valid: false, 
+          error: 'Formato de datos inválido',
+          details: validationResult.error.errors.map(e => e.message).join(', ')
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { code, user_email, basket_name, purchase_amount } = validationResult.data;
 
     console.log('📋 Validation params:', { 
       code, 
@@ -23,18 +49,6 @@ serve(async (req) => {
       basket_name, 
       purchase_amount 
     });
-
-    // Validate required fields
-    if (!code || !user_email || !basket_name || purchase_amount === undefined) {
-      console.error('❌ Missing required fields');
-      return new Response(
-        JSON.stringify({ 
-          valid: false, 
-          error: 'Faltan parámetros requeridos' 
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

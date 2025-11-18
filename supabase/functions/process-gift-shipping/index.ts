@@ -120,16 +120,17 @@ serve(async (req) => {
     // Create user account automatically if it doesn't exist
     console.log('Checking if user exists for email:', recipientEmail);
     
-    const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+    const { data: userCheck, error: checkError } = await supabase
+      .rpc('check_user_exists_by_email', { user_email: recipientEmail });
     
-    if (listError) {
-      console.error('Error listing users:', listError);
+    if (checkError) {
+      console.error('Error checking user existence:', checkError);
       throw new Error('Failed to check existing users');
     }
 
-    const existingUser = users.find(u => u.email === recipientEmail);
+    const existingUser = userCheck && userCheck.length > 0 ? userCheck[0] : null;
 
-    if (!existingUser) {
+    if (!existingUser || !existingUser.user_exists) {
       console.log('User does not exist, creating new user for recipient...');
       
       // Create new user with random password
@@ -178,7 +179,7 @@ serve(async (req) => {
         }
       }
     } else {
-      console.log('User already exists for recipient:', existingUser.id);
+      console.log('User already exists for recipient:', existingUser.user_id);
     }
 
     // Mark the order as completed now that recipient has provided shipping info
