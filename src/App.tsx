@@ -57,6 +57,31 @@ const ScrollToTopOnRouteChange = () => {
   return null;
 };
 
+// Redirect to home on page reload (except for specific routes)
+const RedirectOnReload = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if this is a page reload
+    const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+    const isReload = navigationEntries.length > 0 && navigationEntries[0].type === 'reload';
+    
+    if (isReload) {
+      const currentPath = location.pathname;
+      
+      // Don't redirect if we're already on these routes
+      const exemptRoutes = ['/', '/login', '/auth/callback', '/auto-login'];
+      
+      if (!exemptRoutes.includes(currentPath)) {
+        console.log(`Page reloaded on ${currentPath}, redirecting to home...`);
+        window.location.replace('/');
+      }
+    }
+  }, [location.pathname]);
+
+  return null;
+};
+
 
 const App = () => (
   <AuthProvider>
@@ -68,6 +93,7 @@ const App = () => (
         
         <div className="min-h-screen bg-background gpu-accelerated">
           <ScrollToTopOnRouteChange />
+          <RedirectOnReload />
           <Suspense fallback={<PageLoader />}>
             <PageLayout>
               <Routes>
