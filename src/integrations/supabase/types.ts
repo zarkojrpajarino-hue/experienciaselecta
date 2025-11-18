@@ -130,7 +130,7 @@ export type Database = {
           postal_code: string
           stripe_customer_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           address_line1: string
@@ -145,7 +145,7 @@ export type Database = {
           postal_code: string
           stripe_customer_id?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           address_line1?: string
@@ -160,7 +160,7 @@ export type Database = {
           postal_code?: string
           stripe_customer_id?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
