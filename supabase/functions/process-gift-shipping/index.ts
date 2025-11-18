@@ -117,6 +117,70 @@ serve(async (req) => {
 
     console.log('Authorization verified for gift:', validatedData.giftId);
 
+    // Create user account automatically if it doesn't exist
+    console.log('Checking if user exists for email:', recipientEmail);
+    
+    const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+    
+    if (listError) {
+      console.error('Error listing users:', listError);
+      throw new Error('Failed to check existing users');
+    }
+
+    const existingUser = users.find(u => u.email === recipientEmail);
+
+    if (!existingUser) {
+      console.log('User does not exist, creating new user for recipient...');
+      
+      // Create new user with random password
+      const randomPassword = crypto.randomUUID();
+      
+      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+        email: recipientEmail,
+        password: randomPassword,
+        email_confirm: true, // Auto-confirm email
+        user_metadata: {
+          name: validatedData.recipientName,
+          created_via: 'gift_claim',
+          auto_created: true
+        }
+      });
+
+      if (createError || !newUser.user) {
+        console.error('Error creating user:', createError);
+        // Don't throw - we can still process the gift
+        console.warn('Failed to create user, continuing with gift processing');
+      } else {
+        console.log('User created successfully for recipient:', newUser.user.id);
+        
+        // Update the gift with the new user_id
+        const { error: updateUserIdError } = await supabase
+          .from('pending_gifts')
+          .update({ recipient_user_id: newUser.user.id })
+          .eq('id', validatedData.giftId);
+          
+        if (updateUserIdError) {
+          console.error('Error updating gift with user_id:', updateUserIdError);
+        }
+
+        // Optionally send welcome email
+        try {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email: recipientEmail,
+              name: validatedData.recipientName,
+              isAutoCreated: true
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          // Don't throw - we don't want to fail the gift processing if email fails
+        }
+      }
+    } else {
+      console.log('User already exists for recipient:', existingUser.id);
+    }
+
     // Mark the order as completed now that recipient has provided shipping info
     const { error: orderUpdateError } = await supabase
       .from('orders')
