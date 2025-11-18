@@ -1,26 +1,35 @@
 export const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     try {
-      // Unregister existing service workers to force update
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      for (const registration of registrations) {
-        await registration.unregister();
-      }
+      // Check if we need to force update (only during development or specific updates)
+      const forceUpdate = sessionStorage.getItem('force-sw-update') === 'true';
       
-      // Clear all caches
-      const cacheNames = await caches.keys();
-      await Promise.all(cacheNames.map(name => caches.delete(name)));
+      if (forceUpdate) {
+        console.log('🔄 Force updating service worker...');
+        // Unregister existing service workers
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
+        
+        // Clear all caches
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        
+        // Clear the flag
+        sessionStorage.removeItem('force-sw-update');
+      }
       
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
       });
 
-      console.log('Service Worker registered successfully:', registration);
+      console.log('✅ Service Worker registered successfully');
 
-      // Check for updates every 3 minutes (reduced frequency for better performance)
+      // Check for updates every 5 minutes (less aggressive)
       setInterval(() => {
         registration.update();
-      }, 180000);
+      }, 300000);
 
       // Listen for updates
       registration.addEventListener('updatefound', () => {
@@ -29,11 +38,14 @@ export const registerServiceWorker = async () => {
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New version available! Reloading...');
+              console.log('📦 New version available!');
               // Tell the new service worker to skip waiting
               newWorker.postMessage({ type: 'SKIP_WAITING' });
-              // Reload the page to get the new version
-              window.location.reload();
+              // Reload after a short delay to allow Supabase session to persist
+              setTimeout(() => {
+                console.log('🔄 Reloading for new version...');
+                window.location.reload();
+              }, 1000);
             }
           });
         }
@@ -41,12 +53,18 @@ export const registerServiceWorker = async () => {
 
       // Handle controller change (when a new service worker takes over)
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('Service Worker controller changed, reloading...');
-        window.location.reload();
+        // Only reload if we're not in the middle of authentication
+        const authInProgress = localStorage.getItem('oauthInProgress') === 'true';
+        if (!authInProgress) {
+          console.log('🔄 Service Worker controller changed');
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          console.log('⏸️ Skipping reload - auth in progress');
+        }
       });
 
     } catch (error) {
-      console.error('Service Worker registration failed:', error);
+      console.error('❌ Service Worker registration failed:', error);
     }
   }
 };

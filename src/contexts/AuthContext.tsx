@@ -32,9 +32,44 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     let isProcessing = false;
     
+    console.log('🔍 AuthProvider initializing...');
+    
+    // Debug: Verificar qué hay en localStorage de Supabase
+    const checkSupabaseStorage = () => {
+      const keys = Object.keys(localStorage);
+      const supabaseKeys = keys.filter(k => k.includes('supabase'));
+      console.log('🔑 Supabase keys in localStorage:', supabaseKeys);
+      supabaseKeys.forEach(key => {
+        try {
+          const value = localStorage.getItem(key);
+          if (value) {
+            const parsed = JSON.parse(value);
+            console.log(`📦 ${key}:`, {
+              hasAccessToken: !!parsed.access_token,
+              hasRefreshToken: !!parsed.refresh_token,
+              expiresAt: parsed.expires_at ? new Date(parsed.expires_at * 1000).toLocaleString() : 'N/A'
+            });
+          }
+        } catch (e) {
+          console.log(`📦 ${key}: [no JSON]`);
+        }
+      });
+    };
+    
+    checkSupabaseStorage();
+    
     // Primero verificar si hay una sesión existente
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('📍 Initial session check:', session?.user?.email || 'No session');
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      console.log('📍 Initial session check:', {
+        hasSession: !!session,
+        userEmail: session?.user?.email || 'No session',
+        error: error?.message
+      });
+      
+      if (error) {
+        console.error('❌ Error getting session:', error);
+      }
+      
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
@@ -73,6 +108,20 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         if (event === 'SIGNED_IN' && session?.user) {
           isProcessing = true;
           console.log('✅ Usuario autenticado:', session.user.email);
+          
+          // Verificar que la sesión se haya guardado en localStorage
+          setTimeout(() => {
+            const keys = Object.keys(localStorage);
+            const supabaseKeys = keys.filter(k => k.includes('supabase'));
+            console.log('🔍 Post-login localStorage check:', {
+              supabaseKeys: supabaseKeys.length,
+              hasAuthToken: supabaseKeys.some(k => k.includes('auth'))
+            });
+            
+            if (supabaseKeys.length === 0) {
+              console.error('⚠️ WARNING: No Supabase keys found in localStorage after login!');
+            }
+          }, 500);
           
           // 1. Identificar en RudderStack
           try {
