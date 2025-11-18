@@ -17,22 +17,22 @@ const CookieBanner = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Verificar si el banner ya se mostró en esta sesión del navegador
-    const shownThisSession = sessionStorage.getItem("cookieBannerShown");
-    
-    // Mostrar banner si NO se ha mostrado en esta sesión
-    if (!shownThisSession) {
-      setIsVisible(true);
-    }
-
-    // Cargar preferencias guardadas si existen
+    // Mostrar banner si NO hay consentimiento guardado
     const stored = localStorage.getItem("cookieConsent");
-    if (stored) {
+    
+    if (!stored) {
+      setIsVisible(true);
+      console.log('🍪 Cookie banner shown - no consent found');
+    } else {
       try {
         const parsed = JSON.parse(stored);
         setAnalytics(!!parsed.analytics);
         setMarketing(!!parsed.marketing);
-      } catch {}
+        console.log('🍪 Cookie consent loaded from localStorage:', parsed);
+      } catch {
+        // Si hay error al parsear, mostrar el banner
+        setIsVisible(true);
+      }
     }
   }, [location.pathname]);
 
@@ -50,7 +50,6 @@ const CookieBanner = () => {
 
   const handleAcceptAll = async () => {
     persistConsent({ analytics: true, marketing: true });
-    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     setAnalytics(true);
@@ -59,38 +58,40 @@ const CookieBanner = () => {
     // Registrar consentimiento en BD si el usuario está autenticado
     if (user && user.email) {
       try {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('cookie_consents')
-          .upsert({
+          .insert({
             user_id: user.id,
             email: user.email,
-          }, {
-            onConflict: 'user_id'
-          });
+            consented_at: new Date().toISOString(),
+            marketing_email_sent: false
+          })
+          .select();
 
         if (error) {
-          console.error('Error registering cookie consent:', error);
+          console.error('❌ Error registering cookie consent:', error);
         } else {
-          console.log('✅ Cookie consent registered');
+          console.log('✅ Cookie consent registered successfully:', data);
         }
       } catch (error) {
-        console.error('Error in cookie consent:', error);
+        console.error('❌ Error in cookie consent:', error);
       }
+    } else {
+      console.log('⚠️ User not authenticated, consent not saved to DB');
     }
   };
 
   const handleRejectAll = () => {
     persistConsent({ analytics: false, marketing: false });
-    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     setAnalytics(false);
     setMarketing(false);
+    console.log('🍪 All cookies rejected');
   };
 
   const handleSavePreferences = async () => {
     persistConsent({ analytics, marketing });
-    sessionStorage.setItem("cookieBannerShown", "true");
     setIsVisible(false);
     setShowPreferences(false);
     toast({ title: "Preferencias guardadas", description: "Tus ajustes de cookies han sido aplicados." });
@@ -98,23 +99,26 @@ const CookieBanner = () => {
     // Registrar consentimiento si acepta marketing o analíticas
     if ((analytics || marketing) && user && user.email) {
       try {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('cookie_consents')
-          .upsert({
+          .insert({
             user_id: user.id,
             email: user.email,
-          }, {
-            onConflict: 'user_id'
-          });
+            consented_at: new Date().toISOString(),
+            marketing_email_sent: false
+          })
+          .select();
 
         if (error) {
-          console.error('Error registering cookie consent:', error);
+          console.error('❌ Error registering cookie consent:', error);
         } else {
-          console.log('✅ Cookie consent registered');
+          console.log('✅ Cookie consent registered successfully:', data);
         }
       } catch (error) {
-        console.error('Error in cookie consent:', error);
+        console.error('❌ Error in cookie consent:', error);
       }
+    } else {
+      console.log('⚠️ User not authenticated or no marketing/analytics accepted');
     }
   };
 
