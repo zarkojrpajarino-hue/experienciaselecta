@@ -826,6 +826,33 @@ export type Database = {
         }
         Relationships: []
       }
+      validation_attempts: {
+        Row: {
+          code_attempted: string
+          created_at: string
+          id: string
+          ip_address: unknown
+          success: boolean | null
+          user_email: string | null
+        }
+        Insert: {
+          code_attempted: string
+          created_at?: string
+          id?: string
+          ip_address: unknown
+          success?: boolean | null
+          user_email?: string | null
+        }
+        Update: {
+          code_attempted?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          success?: boolean | null
+          user_email?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       completed_purchases: {
@@ -866,6 +893,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      cleanup_old_validation_attempts: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
