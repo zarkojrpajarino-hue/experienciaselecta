@@ -23,6 +23,12 @@ import selecta5 from "@/assets/selecta-5-clean.png";
 
 const ExperienciaSelectaPage = () => {
   const navigate = useNavigate();
+  const [isReady, setIsReady] = React.useState(false);
+
+  React.useEffect(() => {
+    // Asegurar que el componente se renderiza después de montar
+    setIsReady(true);
+  }, []);
 
   const experienciaSlides = [
     {
@@ -109,6 +115,10 @@ const ExperienciaSelectaPage = () => {
       )
     }
   ];
+
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <>
