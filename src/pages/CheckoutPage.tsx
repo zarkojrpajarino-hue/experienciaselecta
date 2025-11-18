@@ -407,17 +407,6 @@ React.useEffect(() => {
     setAttemptedSubmit(true);
     setShowErrorMessage(false);
     
-    // Require authentication
-    if (!user) {
-      console.log('🔴 No user - showing auth modal');
-      // Establecer flag ANTES de abrir modal para preservar carrito tras login
-      localStorage.setItem('pendingCheckout', 'true');
-      setShowAuthModal(true);
-      toast.error("Inicia sesión para continuar con tu pedido");
-      return;
-    }
-    
-    console.log('✅ User authenticated, continuing...');
     console.log('🔍 Validando howFoundUs:', howFoundUs);
     
     // Validar "Cómo nos has conocido"
@@ -517,15 +506,16 @@ React.useEffect(() => {
       console.log('✅ No hay regalos para validar');
     }
 
-    // Save profile data before continuing to payment
-    console.log('💾 Guardando perfil...');
-    try {
-      await saveProfileData();
-      console.log('✅ Perfil guardado');
-    } catch (error) {
-      console.error('❌ Error guardando perfil:', error);
-      toast.error("Error al guardar tus datos");
-      return;
+    // Guardar perfil solo si el usuario está autenticado
+    if (user) {
+      console.log('💾 Guardando perfil...');
+      try {
+        await saveProfileData();
+        console.log('✅ Perfil guardado');
+      } catch (error) {
+        console.error('❌ Error guardando perfil:', error);
+        // No bloquear el checkout si falla el guardado del perfil
+      }
     }
 
     console.log('🎉 Todas las validaciones pasadas. Preparando pago...');
@@ -534,12 +524,6 @@ React.useEffect(() => {
     // Prepare data for payment intent
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast.error("Sesión expirada. Por favor, inicia sesión de nuevo");
-        setShowAuthModal(true);
-        return;
-      }
 
       // Prepare basket items
       const basketItems = [];
@@ -610,7 +594,7 @@ React.useEffect(() => {
         hasDiscount: !!appliedDiscount
       });
       
-      const { data, error } = await supabase.functions.invoke('create-payment-intent', {
+      const invokeOptions: any = {
         body: {
           customerData,
           basketItems,
@@ -623,11 +607,17 @@ React.useEffect(() => {
             discount_amount: appliedDiscount.discount_amount,
             original_amount: appliedDiscount.original_amount
           } : null
-        },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
         }
-      });
+      };
+
+      // Solo añadir headers de autorización si hay sesión
+      if (session?.access_token) {
+        invokeOptions.headers = {
+          Authorization: `Bearer ${session.access_token}`
+        };
+      }
+      
+      const { data, error } = await supabase.functions.invoke('create-payment-intent', invokeOptions);
 
       console.log('create-payment-intent response:', { data, error });
 
@@ -677,26 +667,11 @@ React.useEffect(() => {
   };
 
   const toggleSection = (section: 'personal' | 'gift') => {
-    // Si intenta abrir la sección de datos personales y no está logueado, abrir login
-    if (section === 'personal' && !user) {
-      // Establecer flag antes de abrir modal para preservar carrito tras login
-      localStorage.setItem('pendingCheckout', 'true');
-      setShowAuthModal(true);
-      toast.error("Inicia sesión para rellenar los datos de envío");
-      return;
-    }
     setActiveSection(section);
   };
-  // Handler para verificar auth antes de permitir editar campos
+  // Handler para inputs - ya no requiere autenticación
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (!user) {
-      e.preventDefault();
-      e.target.blur();
-      // Establecer flag antes de abrir modal para preservar carrito tras login
-      localStorage.setItem('pendingCheckout', 'true');
-      setShowAuthModal(true);
-      toast.error("Inicia sesión para rellenar los datos de envío");
-    }
+    // Permitir edición sin login
   };
 
   return (
