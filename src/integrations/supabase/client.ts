@@ -11,7 +11,18 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     storage: localStorage,
+    storageKey: 'supabase.auth.token',
     persistSession: true,
     autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce'
   }
+});
+
+// Debug: Log de configuración del cliente
+console.log('🔧 Supabase client initialized with:', {
+  url: SUPABASE_URL,
+  storage: 'localStorage',
+  persistSession: true,
+  autoRefreshToken: true
 });
