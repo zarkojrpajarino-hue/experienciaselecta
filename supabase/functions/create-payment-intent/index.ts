@@ -80,21 +80,23 @@ serve(async (req) => {
       throw new Error(`Invalid customer data: ${validationError.errors.map((e: any) => e.message).join(', ')}`);
     }
 
-    // Get user from JWT token
+    // Get user from JWT token (optional for guest checkout)
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('No authorization header');
-    }
-
-    const jwt = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabase.auth.getUser(jwt);
+    let user = null;
     
-    if (userError || !user) {
-      console.error('Authentication error');
-      throw new Error('Authentication required');
+    if (authHeader) {
+      const jwt = authHeader.replace('Bearer ', '');
+      const { data: authData, error: userError } = await supabase.auth.getUser(jwt);
+      
+      if (!userError && authData?.user) {
+        user = authData.user;
+        console.log('User authenticated:', user.id);
+      } else {
+        console.log('Invalid token, proceeding as guest');
+      }
+    } else {
+      console.log('No authorization header, proceeding as guest checkout');
     }
-
-    console.log('User authenticated');
 
     // Server-side price validation
     let serverCalculatedTotal = 0;
@@ -130,17 +132,33 @@ serve(async (req) => {
     console.log('Price validation passed');
 
     // Create or get customer in our database
-    // For gifts, use the sender's (payer's) user_id but recipient's email for communication
+    // For authenticated users: use user_id
+    // For guests: use email as identifier, user_id will be null
     let customerId;
     const customerEmail = isGiftMode && giftData?.recipientEmail ? giftData.recipientEmail : customerData.email;
     const customerName = isGiftMode && giftData?.recipientName ? giftData.recipientName : customerData.name;
     
-    const { data: existingCustomer } = await supabase
-      .from('customers')
-      .select('id, stripe_customer_id')
-      .eq('user_id', user.id)
-      .eq('email', customerEmail)
-      .maybeSingle();
+    let existingCustomer = null;
+    
+    if (user) {
+      // For authenticated users, search by user_id and email
+      const { data } = await supabase
+        .from('customers')
+        .select('id, stripe_customer_id')
+        .eq('user_id', user.id)
+        .eq('email', customerEmail)
+        .maybeSingle();
+      existingCustomer = data;
+    } else {
+      // For guests, search by email only
+      const { data } = await supabase
+        .from('customers')
+        .select('id, stripe_customer_id')
+        .eq('email', customerEmail)
+        .is('user_id', null)
+        .maybeSingle();
+      existingCustomer = data;
+    }
 
     if (existingCustomer) {
       customerId = existingCustomer.id;
@@ -162,9 +180,9 @@ serve(async (req) => {
       const { data: newCustomer, error: customerError } = await supabase
         .from('customers')
         .insert({
-          user_id: user.id,  // Payer's user_id
-          email: customerEmail,  // Recipient's email for gifts
-          name: customerName,  // Recipient's name for gifts
+          user_id: user?.id || null,  // Null for guest checkout
+          email: customerEmail,
+          name: customerName,
           phone: customerData.phone,
           address_line1: customerData.address_line1,
           address_line2: customerData.address_line2,
@@ -176,7 +194,7 @@ serve(async (req) => {
         .single();
 
       if (customerError || !newCustomer) {
-        console.error('Error creating customer');
+        console.error('Error creating customer:', customerError);
         throw new Error('Failed to create customer');
       }
       customerId = newCustomer.id;
