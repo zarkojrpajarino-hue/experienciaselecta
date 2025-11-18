@@ -124,9 +124,50 @@ serve(async (req) => {
       });
     }
 
+    // Validate and apply discount code if provided
+    let discountAmount = 0;
+    let discountCodeId = null;
+    let expectedTotal = serverCalculatedTotal;
+
+    if (discountCode) {
+      console.log('Validating discount code:', discountCode);
+      
+      // Get the first basket item to validate the discount
+      const basketName = validatedItems[0]?.name;
+      
+      // Call the validate_discount_code RPC function
+      const { data: validationResult, error: validationError } = await supabase
+        .rpc('validate_discount_code', {
+          p_code: discountCode,
+          p_user_email: customerData.email,
+          p_basket_name: basketName,
+          p_purchase_amount: serverCalculatedTotal
+        });
+
+      if (validationError || !validationResult) {
+        console.error('Discount validation error:', validationError);
+        throw new Error('Invalid discount code');
+      }
+
+      const result = typeof validationResult === 'string' 
+        ? JSON.parse(validationResult) 
+        : validationResult;
+
+      if (!result.valid) {
+        throw new Error(result.message || 'Invalid discount code');
+      }
+
+      // Apply the discount
+      discountAmount = result.discount_amount;
+      discountCodeId = result.discount_code_id;
+      expectedTotal = serverCalculatedTotal - discountAmount;
+      
+      console.log(`Discount applied: ${discountAmount}€, new total: ${expectedTotal.toFixed(2)}€`);
+    }
+
     // Verify price matches (allow 0.01 difference for rounding)
-    if (Math.abs(serverCalculatedTotal - totalAmount) > 0.01) {
-      throw new Error(`Price mismatch: expected ${serverCalculatedTotal.toFixed(2)}€, received ${totalAmount.toFixed(2)}€`);
+    if (Math.abs(expectedTotal - totalAmount) > 0.01) {
+      throw new Error(`Price mismatch: expected ${expectedTotal.toFixed(2)}€, received ${totalAmount.toFixed(2)}€`);
     }
 
     console.log('Price validation passed');
@@ -238,20 +279,20 @@ serve(async (req) => {
         .eq('id', customerId);
     }
 
-    // Create order using server-calculated total
+    // Create order using server-calculated total (with discount applied if present)
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
         customer_id: customerId,
-        total_amount: Math.round(serverCalculatedTotal * 100), // Convert to cents
+        total_amount: Math.round(expectedTotal * 100), // Convert to cents (discounted amount)
         currency: 'EUR',
         shipping_address_line1: customerData.address_line1,
         shipping_address_line2: customerData.address_line2,
         shipping_city: customerData.city,
         shipping_postal_code: customerData.postal_code,
         shipping_country: customerData.country || 'España',
-        discount_code_id: discountCode?.code_id || null,
-        discount_amount: discountCode?.discount_amount ? Math.round(discountCode.discount_amount * 100) : null
+        discount_code_id: discountCodeId,
+        discount_amount: discountAmount ? Math.round(discountAmount * 100) : null
       })
       .select('id')
       .single();
@@ -279,9 +320,9 @@ serve(async (req) => {
       throw new Error('Failed to create order items');
     }
 
-    // Create Stripe payment intent with server-calculated amount
+    // Create Stripe payment intent with server-calculated amount (with discount applied)
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(serverCalculatedTotal * 100), // Amount in cents
+      amount: Math.round(expectedTotal * 100), // Amount in cents (discounted amount)
       currency: 'eur',
       customer: stripeCustomerId,
       metadata: {
@@ -291,9 +332,9 @@ serve(async (req) => {
         sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
         sender_email: isGiftMode && giftData?.senderEmail ? giftData.senderEmail : '',
         recipients_count: isGiftMode && giftData?.recipients ? String(giftData.recipients.length) : '0',
-        discount_code: discountCode?.code || '',
-        discount_amount: discountCode?.discount_amount ? String(discountCode.discount_amount) : '0',
-        original_amount: discountCode?.original_amount ? String(discountCode.original_amount) : String(serverCalculatedTotal)
+        discount_code: discountCode || '',
+        discount_amount: discountAmount ? String(discountAmount) : '0',
+        original_amount: String(serverCalculatedTotal)
       },
       automatic_payment_methods: {
         enabled: true,
