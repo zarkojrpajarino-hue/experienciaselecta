@@ -49,9 +49,9 @@ const ScrollToTopOnRouteChange = () => {
   }, []);
 
   useEffect(() => {
-    // Scroll instantáneo al top sin smooth behavior
-    // Usa behavior: 'instant' para evitar conflictos con CSS scroll-behavior
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    console.log('[ScrollToTopOnRouteChange] Scrolling to top for path:', location.pathname);
+    // Scroll instantáneo al top usando comportamiento soportado por todos los navegadores
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [location.pathname]);
   
   return null;
