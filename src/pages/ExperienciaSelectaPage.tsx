@@ -23,12 +23,8 @@ import selecta5 from "@/assets/selecta-5-clean.png";
 
 const ExperienciaSelectaPage = () => {
   const navigate = useNavigate();
-  const [isReady, setIsReady] = React.useState(false);
-
-  React.useEffect(() => {
-    // Asegurar que el componente se renderiza después de montar
-    setIsReady(true);
-  }, []);
+  
+  console.log('🎯 ExperienciaSelectaPage rendered');
 
   const experienciaSlides = [
     {
@@ -116,9 +112,22 @@ const ExperienciaSelectaPage = () => {
     }
   ];
 
-  if (!isReady) {
-    return null;
-  }
+  // Helper function for smooth scroll that works on mobile
+  const smoothScrollTo = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      console.log(`🔄 Scrolling to ${elementId}`);
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - 100; // Offset for navbar
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    } else {
+      console.warn(`❌ Element ${elementId} not found`);
+    }
+  };
 
   return (
     <>
@@ -170,12 +179,7 @@ const ExperienciaSelectaPage = () => {
             <div className="mt-12">
               <div className="flex justify-center mb-8">
                 <Button
-                  onClick={() => {
-                    const selectaElement = document.getElementById('selecta');
-                    if (selectaElement) {
-                      selectaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                  }}
+                  onClick={() => smoothScrollTo('selecta')}
                   variant="ghost"
                   size="lg"
                   className="text-gold hover:text-gold/80 hover:bg-gold/10"
@@ -223,12 +227,7 @@ const ExperienciaSelectaPage = () => {
             <div className="mt-12">
               <div className="flex justify-center mb-8">
                 <Button
-                  onClick={() => {
-                    const experienciaElement = document.getElementById('experiencia');
-                    if (experienciaElement) {
-                      experienciaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                  }}
+                  onClick={() => smoothScrollTo('experiencia')}
                   variant="ghost"
                   size="lg"
                   className="text-gold hover:text-gold/80 hover:bg-gold/10"

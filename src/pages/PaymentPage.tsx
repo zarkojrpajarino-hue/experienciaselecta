@@ -130,6 +130,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, orderId, totalA
               defaultCollapsed: false,
               radios: true,
               spacedAccordionItems: false
+            },
+            fields: {
+              billingDetails: {
+                email: 'auto',
+                phone: 'auto'
+              }
             }
           }}
           className="stripe-payment-element"
@@ -300,7 +306,53 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              <Elements stripe={stripeInstance} options={{ clientSecret }}>
+              <Elements 
+                stripe={stripeInstance} 
+                options={{ 
+                  clientSecret,
+                  appearance: {
+                    theme: 'stripe',
+                    variables: {
+                      colorPrimary: '#D4AF37',
+                      colorBackground: '#ffffff',
+                      colorText: '#1a1a1a',
+                      colorDanger: '#df1b41',
+                      fontFamily: 'system-ui, sans-serif',
+                      spacingUnit: '4px',
+                      borderRadius: '8px',
+                    },
+                    rules: {
+                      '.Input': {
+                        color: '#1a1a1a',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e5e7eb',
+                      },
+                      '.Input:focus': {
+                        border: '1px solid #D4AF37',
+                        boxShadow: '0 0 0 1px #D4AF37',
+                      },
+                      '.Input::placeholder': {
+                        color: '#9ca3af',
+                      },
+                      '.Label': {
+                        color: '#1a1a1a',
+                        fontWeight: '500',
+                      },
+                      '.Tab': {
+                        border: '1px solid #e5e7eb',
+                        backgroundColor: '#ffffff',
+                      },
+                      '.Tab:hover': {
+                        backgroundColor: '#f9fafb',
+                      },
+                      '.Tab--selected': {
+                        borderColor: '#D4AF37',
+                        backgroundColor: '#fef3c7',
+                      },
+                    }
+                  }
+                }}
+              >
                 <PaymentForm 
                   clientSecret={clientSecret} 
                   orderId={orderId}
