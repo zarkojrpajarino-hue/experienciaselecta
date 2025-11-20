@@ -132,10 +132,10 @@ const ExperienciaSelectaPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen font-work-sans bg-white pt-16">
+      <div className="min-h-screen font-work-sans bg-white pt-4 md:pt-8">
         
         {/* Experiencia Section */}
-        <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
+        <section className="pt-8 pb-16 md:pt-12 md:pb-20" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <div className="mb-8">
