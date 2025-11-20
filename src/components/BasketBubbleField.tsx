@@ -1,73 +1,64 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
-import conversacionNaturalImg from "@/assets/pareja-natural-nueva-clean.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
-import trioIbericoNuevoImg from "@/assets/trio-iberico-nuevo-clean.jpg";
-import mesaAbiertaNuevoImg from "@/assets/mesa-abierta-nuevo-clean.jpg";
-import ibericosSelectosNuevoImg from "@/assets/ibericos-selectos-nuevo-clean.jpg";
-import familiarClasicaNuevoImg from "@/assets/familiar-clasica-nuevo-clean.jpg";
-import experienciaGastronomicaImg from "@/assets/experiencia-gastronomica-clean.jpg";
-import granTertuliaNuevoImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
-import celebracionIbericaNuevoImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
-import festinSelectoNuevoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
-import experienciaSelectaImg from "@/assets/experiencia-selecta-nuevo-clean.jpg";
+import pompaJamon from "@/assets/pompa-jamon-1.jpg";
+import pompaQueso from "@/assets/pompa-queso-2.jpg";
+import pompaAceite from "@/assets/pompa-aceite-3.jpg";
+import pompaEmbutidos from "@/assets/pompa-embutidos-4.jpg";
+import pompaCesta from "@/assets/pompa-cesta-5.jpg";
 
-const basketImages = [
-  parejaInicialImg,
-  conversacionNaturalImg,
-  parejaGourmetImg,
-  trioIbericoNuevoImg,
-  mesaAbiertaNuevoImg,
-  ibericosSelectosNuevoImg,
-  familiarClasicaNuevoImg,
-  experienciaGastronomicaImg,
-  granTertuliaNuevoImg,
-  celebracionIbericaNuevoImg,
-  festinSelectoNuevoImg,
-  experienciaSelectaImg,
+const pompaImages = [
+  pompaJamon,
+  pompaQueso,
+  pompaAceite,
+  pompaEmbutidos,
+  pompaCesta,
 ];
 
 const BasketBubbleField: React.FC = () => {
-  const bubbles = basketImages.slice(0, 12).map((image, index) => {
-    const fromLeftSide = index % 2 === 0;
-    const left = fromLeftSide ? 10 + (index % 3) * 5 : 75 - (index % 3) * 5;
-    const top = 15 + ((index * 12) % 50);
-    const size = index % 3 === 0 ? 90 : index % 3 === 1 ? 78 : 68;
+  const bubbles = pompaImages.map((image, index) => {
+    // Posiciones en las esquinas y laterales para no interferir con texto central
+    const positions = [
+      { left: 5, top: 10 },    // Superior izquierda
+      { left: 85, top: 15 },   // Superior derecha
+      { left: 8, top: 70 },    // Inferior izquierda
+      { left: 88, top: 75 },   // Inferior derecha
+      { left: 5, top: 40 },    // Medio izquierda
+    ];
 
-    return { image, size, left, top, fromLeftSide, index };
+    const position = positions[index];
+    const size = 85;
+
+    return { image, size, ...position, index };
   });
 
   return (
     <div className="relative w-full h-full max-w-6xl mx-auto">
-      {bubbles.map(({ image, size, left, top, fromLeftSide, index }) => (
+      {bubbles.map(({ image, size, left, top, index }) => (
         <motion.div
           key={index}
-          className="absolute rounded-full overflow-hidden shadow-xl border border-[#D4AF37]/50 bg-white/80"
+          className="absolute rounded-full overflow-hidden shadow-xl border-2 border-[#D4AF37]/60 bg-white/90"
           style={{
             width: size,
             height: size,
             left: `${left}%`,
             top: `${top}%`,
           }}
-          initial={{ scale: 0, opacity: 0, y: fromLeftSide ? 20 : -20 }}
+          initial={{ scale: 0, opacity: 0 }}
           animate={{
-            scale: [0, 1.05, 1, 0.95, 0],
-            opacity: [0, 0.9, 1, 0.7, 0],
-            y: fromLeftSide ? [20, 8, -8, -20, -35] : [-20, -8, 8, 20, 35],
+            scale: [0, 1.08, 1, 0.92, 0],
+            opacity: [0, 0.85, 1, 0.75, 0],
           }}
           transition={{
-            duration: 11,
-            delay: index * 5.5,
+            duration: 12,
+            delay: index * 2.4,
             repeat: Infinity,
             ease: "easeInOut",
-            repeatDelay: 0,
           }}
         >
           <img
             src={image}
-            alt="Cesta Experiencia Selecta"
+            alt="Producto Gourmet Ibérico"
             loading="lazy"
             className="w-full h-full object-cover"
           />
