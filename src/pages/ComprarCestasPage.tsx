@@ -280,7 +280,13 @@ const ComprarCestasPage = () => {
               >
                 <motion.button
                   onClick={() => {
-                    scrollToElementWithOffset('[data-basket-id]', 160);
+                    if (selectedCategory === 'Pareja') {
+                      console.log('⬇️ Scroll flecha a primera cesta');
+                      scrollToElementWithOffset('[data-basket-id]', 180);
+                    } else {
+                      console.log('⬇️ Scroll flecha a selector de grupo');
+                      scrollToElementWithOffset('[data-group-size-selector]', 160);
+                    }
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
                   whileTap={{ scale: 0.9 }}
