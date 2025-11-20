@@ -94,40 +94,43 @@ const App = () => (
         <div className="min-h-screen bg-background gpu-accelerated">
           <ScrollToTopOnRouteChange />
           <RedirectOnReload />
-          <Suspense fallback={<PageLoader />}>
-            <PageLayout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/perfil" element={<ProfilePage />} />
-                <Route path="/carrito" element={<CheckoutPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/carrito-vacio" element={<EmptyCartPage />} />
-                <Route path="/pago" element={<PaymentPage />} />
-                <Route path="/pago-exitoso" element={<PaymentSuccessPage />} />
-                <Route path="/nuestra-identidad" element={<NuestraIdentidadPage />} />
-                <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-                <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-                <Route path="/cestas" element={<Navigate to="/comprar-cestas" replace />} />
-                <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
-                <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-                <Route path="/regalos" element={<RegalosPage />} />
-                <Route path="/feedback" element={<FeedbackPage />} />
-                <Route path="/review/:orderId" element={<ReviewPage />} />
-                <Route path="/conocenos" element={<ConocenosPage />} />
-                <Route 
-                  path="/auto-login" 
-                  element={
-                    <ErrorBoundary fallback={<div className="min-h-screen flex items-center justify-center p-6"><div className="text-center"><h1 className="text-2xl font-bold mb-4">Error al cargar el inicio de sesión automático</h1><p className="text-muted-foreground">Por favor, intenta acceder desde el enlace nuevamente.</p></div></div>}>
-                      <AutoLogin />
-                    </ErrorBoundary>
-                  } 
-                />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </PageLayout>
-          </Suspense>
+          <PageLayout>
+            <Routes>
+              {/* Critical pages loaded directly without Suspense */}
+              <Route path="/" element={<Index />} />
+              <Route path="/perfil" element={<ProfilePage />} />
+              <Route path="/carrito" element={<CheckoutPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/carrito-vacio" element={<EmptyCartPage />} />
+              <Route path="/pago" element={<PaymentPage />} />
+              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
+              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+              <Route path="/cestas" element={<Navigate to="/comprar-cestas" replace />} />
+              <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
+              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
+              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+              <Route path="/conocenos" element={<ConocenosPage />} />
+              <Route 
+                path="/auto-login" 
+                element={
+                  <ErrorBoundary fallback={<div className="min-h-screen flex items-center justify-center p-6"><div className="text-center"><h1 className="text-2xl font-bold mb-4">Error al cargar el inicio de sesión automático</h1><p className="text-muted-foreground">Por favor, intenta acceder desde el enlace nuevamente.</p></div></div>}>
+                    <AutoLogin />
+                  </ErrorBoundary>
+                } 
+              />
+              
+              {/* Lazy-loaded pages with Suspense */}
+              <Route path="/pago-exitoso" element={<Suspense fallback={<PageLoader />}><PaymentSuccessPage /></Suspense>} />
+              <Route path="/nuestra-identidad" element={<Suspense fallback={<PageLoader />}><NuestraIdentidadPage /></Suspense>} />
+              <Route path="/experiencia" element={<Suspense fallback={<PageLoader />}><ExperienciaPage /></Suspense>} />
+              <Route path="/regalos" element={<Suspense fallback={<PageLoader />}><RegalosPage /></Suspense>} />
+              <Route path="/feedback" element={<Suspense fallback={<PageLoader />}><FeedbackPage /></Suspense>} />
+              <Route path="/review/:orderId" element={<Suspense fallback={<PageLoader />}><ReviewPage /></Suspense>} />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFound /></Suspense>} />
+            </Routes>
+          </PageLayout>
           <CookieBanner />
         </div>
       </TooltipProvider>
