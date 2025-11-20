@@ -66,17 +66,17 @@ const RedirectOnReload = () => {
     const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
     const isReload = navigationEntries.length > 0 && navigationEntries[0].type === 'reload';
     
-    if (isReload) {
-      const currentPath = location.pathname;
-      
-      // Don't redirect if we're already on these routes
-      const exemptRoutes = ['/', '/login', '/auth/callback', '/auto-login'];
-      
-      if (!exemptRoutes.includes(currentPath)) {
-        console.log(`Page reloaded on ${currentPath}, redirecting to home...`);
-        window.location.replace('/');
+      if (isReload) {
+        const currentPath = location.pathname;
+
+        // Don't redirect if we're already on these routes
+        const exemptRoutes = ['/', '/login', '/auth/callback', '/auto-login', '/experiencia-selecta'];
+
+        if (!exemptRoutes.includes(currentPath)) {
+          console.log(`Page reloaded on ${currentPath}, redirecting to home...`);
+          window.location.replace('/');
+        }
       }
-    }
   }, [location.pathname]);
 
   return null;
