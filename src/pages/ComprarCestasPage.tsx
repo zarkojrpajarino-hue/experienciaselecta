@@ -63,10 +63,10 @@ const ComprarCestasPage = () => {
       
       {/* Header Section */}
       <section className="relative pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-16 bottom-8 -z-10">
+        <div className="pointer-events-none absolute inset-x-0 top-16 bottom-8 z-0">
           <BasketBubbleField />
         </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-start mb-4">
                 <Button 
                   variant="link" 
@@ -291,11 +291,7 @@ const ComprarCestasPage = () => {
               >
                 <motion.button
                   onClick={() => {
-                    if (selectedCategory === 'Pareja') {
-                      scrollToElementWithOffset('[data-basket-id]');
-                    } else {
-                      scrollToElementWithOffset('[data-group-size-selector]');
-                    }
+                    scrollToElementWithOffset('[data-basket-catalog]');
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
                   whileTap={{ scale: 0.9 }}
