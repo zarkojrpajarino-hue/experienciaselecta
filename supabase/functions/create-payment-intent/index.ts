@@ -31,7 +31,7 @@ const PRODUCT_CATALOG: Record<string, { price: number; category: string }> = {
   "Trio ibérico": { price: 45.00, category: "Grupos (3-4 personas)" },
   "Mesa Abierta (sin alcohol)": { price: 55.00, category: "Grupos (3-4 personas)" },
   "Mesa Abierta": { price: 55.00, category: "Grupos (3-4 personas)" },
-  "Ibéricos Selectos": { price: 60.00, category: "Grupos (3-4 personas)" },
+  "Ibéricos Selectos": { price: 65.00, category: "Grupos (3-4 personas)" },
   "Familiar Clásica": { price: 65.00, category: "Grupos (5-6 personas)" },
   "Familiar clásica": { price: 65.00, category: "Grupos (5-6 personas)" },
   "Experiencia Gastronómica (sin alcohol)": { price: 70.00, category: "Grupos (5-6 personas)" },
