@@ -5,6 +5,7 @@ import BasketCatalog from "@/components/BasketCatalog";
 import BasketImageCarousel from "@/components/BasketImageCarousel";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
+import BasketBubbleField from "@/components/BasketBubbleField";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,19 @@ const ComprarCestasPage = () => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState<boolean | null>(null);
 
+  const scrollToElementWithOffset = (selector: string, offset = 120) => {
+    const target = document.querySelector(selector) as HTMLElement | null;
+    if (!target) return;
+
+    const rect = target.getBoundingClientRect();
+    const targetY = window.pageYOffset + rect.top - offset;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth',
+    });
+  };
+
   // Scroll al inicio en cambio de categoría
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -48,8 +62,11 @@ const ComprarCestasPage = () => {
       </div>
       
       {/* Header Section */}
-      <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-16 bottom-8 -z-10">
+          <BasketBubbleField />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-start mb-4">
                 <Button 
                   variant="link" 
@@ -275,13 +292,9 @@ const ComprarCestasPage = () => {
                 <motion.button
                   onClick={() => {
                     if (selectedCategory === 'Pareja') {
-                      // En Pareja, ir directamente a la primera cesta
-                      const firstBasket = document.querySelector('[data-basket-id]');
-                      firstBasket?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      scrollToElementWithOffset('[data-basket-id]');
                     } else {
-                      // En Familia/Amigos, ir al selector de grupos
-                      const groupSizeSelector = document.querySelector('[data-group-size-selector]');
-                      groupSizeSelector?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      scrollToElementWithOffset('[data-group-size-selector]');
                     }
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
