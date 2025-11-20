@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
-import BasketImageCarousel from "@/components/BasketImageCarousel";
+// import BasketImageCarousel from "@/components/BasketImageCarousel";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
 import BasketBubbleField from "@/components/BasketBubbleField";
@@ -28,7 +28,7 @@ const ComprarCestasPage = () => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState<boolean | null>(null);
 
-  const scrollToElementWithOffset = (selector: string, offset = 120) => {
+  const scrollToElementWithOffset = (selector: string, offset = 160) => {
     const target = document.querySelector(selector) as HTMLElement | null;
     if (!target) return;
 
@@ -67,18 +67,7 @@ const ComprarCestasPage = () => {
           <BasketBubbleField />
         </div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-start mb-4">
-                <Button 
-                  variant="link" 
-                  onClick={() => navigate('/')} 
-                  className="text-black hover:text-black/80 p-0"
-                >
-                  ← Volver al inicio
-                </Button>
-              </div>
-
-              {/* Carrusel de imágenes de cestas */}
-              <BasketImageCarousel />
+          {/* Cabecera limpia: solo pompas de fondo y título ELIGE */}
 
               {/* Texto "ELIGE:" - Siempre visible encima del toggle */}
               <motion.div
@@ -291,7 +280,7 @@ const ComprarCestasPage = () => {
               >
                 <motion.button
                   onClick={() => {
-                    scrollToElementWithOffset('[data-basket-catalog]');
+                    scrollToElementWithOffset('[data-basket-id]', 160);
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
                   whileTap={{ scale: 0.9 }}
