@@ -63,6 +63,21 @@ const ComprarCestasPage = () => {
       
       {/* Header Section */}
       <section className="relative pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black overflow-hidden">
+        {/* Botón Volver al Inicio - Esquina superior derecha */}
+        <motion.button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="absolute top-4 right-4 z-50 bg-[#D4AF37] text-white p-2 rounded-full shadow-lg hover:bg-[#C49E2E] transition-colors"
+          aria-label="Volver al inicio"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </motion.button>
+
         <div className="pointer-events-none absolute inset-x-0 top-16 bottom-8 z-0">
           <BasketBubbleField />
         </div>
@@ -270,54 +285,49 @@ const ComprarCestasPage = () => {
               </AnimatePresence>
             )}
 
-            {/* Flecha hacia abajo debajo de las tarjetas */}
-            {isGiftMode !== null && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex justify-center mt-2"
-              >
-                <motion.button
-                  onClick={() => {
-                    if (selectedCategory === 'Pareja') {
-                      console.log('⬇️ Scroll flecha a primera cesta');
-                      scrollToElementWithOffset('[data-basket-id]', 180);
-                    } else {
-                      console.log('⬇️ Scroll flecha a selector de grupo');
-                      scrollToElementWithOffset('[data-group-size-selector]', 160);
-                    }
-                  }}
-                  whileHover={{ scale: 1.15, y: 3 }}
-                  whileTap={{ scale: 0.9 }}
-                  animate={{ y: [0, 5, 0] }}
-                  transition={{
-                    y: {
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    },
-                  }}
-                  className="p-0 bg-transparent border-0 cursor-pointer"
-                  aria-label={selectedCategory === 'Pareja' ? 'Ver cestas' : 'Ver selector de grupos'}
-                >
-                  <svg 
-                    className="w-8 h-8 sm:w-10 sm:h-10" 
-                    fill="none" 
-                    stroke="#D4AF37" 
-                    strokeWidth="3" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </motion.button>
-              </motion.div>
-            )}
-
           </motion.div>
             </div>
           </section>
           
+          {/* Flecha para scroll a cestas - Colocada encima del catálogo */}
+          {isGiftMode !== null && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex justify-center py-4"
+            >
+              <motion.button
+                onClick={() => {
+                  console.log('⬇️ Scroll flecha a cestas');
+                  scrollToElementWithOffset('[data-basket-id]', 140);
+                }}
+                whileHover={{ scale: 1.15, y: 3 }}
+                whileTap={{ scale: 0.9 }}
+                animate={{ y: [0, 5, 0] }}
+                transition={{
+                  y: {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="p-0 bg-transparent border-0 cursor-pointer"
+                aria-label="Ver cestas"
+              >
+                <svg 
+                  className="w-10 h-10 sm:w-12 sm:h-12" 
+                  fill="none" 
+                  stroke="#D4AF37" 
+                  strokeWidth="3" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </motion.button>
+            </motion.div>
+          )}
+
           {/* Basket Catalog Section */}
           {isGiftMode !== null && (
             <AnimatePresence mode="wait">

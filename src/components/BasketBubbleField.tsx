@@ -30,13 +30,11 @@ const basketImages = [
 ];
 
 const BasketBubbleField: React.FC = () => {
-  const bubbles = basketImages.slice(0, 10).map((image, index) => {
+  const bubbles = basketImages.slice(0, 12).map((image, index) => {
     const fromLeftSide = index % 2 === 0;
-
-    // Posiciones más suaves: laterales y alturas distribuidas
-    const left = fromLeftSide ? 6 + (index % 3) * 4 : 80 - (index % 3) * 4;
-    const top = 20 + ((index * 11) % 45);
-    const size = index % 3 === 0 ? 88 : index % 3 === 1 ? 76 : 64;
+    const left = fromLeftSide ? 10 + (index % 3) * 5 : 75 - (index % 3) * 5;
+    const top = 15 + ((index * 12) % 50);
+    const size = index % 3 === 0 ? 90 : index % 3 === 1 ? 78 : 68;
 
     return { image, size, left, top, fromLeftSide, index };
   });
@@ -53,18 +51,18 @@ const BasketBubbleField: React.FC = () => {
             left: `${left}%`,
             top: `${top}%`,
           }}
-          initial={{ scale: 0, opacity: 0, y: fromLeftSide ? 16 : -16 }}
+          initial={{ scale: 0, opacity: 0, y: fromLeftSide ? 20 : -20 }}
           animate={{
-            scale: [0, 1, 1, 0.9, 0],
-            opacity: [0, 1, 1, 0.8, 0],
-            y: fromLeftSide ? [16, 4, -4, -12, -20] : [-16, -4, 4, 12, 20],
+            scale: [0, 1.05, 1, 0.95, 0],
+            opacity: [0, 0.9, 1, 0.7, 0],
+            y: fromLeftSide ? [20, 8, -8, -20, -35] : [-20, -8, 8, 20, 35],
           }}
           transition={{
-            duration: 9,
-            // aparición una a una, más separadas
-            delay: index * 1.1,
+            duration: 11,
+            delay: index * 5.5,
             repeat: Infinity,
             ease: "easeInOut",
+            repeatDelay: 0,
           }}
         >
           <img
