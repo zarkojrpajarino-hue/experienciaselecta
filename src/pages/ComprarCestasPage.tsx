@@ -63,18 +63,18 @@ const ComprarCestasPage = () => {
       
       {/* Header Section */}
       <section className="relative pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black overflow-hidden">
-        {/* Botón Volver al Inicio - Esquina superior derecha */}
+        {/* Botón Volver al Inicio - Esquina superior izquierda */}
         <motion.button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => navigate('/')}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="absolute top-4 right-4 z-50 bg-[#D4AF37] text-white p-2 rounded-full shadow-lg hover:bg-[#C49E2E] transition-colors"
+          className="absolute top-4 left-4 z-50 bg-[#D4AF37] text-white p-2 rounded-full shadow-lg hover:bg-[#C49E2E] transition-colors"
           aria-label="Volver al inicio"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         </motion.button>
 
