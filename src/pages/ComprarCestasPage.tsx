@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BasketCatalog from "@/components/BasketCatalog";
-// import BasketImageCarousel from "@/components/BasketImageCarousel";
+import BasketImageCarousel from "@/components/BasketImageCarousel";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import Navbar from "@/components/Navbar";
-import BasketBubbleField from "@/components/BasketBubbleField";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -28,19 +27,6 @@ const ComprarCestasPage = () => {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [isGiftMode, setIsGiftMode] = useState<boolean | null>(null);
 
-  const scrollToElementWithOffset = (selector: string, offset = 160) => {
-    const target = document.querySelector(selector) as HTMLElement | null;
-    if (!target) return;
-
-    const rect = target.getBoundingClientRect();
-    const targetY = window.pageYOffset + rect.top - offset;
-
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth',
-    });
-  };
-
   // Scroll al inicio en cambio de categoría
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -62,27 +48,20 @@ const ComprarCestasPage = () => {
       </div>
       
       {/* Header Section */}
-      <section className="relative pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black overflow-hidden">
-        {/* Botón Volver al Inicio - Esquina superior izquierda */}
-        <motion.button
-          onClick={() => navigate('/')}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="absolute top-4 left-4 z-50 bg-[#D4AF37] text-white p-2 rounded-full shadow-lg hover:bg-[#C49E2E] transition-colors"
-          aria-label="Volver al inicio"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-        </motion.button>
+      <section className="pt-24 pb-8 md:pt-32 md:pb-10 bg-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-8 border-2 border-black">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-start mb-4">
+                <Button 
+                  variant="link" 
+                  onClick={() => navigate('/')} 
+                  className="text-black hover:text-black/80 p-0"
+                >
+                  ← Volver al inicio
+                </Button>
+              </div>
 
-        <div className="pointer-events-none absolute inset-x-0 top-16 bottom-8 z-0">
-          <BasketBubbleField />
-        </div>
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Cabecera limpia: solo pompas de fondo y título ELIGE */}
+              {/* Carrusel de imágenes de cestas */}
+              <BasketImageCarousel />
 
               {/* Texto "ELIGE:" - Siempre visible encima del toggle */}
               <motion.div
@@ -285,49 +264,56 @@ const ComprarCestasPage = () => {
               </AnimatePresence>
             )}
 
+            {/* Flecha hacia abajo debajo de las tarjetas */}
+            {isGiftMode !== null && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex justify-center mt-2"
+              >
+                <motion.button
+                  onClick={() => {
+                    if (selectedCategory === 'Pareja') {
+                      // En Pareja, ir directamente a la primera cesta
+                      const firstBasket = document.querySelector('[data-basket-id]');
+                      firstBasket?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                      // En Familia/Amigos, ir al selector de grupos
+                      const groupSizeSelector = document.querySelector('[data-group-size-selector]');
+                      groupSizeSelector?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                  }}
+                  whileHover={{ scale: 1.15, y: 3 }}
+                  whileTap={{ scale: 0.9 }}
+                  animate={{ y: [0, 5, 0] }}
+                  transition={{
+                    y: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  }}
+                  className="p-0 bg-transparent border-0 cursor-pointer"
+                  aria-label={selectedCategory === 'Pareja' ? 'Ver cestas' : 'Ver selector de grupos'}
+                >
+                  <svg 
+                    className="w-8 h-8 sm:w-10 sm:h-10" 
+                    fill="none" 
+                    stroke="#D4AF37" 
+                    strokeWidth="3" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </motion.button>
+              </motion.div>
+            )}
+
           </motion.div>
             </div>
           </section>
           
-          {/* Flecha para scroll a cestas - Colocada encima del catálogo */}
-          {isGiftMode !== null && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex justify-center py-4"
-            >
-              <motion.button
-                onClick={() => {
-                  console.log('⬇️ Scroll flecha a cestas');
-                  scrollToElementWithOffset('[data-basket-id]', 140);
-                }}
-                whileHover={{ scale: 1.15, y: 3 }}
-                whileTap={{ scale: 0.9 }}
-                animate={{ y: [0, 5, 0] }}
-                transition={{
-                  y: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  },
-                }}
-                className="p-0 bg-transparent border-0 cursor-pointer"
-                aria-label="Ver cestas"
-              >
-                <svg 
-                  className="w-10 h-10 sm:w-12 sm:h-12" 
-                  fill="none" 
-                  stroke="#D4AF37" 
-                  strokeWidth="3" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </motion.button>
-            </motion.div>
-          )}
-
           {/* Basket Catalog Section */}
           {isGiftMode !== null && (
             <AnimatePresence mode="wait">
