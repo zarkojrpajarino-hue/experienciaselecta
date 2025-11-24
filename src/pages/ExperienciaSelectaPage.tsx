@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -22,6 +22,14 @@ import selecta4 from "@/assets/selecta-4-clean.png";
 import selecta5 from "@/assets/selecta-5-clean.png";
 
 const ExperienciaSelectaPage = () => {
+  console.log('🔥 ExperienciaSelectaPage MOUNTED');
+
+  useEffect(() => {
+    console.log('✅ ExperienciaSelectaPage useEffect ejecutado');
+    console.log('📍 Current location:', window.location.href);
+    console.log('📍 Current pathname:', window.location.pathname);
+  }, []);
+
   const navigate = useNavigate();
   
   console.log('🎯 ExperienciaSelectaPage rendered');
