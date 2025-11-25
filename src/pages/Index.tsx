@@ -5,43 +5,28 @@ import { ChevronDown, Info, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
-import PageNavigation from "@/components/PageNavigation";
 import AuthModal from "@/components/AuthModal";
-import ContactModal from "@/components/ContactModal";
 
 import { supabase } from "@/integrations/supabase/client";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
 import BasketCTASection from "@/components/BasketCTASection";
-import ClickableImage from "@/components/ClickableImage";
 import FAQHorizontalSection from "@/components/FAQHorizontalSection";
 import BottomNavigation from "@/components/BottomNavigation";
 import VisualHeader from "@/components/VisualHeader";
+
+// Importar imágenes
 import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
-import aboutBackgroundImg from "@/assets/sobre-nosotros-hero-final.jpg";
-import jamonPinzasImg from "@/assets/jamon-pinzas-primera.png";
-import cestaHeroImage from "@/assets/hero-cesta-principal.png";
-import heroEmbrutidoAlmendrasImg from "@/assets/hero-plato-embutido-almendras.png";
 import selectaJamonPizarraImg from "@/assets/selecta-jamon-pizarra-clean.png";
 import valoresTablaIbericosImg from "@/assets/valores-tabla-ibericos-final.jpg";
 import valoresTostasAceiteImg from "@/assets/valores-tostas-aceite-final.jpg";
-import valoresJamonTablaImg from "@/assets/valores-jamon-tabla.jpg";
 import valoresEmbutidosVinoImg from "@/assets/valores-embutidos-vino-final.png";
 import valoresConversacionImg from "@/assets/valores-conversacion-nueva.png";
-import parejaInicialImg from "@/assets/pareja-inicial-nueva-clean.jpg";
-import conversacionNaturalImg from "@/assets/pareja-natural-nueva-clean.jpg";
-import parejaGourmetImg from "@/assets/pareja-gourmet-nueva-clean.jpg";
-import ibericosSelectosImg from "@/assets/ibericos-selectos-nuevo-clean.jpg";
-import familiarClasicaImg from "@/assets/familiar-clasica-nuevo-clean.jpg";
-import granTertuliaImg from "@/assets/gran-tertulia-nuevo-clean.jpg";
-import mesaAbiertaImg from "@/assets/mesa-abierta-nuevo-clean.jpg";
-import celebracionIbericaImg from "@/assets/celebracion-iberica-nuevo-clean.jpg";
-import familiaCestaExperienciaImg from "@/assets/experiencia-familia-cesta-clean.png";
-import festinSelectoImg from "@/assets/festin-selecto-nuevo-clean.jpg";
 import faqPrimeraImagen from "@/assets/nueva-seccion-10.jpg";
 import faqDuracionExperiencia from "@/assets/faq-pates-gourmet-final.png";
 import faqDesconocidosEncuentro from "@/assets/faq-desconocidos-encuentro.jpg";
 import faqGarantiaSatisfaccion from "@/assets/faq-embutidos-ibericos-final.png";
-// Main Index Page Component
+import cestaHeroImage from "@/assets/hero-cesta-principal.png";
+
 const Index = () => {
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -50,292 +35,305 @@ const Index = () => {
   const navigate = useNavigate();
 
   // Datos para los carruseles
-  const experienciaSelectaSlides = [{
-    image: experienciaFamiliaCestaImg,
-    backgroundColor: "#FFFFFF",
-    textColor: "#D4AF37",
-    navigationColor: "#ff1493",
-    content: <div className="flex flex-col items-center justify-center gap-1 md:gap-3">
+  const experienciaSelectaSlides = [
+    {
+      image: experienciaFamiliaCestaImg,
+      backgroundColor: "#FFFFFF",
+      textColor: "#D4AF37",
+      navigationColor: "#ff1493",
+      content: (
+        <div className="flex flex-col items-center justify-center gap-1 md:gap-3">
           <div className="flex items-center justify-center gap-2 md:gap-4">
-            <h3 
-              onClick={() => navigate('/nuestra-identidad#experiencia')}
-              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-poppins font-bold leading-tight cursor-pointer" 
-              style={{ color: '#000000' }}
+            <h3
+              onClick={() => navigate("/nuestra-identidad#experiencia")}
+              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-poppins font-bold leading-tight cursor-pointer"
+              style={{ color: "#000000" }}
             >
               Experiencia
             </h3>
-            <motion.button whileHover={{
-              scale: 1.1
-            }} whileTap={{
-              scale: 0.9
-            }} onClick={() => navigate('/nuestra-identidad#experiencia')} className="p-0 bg-transparent border-0 transition-all duration-300" style={{
-              color: '#00BFFF'
-            }}>
-              <Info className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" style={{ color: '#00BFFF' }} />
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => navigate("/nuestra-identidad#experiencia")}
+              className="p-0 bg-transparent border-0 transition-all duration-300"
+              style={{ color: "#00BFFF" }}
+            >
+              <Info className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" style={{ color: "#00BFFF" }} />
             </motion.button>
           </div>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg font-work-sans lowercase first-letter:capitalize" style={{ color: '#00BFFF' }}>
+          <p
+            className="text-xs sm:text-sm md:text-base lg:text-lg font-work-sans lowercase first-letter:capitalize"
+            style={{ color: "#00BFFF" }}
+          >
             Momentos que conectan.
           </p>
         </div>
-  }, {
-    image: selectaJamonPizarraImg,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <div className="flex flex-col items-center justify-center gap-1 md:gap-3">
+      ),
+    },
+    {
+      image: selectaJamonPizarraImg,
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+      content: (
+        <div className="flex flex-col items-center justify-center gap-1 md:gap-3">
           <div className="flex items-center justify-center gap-2 md:gap-4">
-            <h3 
-              onClick={() => navigate('/nuestra-identidad#selecta')}
-              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-poppins font-bold leading-tight cursor-pointer" 
-              style={{ color: '#000000' }}
+            <h3
+              onClick={() => navigate("/nuestra-identidad#selecta")}
+              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-poppins font-bold leading-tight cursor-pointer"
+              style={{ color: "#000000" }}
             >
               Selecta
             </h3>
-            <motion.button whileHover={{
-              scale: 1.1
-            }} whileTap={{
-              scale: 0.9
-            }} onClick={() => navigate('/nuestra-identidad#selecta')} className="p-0 bg-transparent border-0 transition-all duration-300" style={{
-              color: '#ff1493'
-            }}>
-              <Info className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" style={{ color: '#ff1493' }} />
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => navigate("/nuestra-identidad#selecta")}
+              className="p-0 bg-transparent border-0 transition-all duration-300"
+              style={{ color: "#ff1493" }}
+            >
+              <Info className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" style={{ color: "#ff1493" }} />
             </motion.button>
           </div>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg font-work-sans lowercase first-letter:capitalize" style={{ color: '#ff1493' }}>
+          <p
+            className="text-xs sm:text-sm md:text-base lg:text-lg font-work-sans lowercase first-letter:capitalize"
+            style={{ color: "#ff1493" }}
+          >
             Calidad sin igual.
           </p>
         </div>
-  }];
-  const valuesSlides = [{
-    image: valoresTablaIbericosImg,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <p className="font-bold lowercase first-letter:capitalize">
-          Productores <span className="font-bold" style={{ color: '#00BFFF' }}>locales</span>.
-        </p>
-  }, {
-    image: valoresTostasAceiteImg,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <p className="font-bold lowercase first-letter:capitalize">
-          <span className="font-bold" style={{ color: '#FFD700' }}>Tradición</span> <span className="font-bold" style={{ color: '#FFD700' }}>española</span> con <span className="font-bold" style={{ color: '#FFD700' }}>dinámicas modernas</span>.
-        </p>
-  }, {
-    image: valoresEmbutidosVinoImg,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <p className="font-bold lowercase first-letter:capitalize">
-          Los mejores <span className="font-bold" style={{ color: '#ff1493' }}>recuerdos</span> <span className="font-bold" style={{ color: '#ff1493' }}>se viven</span>, no se graban.
-        </p>
-  }, {
-    image: valoresConversacionImg,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <p className="font-bold lowercase first-letter:capitalize">
-          Hablamos más pero <span className="font-bold" style={{ color: '#00BFFF' }}>escuchamos menos</span>.
-        </p>
-  }];
-  const faqSlides = [{
-    image: faqPrimeraImagen,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <>
+      ),
+    },
+  ];
+
+  const faqSlides = [
+    {
+      image: faqPrimeraImagen,
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+      content: (
+        <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             ¿qué incluye cada cesta?
           </h3>
           <p className="lowercase first-letter:capitalize font-bold">
-            <span className="font-bold" style={{ color: '#FFD700' }}>Contenido</span> <span className="font-bold" style={{ color: '#FFD700' }}>exclusivo</span> <span className="font-bold" style={{ color: '#FFD700' }}>personalizado</span>.
+            <span className="font-bold" style={{ color: "#FFD700" }}>
+              Contenido
+            </span>{" "}
+            <span className="font-bold" style={{ color: "#FFD700" }}>
+              exclusivo
+            </span>{" "}
+            <span className="font-bold" style={{ color: "#FFD700" }}>
+              personalizado
+            </span>
+            .
           </p>
         </>
-  }, {
-    image: faqDuracionExperiencia,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <>
+      ),
+    },
+    {
+      image: faqDuracionExperiencia,
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+      content: (
+        <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             ¿cuánto dura la experiencia?
           </h3>
           <p className="lowercase first-letter:capitalize font-bold">
-            A tu <span className="font-bold" style={{ color: '#ff1493' }}>ritmo</span>.
+            A tu{" "}
+            <span className="font-bold" style={{ color: "#ff1493" }}>
+              ritmo
+            </span>
+            .
           </p>
         </>
-  }, {
-    image: faqDesconocidosEncuentro,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <>
+      ),
+    },
+    {
+      image: faqDesconocidosEncuentro,
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+      content: (
+        <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             ¿para desconocidos?
           </h3>
           <p className="lowercase first-letter:capitalize font-bold">
-            Cestas para <span className="font-bold" style={{ color: '#00BFFF' }}>primeros encuentros</span>.
+            Cestas para{" "}
+            <span className="font-bold" style={{ color: "#00BFFF" }}>
+              primeros encuentros
+            </span>
+            .
           </p>
         </>
-  }, {
-    image: faqGarantiaSatisfaccion,
-    backgroundColor: "#FFFFFF",
-    textColor: "#000000",
-    content: <>
+      ),
+    },
+    {
+      image: faqGarantiaSatisfaccion,
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+      content: (
+        <>
           <h3 className="text-xl md:text-2xl font-work-sans font-bold mb-4 lowercase first-letter:uppercase">
             ¿calidad de productos?
           </h3>
           <p className="lowercase first-letter:capitalize font-bold">
-            <span className="font-bold" style={{ color: '#FFD700' }}>Certificada</span>.
+            <span className="font-bold" style={{ color: "#FFD700" }}>
+              Certificada
+            </span>
+            .
           </p>
         </>
-  }];
+      ),
+    },
+  ];
+
   useEffect(() => {
     let mounted = true;
 
-    // Set up auth state listener FIRST
     const {
-      data: {
-        subscription
-      }
+      data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (mounted) {
-        const wasAuthenticated = isAuthenticated;
         setIsAuthenticated(!!session);
-        
+
         if (session) {
           setShowAuthModal(false);
-          // Limpiar flags de modal - PERO NO pendingCheckout (se limpia en CheckoutPage)
-          sessionStorage.removeItem('hasClosedAuthModal');
-          try { localStorage.removeItem('oauthInProgress'); } catch {}
-          
-          // CRÍTICO: Si hay pendingCheckout, redirigir al checkout
-          const hasPendingCheckout = localStorage.getItem('pendingCheckout');
-          if (hasPendingCheckout && event === 'SIGNED_IN') {
-            // Solo redirigir si no estamos ya en checkout
-            if (window.location.pathname !== '/checkout') {
-              navigate('/checkout', { replace: true });
+          sessionStorage.removeItem("hasClosedAuthModal");
+          try {
+            localStorage.removeItem("oauthInProgress");
+          } catch {}
+
+          const hasPendingCheckout = localStorage.getItem("pendingCheckout");
+          if (hasPendingCheckout && event === "SIGNED_IN") {
+            if (window.location.pathname !== "/checkout") {
+              navigate("/checkout", { replace: true });
             }
           }
-          
         } else {
-          // No hay sesión
           setShowAuthModal(false);
         }
       }
     });
 
-    // THEN check for existing session
     const checkAuth = async () => {
       const {
-        data: {
-          session
-        }
+        data: { session },
       } = await supabase.auth.getSession();
       if (!mounted) return;
       if (session) {
-        // Usuario ya tiene sesión activa - NO mostrar modal
         setIsAuthenticated(true);
         setShowAuthModal(false);
-        // Limpiar flags
-        sessionStorage.removeItem('hasClosedAuthModal');
+        sessionStorage.removeItem("hasClosedAuthModal");
       } else {
-        // Usuario NO tiene sesión: NO mostrar modal automáticamente
         setIsAuthenticated(false);
         setShowAuthModal(false);
       }
     };
     checkAuth();
+
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
   }, []);
 
-  // Handle scroll behavior on navigation
   useEffect(() => {
     const locationState = location.state as { preventScroll?: boolean } | null;
-    
-    // Prevent anchor auto-scroll ONLY on first load
-    const firstLoadHandled = sessionStorage.getItem('initialLoadHandled');
+    const firstLoadHandled = sessionStorage.getItem("initialLoadHandled");
+
     if (!firstLoadHandled) {
-      sessionStorage.setItem('initialLoadHandled', 'true');
-      if (location.pathname === '/' && location.hash) {
+      sessionStorage.setItem("initialLoadHandled", "true");
+      if (location.pathname === "/" && location.hash) {
         requestAnimationFrame(() => {
-          window.scrollTo({ top: 0, behavior: 'auto' });
-          // Remove hash from URL to keep user at top
-          window.history.replaceState({}, document.title, '/');
+          window.scrollTo({ top: 0, behavior: "auto" });
+          window.history.replaceState({}, document.title, "/");
         });
         return;
       }
     }
-    
-    // If preventScroll is set, restore the saved scroll position smoothly
+
     if (locationState?.preventScroll) {
-      const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+      const savedScrollPosition = sessionStorage.getItem("scrollPosition");
       if (savedScrollPosition) {
         const scrollY = parseInt(savedScrollPosition, 10);
-        // Use requestAnimationFrame for smoother transition
         requestAnimationFrame(() => {
           window.scrollTo({
             top: scrollY,
-            behavior: 'instant' // Instant to avoid white flash
+            behavior: "instant",
           });
         });
-        sessionStorage.removeItem('scrollPosition');
+        sessionStorage.removeItem("scrollPosition");
       }
-      // Clear the state so future navigation works normally
       window.history.replaceState({}, document.title);
       return;
     }
-    
-    // If there's a hash, scroll to that section (only after first load is handled)
+
     if (location.hash && firstLoadHandled) {
-      const id = location.hash.replace('#', '');
+      const id = location.hash.replace("#", "");
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
+            behavior: "smooth",
+            block: "center",
           });
         }
       }, 100);
     }
   }, [location.pathname, location.hash, location.state]);
+
   const handleAuthModalClose = () => {
     setShowAuthModal(false);
-    // Guardar en sessionStorage que el usuario cerró el modal
-    sessionStorage.setItem('hasClosedAuthModal', 'true');
+    sessionStorage.setItem("hasClosedAuthModal", "true");
   };
+
   const handleAuthSuccess = () => {
     setShowAuthModal(false);
     setIsAuthenticated(true);
   };
-  return <div className="min-h-screen bg-background font-work-sans">
+
+  return (
+    <div className="min-h-screen bg-background font-work-sans">
       <Navbar />
-      {/* <PageNavigation /> */}
-      
+
       <VisualHeader />
 
-      {/* Image Modal for cesta */}
+      <ExperienciaSelectaSection slides={experienciaSelectaSlides} />
+
+      <BasketCTASection />
+
+      <FAQHorizontalSection slides={faqSlides} />
+
+      <BottomNavigation />
+
       <Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-        <DialogContent hideClose className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden">
+        <DialogContent
+          hideClose
+          className="max-w-7xl bg-transparent border-0 p-2 shadow-none rounded-3xl overflow-hidden"
+        >
           <DialogTitle className="sr-only">Vista previa de imagen</DialogTitle>
           <DialogDescription className="sr-only">Imagen ampliada</DialogDescription>
-          <Button 
-            onClick={() => setIsImageOpen(false)} 
-            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30" 
+          <Button
+            onClick={() => setIsImageOpen(false)}
+            className="absolute top-4 right-4 z-50 h-12 w-12 rounded-full bg-white/95 hover:bg-white text-black shadow-2xl transition-all duration-300 border-2 border-black/10 hover:border-black/30"
             size="icon"
           >
             <X className="h-6 w-6" />
           </Button>
           <div className="rounded-[1.5rem] overflow-hidden border-2 border-black/10 bg-white">
-            <img 
-              src={cestaHeroImage} 
-              alt="Cesta de experiencia ampliada" 
-              className="w-full h-auto max-h-[80vh] object-contain" 
+            <img
+              src={cestaHeroImage}
+              alt="Cesta de experiencia ampliada"
+              className="w-full h-auto max-h-[80vh] object-contain"
             />
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Modal de autenticación */}
       <AuthModal isOpen={showAuthModal} onClose={handleAuthModalClose} onSuccess={handleAuthSuccess} />
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
