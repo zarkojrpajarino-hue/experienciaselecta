@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { PageLoader } from "@/components/PageLoader";
@@ -45,48 +45,46 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <CartProvider>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  {/* Página principal */}
-                  <Route path="/" element={<Index />} />
+        <AuthProvider>
+          <CartProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Página principal */}
+                <Route path="/" element={<Index />} />
 
-                  {/* Catálogo y compra */}
-                  <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/carrito-vacio" element={<EmptyCartPage />} />
+                {/* Catálogo y compra */}
+                <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/carrito-vacio" element={<EmptyCartPage />} />
 
-                  {/* Pago */}
-                  <Route path="/pago" element={<PaymentPage />} />
-                  <Route path="/pago-exitoso" element={<PaymentSuccessPage />} />
+                {/* Pago */}
+                <Route path="/pago" element={<PaymentPage />} />
+                <Route path="/pago-exitoso" element={<PaymentSuccessPage />} />
 
-                  {/* Usuario */}
-                  <Route path="/perfil" element={<ProfilePage />} />
-                  <Route path="/auto-login" element={<AutoLogin />} />
-                  <Route path="/regalos" element={<RegalosPage />} />
+                {/* Usuario */}
+                <Route path="/perfil" element={<ProfilePage />} />
+                <Route path="/auto-login" element={<AutoLogin />} />
+                <Route path="/regalos" element={<RegalosPage />} />
 
-                  {/* Feedback y reviews */}
-                  <Route path="/feedback" element={<FeedbackPage />} />
-                  <Route path="/review/:orderId" element={<ReviewPage />} />
+                {/* Feedback y reviews */}
+                <Route path="/feedback" element={<FeedbackPage />} />
+                <Route path="/review/:orderId" element={<ReviewPage />} />
 
-                  {/* Información y contenido */}
-                  <Route path="/nuestra-identidad" element={<ExperienciaSelectaPage />} />
-                  <Route path="/conocenos" element={<ConocenosPage />} />
-                  <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-                  <Route path="/sobre-nosotros" element={<SobreNosotrosDetalle />} />
-                  <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-                  
+                {/* Información y contenido */}
+                <Route path="/nuestra-identidad" element={<ExperienciaSelectaPage />} />
+                <Route path="/conocenos" element={<ConocenosPage />} />
+                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+                <Route path="/sobre-nosotros" element={<SobreNosotrosDetalle />} />
+                <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+                
 
-                  {/* 404 */}
-                  <Route path="/404" element={<NotFound />} />
-                  <Route path="*" element={<Navigate to="/404" replace />} />
-                </Routes>
-              </Suspense>
-            </CartProvider>
-          </AuthProvider>
-        </BrowserRouter>
+                {/* 404 */}
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </Suspense>
+          </CartProvider>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
