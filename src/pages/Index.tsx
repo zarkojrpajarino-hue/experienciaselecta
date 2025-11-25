@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, Info, X } from "lucide-react";
+import { X, Info } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import AuthModal from "@/components/AuthModal";
-
 import { supabase } from "@/integrations/supabase/client";
 import ExperienciaSelectaSection from "@/components/ExperienciaSelectaSection";
 import BasketCTASection from "@/components/BasketCTASection";
@@ -17,10 +16,6 @@ import VisualHeader from "@/components/VisualHeader";
 // Importar imágenes
 import experienciaFamiliaCestaImg from "@/assets/experiencia-padel-cesta-clean.png";
 import selectaJamonPizarraImg from "@/assets/selecta-jamon-pizarra-clean.png";
-import valoresTablaIbericosImg from "@/assets/valores-tabla-ibericos-final.jpg";
-import valoresTostasAceiteImg from "@/assets/valores-tostas-aceite-final.jpg";
-import valoresEmbutidosVinoImg from "@/assets/valores-embutidos-vino-final.png";
-import valoresConversacionImg from "@/assets/valores-conversacion-nueva.png";
 import faqPrimeraImagen from "@/assets/nueva-seccion-10.jpg";
 import faqDuracionExperiencia from "@/assets/faq-pates-gourmet-final.png";
 import faqDesconocidosEncuentro from "@/assets/faq-desconocidos-encuentro.jpg";
