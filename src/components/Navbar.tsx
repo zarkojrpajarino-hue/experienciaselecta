@@ -163,23 +163,28 @@ const Navbar = () => {
       }
     }
   }, [navigate, location.pathname]);
-  const navItems = [{
-    label: "Experiencia selecta.",
-    id: "experiencia-selecta",
-    route: "/experiencia-selecta"
-  }, {
-    label: "Sobre nosotros.",
-    id: "sobre-nosotros",
-    route: "/sobre-nosotros-detalle#porque-elegirnos-section"
-  }, {
-    label: "Nuestros clientes.",
-    id: "nuestros-clientes",
-    route: "/nuestros-clientes"
-  }, {
-    label: "Preguntas frecuentes.",
-    id: "preguntas-frecuentes",
-    route: "/preguntas-frecuentes"
-  }];
+  const navItems = [
+    {
+      label: "Experiencia selecta.",
+      id: "experiencia-selecta",
+      route: "/nuestra-identidad"
+    },
+    {
+      label: "Sobre nosotros.",
+      id: "sobre-nosotros",
+      route: "/sobre-nosotros"
+    },
+    {
+      label: "Nuestros clientes.",
+      id: "nuestros-clientes",
+      route: "/nuestros-clientes"
+    },
+    {
+      label: "Preguntas frecuentes.",
+      id: "preguntas-frecuentes",
+      route: "/preguntas-frecuentes"
+    }
+  ];
 
   const getCurrentSectionIndex = () => {
     return navItems.findIndex(item => item.id === location.hash.replace('#', ''));
