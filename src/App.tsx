@@ -1,139 +1,95 @@
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
-import { CartProvider } from "@/contexts/CartContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { PageLayout } from "@/components/PageLayout";
-import { PageLoader } from "@/components/PageLoader";
+import { CartProvider } from "@/contexts/CartContext";
+import PageLoader from "@/components/PageLoader";
 
-// Import critical pages directly (no lazy loading)
+// Páginas que se cargan directamente (críticas para UX)
 import Index from "./pages/Index";
 import ComprarCestasPage from "./pages/ComprarCestasPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ExperienciaSelectaPage from "./pages/ExperienciaSelectaPage";
-import NuestrosClientesPage from "./pages/NuestrosClientesPage";
-import SobreNosotrosDetalle from "./pages/SobreNosotrosDetalle";
-import PreguntasFrecuentesPage from "./pages/PreguntasFrecuentesPage";
-import ConocenosPage from "./pages/ConocenosPage";
-import AutoLogin from "./pages/AutoLogin";
 import ProfilePage from "./pages/ProfilePage";
 import PaymentPage from "./pages/PaymentPage";
-import EmptyCartPage from "./pages/EmptyCartPage";
 
-// Lazy load only non-critical pages
+// Lazy-loaded pages (cargan bajo demanda)
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
-const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
+const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-import CookieBanner from "./components/CookieBanner";
-import AutoUpdater from "./components/AutoUpdater";
-import ErrorBoundary from "./components/ErrorBoundary";
+const EmptyCartPage = lazy(() => import("./pages/EmptyCartPage"));
+const AutoLogin = lazy(() => import("./pages/AutoLogin"));
+const ConocenosPage = lazy(() => import("./pages/ConocenosPage"));
+const PreguntasFrecuentesPage = lazy(() => import("./pages/PreguntasFrecuentesPage"));
+const SobreNosotrosDetalle = lazy(() => import("./pages/SobreNosotrosDetalle"));
+const NuestrosClientesPage = lazy(() => import("./pages/NuestrosClientesPage"));
 
-// (React Query deshabilitado temporalmente para evitar error de hook)
+const queryClient = new QueryClient();
 
-
-// Scroll to top on every route change - optimizado para evitar tirones
-const ScrollToTopOnRouteChange = () => {
-  const location = useLocation();
-
-  // Disable browser scroll restoration
+const App = () => {
+  // Scroll restoration
   useEffect(() => {
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
     }
   }, []);
 
-  useEffect(() => {
-    console.log('[ScrollToTopOnRouteChange] Scrolling to top for path:', location.pathname);
-    // Scroll instantáneo al top usando comportamiento soportado por todos los navegadores
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  }, [location.pathname]);
-  
-  return null;
-};
-
-// Redirect to home on page reload (except for specific routes)
-const RedirectOnReload = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    // Check if this is a page reload
-    const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
-    const isReload = navigationEntries.length > 0 && navigationEntries[0].type === 'reload';
-    
-      if (isReload) {
-        const currentPath = location.pathname;
-
-        // Don't redirect if we're already on these routes
-        const exemptRoutes = ['/', '/login', '/auth/callback', '/auto-login', '/experiencia-selecta'];
-
-        if (!exemptRoutes.includes(currentPath)) {
-          console.log(`Page reloaded on ${currentPath}, redirecting to home...`);
-          window.location.replace('/');
-        }
-      }
-  }, [location.pathname]);
-
-  return null;
-};
-
-
-const App = () => (
-  <AuthProvider>
-    <CartProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Sonner position="bottom-right" />
-        <AutoUpdater />
-        
-        <div className="min-h-screen bg-background gpu-accelerated">
-          <ScrollToTopOnRouteChange />
-          <RedirectOnReload />
-          <PageLayout>
-            <Routes>
-              {/* Critical pages loaded directly without Suspense */}
-              <Route path="/" element={<Index />} />
-              <Route path="/perfil" element={<ProfilePage />} />
-              <Route path="/carrito" element={<CheckoutPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/carrito-vacio" element={<EmptyCartPage />} />
-              <Route path="/pago" element={<PaymentPage />} />
-              <Route path="/sobre-nosotros-detalle" element={<SobreNosotrosDetalle />} />
-              <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-              <Route path="/cestas" element={<Navigate to="/comprar-cestas" replace />} />
-              <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
-              <Route path="/experiencia-selecta" element={<ExperienciaSelectaPage />} />
-              <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
-              <Route path="/conocenos" element={<ConocenosPage />} />
-              <Route 
-                path="/auto-login" 
-                element={
-                  <ErrorBoundary fallback={<div className="min-h-screen flex items-center justify-center p-6"><div className="text-center"><h1 className="text-2xl font-bold mb-4">Error al cargar el inicio de sesión automático</h1><p className="text-muted-foreground">Por favor, intenta acceder desde el enlace nuevamente.</p></div></div>}>
-                    <AutoLogin />
-                  </ErrorBoundary>
-                } 
-              />
-              
-              {/* Lazy-loaded pages with Suspense */}
-              <Route path="/pago-exitoso" element={<Suspense fallback={<PageLoader />}><PaymentSuccessPage /></Suspense>} />
-              <Route path="/nuestra-identidad" element={<Suspense fallback={<PageLoader />}><NuestraIdentidadPage /></Suspense>} />
-              <Route path="/regalos" element={<Suspense fallback={<PageLoader />}><RegalosPage /></Suspense>} />
-              <Route path="/feedback" element={<Suspense fallback={<PageLoader />}><FeedbackPage /></Suspense>} />
-              <Route path="/review/:orderId" element={<Suspense fallback={<PageLoader />}><ReviewPage /></Suspense>} />
-              
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFound /></Suspense>} />
-            </Routes>
-          </PageLayout>
-          <CookieBanner />
-        </div>
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <CartProvider>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  {/* Página principal */}
+                  <Route path="/" element={<Index />} />
+
+                  {/* Catálogo y compra */}
+                  <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/carrito-vacio" element={<EmptyCartPage />} />
+
+                  {/* Pago */}
+                  <Route path="/pago" element={<PaymentPage />} />
+                  <Route path="/pago-exitoso" element={<PaymentSuccessPage />} />
+
+                  {/* Usuario */}
+                  <Route path="/perfil" element={<ProfilePage />} />
+                  <Route path="/auto-login" element={<AutoLogin />} />
+                  <Route path="/regalos" element={<RegalosPage />} />
+
+                  {/* Feedback y reviews */}
+                  <Route path="/feedback" element={<FeedbackPage />} />
+                  <Route path="/review/:orderId" element={<ReviewPage />} />
+
+                  {/* Información y contenido */}
+                  <Route path="/nuestra-identidad" element={<ExperienciaSelectaPage />} />
+                  <Route path="/conocenos" element={<ConocenosPage />} />
+                  <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+                  <Route path="/sobre-nosotros" element={<SobreNosotrosDetalle />} />
+                  <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
+                  <Route path="/experiencia" element={<ExperienciaPage />} />
+
+                  {/* 404 */}
+                  <Route path="/404" element={<NotFound />} />
+                  <Route path="*" element={<Navigate to="/404" replace />} />
+                </Routes>
+              </Suspense>
+            </CartProvider>
+          </AuthProvider>
+        </BrowserRouter>
       </TooltipProvider>
-    </CartProvider>
-  </AuthProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;
