@@ -25,7 +25,6 @@ import EmptyCartPage from "./pages/EmptyCartPage";
 // Lazy load only non-critical pages
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 const NuestraIdentidadPage = lazy(() => import("./pages/NuestraIdentidadPage"));
-const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
@@ -122,7 +121,6 @@ const App = () => (
               {/* Lazy-loaded pages with Suspense */}
               <Route path="/pago-exitoso" element={<Suspense fallback={<PageLoader />}><PaymentSuccessPage /></Suspense>} />
               <Route path="/nuestra-identidad" element={<Suspense fallback={<PageLoader />}><NuestraIdentidadPage /></Suspense>} />
-              <Route path="/experiencia" element={<Suspense fallback={<PageLoader />}><ExperienciaPage /></Suspense>} />
               <Route path="/regalos" element={<Suspense fallback={<PageLoader />}><RegalosPage /></Suspense>} />
               <Route path="/feedback" element={<Suspense fallback={<PageLoader />}><FeedbackPage /></Suspense>} />
               <Route path="/review/:orderId" element={<Suspense fallback={<PageLoader />}><ReviewPage /></Suspense>} />
