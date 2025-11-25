@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
-import PageLoader from "@/components/PageLoader";
+import { PageLoader } from "@/components/PageLoader";
 
 // Páginas que se cargan directamente (críticas para UX)
 import Index from "./pages/Index";
@@ -18,7 +18,7 @@ import PaymentPage from "./pages/PaymentPage";
 
 // Lazy-loaded pages (cargan bajo demanda)
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
-const ExperienciaPage = lazy(() => import("./pages/ExperienciaPage"));
+
 const RegalosPage = lazy(() => import("./pages/RegalosPage"));
 const FeedbackPage = lazy(() => import("./pages/FeedbackPage"));
 const ReviewPage = lazy(() => import("./pages/ReviewPage"));
@@ -77,7 +77,7 @@ const App = () => {
                   <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
                   <Route path="/sobre-nosotros" element={<SobreNosotrosDetalle />} />
                   <Route path="/nuestros-clientes" element={<NuestrosClientesPage />} />
-                  <Route path="/experiencia" element={<ExperienciaPage />} />
+                  
 
                   {/* 404 */}
                   <Route path="/404" element={<NotFound />} />
