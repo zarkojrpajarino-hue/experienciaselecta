@@ -274,15 +274,27 @@ const ComprarCestasPage = () => {
               >
                 <motion.button
                   onClick={() => {
-                    if (selectedCategory === 'Pareja') {
-                      // En Pareja, ir directamente a la primera cesta
-                      const firstBasket = document.querySelector('[data-basket-id]');
-                      firstBasket?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    } else {
-                      // En Familia/Amigos, ir al selector de grupos
-                      const groupSizeSelector = document.querySelector('[data-group-size-selector]');
-                      groupSizeSelector?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                    setTimeout(() => {
+                      const targetId = selectedCategory === 'Pareja' ? 'baskets-section' : 'group-size-selector';
+                      const element = document.getElementById(targetId);
+                      
+                      console.log('🔄 Category:', selectedCategory, 'Target ID:', targetId);
+                      
+                      if (element) {
+                        const elementPosition = element.getBoundingClientRect().top;
+                        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                        const offsetPosition = elementPosition + currentScroll - 80;
+                        
+                        console.log('📍 Current:', currentScroll, 'Target:', offsetPosition);
+                        
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: 'smooth'
+                        });
+                      } else {
+                        console.error('❌ Element not found:', targetId);
+                      }
+                    }, 100);
                   }}
                   whileHover={{ scale: 1.15, y: 3 }}
                   whileTap={{ scale: 0.9 }}
@@ -326,11 +338,13 @@ const ComprarCestasPage = () => {
                 className="py-8 md:py-10"
               >
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                  <BasketCatalog 
-                    categoria={selectedCategory} 
-                    onGroupSizeChange={setGroupSize}
-                    isGiftMode={isGiftMode}
-                  />
+                  <div id="baskets-section">
+                    <BasketCatalog 
+                      categoria={selectedCategory} 
+                      onGroupSizeChange={setGroupSize}
+                      isGiftMode={isGiftMode}
+                    />
+                  </div>
                 </div>
               </motion.section>
             </AnimatePresence>

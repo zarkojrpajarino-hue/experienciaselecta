@@ -1190,7 +1190,7 @@ const BasketCatalog: React.FC<BasketCatalogProps> = ({ categoria, onGroupSizeCha
       
       {/* Group Size Buttons - Horizontal navigation */}
       {shouldShowGroupButtons && (
-        <div data-group-size-selector className="mb-4 mt-4">
+        <div id="group-size-selector" data-group-size-selector className="mb-4 mt-4">
           {/* Texto de selección encima de los botones */}
           <motion.p
             initial={{ opacity: 0, y: -5 }}
