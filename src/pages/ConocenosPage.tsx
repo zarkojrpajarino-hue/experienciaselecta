@@ -179,26 +179,27 @@ const ConocenosPage = () => {
               Descubre quiénes somos y qué nos mueve.
             </p>
             
-          onClick={() => {
-  setTimeout(() => {
-    const section = document.getElementById('porque-no-vendemos-cestas');
-    if (section) {
-      const elementPosition = section.getBoundingClientRect().top;
-      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-      const offsetPosition = elementPosition + currentScroll - 80;
-      
-      console.log('🔄 Scrolling to porque-no-vendemos-cestas');
-      console.log('📍 Current:', currentScroll, 'Target:', offsetPosition);
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    } else {
-      console.error('❌ Section "porque-no-vendemos-cestas" not found');
-    }
-  }, 100);
-}}
+            <motion.button
+              onClick={() => {
+                setTimeout(() => {
+                  const section = document.getElementById('porque-no-vendemos-cestas');
+                  if (section) {
+                    const elementPosition = section.getBoundingClientRect().top;
+                    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                    const offsetPosition = elementPosition + currentScroll - 80;
+                    
+                    console.log('🔄 Scrolling to porque-no-vendemos-cestas');
+                    console.log('📍 Current:', currentScroll, 'Target:', offsetPosition);
+                    
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  } else {
+                    console.error('❌ Section "porque-no-vendemos-cestas" not found');
+                  }
+                }, 100);
+              }}
               whileHover={{ scale: 1.15, y: 3 }}
               whileTap={{ scale: 0.9 }}
               animate={{ y: [0, 5, 0] }}

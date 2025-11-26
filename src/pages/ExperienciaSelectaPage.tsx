@@ -143,7 +143,11 @@ const ExperienciaSelectaPage = () => {
       <div className="min-h-screen font-work-sans bg-white pt-16">
         
         {/* Experiencia Section */}
-        <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
+        <section 
+          id="experiencia-section"
+          className="py-20" 
+          style={{ backgroundColor: '#FFFFFF' }}
+        >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <div className="mb-8">
@@ -187,7 +191,7 @@ const ExperienciaSelectaPage = () => {
             <div className="mt-12">
               <div className="flex justify-center mb-8">
                 <Button
-                  onClick={() => smoothScrollTo('selecta')}
+                  onClick={() => smoothScrollTo('selecta-section')}
                   variant="ghost"
                   size="lg"
                   className="text-gold hover:text-gold/80 hover:bg-gold/10"
@@ -203,7 +207,11 @@ const ExperienciaSelectaPage = () => {
       </section>
 
       {/* Selecta Section */}
-      <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
+      <section 
+        id="selecta-section"
+        className="py-20" 
+        style={{ backgroundColor: '#FFFFFF' }}
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div 
             id="selecta"
@@ -235,7 +243,7 @@ const ExperienciaSelectaPage = () => {
             <div className="mt-12">
               <div className="flex justify-center mb-8">
                 <Button
-                  onClick={() => smoothScrollTo('experiencia')}
+                  onClick={() => smoothScrollTo('experiencia-section')}
                   variant="ghost"
                   size="lg"
                   className="text-gold hover:text-gold/80 hover:bg-gold/10"
