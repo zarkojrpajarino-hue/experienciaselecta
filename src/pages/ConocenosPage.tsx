@@ -39,7 +39,7 @@ const ConocenosPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // ✅ FUNCIÓN DE SCROLL SEPARADA
+  // ✅ FUNCIÓN DE SCROLL SIMPLIFICADA
   const handleScrollToCarousel = () => {
     console.log("🔴 FLECHA CLICKED");
 
@@ -48,23 +48,19 @@ const ConocenosPage = () => {
       console.log("🔍 Section encontrada:", section);
 
       if (section) {
-        const elementPosition = section.getBoundingClientRect().top;
-        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-        const offsetPosition = elementPosition + currentScroll - 80;
+        console.log("✅ Usando scrollIntoView directo");
 
-        console.log("🔄 Scrolling to porque-no-vendemos-cestas");
-        console.log("📍 Current:", currentScroll, "Target:", offsetPosition);
-
-        window.scrollTo({
-          top: offsetPosition,
+        // Método más simple y confiable
+        section.scrollIntoView({
           behavior: "smooth",
+          block: "start",
         });
+
+        console.log("🎯 Scroll ejecutado");
       } else {
         console.error('❌ Section "porque-no-vendemos-cestas" not found');
-        const allIds = Array.from(document.querySelectorAll("[id]")).map((el) => el.id);
-        console.log("📋 Available IDs:", allIds);
       }
-    }, 150);
+    }, 100);
   };
 
   // Datos para la sección "Porque no vendemos cestas"
@@ -278,35 +274,23 @@ const ConocenosPage = () => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-black">Conócenos.</h1>
             <p className="text-base sm:text-lg md:text-xl text-black mt-4">Descubre quiénes somos y qué nos mueve.</p>
 
-            {/* ✅ FLECHA CORREGIDA CON BUTTON NORMAL */}
+            {/* ✅ FLECHA DEFINITIVA - scrollIntoView simple */}
             <button
               onClick={handleScrollToCarousel}
-              onPointerDown={(e) => e.stopPropagation()}
-              className="mt-4 p-0 bg-transparent border-0 cursor-pointer inline-block"
+              className="mt-4 p-2 bg-transparent border-0 cursor-pointer inline-block hover:opacity-80 transition-opacity"
               aria-label="Ir a porque no vendemos cestas"
-              style={{
-                WebkitTapHighlightColor: "transparent",
-                touchAction: "manipulation",
-              }}
             >
               <motion.svg
-                className="w-8 h-8 sm:w-10 sm:h-10 mx-auto"
+                className="w-8 h-8 sm:w-10 sm:h-10 mx-auto pointer-events-none"
                 fill="none"
                 stroke="#D4AF37"
                 strokeWidth="3"
                 viewBox="0 0 24 24"
-                whileHover={{ scale: 1.15, y: 3 }}
-                whileTap={{ scale: 0.9 }}
                 animate={{ y: [0, 5, 0] }}
                 transition={{
-                  y: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  },
-                  scale: {
-                    duration: 0.2,
-                  },
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
                 }}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
