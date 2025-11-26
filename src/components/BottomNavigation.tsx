@@ -5,14 +5,14 @@ const BottomNavigation = () => {
   const navigate = useNavigate();
 
   const navigationItems = [
-    { label: "Experiencia Selecta", path: "/experiencia-selecta" },
-    { label: "Sobre Nosotros", path: "/sobre-nosotros-detalle" },
-    { label: "Nuestros Clientes", path: "/nuestros-clientes" },
-    { label: "Preguntas Frecuentes", path: "/preguntas-frecuentes" }
+    { label: "Experiencia Selecta", path: "/nuestra-identidad" }, // ✅ CORREGIDO
+    { label: "Sobre Nosotros", path: "/sobre-nosotros" }, // ✅ CORREGIDO
+    { label: "Nuestros Clientes", path: "/nuestros-clientes" }, // ✅ Ya estaba bien
+    { label: "Preguntas Frecuentes", path: "/preguntas-frecuentes" }, // ✅ Ya estaba bien
   ];
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
