@@ -329,9 +329,12 @@ serve(async (req) => {
       amount: Math.round(expectedTotal * 100), // Amount in cents (discounted amount)
       currency: 'eur',
       customer: stripeCustomerId,
+      receipt_email: customerData.email, // Important for webhook to find customer email
       metadata: {
         order_id: order.id,
         customer_id: customerId,
+        customer_email: customerData.email, // Required by stripe-webhook
+        customer_name: customerData.name, // Required by stripe-webhook
         is_gift: isGiftMode ? 'true' : 'false',
         sender_name: isGiftMode && giftData?.senderName ? giftData.senderName : '',
         sender_email: isGiftMode && giftData?.senderEmail ? giftData.senderEmail : '',
