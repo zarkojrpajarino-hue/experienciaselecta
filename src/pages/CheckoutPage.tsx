@@ -595,8 +595,22 @@ React.useEffect(() => {
 
       const totalToCharge = getTotalAmount();
 
+      // Check if there are assigned gifts (needed for customer data logic)
+      const assignedGiftBasketsCheck = giftAssignment.recipients.flatMap((r) => r.basketIds);
+      const isGiftOnlyMode = currentPersonalItems.length === 0 && assignedGiftBasketsCheck.length > 0;
+      
       // Prepare customer data
-      const customerData = {
+      // In gift-only mode, use sender info as customer. Otherwise use personalData.
+      const customerData = isGiftOnlyMode ? {
+        name: giftAssignment.senderName,
+        email: giftAssignment.senderEmail,
+        phone: null,
+        address_line1: 'Regalo - sin envío directo',
+        address_line2: null,
+        city: 'Madrid',
+        postal_code: '28001',
+        country: 'ES'
+      } : {
         name: personalData.name,
         email: personalData.email,
         phone: personalData.phone || null,
