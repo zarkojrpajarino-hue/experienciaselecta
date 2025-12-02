@@ -55,6 +55,7 @@ const App = () => {
                 {/* Catálogo y compra */}
                 <Route path="/comprar-cestas" element={<ComprarCestasPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/carrito" element={<Navigate to="/checkout" replace />} />
                 <Route path="/carrito-vacio" element={<EmptyCartPage />} />
 
                 {/* Pago */}
