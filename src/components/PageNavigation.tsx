@@ -1,8 +1,11 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const PageNavigation = () => {
   const [animate, setAnimate] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
   const navItems = [
     { route: "/" },
     { route: "/experiencia" },
@@ -21,7 +24,7 @@ const PageNavigation = () => {
     return () => clearInterval(interval);
   }, []);
   const getCurrentSectionIndex = () => {
-    return navItems.findIndex(item => item.route === window.location.pathname);
+    return navItems.findIndex(item => item.route === location.pathname);
   };
   const navigateToSection = (direction: 'prev' | 'next') => {
     const currentIndex = getCurrentSectionIndex();
@@ -30,7 +33,7 @@ const PageNavigation = () => {
       ? (currentIndex - 1 + navItems.length) % navItems.length
       : (currentIndex + 1) % navItems.length;
     const target = navItems[newIndex].route;
-    window.location.assign(target);
+    navigate(target);
   };
   const currentIndex = getCurrentSectionIndex();
   if (currentIndex === -1) return null;
