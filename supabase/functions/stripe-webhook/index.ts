@@ -2,6 +2,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0'
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
+import { Resend } from 'https://esm.sh/resend@4.0.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -203,6 +204,117 @@ serve(async (req) => {
         // Don't throw - payment succeeded
       } else {
         console.log('Customer updated with user_id:', userId);
+      }
+
+      // Send admin notification email for all successful payments
+      try {
+        const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+        
+        // Get order details for admin notification
+        const { data: orderDetails, error: orderDetailsError } = await supabase
+          .from('orders')
+          .select(`
+            *,
+            customers (*),
+            order_items (*)
+          `)
+          .eq('id', order.id)
+          .single();
+
+        if (!orderDetailsError && orderDetails) {
+          const customer = orderDetails.customers as any;
+          const items = orderDetails.order_items as any[];
+          const isGift = paymentIntent.metadata?.is_gift === 'true';
+          
+          const itemsHtml = items.map(item => `
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.basket_name}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">${(item.price_per_item / 100).toFixed(2)}€</td>
+            </tr>
+          `).join('');
+
+          await resend.emails.send({
+            from: "Experiencia Selecta <noreply@experienciaselecta.com>",
+            to: ["selectaexperiencia@gmail.com"],
+            subject: `🛒 ${isGift ? '🎁 REGALO - ' : ''}Nuevo pedido de ${customer?.name || customerName} - ${order.id.substring(0, 8)}`,
+            html: `
+              <!DOCTYPE html>
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                  <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #8B4513 0%, #2F4F2F 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+                    .content { background: white; padding: 20px; border: 1px solid #eee; border-top: none; border-radius: 0 0 10px 10px; }
+                    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+                    th { background: #f5f5f5; padding: 10px; text-align: left; border-bottom: 2px solid #8B4513; }
+                    td { padding: 8px; border-bottom: 1px solid #eee; }
+                    .total { font-size: 1.2em; font-weight: bold; color: #8B4513; margin-top: 10px; }
+                    .highlight { background: #FFF9E6; padding: 12px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #FFB800; }
+                    .gift-badge { background: #FFB800; color: #333; padding: 5px 10px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+                  </style>
+                </head>
+                <body>
+                  <div class="container">
+                    <div class="header">
+                      <h2>🛒 Nuevo Pedido Recibido ${isGift ? '(REGALO)' : ''}</h2>
+                    </div>
+                    <div class="content">
+                      ${isGift ? '<span class="gift-badge">🎁 PEDIDO DE REGALO</span>' : ''}
+                      <p><strong>Cliente:</strong> ${customer?.name || customerName}</p>
+                      <p><strong>Email:</strong> ${customer?.email || customerEmail}</p>
+                      <p><strong>Teléfono:</strong> ${customer?.phone || 'No proporcionado'}</p>
+                      <p><strong>Pedido #:</strong> ${order.id}</p>
+                      <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES', { dateStyle: 'full' })}</p>
+                      <p><strong>Estado:</strong> ${newStatus === 'completed' ? '✅ Completado' : '⏳ Pendiente'}</p>
+                      
+                      ${!isGift ? `
+                        <p><strong>Dirección de envío:</strong><br>
+                          ${orderDetails.shipping_address_line1}<br>
+                          ${orderDetails.shipping_address_line2 ? orderDetails.shipping_address_line2 + '<br>' : ''}
+                          ${orderDetails.shipping_city}, ${orderDetails.shipping_postal_code}<br>
+                          ${orderDetails.shipping_country}
+                        </p>
+                      ` : `
+                        <p><strong>Remitente:</strong> ${paymentIntent.metadata?.sender_name || 'N/A'} (${paymentIntent.metadata?.sender_email || 'N/A'})</p>
+                        <p><em>Los destinatarios recibirán email para proporcionar su dirección.</em></p>
+                      `}
+                      
+                      <div class="highlight">
+                        <h3 style="margin: 0 0 10px 0;">📦 Artículos del pedido:</h3>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Cesta</th>
+                              <th style="text-align: center;">Cantidad</th>
+                              <th style="text-align: right;">Precio</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${itemsHtml}
+                          </tbody>
+                        </table>
+                        <div class="total">Total: ${(orderDetails.total_amount / 100).toFixed(2)}€</div>
+                        ${orderDetails.discount_amount ? `<p style="color: #27AE60;">Descuento aplicado: -${(orderDetails.discount_amount / 100).toFixed(2)}€</p>` : ''}
+                      </div>
+                      
+                      <p style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                        Este es un email automático de notificación de pedido vía Stripe Webhook.
+                      </p>
+                    </div>
+                  </div>
+                </body>
+              </html>
+            `,
+          });
+          
+          console.log('Admin notification email sent successfully');
+        }
+      } catch (adminEmailError) {
+        console.error('Failed to send admin notification email:', adminEmailError);
+        // Don't throw - payment succeeded, this is just a notification
       }
 
       return new Response(
