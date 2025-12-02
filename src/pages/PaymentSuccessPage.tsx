@@ -32,6 +32,41 @@ interface OrderDetails {
   gifts?: any[];
 }
 
+// Helper function to wait
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper to find order by payment_intent with retries
+const findOrderByPaymentIntent = async (paymentIntent: string, maxRetries = 5): Promise<string | null> => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    console.log(`🔍 Attempt ${attempt}/${maxRetries}: Looking up order by payment_intent`);
+    
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('id')
+      .eq('stripe_payment_intent_id', paymentIntent)
+      .maybeSingle();
+
+    if (order) {
+      console.log(`✅ Found order on attempt ${attempt}:`, order.id);
+      return order.id;
+    }
+
+    if (error) {
+      console.log(`⚠️ Query error on attempt ${attempt}:`, error.message);
+    } else {
+      console.log(`⏳ Order not found yet, waiting before retry...`);
+    }
+
+    // Wait before retrying (increasing delay: 1s, 2s, 3s, 4s, 5s)
+    if (attempt < maxRetries) {
+      await wait(attempt * 1000);
+    }
+  }
+
+  console.log('❌ Order not found after all retries');
+  return null;
+};
+
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,6 +80,7 @@ const PaymentSuccessPage = () => {
   const [loading, setLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [resolvedOrderId, setResolvedOrderId] = useState<string | null>(stateOrderId || null);
+  const [lookupAttempted, setLookupAttempted] = useState(false);
 
   // First effect: resolve orderId from payment_intent if needed
   useEffect(() => {
@@ -53,43 +89,37 @@ const PaymentSuccessPage = () => {
       if (stateOrderId) {
         console.log('✅ OrderId from state:', stateOrderId);
         setResolvedOrderId(stateOrderId);
+        setLookupAttempted(true);
         return;
       }
 
-      // If we have payment_intent from Stripe redirect, find the order
+      // If we have payment_intent from Stripe redirect, find the order with retries
       if (paymentIntent && redirectStatus === 'succeeded') {
-        console.log('🔍 Looking up order by payment_intent:', paymentIntent);
-        try {
-          const { data: order, error } = await supabase
-            .from('orders')
-            .select('id')
-            .eq('stripe_payment_intent_id', paymentIntent)
-            .single();
-
-          if (error) {
-            console.error('Error finding order by payment_intent:', error);
-            toast.error('No se pudo encontrar el pedido');
-            navigate('/', { replace: true });
-            return;
-          }
-
-          if (order) {
-            console.log('✅ Found order:', order.id);
-            setResolvedOrderId(order.id);
-            
-            // Clean up URL params
-            window.history.replaceState({}, '', '/pago-exitoso');
-          }
-        } catch (error) {
-          console.error('Error resolving order:', error);
-          navigate('/', { replace: true });
+        console.log('🔍 Stripe redirect detected, payment_intent:', paymentIntent);
+        
+        const orderId = await findOrderByPaymentIntent(paymentIntent);
+        
+        if (orderId) {
+          setResolvedOrderId(orderId);
+          // Clean up URL params
+          window.history.replaceState({}, '', '/pago-exitoso');
+        } else {
+          console.log('❌ Could not find order, showing success message anyway');
+          // Even if we can't find the order, don't redirect to home
+          // Show a generic success message instead
         }
+        
+        setLookupAttempted(true);
         return;
       }
 
-      // No orderId and no payment_intent - redirect home
-      console.log('❌ No orderId or payment_intent found');
-      navigate('/', { replace: true });
+      // No orderId and no payment_intent - check if maybe just missing params
+      if (!stateOrderId && !paymentIntent) {
+        console.log('❌ No orderId or payment_intent found');
+        navigate('/', { replace: true });
+      }
+      
+      setLookupAttempted(true);
     };
 
     resolveOrderId();
@@ -97,6 +127,15 @@ const PaymentSuccessPage = () => {
 
   // Second effect: fetch order details once we have resolvedOrderId
   useEffect(() => {
+    if (!lookupAttempted) return;
+    
+    // If no orderId resolved but we had a payment_intent, show generic success
+    if (!resolvedOrderId && paymentIntent) {
+      console.log('📦 No order details available, showing generic success');
+      setLoading(false);
+      return;
+    }
+    
     if (!resolvedOrderId) return;
 
     const fetchOrderDetails = async () => {
@@ -122,11 +161,19 @@ const PaymentSuccessPage = () => {
             )
           `)
           .eq('id', resolvedOrderId)
-          .single();
+          .maybeSingle();
 
         if (orderError) {
           console.error('Order fetch error:', orderError);
-          throw orderError;
+          // Don't throw, just show generic success
+          setLoading(false);
+          return;
+        }
+
+        if (!order) {
+          console.log('Order not found, showing generic success');
+          setLoading(false);
+          return;
         }
 
         // Fetch order items
@@ -137,7 +184,6 @@ const PaymentSuccessPage = () => {
 
         if (itemsError) {
           console.error('Items fetch error:', itemsError);
-          throw itemsError;
         }
 
         // Check if there are any gifts associated with this order
@@ -164,14 +210,14 @@ const PaymentSuccessPage = () => {
         console.log('✅ Order details loaded successfully');
       } catch (error: any) {
         console.error('Error fetching order details:', error);
-        toast.error('Error al cargar los detalles del pedido');
+        // Don't show error toast, just show generic success
       } finally {
         setLoading(false);
       }
     };
 
     fetchOrderDetails();
-  }, [resolvedOrderId]);
+  }, [resolvedOrderId, lookupAttempted, paymentIntent]);
 
   if (loading) {
     return (
@@ -187,22 +233,55 @@ const PaymentSuccessPage = () => {
     );
   }
 
+  // Show generic success if we couldn't load order details (but payment succeeded)
   if (!orderDetails) {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen pt-16 pb-6 px-4 bg-background flex items-center justify-center">
-          <Card className="max-w-2xl w-full">
-            <CardContent className="pt-6 text-center">
-              <p className="text-lg text-muted-foreground">No se encontró información del pedido</p>
+        <div className="min-h-screen pt-16 pb-6 px-4 bg-background">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Success Header */}
+            <Card>
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-4 w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-12 h-12 text-green-600" />
+                </div>
+                <CardTitle className="text-3xl font-poppins font-bold text-green-600">
+                  ¡Pago Completado con Éxito!
+                </CardTitle>
+                <p className="text-muted-foreground mt-2">
+                  Tu pedido ha sido procesado correctamente
+                </p>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <p className="text-foreground">
+                  Recibirás un email de confirmación con todos los detalles de tu pedido.
+                </p>
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-foreground">
+                    📧 Revisa tu bandeja de entrada (y la carpeta de spam) para ver la confirmación de tu compra.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => navigate('/')}
-                className="mt-4 bg-gold hover:bg-gold/90 text-black font-bold"
+                className="bg-gold hover:bg-gold/90 text-black font-bold"
               >
-                Volver al inicio
+                Volver a la página principal
               </Button>
-            </CardContent>
-          </Card>
+              <Button
+                onClick={() => navigate('/perfil')}
+                variant="outline"
+                className="border-gold text-gold hover:bg-gold/10"
+              >
+                Ver mis pedidos
+              </Button>
+            </div>
+          </div>
         </div>
       </>
     );
